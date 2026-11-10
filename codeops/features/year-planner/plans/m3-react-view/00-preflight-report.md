@@ -5,7 +5,7 @@
 > **Context**: RD-06, RD-04, RD-05, RD-07, RD-08, renderer ADR 0001, M2 implementation
 > **Created**: 2026-11-10 15:05
 > **Iterations**: 3 independent plan audits
-> **Verdict**: ✅ **PASSED WITH NOTES** — no open critical or major findings; AC3 evidence is partial per AR-27
+> **Verdict**: ✅ **PASSED** — no open critical or major findings; AC3 is proven by the real Fluent/MUI fixture (AR-27)
 
 ---
 
@@ -60,9 +60,10 @@
 
 ## Accepted notes (non-blocking)
 
-- **AC3 partial**: actual Fluent UI v9 and MUI Button components are not
-  installed. The plan proves the structural contract with host `<button>`
-  fixtures and adapter mappings. RD-11 owns example stories (Should Have).
+- **AC3 evidence**: real Fluent UI v9 and MUI Buttons are installed as dev-only
+  demo dependencies and proven in cells and the inspector across Chromium,
+  Firefox and WebKit. The published library keeps zero design-system
+  dependencies. RD-11 still owns Storybook examples (Should Have).
 - **RD-06 command scope**: the plan implements the request pipeline needed by
   AC15–AC17. RD-07 owns pointer gestures; RD-08 owns rollback, stale-response
   cancellation and controlled-host history.

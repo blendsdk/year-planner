@@ -294,5 +294,5 @@ Phase 7
 3. ✅ React coverage ≥ 80%; core coverage ≥ 95%
 4. ✅ API reports and adapter subpaths committed
 5. ✅ 14/24/36-month A3 PDFs prove 1/2/3 pages
-6. ✅ RD-06 AC1–AC18 covered; AC3 is partial per AR-27 (not fully claimed)
+6. ✅ RD-06 AC1–AC18 covered; AC3 proven with real Fluent/MUI buttons
 7. ✅ Roadmap and test report reflect the real state

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 13:32
-> **Progress**: 34/46 tasks (74%)
+> **Last Updated**: 2026-11-10 13:34
+> **Progress**: 40/46 tasks (87%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -221,18 +221,18 @@ with the fragments in Phase 4; gutter connectors are deferred to RD-06 (AR-21).
 
 ### Step 6.1: Specification tests
 
-- [ ] 6.1.1 [spec-author] Write print spec tests for ST-59–ST-63 and ST-79 — `packages/core/src/ribbon/print.spec.test.ts`
-- [ ] 6.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md`
+- [x] 6.1.1 [spec-author] Write print spec tests for ST-59–ST-63 and ST-79 — `packages/core/src/ribbon/print.spec.test.ts` ✅ (completed: 2026-11-10 13:34)
+- [x] 6.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md` ✅ (completed: 2026-11-10 13:34)
 
 ### Step 6.2: Implementation
 
-- [ ] 6.2.1 Implement paginate/fit planning and the 7 pt diagnostic — `packages/core/src/ribbon/print.ts`
-- [ ] 6.2.2 Export the module and run the spec tests green — `packages/core/src/ribbon/index.ts`, `packages/core/src/index.ts`
+- [x] 6.2.1 Implement paginate/fit planning and the 7 pt diagnostic — `packages/core/src/ribbon/print.ts` ✅ (completed: 2026-11-10 13:34)
+- [x] 6.2.2 Export the module and run the spec tests green — `packages/core/src/ribbon/index.ts`, `packages/core/src/index.ts` ✅ (completed: 2026-11-10 13:34)
 
 ### Step 6.3: Implementation tests and verify
 
-- [ ] 6.3.1 Write print boundary tests — `packages/core/src/ribbon/print.impl.test.ts`
-- [ ] 6.3.2 Run `pnpm verify`
+- [x] 6.3.1 Write print boundary tests — `packages/core/src/ribbon/print.impl.test.ts` ✅ (completed: 2026-11-10 13:34)
+- [x] 6.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 13:34)
 
 **Deliverables**:
 - [ ] All ST-59–ST-63 and ST-79 tests pass

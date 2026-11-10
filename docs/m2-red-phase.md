@@ -109,7 +109,23 @@ Restored after implementation; 2 spec and 4 implementation tests pass.
 
 ## Phase 6 — Print planning
 
-Pending.
+Command:
+
+```bash
+cd packages/core
+pnpm exec vitest run src/ribbon/print.spec.test.ts
+```
+
+State: `packages/core/src/ribbon/print.ts` did not exist.
+
+```text
+Error: Cannot find module './print' imported from
+  packages/core/src/ribbon/print.spec.test.ts
+Test Files  1 failed (1)
+     Tests  no tests
+```
+
+Restored after implementation; 8 spec tests pass.
 
 ## What this proves
 

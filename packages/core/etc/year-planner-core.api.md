@@ -5,6 +5,12 @@
 ```ts
 
 // @public
+export const A3_LANDSCAPE_INNER_HEIGHT = 1077;
+
+// @public
+export const A3_LANDSCAPE_INNER_WIDTH = 1542;
+
+// @public
 export function addDays(date: DateKey, days: number): DateKey;
 
 // @public
@@ -562,6 +568,70 @@ export interface PlannerModel {
 
 // @public
 export type PlannerPeriod = AllDayPeriod | TimedPeriod;
+
+// @public
+export function planRibbonPrint(ribbon: RibbonLayout, options?: PrintOptions): PrintPlanResult;
+
+// @public
+export const PRINT_DATE_TEXT_PX = 12;
+
+// @public
+export const PRINT_MIN_DATE_TEXT_PT = 7;
+
+// @public
+export type PrintMode = "paginate" | "fit";
+
+// @public
+export interface PrintOptions {
+    // (undocumented)
+    mode?: PrintMode;
+    // (undocumented)
+    page?: PrintPageSize;
+    // (undocumented)
+    rowsPerPage?: number;
+}
+
+// @public
+export interface PrintPage {
+    // (undocumented)
+    contentHeight: number;
+    // (undocumented)
+    firstRowIndex: number;
+    // (undocumented)
+    index: number;
+    // (undocumented)
+    rows: RibbonRow[];
+    // (undocumented)
+    scale: number;
+}
+
+// @public
+export type PrintPageSize = "A3";
+
+// @public
+export interface PrintPlan {
+    // (undocumented)
+    diagnostics: Diagnostic[];
+    // (undocumented)
+    mode: PrintMode;
+    // (undocumented)
+    page: PrintPageSize;
+    // (undocumented)
+    pages: PrintPage[];
+    // (undocumented)
+    requiresPaginate: boolean;
+    // (undocumented)
+    scale: number;
+}
+
+// @public
+export type PrintPlanResult = {
+    ok: true;
+    plan: PrintPlan;
+} | {
+    ok: false;
+    diagnostics: Diagnostic[];
+};
 
 // @public
 export function projectTimedPeriod(period: TimedPeriod, timeZone: string): AllDayPeriod;

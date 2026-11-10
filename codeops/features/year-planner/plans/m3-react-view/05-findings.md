@@ -54,14 +54,14 @@
 
 | Check | Result |
 |---|---|
-| React tests | **136 passed** (20 files) |
+| React tests | **140 passed** (20 files) |
 | Core tests | **207 passed** |
-| React coverage | **92.35% lines / 91.7% branches / 98.34% functions** |
+| React coverage | **92.54% lines / 91.55% branches / 98.34% functions** |
 | Core coverage | **99.43% lines / 96.08% branches / 100% functions** |
 | `pnpm verify` | PASS |
 | `pnpm verify:full` | PASS — Playwright 20 passed / 4 skipped, clean consumer |
 | PDFs | 1 page (14 months), 2 pages (24), 3 pages (36), all A3 |
-| Bundle | **44.11 kB gzip** / 60 kB |
+| Bundle | **44.26 kB gzip** / 60 kB |
 | ESM guard | Built entry starts with `"use client"`; no `process.env`; import-only exports |
 
 ## Accepted notes

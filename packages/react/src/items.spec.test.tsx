@@ -122,6 +122,17 @@ describe("RD-06 fragment rendering", () => {
     expect(proxy(container, "first")).toHaveAttribute("tabindex", "0");
   });
 
+  it("gives a foreground-only item a tab stop", () => {
+    const { container } = render(
+      <YearPlanner
+        year={2027}
+        layers={[layer("fg", { channel: "foreground" })]}
+        items={[item("preview", "fg", "2027-02-01", "2027-02-04")]}
+      />,
+    );
+    expect(proxy(container, "preview")).toHaveAttribute("tabindex", "0");
+  });
+
   it("keeps one tab stop for a cross-month selected item", () => {
     const { container } = render(
       <YearPlanner

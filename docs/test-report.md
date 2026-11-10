@@ -37,9 +37,9 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | Check | Result |
 |---|---|
 | Core tests | **207 passed** |
-| React tests | **136 passed** (20 files) |
+| React tests | **140 passed** (20 files) |
 | Core coverage | **99.43% lines, 96.08% branches, 100% functions** |
-| React coverage | **92.35% lines, 91.7% branches, 98.34% functions** |
+| React coverage | **92.54% lines, 91.55% branches, 98.34% functions** |
 | Playwright | **20 passed, 4 skipped** (PDF is Chromium-only) |
 | Browsers | Chromium, Firefox, WebKit |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
@@ -49,7 +49,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | Storybook | **PASS** — static build succeeds |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **44.11 kB gzip** including core, React, adapters and CSS; 60 kB budget |
+| Bundle size | **44.26 kB gzip** including core, React, adapters and CSS; 60 kB budget |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | **Green** — [run 42850077449](https://github.com/blendsdk/year-planner/actions/runs/42850077449), `verify` + `browsers` jobs |
 

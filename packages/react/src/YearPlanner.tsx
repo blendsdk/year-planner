@@ -452,7 +452,10 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       activeVisibleItem ??
       selectedVisibleItem ??
       ribbons.fragments.find(
-        (fragment) => fragment.channel === "ribbon" || fragment.channel === "annotation",
+        (fragment) =>
+          fragment.channel === "ribbon" ||
+          fragment.channel === "annotation" ||
+          fragment.channel === "foreground",
       )?.itemId;
     const activeFragmentId = ribbons.fragments.find(
       (fragment) => fragment.itemId === rovingItemId,

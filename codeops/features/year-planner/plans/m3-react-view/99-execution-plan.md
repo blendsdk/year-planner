@@ -61,9 +61,9 @@ tokens, presets, provider and the layered CSS foundation.
 - [x] 1.3.2 Run `pnpm verify` and regenerate the API reports ✅ (completed: 2026-11-10 15:08)
 
 **Deliverables**:
-- [ ] ST-1–ST-4 pass
-- [ ] Every token maps to `--yp-*`; presets change visuals only
-- [ ] Core and React barrels export the new contracts/theme
+- [x] ST-1–ST-4 pass ✅ (completed: 2026-11-10 17:11)
+- [x] Every token maps to `--yp-*`; presets change visuals only ✅ (completed: 2026-11-10 17:11)
+- [x] Core and React barrels export the new contracts/theme ✅ (completed: 2026-11-10 17:11)
 
 **Verify**: `pnpm verify`
 
@@ -95,9 +95,9 @@ shell, localized labels, SSR-safe effects and controlled state hooks.
 - [x] 2.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:18)
 
 **Deliverables**:
-- [ ] ST-5–ST-27 and ST-84 pass
-- [ ] SSR render, hydration, invalid locale/zone and invalid option paths are safe
-- [ ] Controlled state never mutates props
+- [x] ST-5–ST-27 and ST-84 pass ✅ (completed: 2026-11-10 17:11)
+- [x] SSR render, hydration, invalid locale/zone and invalid option paths are safe ✅ (completed: 2026-11-10 17:11)
+- [x] Controlled state never mutates props ✅ (completed: 2026-11-10 17:11)
 
 **Verify**: `pnpm verify`
 
@@ -129,9 +129,9 @@ overflow, tooltips, `getDateMeta` and all slots.
 - [x] 3.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:24)
 
 **Deliverables**:
-- [ ] ST-28–ST-47 pass
-- [ ] Proxies contain no nested interactive controls; one roving tab stop per proxy group
-- [ ] Hidden items never reach DOM, slots, tooltip or overflow
+- [x] ST-28–ST-47 pass ✅ (completed: 2026-11-10 17:11)
+- [x] Proxies contain no nested interactive controls; one roving tab stop per proxy group ✅ (completed: 2026-11-10 17:11)
+- [x] Hidden items never reach DOM, slots, tooltip or overflow ✅ (completed: 2026-11-10 17:11)
 
 **Verify**: `pnpm verify`
 
@@ -162,9 +162,9 @@ uncontrolled apply, feedback hooks and undo/redo.
 - [x] 4.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:30)
 
 **Deliverables**:
-- [ ] ST-48–ST-61 pass
-- [ ] Controlled props never mutate; paint apply deduplicates non-matching items
-- [ ] Every failure path yields a typed diagnostic
+- [x] ST-48–ST-61 pass ✅ (completed: 2026-11-10 17:11)
+- [x] Controlled props never mutate; paint apply deduplicates non-matching items ✅ (completed: 2026-11-10 17:11)
+- [x] Every failure path yields a typed diagnostic ✅ (completed: 2026-11-10 17:11)
 
 **Verify**: `pnpm verify`
 
@@ -195,9 +195,9 @@ feedback, retry/dismiss and keyboard behavior.
 - [x] 5.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:40)
 
 **Deliverables**:
-- [ ] ST-62–ST-72 pass
-- [ ] Inspector keyboard reachable and replaceable
-- [ ] Actions use only `requestCommand`
+- [x] ST-62–ST-72 pass ✅ (completed: 2026-11-10 17:11)
+- [x] Inspector keyboard reachable and replaceable ✅ (completed: 2026-11-10 17:11)
+- [x] Actions use only `requestCommand` ✅ (completed: 2026-11-10 17:11)
 
 **Verify**: `pnpm verify`
 
@@ -228,9 +228,9 @@ subpath exports.
 - [x] 6.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:44)
 
 **Deliverables**:
-- [ ] ST-73–ST-79, ST-82, ST-83 and ST-85 pass
-- [ ] 1/2/3 A3 pages for 14/24/36 months
-- [ ] Adapter subpaths build and typecheck
+- [x] ST-73–ST-79, ST-82, ST-83 and ST-85 pass ✅ (completed: 2026-11-10 17:11)
+- [x] 1/2/3 A3 pages for 14/24/36 months ✅ (completed: 2026-11-10 17:11)
+- [x] Adapter subpaths build and typecheck ✅ (completed: 2026-11-10 17:11)
 
 **Verify**: `pnpm verify`
 
@@ -257,11 +257,11 @@ the independent phase review.
 - [x] 7.1.8 Run the independent phase review, record findings and clean temporary artifacts — `05-findings.md` ✅ (completed: 2026-11-10 16:58)
 
 **Deliverables**:
-- [ ] Full core/React pipeline test passes
-- [ ] `pnpm verify:full` passes
-- [ ] 1/2/3-page A3 PDFs proven; CSS scoping and CSP tests pass
-- [ ] API reports/docs current
-- [ ] No deferred RD-07/RD-08 behavior claimed
+- [x] Full core/React pipeline test passes ✅ (completed: 2026-11-10 17:11)
+- [x] `pnpm verify:full` passes ✅ (completed: 2026-11-10 17:11)
+- [x] 1/2/3-page A3 PDFs proven; CSS scoping and CSP tests pass ✅ (completed: 2026-11-10 17:11)
+- [x] API reports/docs current ✅ (completed: 2026-11-10 17:11)
+- [x] No deferred RD-07/RD-08 behavior claimed ✅ (completed: 2026-11-10 17:11)
 
 **Verify**: `pnpm verify:full`
 

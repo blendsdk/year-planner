@@ -1,6 +1,7 @@
 packages:
   - "packages/*"
   - "apps/*"
+  - "spike/*"
 
 minimumReleaseAgeExclude:
   - "@rolldown/binding-android-arm-eabi@1.2.18"

@@ -23,9 +23,11 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "test:watch": "vitest",
-    "pack:check": "publint && attw --pack . --profile esm-only"
+    "pack:check": "publint && attw --pack . --profile esm-only",
+    "api-report": "api-extractor run --local --config api-extractor.json",
+    "api-report:ci": "api-extractor run --config api-extractor.json"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",

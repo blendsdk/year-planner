@@ -39,8 +39,9 @@ not inherit a React peer dependency.
 - [ ] Vite 7.3.8/Vitest 3.2.7 fallback build/tests (Vite 8/Vitest 5 target where
   native bindings support the CPU), Storybook 10, Playwright, Turbo, pnpm,
   Changesets and Biome configured and documented.
-- [ ] `pnpm verify` runs typecheck, lint, unit/component tests, build, API
-  report, Storybook build, package validation and size check.
+- [ ] `pnpm verify` runs typecheck, lint, unit/component tests with coverage,
+  build, API report check, size check, Storybook build, TypeDoc and package
+  validation.
 - [ ] `pnpm verify:full` adds E2E, visual, accessibility, print and benchmark
   checks; release gates use `verify:full`.
 - [ ] CI runs on Node 24 with React 19; browser tests run Chromium, Firefox
@@ -113,7 +114,7 @@ year-planner/
 | `pnpm bench` | Layout/pointer benchmark harness |
 | `pnpm build` | Builds both packages |
 | `pnpm api-report` | API Extractor report |
-| `pnpm docs` | TypeDoc + Storybook build |
+| `pnpm run docs` | API Extractor + TypeDoc HTML |
 | `pnpm pack:check` | `publint` + `attw` |
 | `pnpm verify` | Fast aggregate gate |
 | `pnpm verify:full` | Full release gate |

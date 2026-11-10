@@ -1,0 +1,15 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "@blendsdk/year-planner-core",
+  "entryPoints": ["packages/core/src/index.ts"],
+  "tsconfig": "packages/core/tsconfig.json",
+  "out": "docs/api/core",
+  "readme": "none",
+  "githubPages": false,
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "categorizeByGroup": true,
+  "navigationLinks": {
+    "React package": "../react/index.html"
+  }
+}

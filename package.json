@@ -22,16 +22,24 @@
     "dev": "pnpm --filter @blendsdk/year-planner-demo dev",
     "storybook": "pnpm --filter @blendsdk/year-planner-storybook storybook",
     "storybook:build": "pnpm --filter @blendsdk/year-planner-storybook build",
-    "api-report": "node scripts/check-api.mjs",
+    "api-report": "pnpm build && pnpm --filter @blendsdk/year-planner-core api-report && pnpm --filter @blendsdk/react-year-planner api-report",
     "pack:check": "pnpm -r pack:check",
-    "verify": "pnpm test:toolchain && pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm pack:check",
-    "verify:full": "pnpm verify && pnpm test:e2e && pnpm test:consumer"
+    "verify": "pnpm test:toolchain && pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm api-report:ci && pnpm test:size && pnpm storybook:build && pnpm docs:build && pnpm pack:check",
+    "verify:full": "pnpm verify && pnpm test:e2e && pnpm test:consumer",
+    "api-report:ci": "pnpm build && pnpm --filter @blendsdk/year-planner-core api-report:ci && pnpm --filter @blendsdk/react-year-planner api-report:ci",
+    "docs": "pnpm api-report && pnpm docs:build",
+    "test:coverage": "pnpm test",
+    "docs:build": "typedoc --options typedoc.core.json && typedoc --options typedoc.react.json && cp docs/api-index.html docs/api/index.html"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",
     "@changesets/cli": "3.0.3",
+    "@microsoft/api-extractor": "7.60.1",
     "@playwright/test": "1.65.0",
+    "@vitest/coverage-v8": "3.2.7",
+    "axe-core": "4.14.0",
     "turbo": "2.11.10",
+    "typedoc": "0.28.20",
     "typescript": "6.0.3"
   }
 }

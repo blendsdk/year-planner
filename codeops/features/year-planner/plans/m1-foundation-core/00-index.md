@@ -1,7 +1,7 @@
 # M1 Foundation and Core Implementation Plan
 
 > **Feature**: Year Planner for React — foundation, temporal core, classic layout and minimal grid
-> **Status**: Planning Complete
+> **Status**: Execution Complete
 > **Created**: 2026-11-10
 > **Implements**: year-planner/RD-01, year-planner/RD-02, year-planner/RD-03
 > **CodeOps Artifact Schema**: 1
@@ -40,6 +40,8 @@ toolchain; M0 renderer spike as an evidence artifact. No AI-proposed escalation.
 |---|---|---|
 | AR | [Ambiguity Register](00-ambiguity-register.md) | Plan-local decisions |
 | PF | [Preflight Report](00-preflight-report.md) | Plan audit; all critical/major resolved |
+| | [Test Report](../../../../docs/test-report.md) | M1 verification evidence |
+| | [Renderer Spike](../../../../docs/renderer-spike.md) | M0 renderer evidence and decision |
 | 00 | [Index](00-index.md) | This document |
 | 01 | [Requirements](01-requirements.md) | Delta view of RD-01–RD-03 |
 | 02 | [Current State](02-current-state.md) | Greenfield repository analysis |

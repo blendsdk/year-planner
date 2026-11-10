@@ -1,0 +1,421 @@
+{
+  "generatedAt": "2026-11-10T10:36:10.122Z",
+  "browsers": {
+    "chromium": {
+      "html-only": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 0,
+        "domNodes": 1229,
+        "alignment": {
+          "checked": 13,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-01", "2027-02"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": {
+          "pages": 1,
+          "pageSize": "1191.12 x 842.88 pts (A3)"
+        }
+      },
+      "html-svg": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 13,
+        "domNodes": 1231,
+        "alignment": {
+          "checked": 26,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-01", "2027-02"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": {
+          "pages": 1,
+          "pageSize": "1191.12 x 842.88 pts (A3)"
+        }
+      },
+      "svg-shapes": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 13,
+        "domNodes": 1231,
+        "alignment": {
+          "checked": 26,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-01", "2027-02"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": {
+          "pages": 1,
+          "pageSize": "1191.12 x 842.88 pts (A3)"
+        }
+      },
+      "full-svg-row": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 13,
+        "domNodes": 1228,
+        "alignment": {
+          "checked": 26,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-02", "2027-01"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": {
+          "pages": 1,
+          "pageSize": "1191.12 x 842.88 pts (A3)"
+        }
+      }
+    },
+    "firefox": {
+      "html-only": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 0,
+        "domNodes": 1229,
+        "alignment": {
+          "checked": 13,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-01", "2027-02"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": null
+      },
+      "html-svg": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 13,
+        "domNodes": 1231,
+        "alignment": {
+          "checked": 26,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-01", "2027-02"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": null
+      },
+      "svg-shapes": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 13,
+        "domNodes": 1231,
+        "alignment": {
+          "checked": 26,
+          "misaligned": 0,
+          "maxDeviation": 0.5,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-01", "2027-02"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": null
+      },
+      "full-svg-row": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 13,
+        "domNodes": 1228,
+        "alignment": {
+          "checked": 26,
+          "misaligned": 0,
+          "maxDeviation": 0.5,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-02", "2027-01"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": null
+      }
+    },
+    "webkit": {
+      "html-only": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 0,
+        "domNodes": 1229,
+        "alignment": {
+          "checked": 13,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-01", "2027-02"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": null
+      },
+      "html-svg": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 13,
+        "domNodes": 1231,
+        "alignment": {
+          "checked": 26,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-01", "2027-02"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": null
+      },
+      "svg-shapes": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 13,
+        "domNodes": 1231,
+        "alignment": {
+          "checked": 26,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-01", "2027-02"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": null
+      },
+      "full-svg-row": {
+        "rows": 14,
+        "slots": 518,
+        "datedCells": 427,
+        "ribbons": 13,
+        "proxies": 13,
+        "domNodes": 1228,
+        "alignment": {
+          "checked": 26,
+          "misaligned": 0,
+          "maxDeviation": 0,
+          "failures": []
+        },
+        "crossMonth": {
+          "fragments": 2,
+          "rows": ["2027-02", "2027-01"]
+        },
+        "focus": {
+          "firstDate": "2026-12-01",
+          "afterArrow": "2026-12-02",
+          "svgRowAfterArrow": "2027-02-02"
+        },
+        "nestedInteractive": 0,
+        "axe": {
+          "seriousCritical": 0,
+          "violations": []
+        },
+        "print": null
+      }
+    }
+  },
+  "bundle": {
+    "html-only": {
+      "jsGzipKb": 7.04,
+      "cssGzipKb": 1.22,
+      "totalGzipKb": 8.26,
+      "chunks": [
+        "assets/index-BW9_MH4k.js",
+        "assets/html-only-CVtWHFGu.js",
+        "assets/render-BKsOit7y.js"
+      ]
+    },
+    "html-svg": {
+      "jsGzipKb": 7.05,
+      "cssGzipKb": 1.22,
+      "totalGzipKb": 8.27,
+      "chunks": [
+        "assets/index-BW9_MH4k.js",
+        "assets/html-svg-Dp0gerJe.js",
+        "assets/render-BKsOit7y.js"
+      ]
+    },
+    "svg-shapes": {
+      "jsGzipKb": 7.05,
+      "cssGzipKb": 1.22,
+      "totalGzipKb": 8.26,
+      "chunks": [
+        "assets/index-BW9_MH4k.js",
+        "assets/svg-shapes-DFRErxFX.js",
+        "assets/render-BKsOit7y.js"
+      ]
+    },
+    "full-svg-row": {
+      "jsGzipKb": 7.08,
+      "cssGzipKb": 1.22,
+      "totalGzipKb": 8.29,
+      "chunks": [
+        "assets/index-BW9_MH4k.js",
+        "assets/full-svg-row-DRcJ4Xnm.js",
+        "assets/render-BKsOit7y.js"
+      ]
+    }
+  },
+  "codeLines": {
+    "src/grid.ts": 229,
+    "src/render.ts": 584,
+    "src/variants/html-only.ts": 16,
+    "src/variants/html-svg.ts": 16,
+    "src/variants/svg-shapes.ts": 16,
+    "src/variants/full-svg-row.ts": 17
+  }
+}

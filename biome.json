@@ -18,7 +18,11 @@
       "apps/**",
       "scripts/**",
       "tests/**",
+      "spike/**",
       "!**/dist",
+      "!**/coverage",
+      "!**/etc",
+      "!**/temp",
       "!**/storybook-static",
       "!**/node_modules"
     ]

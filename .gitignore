@@ -46,3 +46,8 @@ reference/legacy-reconstruction/
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+# Generated API documentation and tool temp files
+docs/api/
+packages/*/temp/
+spike/renderer/dist/

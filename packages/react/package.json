@@ -26,9 +26,11 @@
   "scripts": {
     "build": "vite build && cp src/styles.css dist/styles.css && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run -c vitest.config.ts",
+    "test": "vitest run -c vitest.config.ts --coverage",
     "test:watch": "vitest -c vitest.config.ts",
-    "pack:check": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./styles.css"
+    "pack:check": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./styles.css",
+    "api-report": "api-extractor run --local --config api-extractor.json",
+    "api-report:ci": "api-extractor run --config api-extractor.json"
   },
   "dependencies": {
     "@blendsdk/year-planner-core": "workspace:*"

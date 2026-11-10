@@ -13,9 +13,27 @@ and January of the next year — with:
 - themeable CSS, print support and a controlled integration API.
 
 > **Status: pre-alpha.** No package has been published yet. APIs, styles and
-> package names may change before the first release.
+> package names may change before the first release. The repository currently
+> contains the **M1 foundation slice**; the full R1 experience is in progress.
 
-## Packages (planned)
+## Current milestone
+
+| Area | State |
+|---|---|
+| Temporal core (dates, ISO weeks, half-open intervals) | Done |
+| Classic 12–36 month layout, 37 day slots | Done |
+| Minimal React grid, classic themes, ISO weeks, print | Done |
+| Storybook site, demo, clean-consumer check, CI | Done |
+| API Extractor reports and generated TypeDoc API | Done |
+| Renderer evidence gate and ADR | Done — HTML renderer, optional SVG shape plane |
+| Layers, visibility, ribbons, interactions, commands | Not implemented yet |
+
+The renderer decision is recorded in
+[ADR 0001](docs/adr/0001-renderer-strategy.md), with measurements in
+[docs/renderer-spike.md](docs/renderer-spike.md). The M1 test evidence is in
+[docs/test-report.md](docs/test-report.md).
+
+## Packages
 
 | Package | Purpose |
 | --- | --- |
@@ -47,9 +65,14 @@ requirements, plans and architecture decisions live under `codeops/`.
 
 ```bash
 pnpm install
-pnpm verify
-pnpm storybook
+pnpm verify          # fast gate: typecheck, lint, coverage, build, API report, size, Storybook, TypeDoc, pack
+pnpm verify:full     # adds Playwright and the clean-consumer install
+pnpm storybook       # interactive component site
+pnpm run docs        # API Extractor reports + TypeDoc HTML under docs/api
 ```
+
+The component is not published. A fresh consumer can install the packed
+tarballs from this repository with `pnpm test:consumer`.
 
 ## License
 

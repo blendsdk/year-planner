@@ -21,14 +21,24 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: bash scripts/toolchain-check.sh
-      - run: pnpm typecheck
-      - run: pnpm lint
-      - run: pnpm test
+      - run: pnpm verify
+      - run: pnpm test:consumer
+
+  browsers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.9.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm pack:check
-      - run: npx playwright install --with-deps chromium
-      - run: pnpm exec playwright test --project=chromium
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: pnpm exec playwright test
 
   dco:
     runs-on: ubuntu-latest
@@ -49,5 +59,3 @@ jobs:
             fi
           done
           test "$missing" -eq 0
-
-

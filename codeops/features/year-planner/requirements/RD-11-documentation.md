@@ -152,7 +152,7 @@ Storybook stories: **L**. API docs pipeline: **M**. Guides: **M**.
 
 ## Acceptance Criteria
 
-1. [ ] `pnpm docs` builds Storybook and TypeDoc without errors.
+1. [ ] `pnpm run docs` builds the API Extractor reports and TypeDoc without errors; `pnpm storybook:build` builds the site.
 2. [ ] Storybook contains stories for all states listed in this RD.
 3. [ ] Every public export has TSDoc; API Extractor reports no missing release
    tags for public API.

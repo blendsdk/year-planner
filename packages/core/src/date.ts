@@ -74,12 +74,6 @@ export function parseDateKey(value: string): DateParseResult {
   if (month < 0 || month > 11 || day < 1 || day > daysInMonth(year, month)) {
     return { ok: false, diagnostic: diagnostic("INVALID_DATE", `Invalid date: ${value}`) };
   }
-  if (daysFromCivil(year, month, day) < daysFromCivil(MIN_YEAR, 0, 1)) {
-    return {
-      ok: false,
-      diagnostic: diagnostic("UNSUPPORTED_YEAR", `Year outside 1600-9999: ${value}`),
-    };
-  }
   return { ok: true, date: value };
 }
 

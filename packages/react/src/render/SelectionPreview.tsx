@@ -14,6 +14,7 @@ export interface SelectionPreviewProps {
   totalDayWidth: number;
   height: number;
   variant: PreviewVariant;
+  previewKind?: string | undefined;
   itemId?: string | undefined;
   layerId?: string | undefined;
   color?: string | undefined;
@@ -34,6 +35,7 @@ export function SelectionPreview({
   totalDayWidth,
   height,
   variant,
+  previewKind,
   itemId,
   layerId,
   color,
@@ -59,7 +61,7 @@ export function SelectionPreview({
           key={fragment.key}
           className={`yp-preview-fragment yp-preview-${variant}`}
           data-yp-part={variant}
-          data-preview-kind={variant}
+          data-preview-kind={previewKind ?? variant}
           data-preview-start={fragment.startDate}
           data-preview-end={fragment.endDateExclusive}
           data-preview-valid={valid === false ? "false" : undefined}

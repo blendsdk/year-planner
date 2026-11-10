@@ -121,12 +121,14 @@ function pointer(
   element: Element,
   type: "pointerdown" | "pointermove" | "pointerup" | "pointercancel",
   point: { clientX: number; clientY: number },
+  modifiers: { shiftKey?: boolean; ctrlKey?: boolean; metaKey?: boolean } = {},
 ) {
   const payload = {
     ...point,
     pointerId: 1,
     pointerType: "mouse",
     button: type === "pointerdown" ? 0 : undefined,
+    ...modifiers,
   };
   if (type === "pointerdown") fireEvent.pointerDown(element, payload);
   else if (type === "pointermove") fireEvent.pointerMove(element, payload);
@@ -452,19 +454,22 @@ describe("RD-07 pointer wiring", () => {
 
   it("adds intersecting items to an existing selection on Shift marquee", async () => {
     const harness = setup(
-      { defaultSelection: { dates: [], items: ["a"] } },
+      { defaultSelection: { dates: [], items: ["c"] } },
       {
         items: [
           item("a", "bookings", "2027-01-28", "2027-02-03"),
           item("b", "bookings", "2027-01-30", "2027-02-04"),
+          item("c", "bookings", "2027-02-10", "2027-02-12"),
         ],
       },
     );
-    pointer(cellElement(harness, "2027-01-28"), "pointerdown", cellPoint("2027-01-28"));
+    pointer(cellElement(harness, "2027-01-28"), "pointerdown", cellPoint("2027-01-28"), {
+      shiftKey: true,
+    });
     pointer(harness.grid, "pointermove", cellPoint("2027-02-02"));
     pointer(harness.grid, "pointerup", cellPoint("2027-02-02"));
     await waitFor(() => expect(harness.onSelectionChange).toHaveBeenCalled());
-    expect(harness.onSelectionChange.mock.calls.at(-1)?.[0].items).toEqual(["a", "b"]);
+    expect(harness.onSelectionChange.mock.calls.at(-1)?.[0].items).toEqual(["a", "b", "c"]);
   });
 
   it("shows an invalid-preview affordance for a disabled paint range", async () => {
@@ -523,6 +528,13 @@ describe("RD-07 pointer wiring", () => {
         2,
       ),
     );
+    const row = layout.rows.find((entry) => entry.rowId === "2027-02");
+    const column = row?.columns.find((entry) => entry.date === "2027-02-20");
+    const fragment = harness.container.querySelector(
+      '[data-yp-part="gesture-preview"]',
+    ) as HTMLElement;
+    expect(fragment.style.left).toBe(`${column?.x}px`);
+    expect(fragment).toHaveAttribute("data-preview-kind", "move");
   });
 
   it("allows delete when confirmation succeeds", async () => {

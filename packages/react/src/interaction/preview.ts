@@ -116,8 +116,9 @@ function periodRange(period: PlannerPeriod): SelectionDateRange[] {
 /**
  * Maps a completed gesture intent to a renderable preview.
  *
- * Invalid completions render nothing; the diagnostic is emitted on commit and
- * the original item stays visible.
+ * Invalid completions render a red, non-committing preview when they carry a
+ * proposed range; the diagnostic is emitted on commit and the original item
+ * stays visible.
  */
 export function previewFromCompletion(
   completion: GestureCompletion,

@@ -215,10 +215,11 @@ export function MonthRow({
             ranges={preview.ranges}
             row={row}
             zoom={zoom}
-            bandWidth={bandWidth}
+            bandWidth={0}
             totalDayWidth={totalDayWidth}
             height={scaledRowHeight(ribbonRow.height, zoom)}
             variant="gesture-preview"
+            previewKind={preview.variant}
             itemId={preview.kind === "item" ? preview.itemId : undefined}
             layerId={preview.layerId}
             color={preview.layerId ? safeCssColor(layers.get(preview.layerId)?.color) : undefined}

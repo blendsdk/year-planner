@@ -69,7 +69,23 @@ Restored after implementation; 14 spec tests pass.
 
 ## Phase 4 — Ribbon fragments and lanes
 
-Pending.
+Command:
+
+```bash
+cd packages/core
+pnpm exec vitest run src/ribbon/fragments.spec.test.ts
+```
+
+State: `packages/core/src/ribbon/fragments.ts` and `lanes.ts` did not exist.
+
+```text
+Error: Cannot find module './fragments' imported from
+  packages/core/src/ribbon/fragments.spec.test.ts
+Test Files  1 failed (1)
+     Tests  no tests
+```
+
+Restored after implementation; 20 spec tests pass.
 
 ## Phase 5 — Hit index
 

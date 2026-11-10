@@ -160,7 +160,7 @@ metrics. M2 adds no test dependency.
 | ST-51 | Item outside the year window | No fragment; canonical period unchanged | RD-05 Must Have |
 | ST-52 | Touching intervals Feb 1–3 and Feb 3–5 | Both lane `0` | RD-05 lane rule |
 | ST-53 | Long item and short item both starting Feb 1 | Long item lane `0`, short item lane `1` (source duration sort) | AR-16 |
-| ST-54 | Item A `[Jan 28, Feb 7)` and item B `[Jan 30, Feb 10)` in February | B is longer, so B lane `0` and A lane `1`; hiding B gives A lane `0` (previous-row reuse) | AR-16 |
+| ST-54 | Item A `[Jan 28, Feb 7)` and item C `[Feb 1, Feb 12)` in February | C is longer and has no previous lane, so C lane `0` and A lane `1`; hiding C gives A lane `0` (previous-row reuse) | AR-16 |
 | ST-55 | Identical inputs twice; then change version/visibility/window | Same signature twice; different signature after each change | RD-05 AC10 |
 | ST-56 | Hit index for one Feb 1–4 fragment | Entry at `x=80`, `y=198`, `width=165`; hit at `(80,198)`; miss at `(245,198)` | AR-22 |
 | ST-57 | `RibbonOptions` and `RibbonLayout` connector surface | No connector option is accepted and no connector descriptors exist; the deferral to RD-06 is documented | AR-21 |

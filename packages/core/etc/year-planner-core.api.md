@@ -18,6 +18,9 @@ export interface AllDayPeriod {
 }
 
 // @public
+export function assignLanes(candidates: LaneCandidate[], previousLanes: ReadonlyMap<string, number>): ReadonlyMap<string, number>;
+
+// @public
 export interface Assignment {
     // (undocumented)
     quantity?: number;
@@ -29,6 +32,9 @@ export interface Assignment {
 
 // @public
 export function buildClassicYearLayout(options: ClassicYearLayoutOptions): ClassicYearLayoutResult;
+
+// @public
+export function buildRibbonLayout(layout: YearLayout, context: VisibilityContext, options?: RibbonOptions): RibbonLayout;
 
 // @public
 export function canCreateItem(layerId: string, context: EditabilityContext): Editability;
@@ -273,6 +279,20 @@ export function isPlainObject(value: unknown): value is Record<string, unknown>;
 
 // @public
 export type ItemKind = "highlight" | "activity" | "reservation" | "annotation";
+
+// @public
+export interface LaneCandidate {
+    // (undocumented)
+    displayPriority: number;
+    // (undocumented)
+    fragment: RibbonFragment;
+    // (undocumented)
+    item: PlannerItem;
+    // (undocumented)
+    sortOrder: number;
+    // (undocumented)
+    sourceDays: number;
+}
 
 // @public
 export interface LayerGroup {
@@ -564,6 +584,120 @@ export interface Resource {
     timeZone?: string;
     // (undocumented)
     type: string;
+}
+
+// @public
+export interface RibbonFragment {
+    // (undocumented)
+    channel: RenderChannel;
+    // (undocumented)
+    clippedEndExclusive: DateKey;
+    // (undocumented)
+    clippedStart: DateKey;
+    // (undocumented)
+    endColumnExclusive: number;
+    // (undocumented)
+    fragmentId: string;
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    isEndClipped: boolean;
+    // (undocumented)
+    isStartClipped: boolean;
+    // (undocumented)
+    itemId: string;
+    // (undocumented)
+    lane: number;
+    // (undocumented)
+    rowId: string;
+    // (undocumented)
+    rowIndex: number;
+    // (undocumented)
+    sourcePeriod: PlannerPeriod;
+    // (undocumented)
+    startColumn: number;
+    // (undocumented)
+    width: number;
+    // (undocumented)
+    x: number;
+    // (undocumented)
+    y: number;
+}
+
+// @public
+export interface RibbonLayout {
+    // (undocumented)
+    compactMaxLanes: number;
+    // (undocumented)
+    density: "compact" | "expanded";
+    // (undocumented)
+    footerHeight: number;
+    // (undocumented)
+    fragments: RibbonFragment[];
+    // (undocumented)
+    headerHeight: number;
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    laneHeight: number;
+    // (undocumented)
+    laneTop: number;
+    // (undocumented)
+    monthBandWidth: number;
+    // (undocumented)
+    rows: RibbonRow[];
+    // (undocumented)
+    signature: string;
+    // (undocumented)
+    totalDayWidth: number;
+    // (undocumented)
+    totalWidth: number;
+}
+
+// @public
+export interface RibbonOptions {
+    // (undocumented)
+    compactMaxLanes?: number;
+    // (undocumented)
+    density?: "compact" | "expanded";
+    // (undocumented)
+    displayTimeZone?: string;
+    // (undocumented)
+    laneHeight?: number;
+    // (undocumented)
+    laneTop?: number;
+}
+
+// @public
+export interface RibbonOverflowEntry {
+    // (undocumented)
+    itemId: string;
+    // (undocumented)
+    period: PlannerPeriod;
+    // (undocumented)
+    title?: string;
+}
+
+// @public
+export interface RibbonRow {
+    // (undocumented)
+    fragments: RibbonFragment[];
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    laneCount: number;
+    // (undocumented)
+    overflow: RibbonOverflowEntry[];
+    // (undocumented)
+    overflowCount: number;
+    // (undocumented)
+    rowId: string;
+    // (undocumented)
+    rowIndex: number;
+    // (undocumented)
+    top: number;
+    // (undocumented)
+    visibleLaneCount: number;
 }
 
 // @public

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 13:25
-> **Progress**: 21/46 tasks (46%)
+> **Last Updated**: 2026-11-10 13:29
+> **Progress**: 28/46 tasks (61%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -154,19 +154,19 @@ compute compact overflow and row growth, and emit the deterministic signature.
 
 ### Step 4.1: Specification tests
 
-- [ ] 4.1.1 [spec-author] Write fragment/lane/overflow/signature spec tests for ST-43–ST-55, ST-57, ST-58, ST-72–ST-74, ST-77 and ST-80 — `packages/core/src/ribbon/fragments.spec.test.ts`
-- [ ] 4.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md`
+- [x] 4.1.1 [spec-author] Write fragment/lane/overflow/signature spec tests for ST-43–ST-55, ST-57, ST-58, ST-72–ST-74, ST-77 and ST-80 — `packages/core/src/ribbon/fragments.spec.test.ts` ✅ (completed: 2026-11-10 13:29)
+- [x] 4.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md` ✅ (completed: 2026-11-10 13:29)
 
 ### Step 4.2: Implementation
 
-- [ ] 4.2.1 Add shared ribbon types and lane allocation with previous-row reuse — `packages/core/src/ribbon/types.ts`, `packages/core/src/ribbon/lanes.ts`
-- [ ] 4.2.2 Implement fragment projection, row assembly and overflow — `packages/core/src/ribbon/fragments.ts`
-- [ ] 4.2.3 Implement the deterministic signature and export the ribbon module; run the spec tests green — `packages/core/src/ribbon/fragments.ts`, `packages/core/src/ribbon/index.ts`, `packages/core/src/index.ts`
+- [x] 4.2.1 Add shared ribbon types and lane allocation with previous-row reuse — `packages/core/src/ribbon/types.ts`, `packages/core/src/ribbon/lanes.ts` ✅ (completed: 2026-11-10 13:29)
+- [x] 4.2.2 Implement fragment projection, row assembly and overflow — `packages/core/src/ribbon/fragments.ts` ✅ (completed: 2026-11-10 13:29)
+- [x] 4.2.3 Implement the deterministic signature and export the ribbon module; run the spec tests green — `packages/core/src/ribbon/fragments.ts`, `packages/core/src/ribbon/index.ts`, `packages/core/src/index.ts` ✅ (completed: 2026-11-10 13:29)
 
 ### Step 4.3: Implementation tests and verify
 
-- [ ] 4.3.1 Write fragment/lane edge-case tests — `packages/core/src/ribbon/fragments.impl.test.ts`
-- [ ] 4.3.2 Run `pnpm verify`
+- [x] 4.3.1 Write fragment/lane edge-case tests — `packages/core/src/ribbon/fragments.impl.test.ts` ✅ (completed: 2026-11-10 13:29)
+- [x] 4.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 13:29)
 
 **Deliverables**:
 - [ ] All ST-43–ST-55, ST-57, ST-58 and ST-72–ST-74, ST-77, ST-80 tests pass

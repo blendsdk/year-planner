@@ -41,7 +41,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | React tests | **309 passed** (29 files) |
 | Core coverage | **99.43% lines, 96.08% branches, 100% functions** |
 | React coverage | **94.22% lines, 93.26% branches, 98.36% functions** |
-| Playwright | **42 passed, 7 skipped** (PDF is Chromium-only; touch is Chromium-only) |
+| Playwright | **51 passed, 7 skipped** (PDF is Chromium-only; touch is Chromium-only) |
 | Browsers | Chromium, Firefox, WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
@@ -52,7 +52,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
 | Bundle size | **54.10 kB gzip** including core, React, adapters and CSS; 60 kB budget |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
-| CI | **Green** — [run 42857711561](https://github.com/blendsdk/year-planner/actions/runs/42857711561), `verify` + `browsers` jobs |
+| CI | **Green** — [run 42918546320](https://github.com/blendsdk/year-planner/actions/runs/42918546320), `verify` + `browsers` jobs |
 
 The coverage thresholds are enforced by Vitest: core 95% and React 80% for
 lines, branches, functions and statements.
@@ -120,7 +120,7 @@ lines, branches, functions and statements.
 | Interaction E2E | `tests/e2e/interaction.spec.ts`, `tests/e2e/interaction-touch.spec.ts` |
 | Integration | `packages/react/src/integration.spec.test.tsx` |
 | E2E | `tests/e2e/classic-year.spec.ts` |
-| Red phases | `docs/m1-red-phase.md`, `docs/m2-red-phase.md`, `docs/m3-red-phase.md` |
+| Red phases | `docs/m1-red-phase.md`, `docs/m2-red-phase.md`, `docs/m3-red-phase.md`, `docs/m4-red-phase.md` |
 
 ## Print evidence
 
@@ -158,7 +158,7 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 | Geometry via arbitrary `cssVars` | CSS variables change visually; use theme tokens or `units` for layout geometry |
 | Full axe and manual screen-reader audit | Not performed; WCAG conformance is not claimed |
 | Performance benchmarks (500/2k/10k items) | Not run |
-| Mobile touch behavior and RTL | Not implemented; `touchEditing`/`marquee` are accepted no-ops |
+| Mobile touch and RTL | Touch editing and marquee are implemented; RTL-specific pointer behavior is not |
 | SVG shape plane and `edge-path` connectors | Deferred; `edge-path` emits `INVALID_RENDERER_OPTION` |
 | Published packages | Not published; pre-alpha |
 | Cross-browser PDF output | Chromium baseline only |
@@ -176,5 +176,5 @@ React 19-only is the support policy (requirements AR #80).
 - MIT license, DCO, no CLA.
 - ESM-only package; no CJS/UMD build.
 - `pnpm verify` and `pnpm verify:full` pass locally.
-- M1 plan: 48/48 tasks; M2 plan: 46/46; RD-06 plan: 46/46.
+- M1 plan: 48/48 tasks; M2 plan: 46/46; RD-06 plan: 46/46; RD-07 plan: 33/33.
 - No deferred feature is presented as implemented.

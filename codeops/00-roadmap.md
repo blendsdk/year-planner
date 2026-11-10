@@ -13,7 +13,7 @@
 
 | Feature | Roadmap | Stage Summary | Progress | Status | Last Updated |
 |---------|---------|---------------|----------|--------|--------------|
-| year-planner | [→](features/year-planner/00-roadmap.md) | 6 RDs done, 6 planned | 6/12 RDs | 🔄 | 2026-11-10 |
+| year-planner | [→](features/year-planner/00-roadmap.md) | 7 RDs done, 5 planned | 7/12 RDs | 🔄 | 2026-11-10 |
 
 ## Archived
 

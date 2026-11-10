@@ -107,3 +107,22 @@
 | RV-004-15 | 4 | MINOR | types/unsafe-cast | fixed |
 | RV-004-16 | 4 | MINOR | plan/phase-4-file-claim | fixed |
 | RV-004-17 | 4 | MINOR | tests/spec-gaps | fixed |
+
+## Phase 5 — Integration, browser evidence and docs
+
+| Finding | Phase | Severity | Area | Ruling |
+|---|---|---|---|---|
+| RV-005-1 | 5 | MAJOR | e2e/missing-invalid-paint-keyboard | fixed |
+| RV-005-2 | 5 | MAJOR | e2e/weak-assertions | fixed |
+| RV-005-3 | 5 | MAJOR | docs/readme-stale-numbers | fixed |
+| RV-005-4 | 5 | MAJOR | docs/test-report-stale | fixed |
+| RV-005-5 | 5 | MAJOR | docs/stale-pointer-comments | fixed |
+| RV-005-6 | 5 | MINOR | docs/marquee | fixed |
+| RV-005-7 | 5 | MINOR | tests/invalid-mode-wording | fixed |
+| RV-005-8 | 5 | MINOR | plan/phase-5-record | fixed |
+| RV-005-9 | 5 | MINOR | stories/duplicate-selection | fixed |
+| RV-005-10 | 5 | MINOR | e2e/coordinate-robustness | fixed |
+| RV-005-11 | 5 | MINOR | docs/security-scope | fixed |
+| RV-005-12 | 5 | NIT | changeset/split | fixed |
+| RV-005-13 | 5 | NIT | demo/refs-and-json | fixed |
+| RV-005-14 | 5 | NIT | e2e/touch-auto | fixed |

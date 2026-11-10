@@ -150,7 +150,9 @@ test.describe("RD-07 interaction demo", () => {
     await expect(page.getByRole("complementary", { name: "Planner inspector" })).toBeVisible();
     await cell(page, "2027-02-01").focus();
     await page.keyboard.press("Control+a");
-    await expect.poll(async () => ((await selection(page)).items ?? []).length).toBeGreaterThan(0);
+    await expect
+      .poll(async () => ((await selection(page)).items ?? []).sort())
+      .toEqual(["booking", "highlight", "holiday", "maintenance", "training"]);
   });
 
   test("paints a new highlight range", async ({ page }) => {

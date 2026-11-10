@@ -12,7 +12,6 @@ live region, and local undo/redo integration.
 Core package: add the optional additive `focusItemId` field to
 `PlannerSelection`.
 
-`PlannerSelection` gains an optional additive `focusItemId` field.
 `InteractionConfig` gains `doubleClick: "inspect" | "none"` (default inspect).
 `interaction.touchEditing` and `interaction.marquee` are now active rather than
 inert.

@@ -56,6 +56,11 @@ test.describe("RD-07 touch interaction", () => {
     await touchDrag(page, "2027-02-01", "2027-02-05");
     await expect.poll(async () => (await selection(page)).dates).toEqual([]);
 
+    await page.getByTestId("touch-mode").selectOption("auto");
+    await expect(grid).toHaveCSS("touch-action", "auto");
+    await touchDrag(page, "2027-02-01", "2027-02-05");
+    await expect.poll(async () => (await selection(page)).dates).toEqual([]);
+
     await page.getByTestId("touch-mode").selectOption("on");
     await expect(grid).toHaveCSS("touch-action", "none");
     await touchDrag(page, "2027-02-01", "2027-02-05");

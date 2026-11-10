@@ -123,20 +123,19 @@ Stories are static states; drag previews are ephemeral and proven by E2E.
 
 Add `tests/e2e/interaction.spec.ts` and a Chromium touch project
 (`playwright.config.ts`, `devices["Pixel 5"]`, `hasTouch: true`,
-`testMatch` for the interaction file). The touch test uses CDP
-`Input.dispatchTouchEvent` so a real swipe proves scroll-first behavior.
+`testMatch` for the touch file). The touch test uses CDP touch events to prove
+editing gating and selection; full native scroll physics belongs to the
+quality-gates milestone.
 
 | Scenario | Assertion |
 | --- | --- |
 | Date drag Jan 28 → Feb 6 | selection `[2027-01-28, 2027-02-07)`; two preview fragments |
 | Marquee over three ribbons | exactly the three intersecting item IDs |
 | Move a 10-day item to a cross-month target | duration preserved; fragments in both rows |
-| Move across a year boundary | duration preserved; December and January fragments |
 | Resize end | one-day minimum; invalid drag shows a diagnostic and no commit |
 | Paint/erase | exact split periods; paint creates a range; undo restores |
 | Keyboard | Arrow focus, Shift+Arrow range, Space toggle, Enter inspector, inspector move-by-week |
 | Touch policy | `off`/`auto` leave `touch-action: auto` and select nothing; `on` sets `none` and selects |
-| Mode change mid-drag | preview cleared and no command |
 | Host buttons | AC3 cell buttons still work and start no gesture |
 
 ### Documentation

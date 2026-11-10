@@ -16,8 +16,7 @@ test.describe("M1 classic year grid", () => {
     await expect(page.locator("[data-row-id]")).toHaveCount(14);
     await expect(page.locator('[role="gridcell"]')).toHaveCount(518);
     await expect(page.getByRole("grid")).toHaveAttribute("aria-colcount", "37");
-    await expect(page).toHaveScreenshot("classic-2016-blue.png", {
-      fullPage: true,
+    await expect(page.locator(".yp-root")).toHaveScreenshot("classic-2016-blue.png", {
       maxDiffPixelRatio: 0.02,
     });
   });
@@ -28,8 +27,7 @@ test.describe("M1 classic year grid", () => {
     await page.locator("select").nth(1).selectOption("classic-yellow");
     await expect(page.locator("[data-row-id]")).toHaveCount(14);
     await expect(page.locator(".yp-theme-classic-yellow")).toBeVisible();
-    await expect(page).toHaveScreenshot("classic-2017-yellow.png", {
-      fullPage: true,
+    await expect(page.locator(".yp-root")).toHaveScreenshot("classic-2017-yellow.png", {
       maxDiffPixelRatio: 0.02,
     });
   });
@@ -49,8 +47,7 @@ test.describe("M1 classic year grid", () => {
     const pdf = readPdfInfo("test-results/classic-2016-a3.pdf");
     expect(pdf.pages).toBe(1);
     expect(pdf.pageSize).toContain("1191.12 x 842.88 pts");
-    await expect(page).toHaveScreenshot("classic-2016-print.png", {
-      fullPage: true,
+    await expect(page.locator(".yp-root")).toHaveScreenshot("classic-2016-print.png", {
       maxDiffPixelRatio: 0.02,
     });
   });

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 13:29
-> **Progress**: 28/46 tasks (61%)
+> **Last Updated**: 2026-11-10 13:32
+> **Progress**: 34/46 tasks (74%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -189,18 +189,18 @@ with the fragments in Phase 4; gutter connectors are deferred to RD-06 (AR-21).
 
 ### Step 5.1: Specification tests
 
-- [ ] 5.1.1 [spec-author] Write hit-index spec tests for ST-56 and ST-75 — `packages/core/src/ribbon/hit-index.spec.test.ts`
-- [ ] 5.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md`
+- [x] 5.1.1 [spec-author] Write hit-index spec tests for ST-56 and ST-75 — `packages/core/src/ribbon/hit-index.spec.test.ts` ✅ (completed: 2026-11-10 13:32)
+- [x] 5.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md` ✅ (completed: 2026-11-10 13:32)
 
 ### Step 5.2: Implementation
 
-- [ ] 5.2.1 Implement the hit index, geometric ordering and topmost hit test — `packages/core/src/ribbon/hit-index.ts`
-- [ ] 5.2.2 Export the module and run the spec tests green — `packages/core/src/ribbon/index.ts`, `packages/core/src/index.ts`
+- [x] 5.2.1 Implement the hit index, geometric ordering and topmost hit test — `packages/core/src/ribbon/hit-index.ts` ✅ (completed: 2026-11-10 13:32)
+- [x] 5.2.2 Export the module and run the spec tests green — `packages/core/src/ribbon/index.ts`, `packages/core/src/index.ts` ✅ (completed: 2026-11-10 13:32)
 
 ### Step 5.3: Implementation tests and verify
 
-- [ ] 5.3.1 Write hit-index edge-case tests — `packages/core/src/ribbon/hit-index.impl.test.ts`
-- [ ] 5.3.2 Run `pnpm verify`
+- [x] 5.3.1 Write hit-index edge-case tests — `packages/core/src/ribbon/hit-index.impl.test.ts` ✅ (completed: 2026-11-10 13:32)
+- [x] 5.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 13:32)
 
 **Deliverables**:
 - [ ] ST-56 and ST-75 tests pass

@@ -89,7 +89,23 @@ Restored after implementation; 20 spec tests pass.
 
 ## Phase 5 — Hit index
 
-Pending.
+Command:
+
+```bash
+cd packages/core
+pnpm exec vitest run src/ribbon/hit-index.spec.test.ts
+```
+
+State: `packages/core/src/ribbon/hit-index.ts` did not exist.
+
+```text
+Error: Cannot find module './hit-index' imported from
+  packages/core/src/ribbon/hit-index.spec.test.ts
+Test Files  1 failed (1)
+     Tests  no tests
+```
+
+Restored after implementation; 2 spec and 4 implementation tests pass.
 
 ## Phase 6 — Print planning
 

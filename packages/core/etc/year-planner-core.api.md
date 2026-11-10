@@ -104,6 +104,9 @@ export function countVisibleItems(context: VisibilityContext): number;
 export function createInitialVisibility(model: PlannerModel, preset?: VisibilityPresetOptions): VisibilityState;
 
 // @public
+export function createRibbonHitIndex(ribbon: RibbonLayout): RibbonHitIndex;
+
+// @public
 export function createVisibilityPreset(options?: VisibilityPresetOptions): VisibilityState;
 
 // @public
@@ -243,6 +246,9 @@ export function getLayerChannel(layerId: string, context: VisibilityContext): Re
 
 // @public
 export function getResolvedLayerPolicy(layerId: string, model: PlannerModel): ResolvedLayerPolicy;
+
+// @public
+export function hitTestRibbon(index: RibbonHitIndex, x: number, y: number): RibbonHitEntry | undefined;
 
 // @public
 export type InstantISO = string;
@@ -622,6 +628,34 @@ export interface RibbonFragment {
     x: number;
     // (undocumented)
     y: number;
+}
+
+// @public
+export interface RibbonHitEntry {
+    // (undocumented)
+    fragmentId: string;
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    itemId: string;
+    // (undocumented)
+    rowId: string;
+    // (undocumented)
+    width: number;
+    // (undocumented)
+    x: number;
+    // (undocumented)
+    y: number;
+}
+
+// @public
+export interface RibbonHitIndex {
+    // (undocumented)
+    byFragmentId: ReadonlyMap<string, RibbonHitEntry>;
+    // (undocumented)
+    byItemId: ReadonlyMap<string, RibbonHitEntry[]>;
+    // (undocumented)
+    entries: RibbonHitEntry[];
 }
 
 // @public

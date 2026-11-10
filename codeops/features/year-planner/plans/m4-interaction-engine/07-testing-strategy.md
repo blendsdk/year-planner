@@ -38,7 +38,7 @@
 | ST-8 | Visual order `[a,b,c,d]`, anchor `b`; Shift+click `d` | Items `[b,c,d]`, dates empty, anchor `b`, focus `d` | RD-07 Shift item range / AR-6 |
 | ST-9 | No item anchor; Shift+click `c` with visual order `[a,b,c]` | Anchor becomes `c`; items `[c]`; dates empty | RD-07 anchor/focus / AR-6 |
 | ST-10 | Item `a` selected, date selected; Mod+click item `c` | Items `[a,c]`, dates kept, focus `c`, anchor kept | RD-07 Ctrl/Cmd item toggle |
-| ST-11 | One selected item `a`; Mod+click `a` | Items empty, `anchorItemId` and `focusItemId` cleared; dates kept | RD-07 anchor/focus |
+| ST-11 | One selected item `a`; Mod+click `a` | Items empty, `anchorItemId` cleared, `focusItemId` stays `a`; dates kept | RD-07 anchor/focus |
 | ST-12 | Ctrl/Cmd+Shift click on a date or item | Selection deep-equals the input; no diagnostic callback | RD-07 reserved combination / AR-7 |
 | ST-13 | Ctrl/Cmd+Shift date drag or Shift+Arrow | Selection deep-equals the input; no diagnostic | RD-07 reserved combination / AR-7 |
 | ST-14 | Visible `[a,b,c]`, item `b` and a date selected; Ctrl/Cmd+A | Items `[a,b,c]`, dates empty, date anchor/focus cleared, item anchor cleared, focus `c` | RD-07 Ctrl/Cmd+A |

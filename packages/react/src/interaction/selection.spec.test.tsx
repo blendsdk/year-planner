@@ -1,0 +1,365 @@
+import {
+  addDays,
+  type PlannerItem,
+  type PlannerSelection,
+  type RibbonFragment,
+  type RibbonLayout,
+} from "@blendsdk/year-planner-core";
+import { describe, expect, it } from "vitest";
+import {
+  applyDateClick,
+  applyDateDrag,
+  applyItemClick,
+  applyItemMarquee,
+  clearSelection,
+  normalizeDateRanges,
+  removeDate,
+  selectAllVisible,
+  visualItemOrder,
+} from "./selection.js";
+
+const range = (startDate: string, endDateExclusive: string) => ({
+  startDate,
+  endDateExclusive,
+});
+
+const day = (date: string) => range(date, addDays(date, 1));
+
+const selection = (overrides: Partial<PlannerSelection> = {}): PlannerSelection => ({
+  dates: [],
+  items: [],
+  ...overrides,
+});
+
+const item = (id: string, startDate = "2027-02-01"): PlannerItem => ({
+  id,
+  kind: "activity",
+  layerId: "ribbon",
+  period: { kind: "all-day", startDate, endDateExclusive: addDays(startDate, 2) },
+  title: id,
+  version: 1,
+});
+
+const fragment = (
+  itemId: string,
+  rowIndex: number,
+  lane: number,
+  startDate = "2027-02-01",
+): RibbonFragment => ({
+  fragmentId: `${itemId}-${rowIndex}`,
+  itemId,
+  rowId: `row-${rowIndex}`,
+  rowIndex,
+  sourcePeriod: {
+    kind: "all-day",
+    startDate,
+    endDateExclusive: addDays(startDate, 2),
+  },
+  clippedStart: startDate,
+  clippedEndExclusive: addDays(startDate, 2),
+  startColumn: 0,
+  endColumnExclusive: 2,
+  x: 0,
+  width: 100,
+  lane,
+  y: lane * 18,
+  height: 18,
+  isStartClipped: false,
+  isEndClipped: false,
+  channel: "ribbon",
+});
+
+const ribbons = (fragments: RibbonFragment[]): RibbonLayout => ({
+  rows: [],
+  fragments,
+  density: "compact",
+  compactMaxLanes: 3,
+  laneHeight: 18,
+  laneTop: 18,
+  headerHeight: 28,
+  footerHeight: 28,
+  monthBandWidth: 70,
+  totalDayWidth: 2000,
+  totalWidth: 2140,
+  height: 1000,
+  signature: "test",
+});
+
+const plain = { shift: false, mod: false };
+const shift = { shift: true, mod: false };
+const mod = { shift: false, mod: true };
+const reserved = { shift: true, mod: true };
+
+describe("RD-07 selection policy", () => {
+  it("replaces dates and clears items on a plain date click", () => {
+    const next = applyDateClick(
+      selection({ dates: [day("2027-01-05")], items: ["a"] }),
+      "2027-02-01",
+      plain,
+    );
+    expect(next).toEqual({
+      dates: [day("2027-02-01")],
+      items: [],
+      anchorDate: "2027-02-01",
+      focusDate: "2027-02-01",
+      anchorItemId: undefined,
+      focusItemId: undefined,
+    });
+  });
+
+  it("replaces items and clears dates on a plain item click", () => {
+    const next = applyItemClick(
+      selection({ dates: [day("2027-01-05")], anchorDate: "2027-01-05" }),
+      "b",
+      plain,
+      ["a", "b"],
+    );
+    expect(next).toEqual({
+      dates: [],
+      items: ["b"],
+      anchorItemId: "b",
+      focusItemId: "b",
+      anchorDate: undefined,
+      focusDate: undefined,
+    });
+  });
+
+  it("extends from the existing anchor on Shift date click", () => {
+    const next = applyDateClick(
+      selection({
+        dates: [range("2027-02-01", "2027-02-04")],
+        anchorDate: "2027-02-01",
+        focusDate: "2027-02-03",
+      }),
+      "2027-02-05",
+      shift,
+    );
+    expect(next.dates).toEqual([range("2027-02-01", "2027-02-06")]);
+    expect(next.anchorDate).toBe("2027-02-01");
+    expect(next.focusDate).toBe("2027-02-05");
+    expect(next.items).toEqual([]);
+  });
+
+  it("falls back to the focus date when Shift has no anchor", () => {
+    const next = applyDateClick(selection({ focusDate: "2027-02-02" }), "2027-02-04", shift);
+    expect(next.dates).toEqual([range("2027-02-02", "2027-02-05")]);
+    expect(next.anchorDate).toBe("2027-02-02");
+    expect(next.focusDate).toBe("2027-02-04");
+  });
+
+  it("adds a date and keeps items on a mod date click", () => {
+    const next = applyDateClick(
+      selection({ dates: [day("2027-02-01")], items: ["a"], anchorDate: "2027-02-01" }),
+      "2027-02-03",
+      mod,
+    );
+    expect(next.dates).toEqual([range("2027-02-01", "2027-02-02"), day("2027-02-03")]);
+    expect(next.items).toEqual(["a"]);
+    expect(next.anchorDate).toBe("2027-02-01");
+    expect(next.focusDate).toBe("2027-02-03");
+  });
+
+  it("splits a range when the toggled date is inside it", () => {
+    const next = applyDateClick(
+      selection({
+        dates: [range("2027-02-01", "2027-02-06")],
+        anchorDate: "2027-02-01",
+        focusDate: "2027-02-03",
+      }),
+      "2027-02-03",
+      mod,
+    );
+    expect(next.dates).toEqual([
+      range("2027-02-01", "2027-02-03"),
+      range("2027-02-04", "2027-02-06"),
+    ]);
+    expect(next.anchorDate).toBe("2027-02-01");
+    expect(next.focusDate).toBe("2027-02-03");
+  });
+
+  it("clears the date anchor when the last date is removed", () => {
+    const next = applyDateClick(
+      selection({
+        dates: [day("2027-02-03")],
+        anchorDate: "2027-02-03",
+        focusDate: "2027-02-03",
+        items: ["a"],
+      }),
+      "2027-02-03",
+      mod,
+    );
+    expect(next.dates).toEqual([]);
+    expect(next.anchorDate).toBeUndefined();
+    expect(next.focusDate).toBe("2027-02-03");
+    expect(next.items).toEqual(["a"]);
+  });
+
+  it("selects an inclusive item range in visual order on Shift click", () => {
+    const next = applyItemClick(
+      selection({ items: ["b"], anchorItemId: "b", focusItemId: "b" }),
+      "d",
+      shift,
+      ["a", "b", "c", "d"],
+    );
+    expect(next.items).toEqual(["b", "c", "d"]);
+    expect(next.dates).toEqual([]);
+    expect(next.anchorItemId).toBe("b");
+    expect(next.focusItemId).toBe("d");
+  });
+
+  it("uses the clicked item as the Shift anchor when none exists", () => {
+    const next = applyItemClick(selection(), "c", shift, ["a", "b", "c"]);
+    expect(next.items).toEqual(["c"]);
+    expect(next.anchorItemId).toBe("c");
+    expect(next.focusItemId).toBe("c");
+  });
+
+  it("toggles an item and keeps dates on a mod item click", () => {
+    const next = applyItemClick(
+      selection({
+        dates: [day("2027-02-01")],
+        items: ["a"],
+        anchorItemId: "a",
+        anchorDate: "2027-02-01",
+      }),
+      "c",
+      mod,
+      ["a", "b", "c"],
+    );
+    expect(next.items).toEqual(["a", "c"]);
+    expect(next.dates).toEqual([day("2027-02-01")]);
+    expect(next.anchorItemId).toBe("a");
+    expect(next.focusItemId).toBe("c");
+  });
+
+  it("clears the item anchor when the last item is removed", () => {
+    const next = applyItemClick(
+      selection({ items: ["a"], anchorItemId: "a", focusItemId: "a", dates: [day("2027-02-01")] }),
+      "a",
+      mod,
+      ["a"],
+    );
+    expect(next.items).toEqual([]);
+    expect(next.anchorItemId).toBeUndefined();
+    expect(next.focusItemId).toBe("a");
+    expect(next.dates).toEqual([day("2027-02-01")]);
+  });
+
+  it("ignores Ctrl/Cmd+Shift for clicks and drags", () => {
+    const input = selection({ dates: [day("2027-02-01")], items: ["a"] });
+    expect(applyDateClick(input, "2027-02-03", reserved)).toEqual(input);
+    expect(applyDateDrag(input, "2027-02-01", "2027-02-05", reserved)).toEqual(input);
+    expect(applyItemClick(input, "b", reserved, ["a", "b"])).toEqual(input);
+  });
+
+  it("selects all visible items and clears dates", () => {
+    const next = selectAllVisible(
+      selection({ dates: [day("2027-02-01")], items: ["b"], anchorItemId: "b" }),
+      ["a", "b", "c"],
+    );
+    expect(next.items).toEqual(["a", "b", "c"]);
+    expect(next.dates).toEqual([]);
+    expect(next.anchorItemId).toBeUndefined();
+    expect(next.focusItemId).toBe("c");
+    expect(next.anchorDate).toBeUndefined();
+    expect(next.focusDate).toBeUndefined();
+  });
+
+  it("replaces items on a plain marquee and clears dates", () => {
+    const next = applyItemMarquee(
+      selection({ dates: [day("2027-02-01")], items: ["a"], anchorItemId: "a" }),
+      ["b", "c"],
+      plain,
+      ["a", "b", "c"],
+    );
+    expect(next.items).toEqual(["b", "c"]);
+    expect(next.dates).toEqual([]);
+    expect(next.anchorItemId).toBeUndefined();
+    expect(next.focusItemId).toBe("c");
+  });
+
+  it("adds intersecting items on a Shift marquee and clears dates", () => {
+    const next = applyItemMarquee(
+      selection({ dates: [day("2027-02-01")], items: ["a", "b"] }),
+      ["c"],
+      shift,
+      ["a", "b", "c"],
+    );
+    expect(next.items).toEqual(["a", "b", "c"]);
+    expect(next.dates).toEqual([]);
+    expect(next.anchorItemId).toBeUndefined();
+    expect(next.focusItemId).toBe("c");
+  });
+
+  it("toggles intersecting items on a mod marquee and keeps dates", () => {
+    const next = applyItemMarquee(
+      selection({ dates: [day("2027-02-01")], items: ["a", "b"] }),
+      ["a", "c"],
+      mod,
+      ["a", "b", "c"],
+    );
+    expect(next.items).toEqual(["b", "c"]);
+    expect(next.dates).toEqual([day("2027-02-01")]);
+    expect(next.focusItemId).toBe("c");
+  });
+
+  it("sorts and merges overlapping and adjacent ranges", () => {
+    expect(
+      normalizeDateRanges([
+        range("2027-02-05", "2027-02-08"),
+        range("2027-02-01", "2027-02-03"),
+        range("2027-02-02", "2027-02-05"),
+        range("2027-02-10", "2027-02-10"),
+      ]),
+    ).toEqual([range("2027-02-01", "2027-02-08")]);
+  });
+
+  it("splits a range when removing a middle date", () => {
+    expect(removeDate([range("2027-02-01", "2027-02-06")], "2027-02-03")).toEqual([
+      range("2027-02-01", "2027-02-03"),
+      range("2027-02-04", "2027-02-06"),
+    ]);
+  });
+
+  it("orders visible items by start, row, lane and ID", () => {
+    const layout = ribbons([
+      fragment("b", 0, 2),
+      fragment("a", 1, 1),
+      fragment("c", 5, 0, "2027-01-30"),
+      fragment("hidden", 0, 0, "2027-01-01"),
+    ]);
+    expect(
+      visualItemOrder(
+        [item("a"), item("b"), item("c", "2027-01-30"), item("hidden", "2027-01-01")],
+        layout,
+        new Set(["a", "b", "c"]),
+      ),
+    ).toEqual(["c", "b", "a"]);
+  });
+
+  it("clears every selection field", () => {
+    expect(clearSelection()).toEqual({
+      dates: [],
+      items: [],
+      anchorDate: undefined,
+      focusDate: undefined,
+      anchorItemId: undefined,
+      focusItemId: undefined,
+    });
+  });
+
+  it("splits a date drag around a disabled date", () => {
+    const next = applyDateDrag(
+      selection(),
+      "2027-02-01",
+      "2027-02-05",
+      plain,
+      (date) => date === "2027-02-03",
+    );
+    expect(next.dates).toEqual([
+      range("2027-02-01", "2027-02-03"),
+      range("2027-02-04", "2027-02-06"),
+    ]);
+    expect(next.focusDate).toBe("2027-02-05");
+  });
+});

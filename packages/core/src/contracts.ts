@@ -27,6 +27,8 @@ export interface PlannerSelection {
   focusDate?: DateKey;
   /** Anchor item for Shift item ranges. */
   anchorItemId?: string;
+  /** Focused item for keyboard and item-range transitions. */
+  focusItemId?: string;
 }
 
 /** Host-side result of validating a proposed command. */

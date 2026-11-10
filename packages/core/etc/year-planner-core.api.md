@@ -531,6 +531,7 @@ export interface PlannerSelection {
     anchorItemId?: string;
     dates: SelectionDateRange[];
     focusDate?: DateKey;
+    focusItemId?: string;
     items: string[];
 }
 

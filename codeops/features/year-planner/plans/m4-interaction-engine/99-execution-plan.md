@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 19:32
-> **Progress**: 0/33 tasks (0%)
+> **Last Updated**: 2026-11-10 20:04
+> **Progress**: 6/33 tasks (18%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -47,7 +47,7 @@ bounded by the task-size criteria).
 
 ## Phase 1: Selection policy and item focus
 
-> **Phase baseline tree**: recorded by the executor at phase start.
+> **Phase baseline tree**: 19e0f23e7c6d365c34c10f735fbff045f51ffea1
 > **Reasoning**: high — the modifier matrix and the additive public field are
 > hard to reverse once tests and docs depend on them.
 
@@ -56,28 +56,27 @@ bounded by the task-size criteria).
 
 ### Step 1.1: Specification tests
 
-- [ ] 1.1.1 [spec-author] Write selection spec tests for ST-1–ST-22 — `packages/react/src/interaction/selection.spec.test.tsx`
-- [ ] 1.1.2 Run the selection spec tests and record the expected red failures — `docs/m4-red-phase.md`
+- [x] 1.1.1 [spec-author] Write selection spec tests for ST-1–ST-22 — `packages/react/src/interaction/selection.spec.test.tsx` ✅ (completed: 2026-11-10 20:04)
+- [x] 1.1.2 Run the selection spec tests and record the expected red failures — `docs/m4-red-phase.md` ✅ (completed: 2026-11-10 20:04)
 
 ### Step 1.2: Implementation
 
-- [ ] 1.2.1 Add optional `focusItemId` to `PlannerSelection`; the core barrel already re-exports contracts, so no index edit is needed — `packages/core/src/contracts.ts`
-- [ ] 1.2.2 Implement range normalization, add/remove/toggle, click/drag/item/marquee policy, visual order, no-anchor fallbacks, disabled-date splitting and Ctrl/Cmd+Shift guards — `packages/react/src/interaction/selection.ts`
+- [x] 1.2.1 Add optional `focusItemId` to `PlannerSelection`; the core barrel already re-exports contracts, so no index edit is needed — `packages/core/src/contracts.ts` ✅ (completed: 2026-11-10 20:04)
+- [x] 1.2.2 Implement range normalization, add/remove/toggle, click/drag/item/marquee policy, visual order, no-anchor fallbacks, disabled-date splitting and Ctrl/Cmd+Shift guards — `packages/react/src/interaction/selection.ts` ✅ (completed: 2026-11-10 20:04)
 
 ### Step 1.3: Implementation tests and verify
 
-- [ ] 1.3.1 Write edge-case tests for adjacent merge, empty input, tie-breaks, anchor clearing and mod+shift drags — `packages/react/src/interaction/selection.impl.test.tsx`
-- [ ] 1.3.2 Run `pnpm api-report` then `pnpm verify` so the core report includes `focusItemId` before the API gate runs
+- [x] 1.3.1 Write edge-case tests for adjacent merge, empty input, tie-breaks, anchor clearing and mod+shift drags — `packages/react/src/interaction/selection.impl.test.tsx` ✅ (completed: 2026-11-10 20:04)
+- [x] 1.3.2 Run `pnpm api-report` then `pnpm verify` so the core report includes `focusItemId` before the API gate runs ✅ (completed: 2026-11-10 20:04)
 
 **Deliverables**:
-- [ ] ST-1–ST-22 pass
-- [ ] `focusItemId` is optional and additive in the core API report; the React report imports `PlannerSelection`
-- [ ] No React/DOM import in the selection policy
+- [x] ST-1–ST-22 pass ✅ (completed: 2026-11-10 20:04)
+- [x] `focusItemId` is optional and additive in the core API report; the React report imports `PlannerSelection` ✅ (completed: 2026-11-10 20:04)
+- [x] No React/DOM import in the selection policy ✅ (completed: 2026-11-10 20:04)
 
 **Verify**: `pnpm verify:full`
 
 ---
-
 ## Phase 2: Gesture engine, coordinates and marquee
 
 > **Phase baseline tree**: recorded by the executor at phase start.

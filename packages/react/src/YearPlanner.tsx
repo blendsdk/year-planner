@@ -211,6 +211,63 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     }, [ribbons]);
     const selectedItemIds = useMemo(() => new Set(state.selection.items), [state.selection.items]);
 
+    const isCellDisabled = useCallback(
+      (date: string): boolean => {
+        if (!layout) return true;
+        const row = layout.rows.find(
+          (entry) => date >= entry.firstDate && date < entry.endDateExclusive,
+        );
+        const column = row?.columns.find((entry) => entry.date === date);
+        if (!row || !column || !props.getDateMeta) return false;
+        return (
+          props.getDateMeta(date, {
+            isWeekend: column.isWeekend,
+            isContextMonth: column.isContextMonth,
+            itemIds: itemsByDate.get(date) ?? [],
+          })?.disabled === true
+        );
+      },
+      [layout, props.getDateMeta, itemsByDate],
+    );
+
+    const nearestEnabledDate = useCallback(
+      (candidate: string | undefined): string | undefined => {
+        if (!layout) return undefined;
+        const dates = layout.rows
+          .flatMap((row) => row.columns)
+          .map((column) => column.date)
+          .filter((date): date is string => date !== undefined);
+        if (dates.length === 0) return undefined;
+        const startIndex =
+          candidate === undefined
+            ? 0
+            : Math.max(
+                0,
+                dates.findIndex((date) => date >= candidate),
+              );
+        for (let index = startIndex; index < dates.length; index += 1) {
+          const date = dates[index];
+          if (date && !isCellDisabled(date)) return date;
+        }
+        for (let index = Math.min(startIndex, dates.length) - 1; index >= 0; index -= 1) {
+          const date = dates[index];
+          if (date && !isCellDisabled(date)) return date;
+        }
+        return undefined;
+      },
+      [isCellDisabled, layout],
+    );
+
+    const announceFocus = useCallback((date: string) => {
+      setFocusAnnouncement(undefined);
+      const message = `Focus moved to ${date}`;
+      if (typeof queueMicrotask === "function") {
+        queueMicrotask(() => setFocusAnnouncement(message));
+      } else {
+        setFocusAnnouncement(message);
+      }
+    }, []);
+
     const layoutDiagnostics = layoutResult.ok ? [] : layoutResult.diagnostics;
     const printDiagnostics = printResult?.diagnostics ?? [];
     const diagnostics = useMemo(
@@ -278,23 +335,23 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         pendingFocus.type === "item"
           ? state.items.find((entry) => entry.id === pendingFocus.id)
           : undefined;
-      const fallback =
+      const candidate =
         state.selection.focusDate ??
         (fallbackItem?.period.kind === "all-day"
           ? fallbackItem.period.startDate
           : fallbackItem?.period.kind === "timed"
             ? fallbackItem.period.start.slice(0, 10)
-            : undefined) ??
-        firstDate;
+            : undefined);
+      const fallback = nearestEnabledDate(candidate);
       const cell = fallback
         ? viewport.querySelector<HTMLElement>(`[data-date="${escapeSelector(fallback)}"]`)
         : null;
-      if (cell) {
+      if (cell && fallback) {
         cell.focus();
-        setFocusAnnouncement(`Focus moved to ${fallback}`);
+        announceFocus(fallback);
       }
       setPendingFocus(undefined);
-    }, [pendingFocus, state.items, state.selection.focusDate, firstDate]);
+    }, [announceFocus, nearestEnabledDate, pendingFocus, state.items, state.selection.focusDate]);
 
     const previousShowInspector = useRef(props.showInspector);
     useEffect(() => {
@@ -352,6 +409,11 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const focusItem = useCallback((itemId: string) => {
       setActiveItemId(itemId);
       setPendingFocus({ type: "item", id: itemId });
+    }, []);
+
+    const handleCellFocus = useCallback((date: string) => {
+      setActiveDate(date);
+      setActiveItemId(undefined);
     }, []);
 
     const scrollToDate = useCallback((date: string) => {
@@ -430,20 +492,56 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       }
       state.setSelection(next);
       if (focusHidden) {
-        const fallback = state.selection.focusDate ?? firstDate;
+        const fallback = nearestEnabledDate(state.selection.focusDate);
         if (fallback) {
           focusDate(fallback);
-          setFocusAnnouncement(`Focus moved to ${fallback}`);
+          announceFocus(fallback);
         }
       }
     }, [
-      firstDate,
+      announceFocus,
       focusDate,
+      nearestEnabledDate,
       state.filter,
       state.items,
       state.model,
       state.selection,
       state.setSelection,
+      state.visibility,
+    ]);
+
+    useEffect(() => {
+      if (!activeItemId) return;
+      const item = state.items.find((entry) => entry.id === activeItemId);
+      const visible = item
+        ? resolveEffectiveVisibility(item.id, {
+            model: state.model,
+            visibility: state.visibility,
+            filter: state.filter,
+          }).visible
+        : false;
+      if (item && visible) return;
+      const start =
+        item?.period.kind === "all-day"
+          ? item.period.startDate
+          : item?.period.kind === "timed"
+            ? item.period.start.slice(0, 10)
+            : undefined;
+      const fallback = nearestEnabledDate(state.selection.focusDate ?? start);
+      setActiveItemId(undefined);
+      if (fallback) {
+        focusDate(fallback);
+        announceFocus(fallback);
+      }
+    }, [
+      activeItemId,
+      announceFocus,
+      focusDate,
+      nearestEnabledDate,
+      state.filter,
+      state.items,
+      state.model,
+      state.selection.focusDate,
       state.visibility,
     ]);
 
@@ -528,8 +626,9 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       : ribbons.rows[0];
     const closeInspector = (): void => {
       setInspectorOpen(false);
-      if (activeItemId ?? state.selection.items[0]) {
-        setPendingFocus({ type: "item", id: (activeItemId ?? state.selection.items[0]) as string });
+      const focusTarget = activeItemId ?? state.selection.items[0];
+      if (focusTarget) {
+        setPendingFocus({ type: "item", id: focusTarget });
       } else if (effectiveActiveDate) {
         setPendingFocus({ type: "date", id: effectiveActiveDate });
       }
@@ -596,7 +695,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             globalReadOnly={props.readOnly === true}
             ariaLabel={props.ariaLabel ?? `Year planner ${layout.highlightYear}`}
             ariaDescribedBy={props.ariaDescribedBy}
-            onFocusDate={setActiveDate}
+            onFocusDate={handleCellFocus}
             onCellKeyDown={interaction.onCellKeyDown}
             onSelectDate={interaction.selectDate}
             onSelectItem={interaction.selectItem}

@@ -585,8 +585,8 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
       if (event.key === "Delete") {
         event.preventDefault();
         const itemId =
-          input.state.selection.focusItemId ??
           input.focusedItemId ??
+          input.state.selection.focusItemId ??
           (input.state.selection.items.length === 1 ? input.state.selection.items[0] : undefined);
         const item = itemId ? input.state.items.find((entry) => entry.id === itemId) : undefined;
         if (!item) {
@@ -622,7 +622,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
 
   return {
     preview,
-    touchAction: input.interaction?.touchEditing === "on" ? "none" : "pan-x pan-y",
+    touchAction: input.interaction?.touchEditing === "on" ? "none" : "auto",
     onPointerDown,
     onPointerMove,
     onPointerUp,

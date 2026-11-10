@@ -1,5 +1,4 @@
 import {
-  addDays,
   buildClassicYearLayout,
   type CommandOutcome,
   type PlannerCommand,
@@ -7,7 +6,7 @@ import {
   type PlannerLayer,
 } from "@blendsdk/year-planner-core";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { createRef } from "react";
+import { act, createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import type { YearPlannerHandle } from "../types.js";
 import { YearPlanner } from "../YearPlanner.js";
@@ -168,36 +167,40 @@ describe("keyboard and focus internals", () => {
 
   it("undoes and redoes a local paint and create", async () => {
     const harness = setup({ interaction: { createId: () => "painted" } });
-    harness.ref.current?.requestCommand({
-      type: "paint",
-      layerId: "highlight",
-      period: { kind: "all-day", startDate: "2027-02-01", endDateExclusive: "2027-02-03" },
-      operation: "union",
-      defaults: { kind: "highlight", title: "Painted" },
-      expectedVersions: {},
+    await act(async () => {
+      harness.ref.current?.requestCommand({
+        type: "paint",
+        layerId: "highlight",
+        period: { kind: "all-day", startDate: "2027-02-01", endDateExclusive: "2027-02-03" },
+        operation: "union",
+        defaults: { kind: "highlight", title: "Painted" },
+        expectedVersions: {},
+      });
     });
     await waitFor(() =>
       expect(harness.container.querySelector('[data-item-id="painted"]')).not.toBeNull(),
     );
-    harness.ref.current?.requestUndo();
+    await act(async () => harness.ref.current?.requestUndo());
     await waitFor(() =>
       expect(harness.container.querySelectorAll('[data-yp-channel="highlight"]')).toHaveLength(0),
     );
 
-    harness.ref.current?.requestCommand({
-      type: "create",
-      item: item("created", "highlight", "2027-03-01", "2027-03-03", {
-        kind: "highlight",
-      }),
+    await act(async () => {
+      harness.ref.current?.requestCommand({
+        type: "create",
+        item: item("created", "highlight", "2027-03-01", "2027-03-03", {
+          kind: "highlight",
+        }),
+      });
     });
     await waitFor(() =>
       expect(harness.container.querySelector('[data-item-id="created"]')).not.toBeNull(),
     );
-    harness.ref.current?.requestUndo();
+    await act(async () => harness.ref.current?.requestUndo());
     await waitFor(() =>
       expect(harness.container.querySelector('[data-item-id="created"]')).toBeNull(),
     );
-    harness.ref.current?.requestRedo();
+    await act(async () => harness.ref.current?.requestRedo());
     await waitFor(() =>
       expect(harness.container.querySelector('[data-item-id="created"]')).not.toBeNull(),
     );
@@ -208,7 +211,9 @@ describe("keyboard and focus internals", () => {
       { readOnly: true },
       { items: [item("a", "bookings", "2027-02-01", "2027-02-03")] },
     );
-    harness.ref.current?.requestCommand({ type: "delete", itemId: "a", expectedVersion: 1 });
+    await act(async () =>
+      harness.ref.current?.requestCommand({ type: "delete", itemId: "a", expectedVersion: 1 }),
+    );
     await waitFor(() =>
       expect(harness.onDiagnostic).toHaveBeenCalledWith(
         expect.objectContaining({ code: "READ_ONLY" }),
@@ -236,5 +241,31 @@ describe("keyboard and focus internals", () => {
   it("reflects a controlled selection change in the active date", () => {
     const harness = setup({ selection: { dates: [], items: [], focusDate: "2027-03-04" } });
     expect(harness.cell("2027-03-04")).toHaveAttribute("tabindex", "0");
+  });
+
+  it("clears redo when a new edit follows an undo", async () => {
+    const harness = setup();
+    await act(async () => {
+      harness.ref.current?.requestCommand({
+        type: "create",
+        item: item("one", "highlight", "2027-03-01", "2027-03-03", { kind: "highlight" }),
+      });
+    });
+    await waitFor(() =>
+      expect(harness.container.querySelector('[data-item-id="one"]')).not.toBeNull(),
+    );
+    await act(async () => harness.ref.current?.requestUndo());
+    await waitFor(() => expect(harness.container.querySelector('[data-item-id="one"]')).toBeNull());
+    await act(async () => {
+      harness.ref.current?.requestCommand({
+        type: "create",
+        item: item("two", "highlight", "2027-03-05", "2027-03-07", { kind: "highlight" }),
+      });
+    });
+    await waitFor(() =>
+      expect(harness.container.querySelector('[data-item-id="two"]')).not.toBeNull(),
+    );
+    await act(async () => harness.ref.current?.requestRedo());
+    expect(harness.container.querySelector('[data-item-id="one"]')).toBeNull();
   });
 });

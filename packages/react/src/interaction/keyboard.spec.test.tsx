@@ -107,11 +107,12 @@ function pointer(
   type: "pointerdown" | "pointermove" | "pointerup",
   point: { clientX: number; clientY: number },
   modifiers: { shiftKey?: boolean; ctrlKey?: boolean; metaKey?: boolean } = {},
+  pointerType = "mouse",
 ) {
   const payload = {
     ...point,
     pointerId: 1,
-    pointerType: "mouse",
+    pointerType,
     button: type === "pointerdown" ? 0 : undefined,
     ...modifiers,
   };
@@ -304,15 +305,20 @@ describe("RD-07 keyboard, focus and touch", () => {
 
   it("keeps touch editing scroll-first unless enabled", async () => {
     const off = setup({ interaction: { touchEditing: "off" } });
-    pointer(off.cell("2027-02-01"), "pointerdown", cellPoint("2027-02-01"));
-    pointer(off.grid, "pointermove", cellPoint("2027-02-02"));
+    expect(off.grid.style.touchAction).toBe("auto");
+    pointer(off.cell("2027-02-01"), "pointerdown", cellPoint("2027-02-01"), {}, "touch");
+    pointer(off.grid, "pointermove", cellPoint("2027-02-02"), {}, "touch");
+    pointer(off.grid, "pointerup", cellPoint("2027-02-02"), {}, "touch");
     expect(off.onSelectionChange).not.toHaveBeenCalled();
+
+    const auto = setup({ interaction: { touchEditing: "auto" } });
+    expect(auto.grid.style.touchAction).toBe("auto");
 
     const on = setup({ interaction: { touchEditing: "on" } });
     expect(on.grid.style.touchAction).toBe("none");
-    pointer(on.cell("2027-02-01"), "pointerdown", cellPoint("2027-02-01"));
-    pointer(on.grid, "pointermove", cellPoint("2027-02-02"));
-    pointer(on.grid, "pointerup", cellPoint("2027-02-02"));
+    pointer(on.cell("2027-02-01"), "pointerdown", cellPoint("2027-02-01"), {}, "touch");
+    pointer(on.grid, "pointermove", cellPoint("2027-02-02"), {}, "touch");
+    pointer(on.grid, "pointerup", cellPoint("2027-02-02"), {}, "touch");
     await waitFor(() => expect(on.onSelectionChange).toHaveBeenCalledTimes(1));
   });
 
@@ -337,5 +343,91 @@ describe("RD-07 keyboard, focus and touch", () => {
     expect(document.activeElement).not.toBe(
       disabled.container.querySelector('[data-yp-part="inspector"]'),
     );
+  });
+
+  it("deletes the DOM-focused item rather than a stale selection focus", async () => {
+    const harness = setup(
+      {
+        defaultSelection: { dates: [], items: ["a"], focusItemId: "a", anchorItemId: "a" },
+        interaction: { confirmChange: () => true },
+      },
+      {
+        items: [
+          item("a", "bookings", "2027-02-01", "2027-02-03"),
+          item("b", "bookings", "2027-02-04", "2027-02-06"),
+        ],
+      },
+    );
+    const proxyB = harness.container.querySelector(
+      '[data-yp-part="item-proxy"][data-item-id="b"]',
+    ) as Element;
+    fireEvent.focus(proxyB);
+    fireEvent.keyDown(harness.grid, { key: "Delete" });
+    await waitFor(() => expect(harness.onChangeRequest).toHaveBeenCalled());
+    expect(harness.onChangeRequest.mock.calls[0]?.[0]).toMatchObject({
+      type: "delete",
+      itemId: "b",
+    });
+  });
+
+  it("does not delete a stale item after focus moves to a date", async () => {
+    const harness = setup(
+      { interaction: { confirmChange: () => true } },
+      { items: [item("a", "bookings", "2027-02-01", "2027-02-03")] },
+    );
+    fireEvent.focus(
+      harness.container.querySelector('[data-yp-part="item-proxy"][data-item-id="a"]') as Element,
+    );
+    fireEvent.focus(harness.cell("2027-03-01"));
+    fireEvent.keyDown(harness.grid, { key: "Delete" });
+    await waitFor(() =>
+      expect(harness.onDiagnostic).toHaveBeenCalledWith(
+        expect.objectContaining({ code: "INVALID_COMMAND" }),
+      ),
+    );
+    expect(harness.onChangeRequest).not.toHaveBeenCalled();
+  });
+
+  it("announces focus fallback after deleting the focused unselected item", async () => {
+    const harness = setup(
+      { interaction: { confirmChange: () => true } },
+      { items: [item("a", "bookings", "2027-02-01", "2027-02-03")] },
+    );
+    fireEvent.focus(
+      harness.container.querySelector('[data-yp-part="item-proxy"][data-item-id="a"]') as Element,
+    );
+    fireEvent.keyDown(harness.grid, { key: "Delete" });
+    await waitFor(() =>
+      expect(harness.container.querySelector('[data-yp-part="focus-status"]')).toHaveTextContent(
+        /focus moved/i,
+      ),
+    );
+  });
+
+  it("toggles and inspects an item from its proxy keys", () => {
+    const harness = setup({}, { items: [item("a", "bookings", "2027-02-01", "2027-02-03")] });
+    const proxy = harness.container.querySelector(
+      '[data-yp-part="item-proxy"][data-item-id="a"]',
+    ) as Element;
+    fireEvent.keyDown(proxy, { key: " " });
+    expect(harness.onSelectionChange.mock.calls.at(-1)?.[0].items).toEqual(["a"]);
+    fireEvent.keyDown(proxy, { key: "Enter" });
+    expect(harness.container.querySelector('[data-yp-part="inspector"]')).not.toBeNull();
+  });
+
+  it("selects only effectively visible items with Ctrl/Cmd+A", () => {
+    const harness = setup(
+      {
+        layers: [layer("visible"), layer("hidden", { defaultVisible: false })],
+      },
+      {
+        items: [
+          item("a", "visible", "2027-02-01", "2027-02-03"),
+          item("b", "hidden", "2027-02-02", "2027-02-04"),
+        ],
+      },
+    );
+    fireEvent.keyDown(harness.grid, { key: "a", ctrlKey: true });
+    expect(harness.onSelectionChange.mock.calls.at(-1)?.[0].items).toEqual(["a"]);
   });
 });

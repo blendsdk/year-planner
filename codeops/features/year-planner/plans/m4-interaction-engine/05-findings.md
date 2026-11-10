@@ -85,3 +85,25 @@
 | RV-003-19 | 3 | OBS | create/focus | fixed |
 | RV-003-20 | 3 | OBS | rejection/focus | fixed |
 | RV-003-21 | 3 | OBS | builder/title-localization | accepted |
+
+## Phase 4 — Keyboard, focus, touch and undo
+
+| Finding | Phase | Severity | Area | Ruling |
+|---|---|---|---|---|
+| RV-004-1 | 4 | CRITICAL | focus/delete-body-fallback | fixed |
+| RV-004-2 | 4 | MAJOR | delete/wrong-target | fixed |
+| RV-004-3 | 4 | MAJOR | focus/nearest-enabled | fixed |
+| RV-004-4 | 4 | MAJOR | tests/missing-integration-spec | fixed |
+| RV-004-5 | 4 | MAJOR | tests/touch-not-touch | fixed |
+| RV-004-6 | 4 | MAJOR | tests/redo-clearing | fixed |
+| RV-004-7 | 4 | MINOR | focus/reannouncement | fixed |
+| RV-004-8 | 4 | MINOR | touch/action-auto | fixed |
+| RV-004-9 | 4 | MINOR | commit/rejected-focus | fixed |
+| RV-004-10 | 4 | MINOR | focus/visible-set-duplication | accepted |
+| RV-004-11 | 4 | MINOR | tests/unused-import | fixed |
+| RV-004-12 | 4 | MINOR | docs/stale-pointer-comment | fixed |
+| RV-004-13 | 4 | MINOR | tests/duplicate-harness | accepted |
+| RV-004-14 | 4 | MINOR | tests/act-warnings | fixed |
+| RV-004-15 | 4 | MINOR | types/unsafe-cast | fixed |
+| RV-004-16 | 4 | MINOR | plan/phase-4-file-claim | fixed |
+| RV-004-17 | 4 | MINOR | tests/spec-gaps | fixed |

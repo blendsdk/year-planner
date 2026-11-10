@@ -39,7 +39,7 @@ export interface YearGridProps {
   selectedItemIds: ReadonlySet<string>;
   selection: PlannerSelection;
   preview: GesturePreview | undefined;
-  touchAction: "none" | "pan-x pan-y";
+  touchAction: "none" | "auto";
   pendingItemIds: ReadonlySet<string>;
   showISOWeekNumbers: boolean;
   showAnnotations: boolean;

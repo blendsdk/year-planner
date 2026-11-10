@@ -107,8 +107,8 @@ export function commitGesture(completion: GestureCompletion, context: CommitCont
           ? { type: "move" as const, ...shared }
           : { type: "resize" as const, ...shared };
       void context.pipeline.requestCommand(command).then((accepted) => {
-        context.onFocusItem(completion.itemId);
-        if (!accepted) context.onFocusDate(completion.fallbackDate);
+        if (accepted) context.onFocusItem(completion.itemId);
+        else context.onFocusDate(completion.fallbackDate);
       });
       return;
     }

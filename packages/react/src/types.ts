@@ -35,6 +35,8 @@ export interface InteractionConfig {
   createDefaults?: { kind: ItemKind; layerId: string };
   /** Defaults for painted highlights. */
   paintDefaults?: PaintDefaults;
+  /** Double-click action; defaults to `inspect`. */
+  doubleClick?: "inspect" | "none";
   /** Factory for new item IDs; defaults to UUID/monotonic. */
   createId?: () => string;
   /** Confirmation hook for destructive commands. */

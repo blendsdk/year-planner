@@ -3,10 +3,12 @@ import type {
   MonthRowLayout,
   PlannerItem,
   PlannerLayer,
+  PlannerSelection,
   RibbonRow,
 } from "@blendsdk/year-planner-core";
-import type { ReactNode } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 import { rowTemplate, scaledRowHeight } from "../geometry.js";
+import type { GesturePreview } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
 import type {
   AnnotationRenderContext,
@@ -21,6 +23,7 @@ import type {
 import { CellLayer } from "./CellLayer.js";
 import { ItemLayer } from "./ItemLayer.js";
 import { Overflow } from "./Overflow.js";
+import { SelectionPreview } from "./SelectionPreview.js";
 
 /** Props for one interactive month row. */
 export interface MonthRowProps {
@@ -34,10 +37,11 @@ export interface MonthRowProps {
   items: ReadonlyMap<string, PlannerItem>;
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
   activeDate: DateKey | undefined;
-  activeItemId: string | undefined;
   activeFragmentId: string | undefined;
   selectedItemIds: ReadonlySet<string>;
   pendingItemIds: ReadonlySet<string>;
+  selection: PlannerSelection;
+  preview: GesturePreview | undefined;
   showISOWeekNumbers: boolean;
   showAnnotations: boolean;
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
@@ -50,9 +54,27 @@ export interface MonthRowProps {
   renderOverflow?: ((context: OverflowRenderContext) => ReactNode) | undefined;
   renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
   onFocusDate: (date: DateKey) => void;
-  onMoveFocus: (date: DateKey, delta: number) => void;
-  onSelectDate: (date: DateKey) => void;
-  onSelectItem: (itemId: string) => void;
+  onCellKeyDown: (date: DateKey, event: KeyboardEvent<HTMLElement>) => void;
+  onSelectDate: (
+    date: DateKey,
+    event: {
+      shiftKey?: boolean;
+      ctrlKey?: boolean;
+      metaKey?: boolean;
+      target?: EventTarget | null;
+    },
+  ) => void;
+  onSelectItem: (
+    itemId: string,
+    event: {
+      shiftKey?: boolean;
+      ctrlKey?: boolean;
+      metaKey?: boolean;
+      target?: EventTarget | null;
+    },
+  ) => void;
+  onItemKeyDown: (itemId: string, event: KeyboardEvent<HTMLElement>) => void;
+  onDoubleClickItem: (itemId: string) => void;
   onFocusItem: (itemId: string) => void;
 }
 
@@ -71,10 +93,11 @@ export function MonthRow({
   items,
   itemsByDate,
   activeDate,
-  activeItemId,
   activeFragmentId,
   selectedItemIds,
   pendingItemIds,
+  selection,
+  preview,
   showISOWeekNumbers,
   showAnnotations,
   getDateMeta,
@@ -87,9 +110,11 @@ export function MonthRow({
   renderOverflow,
   renderTooltip,
   onFocusDate,
-  onMoveFocus,
+  onCellKeyDown,
   onSelectDate,
   onSelectItem,
+  onItemKeyDown,
+  onDoubleClickItem,
   onFocusItem,
 }: MonthRowProps): ReactNode {
   const MonthLabel = components.MonthLabel;
@@ -121,6 +146,26 @@ export function MonthRow({
       >
         {MonthLabel ? <MonthLabel className="yp-month-slot">{label}</MonthLabel> : label}
       </div>
+      <SelectionPreview
+        ranges={selection.dates}
+        row={row}
+        zoom={zoom}
+        bandWidth={bandWidth}
+        totalDayWidth={totalDayWidth}
+        height={scaledRowHeight(ribbonRow.height, zoom)}
+        variant="selection"
+      />
+      {preview?.kind === "selection" && (
+        <SelectionPreview
+          ranges={preview.ranges}
+          row={row}
+          zoom={zoom}
+          bandWidth={bandWidth}
+          totalDayWidth={totalDayWidth}
+          height={scaledRowHeight(ribbonRow.height, zoom)}
+          variant="selection-preview"
+        />
+      )}
       <CellLayer
         row={row}
         itemsByDate={itemsByDate}
@@ -131,7 +176,7 @@ export function MonthRow({
         renderCell={renderCell}
         components={components}
         onFocusDate={onFocusDate}
-        onMoveFocus={onMoveFocus}
+        onCellKeyDown={onCellKeyDown}
         onSelectDate={onSelectDate}
       />
       <div
@@ -152,7 +197,6 @@ export function MonthRow({
           showAnnotations={showAnnotations}
           selectedItemIds={selectedItemIds}
           pendingItemIds={pendingItemIds}
-          activeItemId={activeItemId}
           activeFragmentId={activeFragmentId}
           components={components}
           renderItem={renderItem}
@@ -162,7 +206,24 @@ export function MonthRow({
           globalReadOnly={globalReadOnly}
           onSelectItem={onSelectItem}
           onFocusItem={onFocusItem}
+          onItemKeyDown={onItemKeyDown}
+          onDoubleClickItem={onDoubleClickItem}
         />
+        {preview && preview.kind !== "selection" && preview.kind !== "marquee" && (
+          <SelectionPreview
+            ranges={preview.ranges}
+            row={row}
+            zoom={zoom}
+            bandWidth={bandWidth}
+            totalDayWidth={totalDayWidth}
+            height={scaledRowHeight(ribbonRow.height, zoom)}
+            variant="gesture-preview"
+            itemId={preview.kind === "item" ? preview.itemId : undefined}
+            layerId={preview.layerId}
+            color={preview.layerId ? layers.get(preview.layerId)?.color : undefined}
+            valid={preview.valid}
+          />
+        )}
         <Overflow
           row={row}
           ribbonRow={ribbonRow}
@@ -170,7 +231,7 @@ export function MonthRow({
           formatters={formatters}
           displayTimeZone={displayTimeZone}
           renderOverflow={renderOverflow}
-          onSelectItem={onSelectItem}
+          onSelectItem={(itemId) => onSelectItem(itemId, {})}
           onFocusItem={onFocusItem}
         />
       </div>

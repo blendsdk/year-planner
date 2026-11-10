@@ -3,11 +3,13 @@ import type {
   MonthRowLayout,
   PlannerItem,
   PlannerLayer,
+  PlannerSelection,
   RibbonLayout,
   YearLayout,
 } from "@blendsdk/year-planner-core";
-import type { ReactNode } from "react";
+import type { KeyboardEvent, PointerEvent, ReactNode } from "react";
 import { rowTemplate } from "../geometry.js";
+import type { GesturePreview } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
 import type {
   AnnotationRenderContext,
@@ -19,6 +21,7 @@ import type {
   TooltipRenderContext,
   YearPlannerComponents,
 } from "../types.js";
+import { Marquee } from "./Marquee.js";
 import { MonthRow } from "./MonthRow.js";
 
 /** Props for the scrollable year grid. */
@@ -32,9 +35,11 @@ export interface YearGridProps {
   items: ReadonlyMap<string, PlannerItem>;
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
   activeDate: DateKey | undefined;
-  activeItemId: string | undefined;
   activeFragmentId: string | undefined;
   selectedItemIds: ReadonlySet<string>;
+  selection: PlannerSelection;
+  preview: GesturePreview | undefined;
+  touchAction: "none" | "pan-x pan-y";
   pendingItemIds: ReadonlySet<string>;
   showISOWeekNumbers: boolean;
   showAnnotations: boolean;
@@ -50,9 +55,33 @@ export interface YearGridProps {
   ariaLabel: string;
   ariaDescribedBy?: string | undefined;
   onFocusDate: (date: DateKey) => void;
-  onMoveFocus: (date: DateKey, delta: number) => void;
-  onSelectDate: (date: DateKey) => void;
-  onSelectItem: (itemId: string) => void;
+  onCellKeyDown: (date: DateKey, event: KeyboardEvent<HTMLElement>) => void;
+  onSelectDate: (
+    date: DateKey,
+    event: {
+      shiftKey?: boolean;
+      ctrlKey?: boolean;
+      metaKey?: boolean;
+      target?: EventTarget | null;
+    },
+  ) => void;
+  onSelectItem: (
+    itemId: string,
+    event: {
+      shiftKey?: boolean;
+      ctrlKey?: boolean;
+      metaKey?: boolean;
+      target?: EventTarget | null;
+    },
+  ) => void;
+  onItemKeyDown: (itemId: string, event: KeyboardEvent<HTMLElement>) => void;
+  onDoubleClickItem: (itemId: string) => void;
+  onGridKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
+  onPointerDown: (event: PointerEvent<HTMLElement>) => void;
+  onPointerMove: (event: PointerEvent<HTMLElement>) => void;
+  onPointerUp: (event: PointerEvent<HTMLElement>) => void;
+  onPointerCancel: (event: PointerEvent<HTMLElement>) => void;
+  onLostPointerCapture: (event: PointerEvent<HTMLElement>) => void;
   onFocusItem: (itemId: string) => void;
 }
 
@@ -82,9 +111,11 @@ export function YearGrid({
   items,
   itemsByDate,
   activeDate,
-  activeItemId,
   activeFragmentId,
   selectedItemIds,
+  selection,
+  preview,
+  touchAction,
   pendingItemIds,
   showISOWeekNumbers,
   showAnnotations,
@@ -100,9 +131,17 @@ export function YearGrid({
   ariaLabel,
   ariaDescribedBy,
   onFocusDate,
-  onMoveFocus,
+  onCellKeyDown,
   onSelectDate,
   onSelectItem,
+  onItemKeyDown,
+  onDoubleClickItem,
+  onGridKeyDown,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
+  onPointerCancel,
+  onLostPointerCapture,
   onFocusItem,
 }: YearGridProps): ReactNode {
   const Header = components.Header;
@@ -125,6 +164,13 @@ export function YearGrid({
       aria-rowcount={layout.rows.length + 2}
       aria-colcount={37}
       data-yp-part="grid"
+      style={{ touchAction }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
+      onLostPointerCapture={onLostPointerCapture}
+      onKeyDown={onGridKeyDown}
     >
       {/* biome-ignore lint/a11y/useSemanticElements: CSS grid rows implement the ARIA grid pattern */}
       <div
@@ -154,10 +200,11 @@ export function YearGrid({
             items={items}
             itemsByDate={itemsByDate}
             activeDate={activeDate}
-            activeItemId={activeItemId}
             activeFragmentId={activeFragmentId}
             selectedItemIds={selectedItemIds}
             pendingItemIds={pendingItemIds}
+            selection={selection}
+            preview={preview}
             showISOWeekNumbers={showISOWeekNumbers}
             showAnnotations={showAnnotations}
             getDateMeta={getDateMeta}
@@ -170,13 +217,23 @@ export function YearGrid({
             displayTimeZone={displayTimeZone}
             globalReadOnly={globalReadOnly}
             onFocusDate={onFocusDate}
-            onMoveFocus={onMoveFocus}
+            onCellKeyDown={onCellKeyDown}
             onSelectDate={onSelectDate}
             onSelectItem={onSelectItem}
+            onItemKeyDown={onItemKeyDown}
+            onDoubleClickItem={onDoubleClickItem}
             onFocusItem={onFocusItem}
           />
         );
       })}
+      {preview?.kind === "marquee" && (
+        <Marquee
+          rect={preview.rect}
+          zoom={zoom}
+          bandWidth={bandWidth}
+          headerHeight={layout.headerHeight}
+        />
+      )}
       {/* biome-ignore lint/a11y/useSemanticElements: CSS grid rows implement the ARIA grid pattern */}
       <div
         className="yp-row yp-footer"

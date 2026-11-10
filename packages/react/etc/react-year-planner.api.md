@@ -123,6 +123,7 @@ export interface InteractionConfig {
         layerId: string;
     };
     createId?: () => string;
+    doubleClick?: "inspect" | "none";
     marquee?: "items" | "dates";
     mode?: InteractionMode;
     paintDefaults?: PaintDefaults;

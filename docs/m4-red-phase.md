@@ -39,3 +39,21 @@ Error: Failed to resolve import "./gesture.js" from "src/interaction/gesture.spe
 
 The project's red-phase convention is an unresolved-import failure; the
 corrective run is recorded in `99-execution-plan.md` task 2.3.2.
+
+## Phase 3 — Pointer wiring, commands and previews
+
+Command:
+
+```bash
+cd packages/react && pnpm exec vitest run src/interaction/pointer.spec.test.tsx
+```
+
+State: the pointer hook, builder and preview modules did not exist, so the
+component could not turn a drag into a selection or command.
+
+```text
+Error: Failed to resolve import "./builders.js" from "src/interaction/pointer.spec.test.tsx".
+```
+
+The project's red-phase convention is an unresolved-import failure; the
+corrective run is recorded in `99-execution-plan.md` task 3.3.2.

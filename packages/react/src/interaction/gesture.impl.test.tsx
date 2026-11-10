@@ -5,7 +5,6 @@ import {
   autoScrollDelta,
   beginGesture,
   cancelGesture,
-  designRectBetween,
   designRectToScreen,
   endGesture,
   type GestureContext,

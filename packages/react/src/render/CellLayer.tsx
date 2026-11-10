@@ -1,5 +1,5 @@
 import { type DateKey, isoWeekOf, type MonthRowLayout } from "@blendsdk/year-planner-core";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor, safeMetaStyle } from "../safeStyle.js";
 import type {
@@ -20,8 +20,16 @@ export interface CellLayerProps {
   renderCell?: ((context: CellRenderContext) => ReactNode) | undefined;
   components: YearPlannerComponents;
   onFocusDate: (date: DateKey) => void;
-  onMoveFocus: (date: DateKey, delta: number) => void;
-  onSelectDate: (date: DateKey) => void;
+  onCellKeyDown: (date: DateKey, event: KeyboardEvent<HTMLElement>) => void;
+  onSelectDate: (
+    date: DateKey,
+    event: {
+      shiftKey?: boolean;
+      ctrlKey?: boolean;
+      metaKey?: boolean;
+      target?: EventTarget | null;
+    },
+  ) => void;
 }
 
 /**
@@ -38,7 +46,7 @@ export function CellLayer({
   renderCell,
   components,
   onFocusDate,
-  onMoveFocus,
+  onCellKeyDown,
   onSelectDate,
 }: CellLayerProps): ReactNode {
   const DayCell = components.DayCell;
@@ -108,19 +116,10 @@ export function CellLayer({
         tabIndex={date ? (disabled ? -1 : date === activeDate ? 0 : -1) : undefined}
         style={style}
         onFocus={() => date && onFocusDate(date)}
-        onClick={() => date && !disabled && onSelectDate(date)}
+        onClick={(event) => date && !disabled && onSelectDate(date, event)}
         onKeyDown={(event) => {
           if (!date || disabled) return;
-          const deltas: Record<string, number> = {
-            ArrowLeft: -1,
-            ArrowRight: 1,
-            ArrowUp: -7,
-            ArrowDown: 7,
-          };
-          const delta = deltas[event.key];
-          if (delta === undefined) return;
-          event.preventDefault();
-          onMoveFocus(date, delta);
+          onCellKeyDown(date, event);
         }}
       >
         {DayCell ? (

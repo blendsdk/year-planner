@@ -7,10 +7,10 @@ import {
   diffDays,
   type InteractionMode,
   type PlannerFilter,
-  type PlannerItem,
-  type PlannerSelection,
   planRibbonPrint,
+  type RibbonLayout,
   getEffectiveVisibility as resolveEffectiveVisibility,
+  type YearLayout,
 } from "@blendsdk/year-planner-core";
 import {
   forwardRef,
@@ -22,6 +22,7 @@ import {
   useState,
 } from "react";
 import { useCommandPipeline } from "./commands.js";
+import { useInteraction } from "./interaction/useInteraction.js";
 import { createFormatters } from "./locale.js";
 import { resolveDisplayOptions } from "./options.js";
 import { useYearPlannerTheme } from "./provider.js";
@@ -31,6 +32,34 @@ import { YearGrid } from "./render/YearGrid.js";
 import { usePlannerState } from "./state.js";
 import { resolveTheme, themeToCssVars } from "./theme.js";
 import type { YearPlannerHandle, YearPlannerProps } from "./types.js";
+
+const EMPTY_LAYOUT: YearLayout = {
+  rows: [],
+  totalDayWidth: 0,
+  bodyHeight: 0,
+  headerHeight: 0,
+  footerHeight: 0,
+  monthBandWidth: 0,
+  rowHeight: 0,
+  highlightYear: 0,
+  signature: "",
+};
+
+const EMPTY_RIBBONS: RibbonLayout = {
+  rows: [],
+  fragments: [],
+  density: "compact",
+  compactMaxLanes: 3,
+  laneHeight: 18,
+  laneTop: 18,
+  headerHeight: 0,
+  footerHeight: 0,
+  monthBandWidth: 0,
+  totalDayWidth: 0,
+  totalWidth: 0,
+  height: 0,
+  signature: "",
+};
 
 function escapeSelector(value: string): string {
   const cssObject = globalThis.CSS;
@@ -321,39 +350,36 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       [layout, props.getDateMeta, itemsByDate],
     );
 
-    const moveFocusFrom = useCallback(
-      (date: string, delta: number) => {
-        const target = addDays(date, delta);
-        if (!layout || !isKnownDate(layout, target)) return;
-        focusDate(target);
-      },
-      [layout, focusDate],
-    );
+    const openInspector = useCallback(() => {
+      if (props.showInspector === false) return;
+      setInspectorOpen(true);
+      setFocusInspector(true);
+    }, [props.showInspector]);
 
-    const selectItem = useCallback(
-      (itemId: string) => {
-        const next: PlannerSelection = { dates: [], items: [itemId], anchorItemId: itemId };
-        state.setSelection(next);
-        setActiveItemId(itemId);
-      },
-      [state],
-    );
+    const interaction = useInteraction({
+      state,
+      layout: layout ?? EMPTY_LAYOUT,
+      ribbons: ribbons ?? EMPTY_RIBBONS,
+      pipeline,
+      viewportRef,
+      zoom: resolvedDisplay.options.zoom,
+      readOnly: props.readOnly === true,
+      activeLayerId: props.activeLayerId,
+      interaction: props.interaction,
+      getDateMeta: props.getDateMeta,
+      itemsByDate,
+      showAnnotations: resolvedDisplay.options.showAnnotations,
+      onFocusItem: focusItem,
+      onFocusDate: focusDate,
+      openInspector,
+      onDiagnostic: props.onDiagnostic,
+    });
 
-    const selectDate = useCallback(
-      (date: string) => {
-        const next: PlannerSelection = {
-          dates: [{ startDate: date, endDateExclusive: addDays(date, 1) }],
-          items: [],
-          anchorDate: date,
-          focusDate: date,
-        };
-        state.setSelection(next);
-        setActiveItemId(undefined);
-      },
-      [state],
-    );
+    useEffect(() => {
+      if (state.selection.focusItemId) setActiveItemId(state.selection.focusItemId);
+      else if (state.selection.focusDate) setActiveDate(state.selection.focusDate);
+    }, [state.selection.focusDate, state.selection.focusItemId]);
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: the handle closes over current state and pipeline
     useImperativeHandle(
       ref,
       () => ({
@@ -384,11 +410,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         },
         requestUndo: pipeline.requestUndo,
         requestRedo: pipeline.requestRedo,
-        openInspector: () => {
-          if (props.showInspector === false) return;
-          setInspectorOpen(true);
-          setFocusInspector(true);
-        },
+        openInspector,
         getEffectiveVisibility: (id) => {
           const result = resolveEffectiveVisibility(id, {
             model: state.model,
@@ -398,7 +420,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           return { visible: result.visible, reason: result.reason };
         },
       }),
-      [state, focusItem, focusDate, scrollToDate, isDisabledDate, pipeline],
+      [state, focusItem, focusDate, scrollToDate, isDisabledDate, pipeline, openInspector],
     );
 
     const className = [
@@ -480,10 +502,12 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             items={items}
             itemsByDate={itemsByDate}
             activeDate={effectiveActiveDate}
-            activeItemId={rovingItemId}
             activeFragmentId={activeFragmentId}
             selectedItemIds={selectedItemIds}
             pendingItemIds={pipeline.pendingItemIds}
+            selection={state.selection}
+            preview={interaction.preview}
+            touchAction={interaction.touchAction}
             showISOWeekNumbers={resolvedDisplay.options.showISOWeekNumbers}
             showAnnotations={resolvedDisplay.options.showAnnotations}
             getDateMeta={props.getDateMeta}
@@ -498,9 +522,17 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             ariaLabel={props.ariaLabel ?? `Year planner ${layout.highlightYear}`}
             ariaDescribedBy={props.ariaDescribedBy}
             onFocusDate={setActiveDate}
-            onMoveFocus={moveFocusFrom}
-            onSelectDate={selectDate}
-            onSelectItem={selectItem}
+            onCellKeyDown={interaction.onCellKeyDown}
+            onSelectDate={interaction.selectDate}
+            onSelectItem={interaction.selectItem}
+            onItemKeyDown={interaction.onItemKeyDown}
+            onDoubleClickItem={interaction.doubleClickItem}
+            onGridKeyDown={interaction.onGridKeyDown}
+            onPointerDown={interaction.onPointerDown}
+            onPointerMove={interaction.onPointerMove}
+            onPointerUp={interaction.onPointerUp}
+            onPointerCancel={interaction.onPointerCancel}
+            onLostPointerCapture={interaction.onLostPointerCapture}
             onFocusItem={focusItem}
           />
         </div>
@@ -522,7 +554,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           components={props.components ?? {}}
           renderInspector={props.renderInspector}
           onClose={closeInspector}
-          onSelectItem={selectItem}
+          onSelectItem={(itemId) => interaction.selectItem(itemId, {})}
           onFocusItem={focusItem}
           asideRef={inspectorRef}
         />

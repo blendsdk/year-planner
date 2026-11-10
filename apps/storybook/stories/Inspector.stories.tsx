@@ -6,11 +6,9 @@ import {
   groups,
   holiday,
   layers,
-  maintenance,
   overflowItems,
   resources,
   timed,
-  training,
 } from "./fixtures";
 
 const meta = {

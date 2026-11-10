@@ -639,11 +639,13 @@ export function intersectMarquee(
     ) {
       continue;
     }
+    const rowTop = ribbons.rows.find((row) => row.rowId === fragment.rowId)?.top ?? 0;
+    const absoluteY = rowTop + fragment.y;
     const intersects =
       fragment.x < rect.left + rect.width &&
       rect.left < fragment.x + fragment.width &&
-      fragment.y < rect.top + rect.height &&
-      rect.top < fragment.y + fragment.height;
+      absoluteY < rect.top + rect.height &&
+      rect.top < absoluteY + fragment.height;
     if (intersects) hits.add(fragment.itemId);
   }
   return [...hits];

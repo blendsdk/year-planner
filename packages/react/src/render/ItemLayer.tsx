@@ -4,7 +4,15 @@ import type {
   RibbonFragment,
   RibbonRow,
 } from "@blendsdk/year-planner-core";
-import { type CSSProperties, type ReactNode, useEffect, useId, useState } from "react";
+import {
+  type CSSProperties,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+  useEffect,
+  useId,
+  useState,
+} from "react";
 import { scaleFragment } from "../geometry.js";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor, safeItemStyle } from "../safeStyle.js";
@@ -26,7 +34,6 @@ export interface ItemLayerProps {
   showAnnotations: boolean;
   selectedItemIds: ReadonlySet<string>;
   pendingItemIds: ReadonlySet<string>;
-  activeItemId: string | undefined;
   activeFragmentId: string | undefined;
   components: YearPlannerComponents;
   displayTimeZone: string;
@@ -34,8 +41,18 @@ export interface ItemLayerProps {
   renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
   renderAnnotation?: ((context: AnnotationRenderContext) => ReactNode) | undefined;
   renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
-  onSelectItem: (itemId: string) => void;
+  onSelectItem: (
+    itemId: string,
+    event: {
+      shiftKey?: boolean;
+      ctrlKey?: boolean;
+      metaKey?: boolean;
+      target?: EventTarget | null;
+    },
+  ) => void;
   onFocusItem: (itemId: string) => void;
+  onItemKeyDown: (itemId: string, event: KeyboardEvent<HTMLElement>) => void;
+  onDoubleClickItem: (itemId: string) => void;
 }
 
 function itemLabel(item: PlannerItem): string {
@@ -58,7 +75,6 @@ export function ItemLayer({
   showAnnotations,
   selectedItemIds,
   pendingItemIds,
-  activeItemId,
   activeFragmentId,
   components,
   displayTimeZone,
@@ -68,6 +84,8 @@ export function ItemLayer({
   renderTooltip,
   onSelectItem,
   onFocusItem,
+  onItemKeyDown,
+  onDoubleClickItem,
 }: ItemLayerProps): ReactNode {
   const ItemFragment = components.ItemFragment;
   const [tooltip, setTooltip] = useState<TooltipState | undefined>(undefined);
@@ -186,20 +204,22 @@ export function ItemLayer({
           }}
           onMouseLeave={() => setTooltip(undefined)}
           onBlur={() => setTooltip(undefined)}
-          onClick={(event) => {
+          onClick={(event: MouseEvent<HTMLDivElement>) => {
             event.stopPropagation();
-            onSelectItem(item.id);
+            onSelectItem(item.id, event);
+          }}
+          onDoubleClick={(event: MouseEvent<HTMLDivElement>) => {
+            event.stopPropagation();
+            onDoubleClickItem(item.id);
           }}
           onKeyDown={(event) => {
+            onItemKeyDown(item.id, event);
+            if (event.defaultPrevented) return;
             if (event.key === "Escape") {
               setTooltip(undefined);
               return;
             }
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              onSelectItem(item.id);
-              return;
-            }
+            if (event.shiftKey) return;
             const move =
               event.key === "ArrowRight" || event.key === "ArrowDown"
                 ? 1

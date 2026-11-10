@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 20:32
-> **Progress**: 12/33 tasks (36%)
+> **Last Updated**: 2026-11-10 21:15
+> **Progress**: 20/33 tasks (61%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -120,30 +120,29 @@ bounded by the task-size criteria).
 
 ### Step 3.1: Specification tests
 
-- [ ] 3.1.1 [spec-author] Write pointer/command/preview spec tests for ST-42–ST-70 — `packages/react/src/interaction/pointer.spec.test.tsx`
-- [ ] 3.1.2 Run the pointer spec tests and record the expected red failures — `docs/m4-red-phase.md`
+- [x] 3.1.1 [spec-author] Write pointer/command/preview spec tests for ST-42–ST-70 — `packages/react/src/interaction/pointer.spec.test.tsx` ✅ (completed: 2026-11-10 21:15)
+- [x] 3.1.2 Run the pointer spec tests and record the expected red failures — `docs/m4-red-phase.md` ✅ (completed: 2026-11-10 21:15)
 
 ### Step 3.2: Implementation
 
-- [ ] 3.2.1 Implement preview projection, persistent selection overlays, transient previews, fixed marquee and `pointer-events: none` layering — `packages/react/src/interaction/preview.ts`, `packages/react/src/render/SelectionPreview.tsx`, `packages/react/src/render/Marquee.tsx`
-- [ ] 3.2.2 Extract shared paint/create builders with `createPlannerId`, paint defaults and locked-item exclusion; switch the inspector to them — `packages/react/src/interaction/builders.ts`, `packages/react/src/render/Inspector.tsx`
-- [ ] 3.2.3 Implement the pointer hook (capture, lost capture, rAF, one-shot click suppression, host-control guard) and wire pointers/previews through the grid, row and main component — `packages/react/src/interaction/useInteraction.ts`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/render/MonthRow.tsx`, `packages/react/src/YearPlanner.tsx`
-- [ ] 3.2.4 Wire cell and item/handle pointer targets and modifier-aware click callbacks — `packages/react/src/render/CellLayer.tsx`, `packages/react/src/render/ItemLayer.tsx`
+- [x] 3.2.1 Implement preview projection, persistent selection overlays, transient previews, fixed marquee and `pointer-events: none` layering — `packages/react/src/interaction/preview.ts`, `packages/react/src/render/SelectionPreview.tsx`, `packages/react/src/render/Marquee.tsx` ✅ (completed: 2026-11-10 21:15)
+- [x] 3.2.2 Extract shared paint/create builders with `createPlannerId`, paint defaults and locked-item exclusion; switch the inspector to them — `packages/react/src/interaction/builders.ts`, `packages/react/src/render/Inspector.tsx` ✅ (completed: 2026-11-10 21:15)
+- [x] 3.2.3 Implement the pointer hook (capture, lost capture, rAF, one-shot click suppression, host-control guard) and wire pointers/previews through the grid, row and main component — `packages/react/src/interaction/useInteraction.ts`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/render/MonthRow.tsx`, `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-10 21:15)
+- [x] 3.2.4 Wire cell and item/handle pointer targets and modifier-aware click callbacks — `packages/react/src/render/CellLayer.tsx`, `packages/react/src/render/ItemLayer.tsx` ✅ (completed: 2026-11-10 21:15)
 
 ### Step 3.3: Implementation tests and verify
 
-- [ ] 3.3.1 Write pointer edge tests for capture fallback, lost capture, click suppression, host controls, rAF coalescing and preview cleanup — `packages/react/src/interaction/pointer.impl.test.tsx`
-- [ ] 3.3.2 Run `pnpm verify`
+- [x] 3.3.1 Write pointer edge tests for capture fallback, lost capture, click suppression, host controls, rAF coalescing and preview cleanup — `packages/react/src/interaction/pointer.impl.test.tsx` ✅ (completed: 2026-11-10 21:15)
+- [x] 3.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 21:15)
 
 **Deliverables**:
-- [ ] ST-42–ST-70 pass
-- [ ] Cross-month selection renders exactly two transient previews and persistent selection survives pointerup
-- [ ] No canonical item mutation during a drag; a host button/input keeps its events
+- [x] ST-42–ST-70 pass ✅ (completed: 2026-11-10 21:15)
+- [x] Cross-month selection renders exactly two transient previews and persistent selection survives pointerup ✅ (completed: 2026-11-10 21:15)
+- [x] No canonical item mutation during a drag; a host button/input keeps its events ✅ (completed: 2026-11-10 21:15)
 
 **Verify**: `pnpm verify:full`
 
 ---
-
 ## Phase 4: Keyboard, focus, touch and undo
 
 > **Phase baseline tree**: recorded by the executor at phase start.

@@ -1,8 +1,8 @@
 # Portfolio Roadmap: Year Planner for React
 
 > **Status**: Active
-> **Last Updated**: 2026-11-10 06:59
-> **Features**: 0 / 0 done
+> **Last Updated**: 2026-11-10
+> **Features**: 0 / 1 done
 > **CodeOps Artifact Schema**: 1
 
 ## Legend
@@ -13,6 +13,7 @@
 
 | Feature | Roadmap | Stage Summary | Progress | Status | Last Updated |
 |---------|---------|---------------|----------|--------|--------------|
+| year-planner | [→](features/year-planner/00-roadmap.md) | 12 RDs drafted | 0/12 RDs | ⬜ | 2026-11-10 |
 
 ## Archived
 

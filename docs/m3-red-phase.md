@@ -27,7 +27,21 @@ Test Files  1 failed (1)
 
 ## Phase 2 — View shell and state
 
-Pending.
+Command:
+
+```bash
+cd packages/react && pnpm exec vitest run src/YearPlanner.spec.test.tsx
+```
+
+State: the M1 grid had no `YearPlannerHandle`, controlled state, locale
+formatters or pointer geometry; the new shell tests could not compile against
+the old props.
+
+```text
+Type error: Property 'defaultVisibility' does not exist ...
+```
+
+Restored after implementation; 26 shell/state spec tests and 2 SSR tests pass.
 
 ## Phase 3 — Items, annotations and slots
 

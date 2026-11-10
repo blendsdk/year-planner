@@ -1,200 +1,394 @@
+"use client";
+
 import {
   addDays,
   buildClassicYearLayout,
-  type ClassicYearLayoutOptions,
-  isoWeekOf,
-  type MonthRowLayout,
+  buildRibbonLayout,
+  diffDays,
+  type InteractionMode,
+  type PlannerFilter,
+  type PlannerItem,
+  type PlannerSelection,
+  getEffectiveVisibility as resolveEffectiveVisibility,
 } from "@blendsdk/year-planner-core";
-import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
-import { useState } from "react";
-import type { YearPlannerThemeName } from "./theme.js";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { createFormatters } from "./locale.js";
+import { resolveDisplayOptions } from "./options.js";
+import { useYearPlannerTheme } from "./provider.js";
+import { YearGrid } from "./render/YearGrid.js";
+import { usePlannerState } from "./state.js";
+import { resolveTheme, themeToCssVars } from "./theme.js";
+import type { YearPlannerHandle, YearPlannerProps } from "./types.js";
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const WEEKDAYS = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
-
-/** Display options for the minimal M1 grid. Kept until the M3 view replaces it. */
-export interface YearPlannerDisplay {
-  theme?: YearPlannerThemeName | string;
-  showISOWeekNumbers?: boolean;
-  zoom?: number;
+function isKnownDate(layout: { rows: { columns: { date?: string }[] }[] }, date: string): boolean {
+  return layout.rows.some((row) => row.columns.some((column) => column.date === date));
 }
 
-/** Print options for the minimal M1 grid. */
-export interface YearPlannerPrint {
-  mode?: "paginate" | "fit";
-}
-
-/** Props for the minimal M1 classic year grid. */
-export interface YearPlannerProps extends ClassicYearLayoutOptions {
-  display?: YearPlannerDisplay;
-  print?: YearPlannerPrint;
-  className?: string;
-  style?: CSSProperties;
-}
-
-function monthLabel(row: MonthRowLayout): string {
-  const name = MONTHS[row.monthIndex] ?? "";
-  return row.kind === "current" ? `${name} '${String(row.year).slice(-2)}` : `${name} ${row.year}`;
-}
-
-function weekdayHeader(): ReactNode {
-  return Array.from({ length: 37 }, (_, index) => {
-    const day = WEEKDAYS[index % 7] ?? "";
-    return (
-      <div className="yp-heading" key={`heading-${day}-${index}`} role="columnheader">
-        {day}
-      </div>
-    );
-  });
+/** Applies a command to a local item array using the RD-08 outcome contract. */
+function applyOutcome(
+  items: PlannerItem[],
+  updated: PlannerItem[] | undefined,
+  removed: string[] | undefined,
+): PlannerItem[] {
+  if (!updated && !removed) return items;
+  const remove = new Set([...(removed ?? []), ...(updated ?? []).map((item) => item.id)]);
+  const next = items.filter((item) => !remove.has(item.id));
+  for (const item of updated ?? []) next.push(item);
+  return next;
 }
 
 /**
- * Minimal classic year grid.
+ * Renders a classic year planner with items, annotations, themes, inspector
+ * hooks and print output.
  *
- * M1 renders the 12-36 month layout with date numbers, ISO weeks, mirrored
- * month labels and classic themes. Ribbons, lanes and interactions arrive in
- * later plans and are not claimed here.
+ * Controlled props win over defaults. Pointer gestures and the full command
+ * lifecycle belong to later slices; the inspector and imperative handle use the
+ * shared request pipeline.
  */
-export function YearPlanner({
-  display,
-  print,
-  className = "",
-  style,
-  ...layoutOptions
-}: YearPlannerProps) {
-  const [activeDate, setActiveDate] = useState<string | undefined>(undefined);
-  const result = buildClassicYearLayout(layoutOptions);
-  const theme = display?.theme ?? "classic-blue";
-  const zoom = display?.zoom ?? 1;
-  const band = 70 * zoom;
-  const rowHeight = 90 * zoom;
-  const widths = result.ok
-    ? (result.layout.rows[0]?.columns.map((column) => `${column.width * zoom}px`) ?? [])
-    : [];
-  const template = result.ok
-    ? `${band}px ${widths.join(" ")} ${band}px`
-    : `${band}px repeat(37, 55px) ${band}px`;
+export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
+  function YearPlanner(props, ref) {
+    const display = props.display;
+    const providerTheme = useYearPlannerTheme();
+    const resolvedTheme = resolveTheme(display?.theme, providerTheme);
+    const resolvedDisplay = useMemo(
+      () => resolveDisplayOptions(display, resolvedTheme.theme),
+      [display, resolvedTheme.theme],
+    );
+    const theme = resolvedTheme.theme;
+    const cssVars = useMemo(
+      () => ({ ...themeToCssVars(theme), ...(props.cssVars ?? {}) }),
+      [theme, props.cssVars],
+    );
+    const units = useMemo(
+      () => ({
+        monthBand: Number(theme.monthBandWidth),
+        weekend: Number(theme.weekendWidth),
+        weekday: Number(theme.weekdayWidth),
+        rowHeight: Number(theme.rowHeight),
+        ...(props.units ?? {}),
+      }),
+      [theme, props.units],
+    );
+    const layoutResult = useMemo(
+      () =>
+        buildClassicYearLayout({
+          ...(props.year === undefined ? {} : { year: props.year }),
+          ...(props.contextMonths === undefined ? {} : { contextMonths: props.contextMonths }),
+          ...(props.range === undefined ? {} : { range: props.range }),
+          ...(props.highlightYear === undefined ? {} : { highlightYear: props.highlightYear }),
+          units,
+        }),
+      [props.year, props.contextMonths, props.range, props.highlightYear, units],
+    );
+    const layout = layoutResult.ok ? layoutResult.layout : undefined;
 
-  if (!result.ok) {
-    return (
-      <div className={`yp-root yp-theme-${theme} ${className}`} data-yp-part="root" style={style}>
-        <div className="yp-empty" role="status">
-          {result.diagnostics[0]?.message ?? "Unable to render the year planner."}
+    const state = usePlannerState({
+      ...props,
+      displayTimeZone: resolvedDisplay.options.displayTimeZone,
+    });
+
+    const ribbons = useMemo(() => {
+      if (!layout) return undefined;
+      try {
+        return buildRibbonLayout(
+          layout,
+          { model: state.model, visibility: state.visibility, filter: state.filter },
+          {
+            density: resolvedDisplay.options.density,
+            compactMaxLanes: resolvedDisplay.options.compactMaxLanes,
+            laneHeight: resolvedDisplay.options.laneHeight,
+            displayTimeZone: resolvedDisplay.options.displayTimeZone,
+          },
+        );
+      } catch {
+        return undefined;
+      }
+    }, [layout, state.model, state.visibility, state.filter, resolvedDisplay.options]);
+
+    const formatters = useMemo(
+      () => createFormatters(resolvedDisplay.options.locale),
+      [resolvedDisplay.options.locale],
+    );
+    const layers = useMemo(
+      () => new Map(state.model.layers.map((layer) => [layer.id, layer])),
+      [state.model.layers],
+    );
+    const items = useMemo(
+      () => new Map(state.model.items.map((item) => [item.id, item])),
+      [state.model.items],
+    );
+    const itemsByDate = useMemo(() => {
+      const map = new Map<string, string[]>();
+      if (!ribbons) return map;
+      for (const fragment of ribbons.fragments) {
+        const days = diffDays(fragment.clippedStart, fragment.clippedEndExclusive);
+        for (let offset = 0; offset < days; offset += 1) {
+          const date = addDays(fragment.clippedStart, offset);
+          const list = map.get(date) ?? [];
+          if (!list.includes(fragment.itemId)) list.push(fragment.itemId);
+          map.set(date, list);
+        }
+      }
+      return map;
+    }, [ribbons]);
+    const selectedItemIds = useMemo(() => new Set(state.selection.items), [state.selection.items]);
+
+    const layoutDiagnostics = layoutResult.ok ? [] : layoutResult.diagnostics;
+    const diagnostics = useMemo(
+      () => [...layoutDiagnostics, ...state.validation.diagnostics, ...resolvedDisplay.diagnostics],
+      [layoutDiagnostics, state.validation.diagnostics, resolvedDisplay.diagnostics],
+    );
+    const seenDiagnostics = useRef(new Set<string>());
+    useEffect(() => {
+      if (!props.onDiagnostic) return;
+      for (const entry of diagnostics) {
+        const key = `${entry.code}:${entry.message}`;
+        if (seenDiagnostics.current.has(key)) continue;
+        seenDiagnostics.current.add(key);
+        props.onDiagnostic(entry);
+      }
+    }, [diagnostics, props.onDiagnostic]);
+
+    const firstDate = layout?.rows
+      .flatMap((row) => row.columns)
+      .find((column) => column.date)?.date;
+    const [activeDate, setActiveDate] = useState<string | undefined>(undefined);
+    const [activeItemId, setActiveItemId] = useState<string | undefined>(undefined);
+    const [geometryVersion, setGeometryVersion] = useState(0);
+    const viewportRef = useRef<HTMLDivElement>(null);
+    const [pendingFocus, setPendingFocus] = useState<
+      { type: "date" | "item"; id: string } | undefined
+    >(undefined);
+
+    const effectiveActiveDate =
+      activeDate && layout && isKnownDate(layout, activeDate) ? activeDate : firstDate;
+
+    useEffect(() => {
+      if (!pendingFocus) return;
+      const selector =
+        pendingFocus.type === "date"
+          ? `[data-date="${pendingFocus.id}"]`
+          : `[data-yp-part="item-proxy"][data-item-id="${pendingFocus.id}"]`;
+      const element = viewportRef.current?.querySelector<HTMLElement>(selector);
+      element?.focus();
+      setPendingFocus(undefined);
+    }, [pendingFocus]);
+
+    useEffect(() => {
+      const element = viewportRef.current;
+      if (!element) return;
+      if (typeof ResizeObserver === "undefined") return;
+      const observer = new ResizeObserver(() => setGeometryVersion((value) => value + 1));
+      observer.observe(element);
+      return () => observer.disconnect();
+    }, []);
+
+    const focusDate = useCallback((date: string) => {
+      setActiveDate(date);
+      setActiveItemId(undefined);
+      setPendingFocus({ type: "date", id: date });
+    }, []);
+
+    const focusItem = useCallback((itemId: string) => {
+      setActiveItemId(itemId);
+      setPendingFocus({ type: "item", id: itemId });
+    }, []);
+
+    const scrollToDate = useCallback((date: string) => {
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      const cell = viewport.querySelector<HTMLElement>(`[data-date="${date}"]`);
+      if (!cell) return;
+      viewport.scrollLeft = cell.offsetLeft - viewport.clientWidth / 2 + cell.clientWidth / 2;
+    }, []);
+
+    const isDisabledDate = useCallback(
+      (date: string): boolean => {
+        if (!layout || !props.getDateMeta) return false;
+        const row = layout.rows.find(
+          (entry) => date >= entry.firstDate && date < entry.endDateExclusive,
+        );
+        const column = row?.columns.find((entry) => entry.date === date);
+        if (!row || !column) return true;
+        const meta = props.getDateMeta(date, {
+          isWeekend: column.isWeekend,
+          isContextMonth: column.isContextMonth,
+          itemIds: itemsByDate.get(date) ?? [],
+        });
+        return meta?.disabled === true;
+      },
+      [layout, props.getDateMeta, itemsByDate],
+    );
+
+    const moveFocusFrom = useCallback(
+      (date: string, delta: number) => {
+        const target = addDays(date, delta);
+        if (!layout || !isKnownDate(layout, target)) return;
+        focusDate(target);
+      },
+      [layout, focusDate],
+    );
+
+    const selectItem = useCallback(
+      (itemId: string) => {
+        const next: PlannerSelection = { dates: [], items: [itemId], anchorItemId: itemId };
+        state.setSelection(next);
+        setActiveItemId(itemId);
+      },
+      [state],
+    );
+
+    const selectDate = useCallback(
+      (date: string) => {
+        const next: PlannerSelection = {
+          dates: [{ startDate: date, endDateExclusive: addDays(date, 1) }],
+          items: [],
+          anchorDate: date,
+          focusDate: date,
+        };
+        state.setSelection(next);
+        setActiveItemId(undefined);
+      },
+      [state],
+    );
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        showGroup: (id) => state.dispatchVisibility({ type: "showGroup", groupId: id }),
+        hideGroup: (id) => state.dispatchVisibility({ type: "hideGroup", groupId: id }),
+        toggleGroup: (id) => state.dispatchVisibility({ type: "toggleGroup", groupId: id }),
+        showLayer: (id) => state.dispatchVisibility({ type: "showLayer", layerId: id }),
+        hideLayer: (id) => state.dispatchVisibility({ type: "hideLayer", layerId: id }),
+        showItem: (id) => state.dispatchVisibility({ type: "showItem", itemId: id }),
+        hideItem: (id) => state.dispatchVisibility({ type: "hideItem", itemId: id }),
+        showAll: state.showAll,
+        setFilter: (filter: PlannerFilter) => state.setFilter(filter),
+        selectRange: (interval) => {
+          const days = diffDays(interval.startDate, interval.endDateExclusive);
+          if (days <= 0) return;
+          for (let offset = 0; offset < days; offset += 1) {
+            if (isDisabledDate(addDays(interval.startDate, offset))) return;
+          }
+          state.setSelection({ dates: [interval], items: [] });
+        },
+        clearSelection: () => state.setSelection({ dates: [], items: [] }),
+        focusItem,
+        focusDate,
+        scrollToDate,
+        setInteractionMode: (mode: InteractionMode) => state.setInteractionMode(mode),
+        requestCommand: () => undefined,
+        requestUndo: () => undefined,
+        requestRedo: () => undefined,
+        openInspector: () => undefined,
+        getEffectiveVisibility: (id) => {
+          const result = resolveEffectiveVisibility(id, {
+            model: state.model,
+            visibility: state.visibility,
+            filter: state.filter,
+          });
+          return { visible: result.visible, reason: result.reason };
+        },
+      }),
+      [state, focusItem, focusDate, scrollToDate, isDisabledDate],
+    );
+
+    const className = [
+      "yp-root",
+      getPresetClass(resolvedTheme.themeName),
+      props.unstyled ? "yp-unstyled" : "",
+      props.className ?? "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    const layoutErrorMessage = layoutResult.ok ? undefined : layoutResult.diagnostics[0]?.message;
+    if (!layoutResult.ok || !layout || !ribbons) {
+      return (
+        <div
+          className={className}
+          data-yp-part="root"
+          data-yp-theme={resolvedTheme.themeName}
+          dir="ltr"
+          style={{ ...cssVars, ...props.style }}
+        >
+          <div className="yp-empty" role="status" data-yp-part="empty">
+            {props.renderEmpty?.() ?? layoutErrorMessage ?? "Unable to render the year planner."}
+          </div>
         </div>
+      );
+    }
+
+    const content = (
+      <>
+        <div
+          className="yp-viewport"
+          data-yp-part="viewport"
+          data-yp-geometry-version={geometryVersion}
+          ref={viewportRef}
+          style={{ overflow: "auto" }}
+        >
+          <YearGrid
+            layout={layout}
+            ribbons={ribbons}
+            formatters={formatters}
+            zoom={resolvedDisplay.options.zoom}
+            bandWidth={Number(theme.monthBandWidth)}
+            layers={layers}
+            items={items}
+            itemsByDate={itemsByDate}
+            activeDate={effectiveActiveDate}
+            activeItemId={activeItemId ?? state.selection.items[0]}
+            selectedItemIds={selectedItemIds}
+            showISOWeekNumbers={resolvedDisplay.options.showISOWeekNumbers}
+            showAnnotations={resolvedDisplay.options.showAnnotations}
+            getDateMeta={props.getDateMeta}
+            renderCell={props.renderCell}
+            renderItem={props.renderItem}
+            components={props.components ?? {}}
+            ariaLabel={props.ariaLabel ?? `Year planner ${layout.highlightYear}`}
+            ariaDescribedBy={props.ariaDescribedBy}
+            onFocusDate={setActiveDate}
+            onMoveFocus={moveFocusFrom}
+            onSelectDate={selectDate}
+            onSelectItem={selectItem}
+            onFocusItem={focusItem}
+          />
+        </div>
+      </>
+    );
+    const Root = props.components?.Root;
+    return (
+      <div
+        className={className}
+        data-yp-part="root"
+        data-yp-theme={resolvedTheme.themeName}
+        data-yp-density={resolvedDisplay.options.density}
+        dir="ltr"
+        style={{ ...cssVars, ...props.style }}
+      >
+        {Root ? <Root className="yp-root-slot">{content}</Root> : content}
       </div>
     );
-  }
+  },
+);
 
-  const layout = result.layout;
-  const firstValidDate = layout.rows
-    .flatMap((row) => row.columns)
-    .find((column) => column.date)?.date;
-  const active =
-    activeDate &&
-    layout.rows.some((row) => row.columns.some((column) => column.date === activeDate))
-      ? activeDate
-      : firstValidDate;
+function getPresetClass(themeName: string): string {
+  return /^[a-z0-9-]+$/.test(themeName) ? `yp-theme-${themeName}` : "";
+}
 
-  const moveFocus = (event: KeyboardEvent<HTMLDivElement>, date: string) => {
-    const deltas: Record<string, number> = {
-      ArrowLeft: -1,
-      ArrowRight: 1,
-      ArrowUp: -7,
-      ArrowDown: 7,
-    };
-    const delta = deltas[event.key];
-    if (delta === undefined) return;
-    event.preventDefault();
-    const target = addDays(date, delta);
-    setActiveDate(target);
-    const element = document.querySelector<HTMLElement>(`[data-date="${target}"]`);
-    element?.focus();
-  };
-
-  return (
-    <div
-      className={`yp-root yp-theme-${theme} ${print?.mode === "fit" ? "yp-print-fit" : ""} ${className}`}
-      data-yp-part="root"
-      data-yp-theme={theme}
-      style={style}
-    >
-      <div
-        className="yp-grid"
-        role="grid"
-        aria-label={`Year planner ${layout.highlightYear}`}
-        aria-rowcount={layout.rows.length}
-        aria-colcount={37}
-      >
-        <div className="yp-row yp-header" role="row" style={{ gridTemplateColumns: template }}>
-          <div className="yp-band" aria-hidden="true" />
-          {weekdayHeader()}
-          <div className="yp-band" aria-hidden="true" />
-        </div>
-        {layout.rows.map((row) => (
-          <div
-            className="yp-row"
-            role="row"
-            key={row.rowId}
-            data-row-id={row.rowId}
-            style={{ gridTemplateColumns: template, height: rowHeight }}
-          >
-            <div
-              className={`yp-month ${row.kind === "context" ? "yp-context" : ""}`}
-              aria-label={monthLabel(row)}
-            >
-              <span>{MONTHS[row.monthIndex]}</span>
-              <span>{row.kind === "current" ? `'${String(row.year).slice(-2)}` : row.year}</span>
-            </div>
-            {row.columns.map((column) => {
-              const showWeek =
-                display?.showISOWeekNumbers !== false &&
-                column.date !== undefined &&
-                (Number(column.date.slice(8, 10)) === 1 || column.columnIndex % 7 === 2);
-              return (
-                <div
-                  className={[
-                    "yp-cell",
-                    column.isWeekend ? "yp-weekend" : "",
-                    column.isContextMonth ? "yp-context" : "",
-                    column.date ? "yp-valid" : "yp-outside",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  key={`${row.rowId}-${column.columnIndex}`}
-                  role="gridcell"
-                  data-date={column.date}
-                  aria-label={column.date ?? undefined}
-                  aria-hidden={column.date ? undefined : true}
-                  tabIndex={column.date ? (column.date === active ? 0 : -1) : undefined}
-                  onFocus={() => column.date && setActiveDate(column.date)}
-                  onKeyDown={(event) => column.date && moveFocus(event, column.date)}
-                >
-                  {column.date && (
-                    <>
-                      <span className="yp-day-number">{Number(column.date.slice(8, 10))}</span>
-                      {showWeek && (
-                        <span className="yp-week-number">{isoWeekOf(column.date).week}</span>
-                      )}
-                    </>
-                  )}
-                </div>
-              );
-            })}
-            <div
-              className={`yp-month ${row.kind === "context" ? "yp-context" : ""}`}
-              aria-hidden="true"
-            >
-              <span>{MONTHS[row.monthIndex]}</span>
-              <span>{row.kind === "current" ? `'${String(row.year).slice(-2)}` : row.year}</span>
-            </div>
-          </div>
-        ))}
-        <div className="yp-row yp-footer" role="row" style={{ gridTemplateColumns: template }}>
-          <div className="yp-band" aria-hidden="true" />
-          {weekdayHeader()}
-          <div className="yp-band" aria-hidden="true" />
-        </div>
-      </div>
-    </div>
-  );
+/** Applies a host command outcome to an item array. */
+export function applyCommandOutcome(
+  items: PlannerItem[],
+  outcome: { updatedItems?: PlannerItem[]; removedItemIds?: string[] },
+): PlannerItem[] {
+  return applyOutcome(items, outcome.updatedItems, outcome.removedItemIds);
 }

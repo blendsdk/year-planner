@@ -4,56 +4,345 @@
 
 ```ts
 
-import { ClassicYearLayoutOptions } from '@blendsdk/year-planner-core';
+import type { ClassicYearUnits } from '@blendsdk/year-planner-core';
+import type { CommandContext } from '@blendsdk/year-planner-core';
+import type { CommandOutcome } from '@blendsdk/year-planner-core';
+import type { ComponentType } from 'react';
 import type { CSSProperties } from 'react';
+import type { DateKey } from '@blendsdk/year-planner-core';
+import type { Diagnostic } from '@blendsdk/year-planner-core';
 import { FC } from 'react';
-import { JSX } from 'react';
+import { ForwardRefExoticComponent } from 'react';
+import type { InteractionMode } from '@blendsdk/year-planner-core';
+import type { ItemKind } from '@blendsdk/year-planner-core';
+import type { LayerGroup } from '@blendsdk/year-planner-core';
+import type { MonthRowLayout } from '@blendsdk/year-planner-core';
+import type { PaintDefaults } from '@blendsdk/year-planner-core';
+import type { PlannerCommand } from '@blendsdk/year-planner-core';
+import type { PlannerFilter } from '@blendsdk/year-planner-core';
+import { PlannerItem } from '@blendsdk/year-planner-core';
+import type { PlannerLayer } from '@blendsdk/year-planner-core';
+import type { PlannerPeriod } from '@blendsdk/year-planner-core';
+import type { PlannerSelection } from '@blendsdk/year-planner-core';
 import { ReactNode } from 'react';
+import { RefAttributes } from 'react';
+import type { Resource } from '@blendsdk/year-planner-core';
+import type { RibbonFragment } from '@blendsdk/year-planner-core';
+import type { ValidationResult } from '@blendsdk/year-planner-core';
+import type { VisibilityState } from '@blendsdk/year-planner-core';
+
+// @public
+export interface AnnotationRenderContext {
+    // (undocumented)
+    fragment: RibbonFragment;
+    // (undocumented)
+    item: PlannerItem;
+}
+
+// @public
+export function applyCommandOutcome(items: PlannerItem[], outcome: {
+    updatedItems?: PlannerItem[];
+    removedItemIds?: string[];
+}): PlannerItem[];
+
+// @public
+export interface CellRenderContext extends DateMetaContext {
+    // (undocumented)
+    columnIndex: number;
+    // (undocumented)
+    date: DateKey;
+    // (undocumented)
+    monthIndex: number;
+    // (undocumented)
+    year: number;
+}
 
 // @public
 export function createTheme(theme?: Partial<YearPlannerTheme>): YearPlannerTheme;
 
 // @public
+export interface DateMeta {
+    ariaLabel?: string;
+    background?: string;
+    className?: string;
+    color?: string;
+    content?: ReactNode;
+    disabled?: boolean;
+    holiday?: boolean;
+    label?: string;
+    style?: CSSProperties;
+}
+
+// @public
+export interface DateMetaContext {
+    isContextMonth: boolean;
+    isWeekend: boolean;
+    itemIds: readonly string[];
+}
+
+// @public
+export interface DisplayConfig {
+    compactMaxLanes?: number;
+    connectorMode?: "none" | "edge-path";
+    density?: "compact" | "expanded";
+    displayTimeZone?: string;
+    locale?: string;
+    showAnnotations?: boolean;
+    showISOWeekNumbers?: boolean;
+    theme?: YearPlannerThemeName | string;
+    zoom?: number;
+}
+
+// @public
 export function getPresetTheme(name: string): YearPlannerTheme | undefined;
+
+// @public
+export interface InspectorActions {
+    // (undocumented)
+    close(): void;
+    // (undocumented)
+    dismiss?(): void;
+    // (undocumented)
+    focusItem(id: string): void;
+    // (undocumented)
+    requestCommand(command: PlannerCommand): void;
+    // (undocumented)
+    retry?(): void;
+}
+
+// @public
+export interface InspectorRenderContext {
+    // (undocumented)
+    actions: InspectorActions;
+    // (undocumented)
+    items: readonly PlannerItem[];
+    // (undocumented)
+    selection: PlannerSelection;
+}
+
+// @public
+export interface InteractionConfig {
+    commandTimeoutMs?: number;
+    confirmChange?: (command: PlannerCommand) => boolean | Promise<boolean>;
+    createDefaults?: {
+        kind: ItemKind;
+        layerId: string;
+    };
+    createId?: () => string;
+    marquee?: "items" | "dates";
+    mode?: InteractionMode;
+    paintDefaults?: PaintDefaults;
+    requestId?: () => string;
+    touchEditing?: "auto" | "on" | "off";
+}
+
+// @public
+export interface ItemRenderContext {
+    // (undocumented)
+    fragment: RibbonFragment;
+    // (undocumented)
+    fragmentCount: number;
+    // (undocumented)
+    fragmentIndex: number;
+    // (undocumented)
+    item: PlannerItem;
+    // (undocumented)
+    readOnly: boolean;
+    // (undocumented)
+    selected: boolean;
+}
+
+// @public
+export interface OverflowRenderContext {
+    // (undocumented)
+    hiddenCount: number;
+    // (undocumented)
+    items: readonly PlannerItem[];
+    // (undocumented)
+    row: MonthRowLayout;
+}
+
+export { PlannerPeriod }
+
+// @public
+export interface PrintConfig {
+    mode?: "paginate" | "fit";
+    page?: "A3";
+    rowsPerPage?: number;
+}
+
+// @public
+export interface ResolvedTheme {
+    // (undocumented)
+    cssVars: Record<`--yp-${string}`, string>;
+    // (undocumented)
+    theme: YearPlannerTheme;
+    // (undocumented)
+    themeName: string;
+}
+
+// @public
+export function resolveTheme(name: string | undefined, providerTheme: YearPlannerTheme | undefined): {
+    theme: YearPlannerTheme;
+    themeName: string;
+};
 
 // @public
 export function themeToCssVars(theme: YearPlannerTheme): Record<`--yp-${string}`, string>;
 
 // @public
+export interface TooltipRenderContext {
+    // (undocumented)
+    fragment?: RibbonFragment;
+    // (undocumented)
+    item: PlannerItem;
+}
+
+// @public
 export function useYearPlannerTheme(): YearPlannerTheme | undefined;
 
 // @public
-export function YearPlanner(input: YearPlannerProps): JSX.Element;
+export const YearPlanner: ForwardRefExoticComponent<YearPlannerProps & RefAttributes<YearPlannerHandle>>;
 
 // @public
-export interface YearPlannerDisplay {
+export interface YearPlannerComponents {
     // (undocumented)
-    showISOWeekNumbers?: boolean;
+    DayCell?: YearPlannerSlot;
     // (undocumented)
-    theme?: YearPlannerThemeName | string;
+    Footer?: YearPlannerSlot;
     // (undocumented)
-    zoom?: number;
+    Header?: YearPlannerSlot;
+    // (undocumented)
+    Inspector?: YearPlannerSlot;
+    // (undocumented)
+    ItemFragment?: YearPlannerSlot;
+    // (undocumented)
+    MonthLabel?: YearPlannerSlot;
+    // (undocumented)
+    Root?: YearPlannerSlot;
+    // (undocumented)
+    Tooltip?: YearPlannerSlot;
+    // (undocumented)
+    WeekdayHeader?: YearPlannerSlot;
+}
+
+// @public
+export type YearPlannerDisplay = DisplayConfig;
+
+// @public
+export interface YearPlannerHandle {
+    // (undocumented)
+    clearSelection(): void;
+    // (undocumented)
+    focusDate(date: DateKey): void;
+    // (undocumented)
+    focusItem(id: string): void;
+    // (undocumented)
+    getEffectiveVisibility(id: string): {
+        visible: boolean;
+        reason: "visible" | "group" | "layer" | "item" | "filter" | "channel" | "unknown-entity";
+    };
+    // (undocumented)
+    hideGroup(id: string): void;
+    // (undocumented)
+    hideItem(id: string): void;
+    // (undocumented)
+    hideLayer(id: string): void;
+    // (undocumented)
+    openInspector(): void;
+    // (undocumented)
+    requestCommand(command: PlannerCommand): void;
+    // (undocumented)
+    requestRedo(): void;
+    // (undocumented)
+    requestUndo(): void;
+    // (undocumented)
+    scrollToDate(date: DateKey): void;
+    // (undocumented)
+    selectRange(interval: {
+        startDate: DateKey;
+        endDateExclusive: DateKey;
+    }): void;
+    // (undocumented)
+    setFilter(filter: PlannerFilter): void;
+    // (undocumented)
+    setInteractionMode(mode: InteractionMode): void;
+    // (undocumented)
+    showAll(): void;
+    // (undocumented)
+    showGroup(id: string): void;
+    // (undocumented)
+    showItem(id: string): void;
+    // (undocumented)
+    showLayer(id: string): void;
+    // (undocumented)
+    toggleGroup(id: string): void;
 }
 
 // @public
 export const yearPlannerPresets: Record<YearPlannerThemeName, YearPlannerTheme>;
 
 // @public
-export interface YearPlannerPrint {
-    // (undocumented)
-    mode?: "paginate" | "fit";
-}
+export type YearPlannerPrint = PrintConfig;
 
 // @public
-export interface YearPlannerProps extends ClassicYearLayoutOptions {
-    // (undocumented)
+export interface YearPlannerProps {
+    activeLayerId?: string;
+    annotations?: PlannerItem[];
+    ariaDescribedBy?: string;
+    ariaLabel?: string;
     className?: string;
-    // (undocumented)
-    display?: YearPlannerDisplay;
-    // (undocumented)
-    print?: YearPlannerPrint;
-    // (undocumented)
+    components?: Partial<YearPlannerComponents>;
+    contextMonths?: {
+        before: number;
+        after: number;
+    };
+    cssVars?: Record<`--yp-${string}`, string>;
+    defaultFilter?: PlannerFilter;
+    defaultItems?: PlannerItem[];
+    defaultSelection?: PlannerSelection;
+    defaultVisibility?: VisibilityState;
+    display?: DisplayConfig;
+    filter?: PlannerFilter;
+    getDateMeta?: (date: DateKey, context: DateMetaContext) => DateMeta | undefined;
+    groups?: LayerGroup[];
+    highlightYear?: number;
+    interaction?: InteractionConfig;
+    items?: PlannerItem[];
+    layers?: PlannerLayer[];
+    onChangeCommitted?: (outcome: CommandOutcome) => void;
+    onChangeRejected?: (outcome: CommandOutcome) => void;
+    onChangeRequest?: (command: PlannerCommand, context: CommandContext) => CommandOutcome | Promise<CommandOutcome>;
+    onDiagnostic?: (diagnostic: Diagnostic) => void;
+    onFilterChange?: (next: PlannerFilter) => void;
+    onItemsChange?: (items: PlannerItem[]) => void;
+    onSelectionChange?: (next: PlannerSelection) => void;
+    onVisibilityChange?: (next: VisibilityState) => void;
+    print?: PrintConfig;
+    range?: {
+        start: {
+            year: number;
+            month: number;
+        };
+        monthCount: number;
+    };
+    readOnly?: boolean;
+    renderAnnotation?: (context: AnnotationRenderContext) => ReactNode;
+    renderCell?: (context: CellRenderContext) => ReactNode;
+    renderEmpty?: () => ReactNode;
+    renderInspector?: (context: InspectorRenderContext) => ReactNode;
+    renderItem?: (context: ItemRenderContext) => ReactNode;
+    renderOverflow?: (context: OverflowRenderContext) => ReactNode;
+    renderTooltip?: (context: TooltipRenderContext) => ReactNode;
+    resources?: Resource[];
+    selection?: PlannerSelection;
+    showInspector?: boolean;
     style?: CSSProperties;
+    units?: Partial<ClassicYearUnits>;
+    unstyled?: boolean;
+    validateChange?: (command: PlannerCommand, context: CommandContext) => ValidationResult | Promise<ValidationResult>;
+    visibility?: VisibilityState;
+    year?: number;
 }
 
 // @public
@@ -61,6 +350,16 @@ export const YearPlannerProvider: FC<{
     theme?: Partial<YearPlannerTheme>;
     children: ReactNode;
 }>;
+
+// @public
+export type YearPlannerSlot = ComponentType<YearPlannerSlotProps>;
+
+// @public
+export interface YearPlannerSlotProps {
+    children?: ReactNode;
+    className?: string;
+    style?: CSSProperties;
+}
 
 // @public
 export type YearPlannerTheme = Record<YearPlannerTokenName, string | number>;

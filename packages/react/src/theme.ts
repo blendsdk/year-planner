@@ -209,6 +209,19 @@ export function getPresetTheme(name: string): YearPlannerTheme | undefined {
 
 const UNITLESS = new Set<YearPlannerTokenName>(["fontWeight", "printScale"]);
 
+/** Resolves a preset name, provider theme or classic default. */
+export function resolveTheme(
+  name: string | undefined,
+  providerTheme: YearPlannerTheme | undefined,
+): { theme: YearPlannerTheme; themeName: string } {
+  const preset = name ? getPresetTheme(name) : undefined;
+  if (preset) return { theme: preset, themeName: name as string };
+  return {
+    theme: providerTheme ?? CLASSIC_BLUE,
+    themeName: name ?? "classic-blue",
+  };
+}
+
 function kebab(name: string): string {
   return name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 }

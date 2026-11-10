@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 15:08
-> **Progress**: 6/46 tasks (13%)
+> **Last Updated**: 2026-11-10 15:18
+> **Progress**: 13/46 tasks (28%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -80,19 +80,19 @@ shell, localized labels, SSR-safe effects and controlled state hooks.
 
 ### Step 2.1: Specification tests
 
-- [ ] 2.1.1 [spec-author] Write shell/state spec tests for ST-5–ST-27 and ST-84, including node SSR and hydration — `packages/react/src/YearPlanner.spec.test.tsx`, `packages/react/src/YearPlanner.ssr.spec.test.tsx`, `packages/react/src/YearPlanner.hydration.spec.test.tsx`
-- [ ] 2.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md`
+- [x] 2.1.1 [spec-author] Write shell/state spec tests for ST-5–ST-27 and ST-84, including node SSR and hydration — `packages/react/src/YearPlanner.spec.test.tsx`, `packages/react/src/YearPlanner.ssr.spec.test.tsx`, `packages/react/src/YearPlanner.hydration.spec.test.tsx` ✅ (completed: 2026-11-10 15:18)
+- [x] 2.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md` ✅ (completed: 2026-11-10 15:18)
 
 ### Step 2.2: Implementation
 
-- [ ] 2.2.1 Implement zoom geometry, pointer mapping, locale formatting and scroll/observer helpers — `packages/react/src/geometry.ts`, `packages/react/src/locale.ts`
-- [ ] 2.2.2 Implement the root, viewport, sticky grid, rows, handle and `"use client"` entry — `packages/react/src/YearPlanner.tsx`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/index.ts`
-- [ ] 2.2.3 Implement controlled/uncontrolled state and visibility/filter/selection hooks — `packages/react/src/state.ts`
+- [x] 2.2.1 Implement zoom geometry, pointer mapping, locale formatting and scroll/observer helpers — `packages/react/src/geometry.ts`, `packages/react/src/locale.ts` ✅ (completed: 2026-11-10 15:18)
+- [x] 2.2.2 Implement the root, viewport, sticky grid, rows, handle and `"use client"` entry — `packages/react/src/YearPlanner.tsx`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/index.ts` ✅ (completed: 2026-11-10 15:18)
+- [x] 2.2.3 Implement controlled/uncontrolled state and visibility/filter/selection hooks — `packages/react/src/state.ts` ✅ (completed: 2026-11-10 15:18)
 
 ### Step 2.3: Implementation tests and verify
 
-- [ ] 2.3.1 Write shell/state edge-case tests — `packages/react/src/YearPlanner.impl.test.tsx`, `packages/react/src/state.impl.test.tsx`
-- [ ] 2.3.2 Run `pnpm verify`
+- [x] 2.3.1 Write shell/state edge-case tests — `packages/react/src/YearPlanner.impl.test.tsx`, `packages/react/src/state.impl.test.tsx` ✅ (completed: 2026-11-10 15:18)
+- [x] 2.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:18)
 
 **Deliverables**:
 - [ ] ST-5–ST-27 and ST-84 pass

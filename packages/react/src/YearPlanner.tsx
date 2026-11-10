@@ -1,10 +1,12 @@
 import {
+  addDays,
   buildClassicYearLayout,
   type ClassicYearLayoutOptions,
   isoWeekOf,
   type MonthRowLayout,
 } from "@blendsdk/year-planner-core";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
+import { useState } from "react";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const WEEKDAYS = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -62,6 +64,7 @@ export function YearPlanner({
   style,
   ...layoutOptions
 }: YearPlannerProps) {
+  const [activeDate, setActiveDate] = useState<string | undefined>(undefined);
   const result = buildClassicYearLayout(layoutOptions);
   const theme = display?.theme ?? "classic-blue";
   const zoom = display?.zoom ?? 1;
@@ -85,6 +88,31 @@ export function YearPlanner({
   }
 
   const layout = result.layout;
+  const firstValidDate = layout.rows
+    .flatMap((row) => row.columns)
+    .find((column) => column.date)?.date;
+  const active =
+    activeDate &&
+    layout.rows.some((row) => row.columns.some((column) => column.date === activeDate))
+      ? activeDate
+      : firstValidDate;
+
+  const moveFocus = (event: KeyboardEvent<HTMLDivElement>, date: string) => {
+    const deltas: Record<string, number> = {
+      ArrowLeft: -1,
+      ArrowRight: 1,
+      ArrowUp: -7,
+      ArrowDown: 7,
+    };
+    const delta = deltas[event.key];
+    if (delta === undefined) return;
+    event.preventDefault();
+    const target = addDays(date, delta);
+    setActiveDate(target);
+    const element = document.querySelector<HTMLElement>(`[data-date="${target}"]`);
+    element?.focus();
+  };
+
   return (
     <div
       className={`yp-root yp-theme-${theme} ${print?.mode === "fit" ? "yp-print-fit" : ""} ${className}`}
@@ -139,6 +167,9 @@ export function YearPlanner({
                   data-date={column.date}
                   aria-label={column.date ?? undefined}
                   aria-hidden={column.date ? undefined : true}
+                  tabIndex={column.date ? (column.date === active ? 0 : -1) : undefined}
+                  onFocus={() => column.date && setActiveDate(column.date)}
+                  onKeyDown={(event) => column.date && moveFocus(event, column.date)}
                 >
                   {column.date && (
                     <>

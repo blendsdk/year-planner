@@ -3,7 +3,7 @@
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
 > **Last Updated**: 2026-11-10 10:15
-> **Progress**: 35/48 tasks (73%)
+> **Progress**: 37/48 tasks (77%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -145,8 +145,8 @@ grid. Specification tests precede implementation in every behavior phase.
 - [x] 4.2.4 Run component tests to green ✅ (completed: 2026-11-10 10:15)
 - [x] 4.2.5 Add Playwright visual/print test and generate A3 PDF ✅ (completed: 2026-11-10 10:15)
 - [x] 4.2.6 Run clean-consumer install/render test ✅ (completed: 2026-11-10 10:15)
-- [ ] 4.2.7 Write React impl tests for blank slots, mirrored labels and theme fallback
-- [ ] 4.2.8 Add 36-month keyboard/E2E reachability test and 2016 blue print
+- [x] 4.2.7 Write React impl tests for blank slots, mirrored labels and theme fallback ✅ (completed: 2026-11-10 10:15)
+- [x] 4.2.8 Add 36-month keyboard/E2E reachability test and 2016 blue print ✅ (completed: 2026-11-10 10:15)
 
 **Verify**: `pnpm verify` and `pnpm test:e2e`
 

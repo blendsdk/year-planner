@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 22:11
-> **Progress**: 26/33 tasks (79%)
+> **Last Updated**: 2026-11-10 23:25
+> **Progress**: 32/33 tasks (97%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -187,19 +187,19 @@ milestone.
 
 ### Step 5.1: Integration tests
 
-- [ ] 5.1.1 Add the interaction demo, Storybook interaction stories, Playwright interaction tests and the Chromium touch project — `apps/demo/src/InteractionDemo.tsx`, `apps/demo/src/App.tsx`, `apps/storybook/stories/Interaction.stories.tsx`, `tests/e2e/interaction.spec.ts`, `playwright.config.ts`
-- [ ] 5.1.2 Run the interaction E2E tests and record any red/gap findings — `docs/m4-red-phase.md`
+- [x] 5.1.1 Add the interaction demo, Storybook interaction stories, Playwright interaction tests and the Chromium touch project — `apps/demo/src/InteractionDemo.tsx`, `apps/demo/src/App.tsx`, `apps/storybook/stories/Interaction.stories.tsx`, `tests/e2e/interaction.spec.ts`, `playwright.config.ts` ✅ (completed: 2026-11-10 23:25)
+- [x] 5.1.2 Run the interaction E2E tests and record any red/gap findings — `docs/m4-red-phase.md` ✅ (completed: 2026-11-10 23:25)
 
 ### Step 5.2: Integration fixes
 
-- [ ] 5.2.1 Fix demo selectors/copy, preview/focus/touch gaps, host-control cases and intentional visual changes — `apps/demo/src/**`, `packages/react/src/**`, `tests/e2e/interaction.spec.ts`
-- [ ] 5.2.2 Run the interaction E2E suite green in Chromium, Firefox, WebKit and the touch project
+- [x] 5.2.1 Fix demo selectors/copy, preview/focus/touch gaps, host-control cases and intentional visual changes — `apps/demo/src/**`, `packages/react/src/**`, `tests/e2e/interaction.spec.ts` ✅ (completed: 2026-11-10 23:25)
+- [x] 5.2.2 Run the interaction E2E suite green in Chromium, Firefox, WebKit and the touch project ✅ (completed: 2026-11-10 23:25)
 
 ### Step 5.3: Documentation and closeout
 
-- [ ] 5.3.1 Write the interaction guide and update README/react-view/security/test-report — `docs/interaction.md`, `docs/react-view.md`, `docs/security.md`, `docs/test-report.md`, `README.md`
-- [ ] 5.3.2 Add the changeset and regenerate API reports — `.changeset/rd07-interaction.md`, `packages/core/etc/year-planner-core.api.md`, `packages/react/etc/react-year-planner.api.md`
-- [ ] 5.3.3 Run `pnpm verify:full`, watch CI, update the roadmap and close the plan
+- [x] 5.3.1 Write the interaction guide and update README/react-view/security/test-report — `docs/interaction.md`, `docs/react-view.md`, `docs/security.md`, `docs/test-report.md`, `README.md` ✅ (completed: 2026-11-10 23:25)
+- [x] 5.3.2 Add the changeset and regenerate API reports — `.changeset/rd07-interaction.md`, `packages/core/etc/year-planner-core.api.md`, `packages/react/etc/react-year-planner.api.md` ✅ (completed: 2026-11-10 23:25)
+- [~] 5.3.3 Run `pnpm verify:full`, watch CI, update the roadmap and close the plan ⏳ (implemented: 2026-11-10 23:25)
 
 **Deliverables**:
 - [ ] ST-91–ST-98 pass

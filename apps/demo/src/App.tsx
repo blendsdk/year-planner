@@ -3,6 +3,7 @@ import type { PlannerItem, PlannerLayer } from "@blendsdk/year-planner-core";
 import { Button as FluentButton, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { createTheme, Button as MuiButton, ThemeProvider } from "@mui/material";
 import { useState } from "react";
+import { InteractionDemo } from "./InteractionDemo.js";
 
 const groups = [
   { id: "ops", name: "Operations" },
@@ -102,12 +103,15 @@ export function App() {
   const search = typeof window === "undefined" ? "" : window.location.search;
   const securityMode = new URLSearchParams(search).get("security") === "1";
   const ac3Mode = new URLSearchParams(search).get("ac3") === "1";
+  const interactionMode = new URLSearchParams(search).get("interaction") === "1";
   const [theme, setTheme] = useState<YearPlannerThemeName>("classic-blue");
   const [months, setMonths] = useState(14);
   const [zoom, setZoom] = useState(1);
   const items = [...baseItems, ...overflowItems, ...(securityMode ? [securityItem] : [])];
   const layoutProps =
     months === 14 ? { year } : { range: { start: { year, month: 0 }, monthCount: months } };
+
+  if (interactionMode) return <InteractionDemo />;
 
   return (
     <main style={{ padding: 24, fontFamily: "Arial, sans-serif" }}>

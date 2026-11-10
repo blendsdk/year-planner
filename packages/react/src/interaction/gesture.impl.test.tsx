@@ -146,21 +146,23 @@ describe("gesture engine internals", () => {
     expect(end({ phase: "idle" }, "2027-02-01")).toEqual({ kind: "none" });
   });
 
-  it("does not activate item moves in inspect or select mode", () => {
+  it("selects dates instead of moving in inspect or select mode", () => {
     const inspect = move(
       begin(proxy("2027-01-28"), "2027-01-28", context({ mode: "inspect" })),
       140,
       "2027-01-28",
       context({ mode: "inspect" }),
     );
-    expect(inspect.phase).toBe("idle");
+    expect(inspect.phase).toBe("active");
+    if (inspect.phase === "active") expect(inspect.gesture.kind).toBe("select-dates");
     const select = move(
       begin(proxy("2027-01-28"), "2027-01-28", context({ mode: "select" })),
       140,
       "2027-01-28",
       context({ mode: "select" }),
     );
-    expect(select.phase).toBe("idle");
+    expect(select.phase).toBe("active");
+    if (select.phase === "active") expect(select.gesture.kind).toBe("select-dates");
   });
 
   it("ignores annotation and host-control targets", () => {

@@ -1,13 +1,14 @@
-# Test Report — Year Planner for React (M1 + M2 + RD-06)
+# Test Report — Year Planner for React (M1 + M2 + RD-06 + RD-07)
 
 > **Date**: 2026-11-10
 > **Scope**: M1 foundation/temporal core/classic grid; M2 layers, visibility,
 > paint/erase, ribbons, hit index and print planning; RD-06 rendered view,
-> theming, slots, inspector, adapters and A3 print output
+> theming, slots, inspector, adapters and A3 print output; RD-07 pointer,
+> keyboard and touch interaction, selection matrix, previews and focus
 > **Workflow**: CodeOps (`exec-plan`), plans `m1-foundation-core`,
-> `m2-layers-ribbons` and `m3-react-view`
-> **Verdict**: **PASS** for the M1 + M2 + RD-06 slices. Pointer interaction and
-> the full command lifecycle are not claimed.
+> `m2-layers-ribbons`, `m3-react-view` and `m4-interaction-engine`
+> **Verdict**: **PASS** for the M1 + M2 + RD-06 + RD-07 slices. RD-08 lifecycle
+> work is not claimed.
 
 ---
 
@@ -37,24 +38,40 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | Check | Result |
 |---|---|
 | Core tests | **207 passed** |
-| React tests | **140 passed** (20 files) |
+| React tests | **309 passed** (29 files) |
 | Core coverage | **99.43% lines, 96.08% branches, 100% functions** |
-| React coverage | **92.54% lines, 91.55% branches, 98.34% functions** |
-| Playwright | **23 passed, 4 skipped** (PDF is Chromium-only) |
-| Browsers | Chromium, Firefox, WebKit |
+| React coverage | **94.22% lines, 93.26% branches, 98.36% functions** |
+| Playwright | **42 passed, 7 skipped** (PDF is Chromium-only; touch is Chromium-only) |
+| Browsers | Chromium, Firefox, WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
 | Clean consumer | **PASS** — packed core + React installed and built |
-| Storybook | **PASS** — static build succeeds; **118 stories across 9 files** |
+| Storybook | **PASS** — static build succeeds; **144 stories across 10 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **44.26 kB gzip** including core, React, adapters and CSS; 60 kB budget |
+| Bundle size | **54.10 kB gzip** including core, React, adapters and CSS; 60 kB budget |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | **Green** — [run 42857711561](https://github.com/blendsdk/year-planner/actions/runs/42857711561), `verify` + `browsers` jobs |
 
 The coverage thresholds are enforced by Vitest: core 95% and React 80% for
 lines, branches, functions and statements.
+
+## RD-07 evidence
+
+| Area | Evidence |
+|---|---|
+| Modes | `auto`, `inspect`, `select`, `paint`, `erase`, `create`, `move`, `resize`; invalid modes are rejected by the layout/option contract |
+| Selection | Plain/Shift/Ctrl/Cmd date and item matrix; anchor/focus transitions; visual-order item ranges; merged/split ranges; Ctrl/Cmd+A; reserved Ctrl/Cmd+Shift |
+| Pointer | Grid-root delegation, 4 px threshold, pointer capture, rAF move coalescing, edge auto-scroll, lost-capture cancel, one-shot click suppression |
+| Commands | Move, resize, paint, erase, create and delete through the existing pipeline; duration/grab offset; one-day minimum; disabled ranges rejected |
+| Preview | Per-row clipped date/move/resize/paint/create previews; fixed marquee; invalid red preview; `pointer-events: none` |
+| Keyboard | Arrows skip disabled dates; Shift+Arrow range; Space toggle; Enter inspector; Escape cancel/clear; Delete focused/sole item |
+| Focus | Commit focus restoration; hidden/removed item pruning; nearest enabled-date fallback; polite live region; controlled selection sync |
+| Touch | `off`/`auto` stay scroll-first with `touch-action: auto`; `on` enables editing with `touch-action: none`; real touch E2E |
+| Undo | Uncontrolled move/resize/paint/erase/create/update/delete; redo cleared by a new edit; controlled mode reports `UNDO_UNAVAILABLE` |
+| Host controls | Host buttons/inputs in cells keep pointer and key events; no nested control inside an item proxy |
+| Security | Hidden/locked/timed/annotation items cannot start edits; no phantom dates; diagnostics carry no hidden payload |
 
 ## RD-06 evidence
 
@@ -98,6 +115,9 @@ lines, branches, functions and statements.
 | Commands | `commands.spec.test.tsx`, `commands.impl.test.tsx` |
 | Inspector | `inspector.spec.test.tsx`, `inspector.impl.test.tsx` |
 | Print and adapters | `print.spec.test.tsx`, `print.impl.test.tsx`, `adapters.spec.test.tsx`, `adapters.impl.test.tsx`, `styles.spec.test.tsx` |
+| Interaction | `packages/react/src/interaction/selection.spec.test.tsx`, `gesture.spec.test.tsx`, `pointer.spec.test.tsx`, `keyboard.spec.test.tsx`, `interaction.integration.spec.test.tsx` |
+| Interaction impl | `packages/react/src/interaction/selection.impl.test.tsx`, `gesture.impl.test.tsx`, `pointer.impl.test.tsx`, `keyboard.impl.test.tsx` |
+| Interaction E2E | `tests/e2e/interaction.spec.ts`, `tests/e2e/interaction-touch.spec.ts` |
 | Integration | `packages/react/src/integration.spec.test.tsx` |
 | E2E | `tests/e2e/classic-year.spec.ts` |
 | Red phases | `docs/m1-red-phase.md`, `docs/m2-red-phase.md`, `docs/m3-red-phase.md` |
@@ -129,8 +149,9 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 
 | Gap | Status |
 |---|---|
-| Pointer selection matrix, marquee, drag/move/resize previews, paint gestures | Not implemented — RD-07 |
 | Full command lifecycle: rollback, stale responses, accepted-not-applied | Not implemented — RD-08 |
+| Batch multi-move, alt+drag subtraction, drag between layers/resources | Deferred from R1 |
+| Native touch-scroll E2E | Touch gating and `touch-action` are tested; full scroll physics is RD-10 |
 | Controlled-host undo history | Not implemented; rejected with `UNDO_UNAVAILABLE` |
 | Fluent UI v9/MUI example stories | Real Buttons are proven in the demo fixture; Storybook examples remain RD-11 polish |
 | Annotation editing | Rendered but host-owned in this slice (AR-31) |

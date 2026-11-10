@@ -341,6 +341,9 @@ function activate(
   if (mode === "paint" || mode === "erase" || mode === "create") {
     return rangeGesture();
   }
+  if (mode === "select" || mode === "inspect") {
+    return rangeGesture();
+  }
   if (mode !== "auto" && mode !== "move") return undefined;
   if (!context.isEditable(target.itemId, "move")) return undefined;
   const source = context.items.get(target.itemId);

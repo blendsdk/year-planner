@@ -37,6 +37,13 @@ export const layers: PlannerLayer[] = [
     sortOrder: 2,
   },
   {
+    id: "highlight",
+    name: "Highlight",
+    channel: "highlight",
+    color: "#ffd166",
+    label: "H",
+  },
+  {
     id: "holidays",
     name: "Holidays",
     channel: "background",

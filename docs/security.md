@@ -13,6 +13,8 @@
 | `getDateMeta` return values | Host presentation input | Merged into cell styles; same style and color allowlist |
 | `style`, `cssVars`, theme tokens | Trusted host configuration | Rendered as inline CSS variables/properties |
 | Render slot content | Host React nodes | Rendered by React; no raw HTML path |
+| Pointer coordinates | Browser input | Clamped to known cells; blank slots never invent dates |
+| Host controls in cells | Host React nodes | Pointer, click and key events are ignored by the planner |
 
 ## Output safety
 
@@ -23,6 +25,10 @@
   instants and resource names are not included.
 - Layer identity uses label, pattern and `data-yp-layer` attributes so color is
   not the only signal.
+- Hidden or filtered items are not hit-testable and are pruned from selection.
+  Locked/read-only/timed items never start an edit gesture.
+- Drag previews are decorative, `aria-hidden` and never mutate canonical items
+  before the validated command commits.
 
 ## Content Security Policy
 

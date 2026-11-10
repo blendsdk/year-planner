@@ -127,6 +127,19 @@ the component warns in development, but cannot prevent host-injected controls.
 outer element, ARIA, focus and hit surface. `renderCell` and `renderItem` cannot
 remove those surfaces.
 
+## Interaction
+
+Pointer, keyboard and touch editing are covered in
+[interaction.md](interaction.md). Set `interaction.mode` to `auto` for
+move/resize/marquee, `select` for date ranges, `paint`/`erase` for the active
+highlight layer, or `create` for drag-created items. `touchEditing` is the
+host-owned touch toggle: `auto` and `off` remain scroll-first, `on` enables
+editing with `touch-action: none`.
+
+Delete uses the DOM-focused item first, then the selected item. Hidden items are
+pruned from selection; focus falls back to the nearest enabled date and is
+announced in a polite live region.
+
 ## Inspector
 
 The component-owned inspector lists selected item details, visibility,
@@ -157,7 +170,7 @@ A node `renderToString` test and a hydration test guard this contract.
 ## Storybook
 
 The project mandate is to create as many stories as possible. The Storybook site
-currently contains **118 stories across nine files**, covering themes, layouts,
+currently contains **144 stories across ten files**, covering themes, layouts,
 zoom, locales, items, annotations, channels, overflow, inspector states, slots,
 print modes, controlled/filter/read-only states and token adapters. Run
 `pnpm storybook` locally or build the static site with `pnpm storybook:build`.

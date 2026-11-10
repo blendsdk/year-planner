@@ -8,7 +8,7 @@ and January of the next year — with:
 
 - continuous interval ribbons that cross month rows;
 - overlapping layers and deterministic visual lanes;
-- date-range selection, painting, erasing, moves and resizes;
+- date-range selection, marquee, painting, erasing, moves and resizes;
 - custom annotations, holidays, cells and item content;
 - themeable CSS, print support and a controlled integration API.
 
@@ -33,7 +33,7 @@ and January of the next year — with:
 | React grid, ribbons, annotations, overflow, tooltips | Done — RD-06 |
 | Theming, presets, provider, slots, inspector | Done — RD-06 |
 | A3 multi-page print output and Fluent/MUI token adapters | Done — RD-06 |
-| Pointer selection, drag, resize, paint gestures | Not implemented — RD-07 |
+| Pointer, keyboard and touch interaction, marquee, drag/resize/paint/create | Done — RD-07 |
 | Full rollback, stale responses, controlled-host history | Not implemented — RD-08 |
 
 The renderer decision is recorded in
@@ -52,7 +52,8 @@ import "@blendsdk/react-year-planner/styles.css";
 <YearPlanner year={2027} items={items} layers={layers} activeLayerId="bookings" />;
 ```
 
-The package is **ESM-only**: `"type": "module"`, an `import`-only export map and
+Interaction is documented in [docs/interaction.md](docs/interaction.md). The
+package is **ESM-only**: `"type": "module"`, an `import`-only export map and
 an ES Vite build. Fluent UI v9 and MUI token adapters are available at
 `@blendsdk/react-year-planner/adapters/fluent` and
 `@blendsdk/react-year-planner/adapters/mui` without adding either design system

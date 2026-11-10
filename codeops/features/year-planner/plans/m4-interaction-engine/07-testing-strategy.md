@@ -144,7 +144,7 @@
 | ST-94 | Playwright paint/erase then undo | Erase splits and undo restores; paint unions | RD-07 AC5, AC6 |
 | ST-95 | Playwright keyboard-only path | Arrow, Shift+Arrow, Space, Enter and inspector move-by-week work | RD-07 AC11 |
 | ST-96 | Touch-enabled Chromium swipe with editing off/on | Off/auto scrolls and selects nothing; on selects and does not scroll | RD-07 AC12 |
-| ST-97 | Playwright mode change mid-drag | Preview cleared, no command, focus restored | RD-07 AC14 |
+| ST-97 | Mode change mid-drag (component test) | Preview cleared, no command, focus restored | RD-07 AC14 |
 | ST-98 | Storybook, API report and size checks | Static build includes interaction stories; `focusItemId`/`doubleClick` reported; under 60 kB; no new dependency | AR-30, AR-31, AR-36 |
 
 ## Test Categories

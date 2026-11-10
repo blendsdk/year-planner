@@ -148,6 +148,8 @@ describe("RD-07 selection policy", () => {
     expect(next.anchorDate).toBe("2027-02-01");
     expect(next.focusDate).toBe("2027-02-05");
     expect(next.items).toEqual([]);
+    expect(next.anchorItemId).toBeUndefined();
+    expect(next.focusItemId).toBeUndefined();
   });
 
   it("falls back to the focus date when Shift has no anchor", () => {
@@ -247,6 +249,7 @@ describe("RD-07 selection policy", () => {
     expect(next.dates).toEqual([day("2027-02-01")]);
     expect(next.anchorItemId).toBe("a");
     expect(next.focusItemId).toBe("c");
+    expect(next.anchorDate).toBe("2027-02-01");
   });
 
   it("clears the item anchor when the last item is removed", () => {
@@ -286,6 +289,8 @@ describe("RD-07 selection policy", () => {
     expect(next.focusItemId).toBe("c");
     expect(next.anchorDate).toBeUndefined();
     expect(next.focusDate).toBeUndefined();
+    expect(next.anchorDate).toBeUndefined();
+    expect(next.focusDate).toBeUndefined();
   });
 
   it("replaces items on a plain marquee and clears dates", () => {
@@ -305,6 +310,8 @@ describe("RD-07 selection policy", () => {
     expect(next.dates).toEqual([]);
     expect(next.anchorItemId).toBeUndefined();
     expect(next.focusItemId).toBe("c");
+    expect(next.anchorDate).toBeUndefined();
+    expect(next.focusDate).toBeUndefined();
   });
 
   it("adds intersecting items on a Shift marquee and clears dates", () => {
@@ -325,6 +332,8 @@ describe("RD-07 selection policy", () => {
     expect(next.dates).toEqual([]);
     expect(next.anchorItemId).toBeUndefined();
     expect(next.focusItemId).toBe("c");
+    expect(next.anchorDate).toBeUndefined();
+    expect(next.focusDate).toBeUndefined();
   });
 
   it("toggles intersecting items on a mod marquee and keeps dates", () => {
@@ -344,6 +353,9 @@ describe("RD-07 selection policy", () => {
     expect(next.items).toEqual(["b", "c"]);
     expect(next.dates).toEqual([day("2027-02-01")]);
     expect(next.focusItemId).toBe("c");
+    expect(next.anchorItemId).toBeUndefined();
+    expect(next.anchorDate).toBe("2027-02-01");
+    expect(next.focusDate).toBe("2027-02-01");
   });
 
   it("sorts and merges overlapping and adjacent ranges", () => {
@@ -481,5 +493,47 @@ describe("RD-07 selection policy", () => {
     expect(applyItemMarquee(selection(), [], mod, []).focusItemId).toBeUndefined();
     expect(applyItemMarquee(selection(), [], plain, []).focusItemId).toBeUndefined();
     expect(selectAllVisible(selection(), []).focusItemId).toBeUndefined();
+  });
+
+  it("shrinks a reversed drag to a chronological range", () => {
+    const next = applyDateDrag(selection(), "2027-02-05", "2027-02-01", plain);
+    expect(next.dates).toEqual([range("2027-02-01", "2027-02-06")]);
+    expect(next.anchorDate).toBe("2027-02-05");
+    expect(next.focusDate).toBe("2027-02-01");
+  });
+
+  it("handles a reversed Shift item range", () => {
+    const next = applyItemClick(selection({ items: ["d"], anchorItemId: "d" }), "b", shift, [
+      "a",
+      "b",
+      "c",
+      "d",
+    ]);
+    expect(next.items).toEqual(["b", "c", "d"]);
+    expect(next.anchorItemId).toBe("d");
+    expect(next.focusItemId).toBe("b");
+  });
+
+  it("ignores a reserved marquee", () => {
+    const input = selection({ dates: [day("2027-02-01")], items: ["a"] });
+    expect(applyItemMarquee(input, ["b"], reserved, ["a", "b"])).toEqual(input);
+  });
+
+  it("ignores a Shift click on a disabled date", () => {
+    const input = selection({ anchorDate: "2027-02-01", focusDate: "2027-02-02" });
+    expect(applyDateClick(input, "2027-02-03", shift, (date) => date === "2027-02-03")).toEqual(
+      input,
+    );
+  });
+
+  it("orders same-start items by the earliest fragment row even when a later row is seen first", () => {
+    const layout = ribbons([
+      fragment("multi", 1, 0),
+      fragment("multi", 0, 0),
+      fragment("other", 0, 1),
+    ]);
+    expect(
+      visualItemOrder([item("multi"), item("other")], layout, new Set(["multi", "other"])),
+    ).toEqual(["multi", "other"]);
   });
 });

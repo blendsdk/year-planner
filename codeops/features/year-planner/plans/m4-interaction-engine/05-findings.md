@@ -29,3 +29,6 @@
 - `RV-001-8`: the red phase stays an unresolved-import failure, matching the
   project's existing milestone evidence, and now links to the corrective task.
 - `RV-001-9`: the reserved modifier keyboard case is part of ST-72.
+- `RV-001-10`: ST-11's expected value was corrected before promotion to
+  match the RD-07 anchor/focus rule (the toggled item remains focused while its
+  anchor clears); the spec oracle and implementation now agree.

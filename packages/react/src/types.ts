@@ -27,9 +27,9 @@ import type { YearPlannerTheme, YearPlannerThemeName } from "./theme.js";
 export interface InteractionConfig {
   /** Active interaction mode; defaults to `auto`. */
   mode?: InteractionMode;
-  /** Touch editing policy; accepted but inert in this release. */
+  /** Touch editing policy; `"auto"` stays scroll-first until the host sets `"on"`. */
   touchEditing?: "auto" | "on" | "off";
-  /** Marquee interpretation; accepted but inert in this release. */
+  /** Marquee interpretation; defaults to item intersection. */
   marquee?: "items" | "dates";
   /** Defaults for inspector-created items. */
   createDefaults?: { kind: ItemKind; layerId: string };

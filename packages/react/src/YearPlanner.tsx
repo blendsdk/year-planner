@@ -211,14 +211,15 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     }, [ribbons]);
     const selectedItemIds = useMemo(() => new Set(state.selection.items), [state.selection.items]);
 
-    const isCellDisabled = useCallback(
+    const isDisabledDate = useCallback(
       (date: string): boolean => {
         if (!layout) return true;
+        if (!props.getDateMeta) return false;
         const row = layout.rows.find(
           (entry) => date >= entry.firstDate && date < entry.endDateExclusive,
         );
         const column = row?.columns.find((entry) => entry.date === date);
-        if (!row || !column || !props.getDateMeta) return false;
+        if (!row || !column) return true;
         return (
           props.getDateMeta(date, {
             isWeekend: column.isWeekend,
@@ -238,24 +239,31 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           .map((column) => column.date)
           .filter((date): date is string => date !== undefined);
         if (dates.length === 0) return undefined;
-        const startIndex =
-          candidate === undefined
-            ? 0
-            : Math.max(
-                0,
-                dates.findIndex((date) => date >= candidate),
-              );
-        for (let index = startIndex; index < dates.length; index += 1) {
-          const date = dates[index];
-          if (date && !isCellDisabled(date)) return date;
+        const index = candidate === undefined ? 0 : dates.findIndex((date) => date >= candidate);
+        const nextIndex = index === -1 ? dates.length : index;
+        let next: string | undefined;
+        for (let cursor = nextIndex; cursor < dates.length; cursor += 1) {
+          const date = dates[cursor];
+          if (date && !isDisabledDate(date)) {
+            next = date;
+            break;
+          }
         }
-        for (let index = Math.min(startIndex, dates.length) - 1; index >= 0; index -= 1) {
-          const date = dates[index];
-          if (date && !isCellDisabled(date)) return date;
+        let previous: string | undefined;
+        for (let cursor = nextIndex - 1; cursor >= 0; cursor -= 1) {
+          const date = dates[cursor];
+          if (date && !isDisabledDate(date)) {
+            previous = date;
+            break;
+          }
         }
-        return undefined;
+        if (candidate === undefined || !next) return previous ?? next;
+        if (!previous) return next;
+        const previousDistance = Math.abs(diffDays(previous, candidate));
+        const nextDistance = Math.abs(diffDays(candidate, next));
+        return previousDistance <= nextDistance ? previous : next;
       },
-      [isCellDisabled, layout],
+      [isDisabledDate, layout],
     );
 
     const announceFocus = useCallback((date: string) => {
@@ -326,7 +334,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           ? `[data-date="${escapeSelector(pendingFocus.id)}"]`
           : `[data-yp-part="item-proxy"][data-item-id="${escapeSelector(pendingFocus.id)}"]`;
       const element = viewport.querySelector<HTMLElement>(selector);
-      if (element) {
+      const targetDisabled = pendingFocus.type === "date" && isDisabledDate(pendingFocus.id);
+      if (element && !targetDisabled) {
         element.focus();
         setPendingFocus(undefined);
         return;
@@ -351,7 +360,14 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         announceFocus(fallback);
       }
       setPendingFocus(undefined);
-    }, [announceFocus, nearestEnabledDate, pendingFocus, state.items, state.selection.focusDate]);
+    }, [
+      announceFocus,
+      isDisabledDate,
+      nearestEnabledDate,
+      pendingFocus,
+      state.items,
+      state.selection.focusDate,
+    ]);
 
     const previousShowInspector = useRef(props.showInspector);
     useEffect(() => {
@@ -423,24 +439,6 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       if (!cell) return;
       viewport.scrollLeft = cell.offsetLeft - viewport.clientWidth / 2 + cell.clientWidth / 2;
     }, []);
-
-    const isDisabledDate = useCallback(
-      (date: string): boolean => {
-        if (!layout || !props.getDateMeta) return false;
-        const row = layout.rows.find(
-          (entry) => date >= entry.firstDate && date < entry.endDateExclusive,
-        );
-        const column = row?.columns.find((entry) => entry.date === date);
-        if (!row || !column) return true;
-        const meta = props.getDateMeta(date, {
-          isWeekend: column.isWeekend,
-          isContextMonth: column.isContextMonth,
-          itemIds: itemsByDate.get(date) ?? [],
-        });
-        return meta?.disabled === true;
-      },
-      [layout, props.getDateMeta, itemsByDate],
-    );
 
     const openInspector = useCallback(() => {
       if (props.showInspector === false) return;

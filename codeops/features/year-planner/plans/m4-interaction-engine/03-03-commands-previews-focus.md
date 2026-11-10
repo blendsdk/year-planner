@@ -172,7 +172,7 @@ announcement policy.
 | Grid root | Ctrl/Cmd+A | Select all visible items, clear dates |
 | Grid root | Ctrl/Cmd+Shift+key | Ignored, no diagnostic |
 | Grid root | Escape | Cancel gesture, else clear selection |
-| Grid root | Delete | Delete `focusItemId`, else the sole selected item, else no-op diagnostic |
+| Grid root | Delete | Delete the DOM-focused item, else `focusItemId`, else the sole selected item, else no-op diagnostic |
 
 The grid root is the single owner of Ctrl/Cmd+A, Escape and Delete. Cell/proxy
 handlers do not handle those keys. Every cell/proxy/root handler returns early

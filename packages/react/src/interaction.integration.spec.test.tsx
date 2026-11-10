@@ -91,7 +91,8 @@ describe("RD-07 controlled and uncontrolled selection", () => {
   });
 
   it("emits one controlled drag and keeps the host value authoritative", async () => {
-    const harness = setup({ selection: { dates: [], items: [] }, interaction: { mode: "select" } });
+    const controlled: PlannerSelection = { dates: [], items: [] };
+    const harness = setup({ selection: controlled, interaction: { mode: "select" } });
     const cell = harness.container.querySelector('[data-date="2027-02-01"]') as Element;
     pointer(cell, "pointerdown", cellPoint("2027-02-01"));
     pointer(harness.grid, "pointermove", cellPoint("2027-02-03"));
@@ -100,6 +101,8 @@ describe("RD-07 controlled and uncontrolled selection", () => {
     expect(harness.onSelectionChange.mock.calls[0]?.[0].dates).toEqual([
       { startDate: "2027-02-01", endDateExclusive: "2027-02-04" },
     ]);
+    expect(controlled.dates).toEqual([]);
+    expect(harness.container.querySelectorAll('[data-yp-part="selection"]')).toHaveLength(0);
   });
 
   it("seeds defaultSelection once and then updates locally", async () => {

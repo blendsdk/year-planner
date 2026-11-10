@@ -6,7 +6,7 @@ import {
   type PlannerLayer,
 } from "@blendsdk/year-planner-core";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { createRef } from "react";
+import { act, createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import type { YearPlannerHandle } from "../types.js";
 import { YearPlanner } from "../YearPlanner.js";
@@ -239,7 +239,7 @@ describe("RD-07 keyboard, focus and touch", () => {
       { defaultSelection: { dates: [], items: ["a"], focusItemId: "a" } },
       { items: [item("a", "bookings", "2027-02-01", "2027-02-03")] },
     );
-    harness.ref.current?.hideItem("a");
+    await act(async () => harness.ref.current?.hideItem("a"));
     await waitFor(() => expect(harness.container.querySelector('[data-item-id="a"]')).toBeNull());
     await waitFor(() =>
       expect(harness.container.querySelector('[data-yp-part="focus-status"]')).toHaveTextContent(
@@ -261,17 +261,17 @@ describe("RD-07 keyboard, focus and touch", () => {
     fireEvent.focus(proxy);
     fireEvent.keyDown(harness.grid, { key: "Delete" });
     await waitFor(() => expect(harness.container.querySelector('[data-item-id="a"]')).toBeNull());
-    harness.ref.current?.requestUndo();
+    await act(async () => harness.ref.current?.requestUndo());
     await waitFor(() =>
       expect(harness.container.querySelector('[data-item-id="a"]')).not.toBeNull(),
     );
-    harness.ref.current?.requestRedo();
+    await act(async () => harness.ref.current?.requestRedo());
     await waitFor(() => expect(harness.container.querySelector('[data-item-id="a"]')).toBeNull());
   });
 
   it("rejects undo in controlled mode", async () => {
     const harness = setup({ items: [item("a", "bookings", "2027-02-01", "2027-02-03")] });
-    harness.ref.current?.requestUndo();
+    await act(async () => harness.ref.current?.requestUndo());
     await waitFor(() =>
       expect(harness.onDiagnostic).toHaveBeenCalledWith(
         expect.objectContaining({ code: "UNDO_UNAVAILABLE" }),

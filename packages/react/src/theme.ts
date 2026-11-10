@@ -204,6 +204,7 @@ export function createTheme(theme: Partial<YearPlannerTheme> = {}): YearPlannerT
 
 /** Returns a frozen preset by name, or `undefined` for a host theme name. */
 export function getPresetTheme(name: string): YearPlannerTheme | undefined {
+  if (!Object.hasOwn(yearPlannerPresets, name)) return undefined;
   return yearPlannerPresets[name as YearPlannerThemeName];
 }
 

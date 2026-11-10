@@ -35,6 +35,7 @@ export interface MonthRowProps {
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
   activeDate: DateKey | undefined;
   activeItemId: string | undefined;
+  activeFragmentId: string | undefined;
   selectedItemIds: ReadonlySet<string>;
   pendingItemIds: ReadonlySet<string>;
   showISOWeekNumbers: boolean;
@@ -44,6 +45,7 @@ export interface MonthRowProps {
   renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
   components: YearPlannerComponents;
   displayTimeZone: string;
+  globalReadOnly: boolean;
   renderAnnotation?: ((context: AnnotationRenderContext) => ReactNode) | undefined;
   renderOverflow?: ((context: OverflowRenderContext) => ReactNode) | undefined;
   renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
@@ -70,6 +72,7 @@ export function MonthRow({
   itemsByDate,
   activeDate,
   activeItemId,
+  activeFragmentId,
   selectedItemIds,
   pendingItemIds,
   showISOWeekNumbers,
@@ -79,6 +82,7 @@ export function MonthRow({
   renderItem,
   components,
   displayTimeZone,
+  globalReadOnly,
   renderAnnotation,
   renderOverflow,
   renderTooltip,
@@ -149,11 +153,13 @@ export function MonthRow({
           selectedItemIds={selectedItemIds}
           pendingItemIds={pendingItemIds}
           activeItemId={activeItemId}
+          activeFragmentId={activeFragmentId}
           components={components}
           renderItem={renderItem}
           renderAnnotation={renderAnnotation}
           renderTooltip={renderTooltip}
           displayTimeZone={displayTimeZone}
+          globalReadOnly={globalReadOnly}
           onSelectItem={onSelectItem}
           onFocusItem={onFocusItem}
         />
@@ -161,6 +167,8 @@ export function MonthRow({
           row={row}
           ribbonRow={ribbonRow}
           items={items}
+          formatters={formatters}
+          displayTimeZone={displayTimeZone}
           renderOverflow={renderOverflow}
           onSelectItem={onSelectItem}
           onFocusItem={onFocusItem}

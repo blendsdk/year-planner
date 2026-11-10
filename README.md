@@ -13,8 +13,9 @@ and January of the next year — with:
 - themeable CSS, print support and a controlled integration API.
 
 > **Status: pre-alpha.** No package has been published yet. APIs, styles and
-> package names may change before the first release. The repository currently
-> contains the **M1 foundation slice**; the full R1 experience is in progress.
+> package names may change before the first release. The repository now contains
+> the **M1 + M2 core + RD-06 rendered view** slices; pointer interaction and the
+> full command lifecycle are still in progress.
 
 ## Current milestones
 
@@ -29,14 +30,41 @@ and January of the next year — with:
 | Entity model, validation, layers, visibility, editability | Done — M2 core |
 | Paint/erase, ribbons, lanes, compact overflow, hit index | Done — M2 core |
 | A3 paginate/fit print planning | Done — M2 core |
-| React rendering of items, inspector, tooltips, slots | Not implemented — RD-06 |
-| Selection, pointer/keyboard interaction, commands, undo | Not implemented — RD-07/RD-08 |
+| React grid, ribbons, annotations, overflow, tooltips | Done — RD-06 |
+| Theming, presets, provider, slots, inspector | Done — RD-06 |
+| A3 multi-page print output and Fluent/MUI token adapters | Done — RD-06 |
+| Pointer selection, drag, resize, paint gestures | Not implemented — RD-07 |
+| Full rollback, stale responses, controlled-host history | Not implemented — RD-08 |
 
 The renderer decision is recorded in
 [ADR 0001](docs/adr/0001-renderer-strategy.md), with measurements in
-[docs/renderer-spike.md](docs/renderer-spike.md). Test evidence for M1 and M2 is
-in [docs/test-report.md](docs/test-report.md); the M2 plan is in
-[`codeops/features/year-planner/plans/m2-layers-ribbons/`](codeops/features/year-planner/plans/m2-layers-ribbons/00-index.md).
+[docs/renderer-spike.md](docs/renderer-spike.md). Test evidence for all slices is
+in [docs/test-report.md](docs/test-report.md). Usage and theming are documented
+in [docs/react-view.md](docs/react-view.md); the CSP contract is in
+[docs/security.md](docs/security.md).
+
+## Usage
+
+```tsx
+import { YearPlanner } from "@blendsdk/react-year-planner";
+import "@blendsdk/react-year-planner/styles.css";
+
+<YearPlanner year={2027} items={items} layers={layers} activeLayerId="bookings" />;
+```
+
+The package is **ESM-only**: `"type": "module"`, an `import`-only export map and
+an ES Vite build. Fluent UI v9 and MUI token adapters are available at
+`@blendsdk/react-year-planner/adapters/fluent` and
+`@blendsdk/react-year-planner/adapters/mui` without adding either design system
+as a dependency.
+
+### Migrating the pre-RD-06 preview
+
+- `YearPlannerTheme` is now the token object; preset strings use
+  `YearPlannerThemeName`.
+- `display.theme` still accepts a preset string (or a host theme name).
+- `YearPlannerDisplay` and `YearPlannerPrint` remain aliases.
+- The additive `units` prop remains and wins over theme geometry.
 
 ## Packages
 

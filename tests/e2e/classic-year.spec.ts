@@ -52,3 +52,125 @@ test.describe("M1 classic year grid", () => {
     });
   });
 });
+
+test.describe("RD-06 items, inspector and print", () => {
+  test("renders ribbons, an annotation and inspector details @visual", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("select").nth(0).selectOption("2027");
+    await page.locator("select").nth(1).selectOption("classic-blue");
+    await expect(
+      page.locator('[data-yp-part="item-fragment"][data-item-id="booking"]'),
+    ).toHaveCount(2);
+    await expect(
+      page.locator('[data-yp-part="item-fragment"][data-item-id="holiday"]'),
+    ).toContainText("OH");
+    await page.locator('[data-yp-part="item-proxy"][data-item-id="maintenance"]').click();
+    await expect(page.getByRole("complementary", { name: "Planner inspector" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Maintenance window" })).toBeVisible();
+    await expect(
+      page.locator('[data-yp-part="item-fragment"][data-item-id="booking"]').last(),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-yp-part="item-fragment"][data-item-id="holiday"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-yp-part="item-fragment"][data-item-id^="overflow-"]'),
+    ).toHaveCount(3);
+    await page.mouse.move(0, 0);
+    await expect(page.getByRole("tooltip")).toHaveCount(0);
+    await expect(page.locator(".yp-root")).toHaveScreenshot("rd06-items-2027.png", {
+      maxDiffPixelRatio: 0.02,
+    });
+  });
+
+  test("opens the overflow popover and a tooltip", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("select").nth(0).selectOption("2027");
+    const overflow = page.locator('[data-yp-part="overflow-button"]').first();
+    await expect(overflow).toContainText("+17");
+    await overflow.click();
+    await expect(page.locator('[data-yp-part="overflow-popover"]')).toBeVisible();
+    await expect(page.locator(".yp-overflow-entry")).toHaveCount(17);
+    await page.keyboard.press("Escape");
+    await expect(page.locator('[data-yp-part="overflow-popover"]')).toHaveCount(0);
+    await page.locator('[data-yp-part="item-proxy"][data-item-id="booking"]').first().hover();
+    await expect(page.getByRole("tooltip")).toContainText("Winter booking");
+  });
+
+  test("prints 24 and 36 months as two and three A3 pages @print", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== "chromium", "PDF generation is Chromium-only");
+    await page.goto("/");
+    await page.locator("select").nth(0).selectOption("2027");
+    await page.setViewportSize({ width: 1600, height: 1400 });
+    await page.locator("select").nth(2).selectOption("24");
+    await page.emulateMedia({ media: "print" });
+    await expect(page.locator('[data-yp-part="print-page"]')).toHaveCount(2);
+    await page.pdf({
+      path: "test-results/rd06-24-months-a3.pdf",
+      format: "A3",
+      landscape: true,
+      printBackground: true,
+    });
+    const twoPages = readPdfInfo("test-results/rd06-24-months-a3.pdf");
+    expect(twoPages.pages).toBe(2);
+    expect(twoPages.pageSize).toContain("1191.12 x 842.88 pts");
+
+    await page.emulateMedia({ media: "screen" });
+    await page.locator("select").nth(2).selectOption("36");
+    await page.emulateMedia({ media: "print" });
+    await expect(page.locator('[data-yp-part="print-page"]')).toHaveCount(3);
+    await page.pdf({
+      path: "test-results/rd06-36-months-a3.pdf",
+      format: "A3",
+      landscape: true,
+      printBackground: true,
+    });
+    const threePages = readPdfInfo("test-results/rd06-36-months-a3.pdf");
+    expect(threePages.pages).toBe(3);
+    expect(threePages.pageSize).toContain("1191.12 x 842.88 pts");
+  });
+
+  test("keeps zoomed geometry inside a scrollable viewport", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("select").nth(0).selectOption("2027");
+    const zoom = page.locator('input[type="range"]');
+    await zoom.fill("1.5");
+    const row = page.locator('[data-row-id="2027-02"]');
+    await expect(row).toHaveCSS("height", "135px");
+    const dimensions = await page.locator('[data-yp-part="viewport"]').evaluate((element) => ({
+      scrollWidth: element.scrollWidth,
+      clientWidth: element.clientWidth,
+    }));
+    expect(dimensions.scrollWidth).toBeGreaterThan(dimensions.clientWidth);
+  });
+
+  test("renders under the documented CSP attribute allowance", async ({ page }) => {
+    const requests: string[] = [];
+    page.on("request", (request) => {
+      if (request.url().includes("attacker.example")) requests.push(request.url());
+    });
+    await page.route("**/", async (route) => {
+      const response = await route.fetch();
+      await route.fulfill({
+        response,
+        headers: {
+          ...response.headers(),
+          "content-security-policy":
+            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; style-src-attr 'unsafe-inline'; connect-src 'self' ws: wss:; img-src 'self' data:",
+        },
+      });
+    });
+    await page.goto("/?security=1");
+    await page.locator("select").nth(0).selectOption("2027");
+    await expect(page.getByRole("grid")).toBeVisible();
+    await expect(page.locator('[data-yp-part="item-fragment"]').first()).toBeVisible();
+    await expect(page.locator('[data-item-id="security-probe"]').first()).not.toHaveAttribute(
+      "style",
+      /attacker/,
+    );
+    expect(requests).toEqual([]);
+  });
+});

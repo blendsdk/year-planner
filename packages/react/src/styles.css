@@ -188,6 +188,12 @@
     border: 0;
   }
 
+  .yp-fragment-ribbon {
+    z-index: 3;
+    background: var(--yp-ribbon);
+    color: var(--yp-text-inverse);
+  }
+
   .yp-fragment-annotation {
     z-index: 4;
     display: flex;
@@ -575,6 +581,10 @@
     background: var(--yp-context);
   }
 
+  .yp-print-context.yp-print-weekend {
+    background: var(--yp-weekend);
+  }
+
   .yp-print-outside {
     background: var(--yp-surface-muted);
   }
@@ -745,9 +755,49 @@
 }
 
 @layer year-planner.components {
-  /* Item, inspector, tooltip and overflow styles are added in later phases. */
+  /* Component styles live in the base layer for compatibility with the classic grid. */
 }
 
 @layer year-planner.overrides {
-  /* Host overrides and unstyled mode are added in later phases. */
+  .yp-unstyled .yp-band,
+  .yp-unstyled .yp-heading,
+  .yp-unstyled .yp-month,
+  .yp-unstyled .yp-cell,
+  .yp-unstyled .yp-cell.yp-weekend,
+  .yp-unstyled .yp-cell.yp-context,
+  .yp-unstyled .yp-cell.yp-context.yp-weekend,
+  .yp-unstyled .yp-cell.yp-outside {
+    background: transparent;
+    color: var(--yp-text-primary);
+  }
+
+  .yp-unstyled .yp-grid {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .yp-unstyled .yp-fragment {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--yp-border);
+    color: var(--yp-text-primary);
+  }
+
+  .yp-unstyled .yp-proxy[aria-pressed="true"] {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--yp-selection-outline);
+  }
+
+  .yp-unstyled .yp-inspector,
+  .yp-unstyled .yp-tooltip,
+  .yp-unstyled .yp-overflow-popover {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .yp-unstyled .yp-overflow-button,
+  .yp-unstyled .yp-inspector-actions button,
+  .yp-unstyled .yp-inspector-create button,
+  .yp-unstyled .yp-inspector-close {
+    background: transparent;
+  }
 }

@@ -6,6 +6,7 @@ import {
   type Diagnostic,
   type DiagnosticCode,
   diagnostic,
+  diffDays,
   eraseItems,
   getItemEditability,
   getResolvedLayerPolicy,
@@ -16,6 +17,8 @@ import {
   type PlannerPeriod,
   paintItems,
   type ValidationResult,
+  validateAllDayPeriod,
+  validateTimedPeriod,
 } from "@blendsdk/year-planner-core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PlannerState } from "./state.js";
@@ -105,6 +108,14 @@ function isAllDay(period: PlannerPeriod): period is PlannerPeriod & { kind: "all
   return period.kind === "all-day";
 }
 
+function isValidPeriod(period: PlannerPeriod): boolean {
+  if (period.kind === "all-day") return validateAllDayPeriod(period).length === 0;
+  if (period.kind === "timed") return validateTimedPeriod(period).length === 0;
+  return false;
+}
+
+const ITEM_KINDS = ["highlight", "activity", "reservation", "annotation"] as const;
+
 function layerFor(
   model: { layers: PlannerLayer[] },
   layerId: string | undefined,
@@ -117,9 +128,20 @@ function applyHostOutcome(items: PlannerItem[], outcome: CommandOutcome): Planne
   const updated = outcome.updatedItems;
   const removed = outcome.removedItemIds;
   if (!updated && !removed) return items;
-  const remove = new Set([...(removed ?? []), ...(updated ?? []).map((item) => item.id)]);
-  const next = items.filter((item) => !remove.has(item.id));
-  for (const item of updated ?? []) next.push(item);
+  const updatedById = new Map((updated ?? []).map((item) => [item.id, item]));
+  const removedIds = new Set(removed ?? []);
+  const next: PlannerItem[] = [];
+  for (const item of items) {
+    if (removedIds.has(item.id)) continue;
+    const replacement = updatedById.get(item.id);
+    if (replacement) {
+      next.push(replacement);
+      updatedById.delete(item.id);
+    } else {
+      next.push(item);
+    }
+  }
+  for (const replacement of updatedById.values()) next.push(replacement);
   return next;
 }
 
@@ -203,21 +225,22 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
   const timeoutMs = input.commandTimeoutMs ?? 15000;
 
   const applyLocal = useCallback(
-    (command: PlannerCommand): boolean => {
-      if (state.itemsControlled) return false;
+    (
+      command: PlannerCommand,
+    ): { updatedItems: PlannerItem[]; removedItemIds: string[] } | undefined => {
+      if (state.itemsControlled) return undefined;
       const result = localCommandItems(state, command, createId);
-      if (!result) return false;
-      const snapshot = state.items;
-      const next = applyHostOutcome(snapshot, {
+      if (!result) return undefined;
+      const outcome: CommandOutcome = {
         accepted: true,
         revision: "local",
         updatedItems: result.updatedItems,
         removedItemIds: result.removedItemIds,
-      });
-      undoStack.current = [...undoStack.current.slice(-49), snapshot];
+      };
+      undoStack.current = [...undoStack.current.slice(-49), state.items];
       redoStack.current = [];
-      state.applyLocalItems(next);
-      return true;
+      state.applyLocalItems((previous) => applyHostOutcome(previous, outcome));
+      return result;
     },
     [state, createId],
   );
@@ -251,8 +274,23 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
         ...(input.activeLayerId ? { activeLayerId: input.activeLayerId } : {}),
       };
       if (command.type === "create") {
-        if (!command.item.layerId || command.item.version !== 1) {
+        const item = command.item;
+        if (
+          !item.id ||
+          !item.layerId ||
+          item.version !== 1 ||
+          !ITEM_KINDS.includes(item.kind) ||
+          !isValidPeriod(item.period)
+        ) {
           return failure(command, "INVALID_COMMAND", "Create requires a complete item");
+        }
+        if (item.kind === "annotation") {
+          return failure(command, "INVALID_COMMAND", "Annotation items are host-owned");
+        }
+        if (state.model.items.some((entry) => entry.id === item.id)) {
+          return failure(command, "INVALID_COMMAND", "Create uses a duplicate item ID", false, [
+            item.id,
+          ]);
         }
         const check = canCreateItem(command.item.layerId, {
           ...context,
@@ -274,8 +312,8 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
             "Paint target is not an active highlight layer",
           );
         }
-        if (!isAllDay(command.period)) {
-          return failure(command, "INVALID_COMMAND", "Paint requires an all-day range");
+        if (!isAllDay(command.period) || !isValidPeriod(command.period)) {
+          return failure(command, "INVALID_COMMAND", "Paint requires a valid all-day range");
         }
         if (
           isLayerEffectivelyHidden(layer.id, state) ||
@@ -311,6 +349,20 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
           command.itemId,
         ]);
       }
+      if (source.kind === "annotation") {
+        return failure(command, "INVALID_COMMAND", "Annotation items are host-owned", false, [
+          command.itemId,
+        ]);
+      }
+      if (command.type === "update" && ("id" in command.patch || "version" in command.patch)) {
+        return failure(
+          command,
+          "INVALID_COMMAND",
+          "Update cannot change identity or version",
+          false,
+          [command.itemId],
+        );
+      }
       if (command.type === "delete") {
         const check = canDeleteItem(command.itemId, context);
         if (!check.editable) {
@@ -327,10 +379,7 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
           ]);
         }
       }
-      if (command.type !== "update" && source.version !== command.expectedVersion) {
-        return failure(command, "STALE_REVISION", "Item version is stale", false, [command.itemId]);
-      }
-      if (command.type === "update" && source.version !== command.expectedVersion) {
+      if ("expectedVersion" in command && source.version !== command.expectedVersion) {
         return failure(command, "STALE_REVISION", "Item version is stale", false, [command.itemId]);
       }
       if (command.type === "move" || command.type === "resize") {
@@ -339,6 +388,18 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
             command,
             "TIMED_EDITING_UNSUPPORTED",
             "Timed editing is not supported",
+            false,
+            [command.itemId],
+          );
+        }
+        if (
+          !isValidPeriod(command.proposedPeriod) ||
+          diffDays(command.proposedPeriod.startDate, command.proposedPeriod.endDateExclusive) < 1
+        ) {
+          return failure(
+            command,
+            "INVALID_COMMAND",
+            "Proposed period must contain at least one day",
             false,
             [command.itemId],
           );
@@ -360,6 +421,42 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
         );
       }
 
+      const requestId = requestIdFactory();
+      const context: CommandContext = { requestId };
+      for (const id of ids) pendingRef.current.add(id);
+      setPendingItemIds(new Set(pendingRef.current));
+      inFlight.current.add(requestId);
+      const finishPending = (): void => {
+        for (const id of ids) pendingRef.current.delete(id);
+        inFlight.current.delete(requestId);
+        if (mounted.current) setPendingItemIds(new Set(pendingRef.current));
+      };
+
+      if (input.validateChange) {
+        try {
+          const validation = await input.validateChange(command, context);
+          if (!validation.permitted) {
+            finishPending();
+            const entries =
+              validation.diagnostics.length > 0
+                ? validation.diagnostics
+                : [diagnostic("VALIDATION_ERROR", "Host validation rejected the command")];
+            setFeedback({
+              code: (entries[0]?.code as DiagnosticCode | undefined) ?? "VALIDATION_ERROR",
+              message: entries[0]?.message ?? "Host validation rejected the command",
+              command,
+              retryable: true,
+            });
+            for (const entry of entries) input.onDiagnostic?.(entry);
+            input.onChangeRejected?.({ accepted: false, diagnostics: entries });
+            return false;
+          }
+        } catch {
+          finishPending();
+          return reject(failure(command, "VALIDATION_ERROR", "Host validation failed", true));
+        }
+      }
+
       if (command.type === "delete") {
         const confirm = input.confirmChange;
         let approved = false;
@@ -369,6 +466,7 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
           } else if (typeof window !== "undefined" && typeof window.confirm === "function") {
             approved = window.confirm("Delete this item?");
           } else {
+            finishPending();
             return reject(
               failure(command, "CONFIRMATION_UNAVAILABLE", "No confirmation handler is available"),
             );
@@ -376,62 +474,35 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
         } catch {
           approved = false;
         }
-        if (!approved) return false;
-      }
-
-      const requestId = requestIdFactory();
-      const context: CommandContext = { requestId };
-      if (input.validateChange) {
-        try {
-          const validation = await input.validateChange(command, context);
-          if (!validation.permitted) {
-            const entries =
-              validation.diagnostics.length > 0
-                ? validation.diagnostics
-                : [diagnostic("VALIDATION_ERROR", "Host validation rejected the command")];
-            setFeedback({
-              code: (entries[0]?.code as DiagnosticCode | undefined) ?? "VALIDATION_ERROR",
-              message: entries[0]?.message ?? "Host validation rejected the command",
-              command,
-              retryable: false,
-            });
-            for (const entry of entries) input.onDiagnostic?.(entry);
-            input.onChangeRejected?.({ accepted: false, diagnostics: entries });
-            return false;
-          }
-        } catch {
-          return reject(failure(command, "VALIDATION_ERROR", "Host validation failed", false));
+        if (!approved) {
+          finishPending();
+          return false;
         }
       }
 
-      for (const id of ids) pendingRef.current.add(id);
-      setPendingItemIds(new Set(pendingRef.current));
-      inFlight.current.add(requestId);
-
-      const finishPending = (): void => {
-        for (const id of ids) pendingRef.current.delete(id);
-        inFlight.current.delete(requestId);
-        if (mounted.current) setPendingItemIds(new Set(pendingRef.current));
-      };
+      if (!mounted.current) {
+        finishPending();
+        return false;
+      }
 
       if (!input.onChangeRequest) {
-        const applied = applyLocal(command);
+        const result = applyLocal(command);
         finishPending();
-        if (applied) {
-          const result = localCommandItems(state, command, createId);
-          input.onChangeCommitted?.({
-            accepted: true,
-            revision: "local",
-            ...(result
-              ? { updatedItems: result.updatedItems, removedItemIds: result.removedItemIds }
-              : {}),
-          });
+        if (!result) {
+          return reject(failure(command, "INVALID_COMMAND", "The command could not be applied"));
         }
-        return applied;
+        setFeedback(undefined);
+        input.onChangeCommitted?.({
+          accepted: true,
+          revision: "local",
+          updatedItems: result.updatedItems,
+          removedItemIds: result.removedItemIds,
+        });
+        return true;
       }
 
+      let timer: ReturnType<typeof setTimeout> | undefined;
       try {
-        let timer: ReturnType<typeof setTimeout> | undefined;
         const timeout = new Promise<"timeout">((resolve) => {
           timer = setTimeout(() => resolve("timeout"), timeoutMs);
         });
@@ -439,8 +510,10 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
           Promise.resolve(input.onChangeRequest(command, context)),
           timeout,
         ]);
-        if (timer) clearTimeout(timer);
-        if (!mounted.current || !inFlight.current.has(requestId)) return false;
+        if (!mounted.current || !inFlight.current.has(requestId)) {
+          finishPending();
+          return false;
+        }
         if (outcome === "timeout") {
           finishPending();
           return reject(failure(command, "COMMAND_TIMEOUT", "The host command timed out", true));
@@ -459,24 +532,27 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
         }
         if (!state.itemsControlled) {
           const result = localCommandItems(state, command, createId);
-          const next = applyHostOutcome(state.items, {
-            ...outcome,
-            ...(outcome.updatedItems || outcome.removedItemIds
-              ? {}
-              : result
-                ? { updatedItems: result.updatedItems, removedItemIds: result.removedItemIds }
-                : {}),
-          });
+          const effectiveOutcome: CommandOutcome =
+            result && !outcome.updatedItems && !outcome.removedItemIds
+              ? {
+                  ...outcome,
+                  updatedItems: result.updatedItems,
+                  removedItemIds: result.removedItemIds,
+                }
+              : outcome;
           undoStack.current = [...undoStack.current.slice(-49), state.items];
           redoStack.current = [];
-          state.applyLocalItems(next);
+          state.applyLocalItems((previous) => applyHostOutcome(previous, effectiveOutcome));
         }
         finishPending();
+        setFeedback(undefined);
         input.onChangeCommitted?.(outcome);
         return true;
       } catch {
         finishPending();
         return reject(failure(command, "HOST_REJECTED", "The host command failed", true));
+      } finally {
+        if (timer) clearTimeout(timer);
       }
     },
     [applyLocal, checkLocal, createId, input, reject, requestIdFactory, state, timeoutMs],
@@ -485,6 +561,10 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
   const requestCommand = useCallback((command: PlannerCommand) => run(command), [run]);
 
   const requestUndo = useCallback(() => {
+    if (input.readOnly) {
+      input.onDiagnostic?.(diagnostic("READ_ONLY", "Undo is disabled in read-only mode"));
+      return;
+    }
     if (state.itemsControlled) {
       input.onDiagnostic?.(diagnostic("UNDO_UNAVAILABLE", "Undo is host-owned"));
       return;
@@ -496,6 +576,10 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
   }, [input, state]);
 
   const requestRedo = useCallback(() => {
+    if (input.readOnly) {
+      input.onDiagnostic?.(diagnostic("READ_ONLY", "Redo is disabled in read-only mode"));
+      return;
+    }
     if (state.itemsControlled) {
       input.onDiagnostic?.(diagnostic("UNDO_UNAVAILABLE", "Redo is host-owned"));
       return;

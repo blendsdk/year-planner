@@ -101,6 +101,7 @@ export function createFormatters(locale: string | undefined): PlannerFormatters 
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
+            calendar: "gregory",
             timeZone: displayTimeZone,
           }),
       );

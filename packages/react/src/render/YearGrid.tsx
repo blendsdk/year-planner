@@ -33,6 +33,7 @@ export interface YearGridProps {
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
   activeDate: DateKey | undefined;
   activeItemId: string | undefined;
+  activeFragmentId: string | undefined;
   selectedItemIds: ReadonlySet<string>;
   pendingItemIds: ReadonlySet<string>;
   showISOWeekNumbers: boolean;
@@ -45,6 +46,7 @@ export interface YearGridProps {
   renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
   components: YearPlannerComponents;
   displayTimeZone: string;
+  globalReadOnly: boolean;
   ariaLabel: string;
   ariaDescribedBy?: string | undefined;
   onFocusDate: (date: DateKey) => void;
@@ -81,6 +83,7 @@ export function YearGrid({
   itemsByDate,
   activeDate,
   activeItemId,
+  activeFragmentId,
   selectedItemIds,
   pendingItemIds,
   showISOWeekNumbers,
@@ -93,6 +96,7 @@ export function YearGrid({
   renderTooltip,
   components,
   displayTimeZone,
+  globalReadOnly,
   ariaLabel,
   ariaDescribedBy,
   onFocusDate,
@@ -151,6 +155,7 @@ export function YearGrid({
             itemsByDate={itemsByDate}
             activeDate={activeDate}
             activeItemId={activeItemId}
+            activeFragmentId={activeFragmentId}
             selectedItemIds={selectedItemIds}
             pendingItemIds={pendingItemIds}
             showISOWeekNumbers={showISOWeekNumbers}
@@ -163,6 +168,7 @@ export function YearGrid({
             renderTooltip={renderTooltip}
             components={components}
             displayTimeZone={displayTimeZone}
+            globalReadOnly={globalReadOnly}
             onFocusDate={onFocusDate}
             onMoveFocus={onMoveFocus}
             onSelectDate={onSelectDate}

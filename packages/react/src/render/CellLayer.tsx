@@ -1,7 +1,7 @@
 import { type DateKey, isoWeekOf, type MonthRowLayout } from "@blendsdk/year-planner-core";
 import type { CSSProperties, ReactNode } from "react";
 import type { PlannerFormatters } from "../locale.js";
-import { safeMetaStyle } from "../safeStyle.js";
+import { safeCssColor, safeMetaStyle } from "../safeStyle.js";
 import type {
   CellRenderContext,
   DateMeta,
@@ -89,8 +89,8 @@ export function CellLayer({
     const style: CSSProperties | undefined = meta
       ? {
           ...safeMetaStyle(meta.style),
-          ...(meta.background ? { background: meta.background } : {}),
-          ...(meta.color ? { color: meta.color } : {}),
+          ...(safeCssColor(meta.background) ? { background: safeCssColor(meta.background) } : {}),
+          ...(safeCssColor(meta.color) ? { color: safeCssColor(meta.color) } : {}),
         }
       : undefined;
     return (

@@ -91,6 +91,51 @@ describe("RD-06 fragment rendering", () => {
     expect(fragment.style.height).toBe("18px");
   });
 
+  it("renders the layer color and item class when no item color is supplied", () => {
+    const { container } = render(
+      <YearPlanner
+        year={2027}
+        layers={[layer("ribbon", { color: "#1d4e89", label: "Bookings" })]}
+        items={[
+          item("colored", "ribbon", "2027-02-01", "2027-02-04", {
+            className: "host-item",
+          }),
+        ]}
+      />,
+    );
+    const fragment = container.querySelector(
+      '[data-yp-part="item-fragment"][data-item-id="colored"]',
+    ) as HTMLElement;
+    expect(fragment.style.background).toBe("rgb(29, 78, 137)");
+    expect(fragment).toHaveClass("host-item");
+    expect(proxy(container, "colored")?.getAttribute("aria-label")).toContain("Bookings");
+  });
+
+  it("gives the first visible proxy a tab stop without a selection", () => {
+    const { container } = render(
+      <YearPlanner
+        year={2027}
+        layers={[layer("ribbon")]}
+        items={[item("first", "ribbon", "2027-02-01", "2027-02-04")]}
+      />,
+    );
+    expect(proxy(container, "first")).toHaveAttribute("tabindex", "0");
+  });
+
+  it("keeps one tab stop for a cross-month selected item", () => {
+    const { container } = render(
+      <YearPlanner
+        year={2027}
+        layers={[layer("ribbon")]}
+        items={[item("cross", "ribbon", "2027-01-28", "2027-02-07")]}
+        defaultSelection={{ dates: [], items: ["cross"] }}
+      />,
+    );
+    const proxies = container.querySelectorAll('[data-yp-part="item-proxy"][data-item-id="cross"]');
+    expect(proxies[0]).toHaveAttribute("tabindex", "0");
+    expect(proxies[1]).toHaveAttribute("tabindex", "-1");
+  });
+
   it("keeps one roving tab stop and planner-owned proxy/handles", () => {
     const { container } = render(
       <YearPlanner
@@ -202,6 +247,7 @@ describe("RD-06 fragment rendering", () => {
     const { container } = render(
       <YearPlanner year={2027} layers={[layer("ribbon")]} items={items} />,
     );
+    expect(container.querySelectorAll('[data-yp-part="item-fragment"]')).toHaveLength(3);
     const button = container.querySelector('[data-yp-part="overflow-button"]');
     expect(button).toHaveTextContent("+17");
     fireEvent.click(button as Element);
@@ -348,6 +394,68 @@ describe("RD-06 cells and slots", () => {
     void container;
   });
 
+  it("drops URL values from item and date colors", () => {
+    const malicious = "url(https://attacker.example/pixel)";
+    const { container } = render(
+      <YearPlanner
+        year={2027}
+        layers={[layer("ribbon", { color: "#1d4e89" }), layer("notes", { channel: "annotation" })]}
+        items={[
+          item("colored", "ribbon", "2027-02-01", "2027-02-04", {
+            color: malicious,
+            textColor: malicious,
+            style: {
+              background: 'image-set("https://attacker.example/a" 1x)',
+              color: "u\\72l(https://attacker.example/b)",
+            } as never,
+          }),
+          item("annotation", "notes", "2027-02-01", "2027-02-02", {
+            kind: "annotation",
+            annotation: { background: malicious },
+          }),
+        ]}
+        getDateMeta={(date) =>
+          date === "2027-02-01"
+            ? {
+                background: malicious,
+                color: malicious,
+                style: { background: 'image-set("https://attacker.example/c" 1x)' },
+              }
+            : undefined
+        }
+      />,
+    );
+    const fragment = container.querySelector(
+      '[data-yp-part="item-fragment"][data-item-id="colored"]',
+    ) as HTMLElement;
+    expect(fragment.style.background).toBe("rgb(29, 78, 137)");
+    expect(fragment.style.color).toBe("");
+    expect(fragment.getAttribute("style")).not.toContain("attacker");
+    const cell = container.querySelector('[data-date="2027-02-01"]') as HTMLElement;
+    expect(cell.getAttribute("style") ?? "").not.toContain("attacker");
+  });
+
+  it("clears a tooltip when its item becomes hidden", () => {
+    const { container, rerender } = render(
+      <YearPlanner
+        year={2027}
+        layers={[layer("ribbon")]}
+        items={[item("tip", "ribbon", "2027-02-01", "2027-02-04")]}
+      />,
+    );
+    fireEvent.focus(proxy(container, "tip") as Element);
+    expect(screen.getByRole("tooltip")).toBeInTheDocument();
+    rerender(
+      <YearPlanner
+        year={2027}
+        layers={[layer("ribbon")]}
+        items={[item("tip", "ribbon", "2027-02-01", "2027-02-04")]}
+        visibility={{ hiddenGroupIds: [], hiddenLayerIds: [], hiddenItemIds: ["tip"] }}
+      />,
+    );
+    expect(screen.queryByRole("tooltip")).toBeNull();
+  });
+
   it("never renders metadata as HTML and filters unsafe item styles", () => {
     const { container } = render(
       <YearPlanner
@@ -367,7 +475,7 @@ describe("RD-06 cells and slots", () => {
     const fragment = container.querySelector('[data-item-id="safe"]') as HTMLElement;
     expect(container.querySelector("img")).toBeNull();
     expect(fragment.innerHTML).not.toContain("<img");
-    expect(fragment.style.backgroundImage).toBe("");
+    expect(fragment.style.backgroundImage).not.toContain("url");
     expect(fragment.style.color).toBe("rgb(18, 52, 86)");
   });
 
@@ -382,7 +490,7 @@ describe("RD-06 cells and slots", () => {
     );
     expect(container.querySelector(".yp-root")).toHaveClass("yp-unstyled");
     expect(proxy(container, "plain")).not.toBeNull();
-    expect(proxy(container, "plain")).toHaveAttribute("tabindex", "-1");
+    expect(proxy(container, "plain")).toHaveAttribute("tabindex", "0");
   });
 
   it("warns when renderItem nests an interactive control in the proxy", async () => {

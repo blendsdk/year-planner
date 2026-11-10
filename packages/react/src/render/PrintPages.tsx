@@ -10,6 +10,7 @@ import { isoWeekOf } from "@blendsdk/year-planner-core";
 import type { CSSProperties, ReactNode } from "react";
 import { rowTemplate } from "../geometry.js";
 import type { PlannerFormatters } from "../locale.js";
+import { safeCssColor } from "../safeStyle.js";
 
 /** Props for the hidden print tree. */
 export interface PrintPagesProps {
@@ -91,6 +92,15 @@ function printRow(
           const layer = item ? layers.get(item.layerId) : undefined;
           if (!item || !layer) return null;
           if (fragment.channel === "annotation" && !showAnnotations) return null;
+          if (fragment.channel === "ribbon" && fragment.lane >= ribbonRow.visibleLaneCount)
+            return null;
+          const annotationBackground =
+            fragment.channel === "annotation" ? item.annotation?.background : undefined;
+          const background =
+            safeCssColor(item.color) ??
+            safeCssColor(annotationBackground) ??
+            safeCssColor(layer.color);
+          const textColor = safeCssColor(item.textColor);
           const style: CSSProperties = {
             left: fragment.x,
             top:
@@ -102,9 +112,8 @@ function printRow(
               fragment.channel === "background" || fragment.channel === "highlight"
                 ? ribbonRow.height
                 : fragment.height,
-            ...(item.color ? { background: item.color } : {}),
-            ...(item.annotation?.background ? { background: item.annotation.background } : {}),
-            ...(item.textColor ? { color: item.textColor } : {}),
+            ...(background ? { background } : {}),
+            ...(textColor ? { color: textColor } : {}),
           };
           const label =
             fragment.channel === "annotation"
@@ -181,10 +190,10 @@ export function PrintPages({
                 }}
               >
                 <div className="yp-print-month" />
-                {weekdayNames.map((name, index) => (
+                {Array.from({ length: 37 }, (_, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: fixed 37-column weekday header
                   <div className="yp-print-heading" key={`print-heading-${index}`}>
-                    {name}
+                    {weekdayNames[index % 7] ?? ""}
                   </div>
                 ))}
                 <div className="yp-print-month" />
@@ -211,10 +220,10 @@ export function PrintPages({
                 }}
               >
                 <div className="yp-print-month" />
-                {weekdayNames.map((name, index) => (
+                {Array.from({ length: 37 }, (_, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: fixed 37-column weekday footer
                   <div className="yp-print-heading" key={`print-footer-heading-${index}`}>
-                    {name}
+                    {weekdayNames[index % 7] ?? ""}
                   </div>
                 ))}
                 <div className="yp-print-month" />

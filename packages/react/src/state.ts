@@ -16,10 +16,18 @@ import type { InteractionConfig } from "./types.js";
 
 const EMPTY_SELECTION: PlannerSelection = { dates: [], items: [] };
 
+function isProductionBuild(): boolean {
+  const candidate = (globalThis as { process?: unknown }).process;
+  if (!candidate || typeof candidate !== "object") return false;
+  const env = (candidate as { env?: unknown }).env;
+  if (!env || typeof env !== "object") return false;
+  return (env as { NODE_ENV?: unknown }).NODE_ENV === "production";
+}
+
 function useDevWarning(active: boolean, message: string): void {
   const warned = useRef(false);
   useEffect(() => {
-    if (!active || warned.current || process.env.NODE_ENV === "production") return;
+    if (!active || warned.current || isProductionBuild()) return;
     warned.current = true;
     console.warn(message);
   }, [active, message]);
@@ -91,7 +99,7 @@ export interface PlannerState {
   interactionMode: InteractionMode;
   setInteractionMode: (mode: InteractionMode) => void;
   /** Applies items only in uncontrolled mode; returns whether it applied. */
-  applyLocalItems: (next: PlannerItem[]) => boolean;
+  applyLocalItems: (next: PlannerItem[] | ((previous: PlannerItem[]) => PlannerItem[])) => boolean;
 }
 
 function initialVisibility(
@@ -192,11 +200,16 @@ export function usePlannerState(input: PlannerStateInput): PlannerState {
     });
   }, [setVisibility, visibility]);
 
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
   const applyLocalItems = useCallback(
-    (next: PlannerItem[]) => {
+    (next: PlannerItem[] | ((previous: PlannerItem[]) => PlannerItem[])) => {
       if (itemsControlled) return false;
-      setLocalItems(next);
-      input.onItemsChange?.(next);
+      const previous = itemsRef.current;
+      const resolved = typeof next === "function" ? next(previous) : next;
+      itemsRef.current = resolved;
+      setLocalItems(resolved);
+      input.onItemsChange?.(resolved);
       return true;
     },
     [input.onItemsChange, itemsControlled],

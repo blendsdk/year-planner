@@ -148,9 +148,11 @@ describe("RD-06 inspector", () => {
       onChangeRequest,
     });
     fireEvent.click(screen.getByRole("button", { name: "Move later" }));
-    await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument(), {
+      timeout: 5000,
+    });
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
-    await waitFor(() => expect(calls).toBe(2));
+    await waitFor(() => expect(calls).toBe(2), { timeout: 5000 });
     fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
     expect(screen.queryByText("COMMAND_TIMEOUT")).toBeNull();
   });

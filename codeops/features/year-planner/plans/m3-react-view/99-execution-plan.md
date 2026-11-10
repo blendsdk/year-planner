@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 15:44
-> **Progress**: 38/46 tasks (83%)
+> **Last Updated**: 2026-11-10 16:58
+> **Progress**: 46/46 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -247,14 +247,14 @@ the independent phase review.
 
 ### Step 7.1: Integration and closeout
 
-- [ ] 7.1.1 Add the full validate → visibility → ribbons → render integration test — `packages/react/src/integration.spec.test.tsx`
-- [ ] 7.1.2 Update the demo with items, inspector, overflow and 14/24/36-month print controls — `apps/demo/src/App.tsx`
-- [ ] 7.1.3 Update the Storybook story with themes, items and inspector — `apps/storybook/stories/ClassicYear.stories.tsx`
-- [ ] 7.1.4 Update E2E visuals/print, CSS scoping, CSP and 14/24/36 A3 PDF evidence — `tests/e2e/classic-year.spec.ts`
-- [ ] 7.1.5 Add theming/CSP/React-view docs, the pre-1.0 migration note and update README/test report — `docs/react-view.md`, `docs/security.md`, `README.md`, `docs/test-report.md`, `.changeset/`
-- [ ] 7.1.6 Update roadmap, plan status and API reports — `codeops/features/year-planner/00-roadmap.md`, `codeops/00-roadmap.md`, `packages/*/etc/*.api.md`
-- [ ] 7.1.7 Run `pnpm verify:full` and record PDF evidence — `docs/test-report.md`
-- [ ] 7.1.8 Run the independent phase review, record findings and clean temporary artifacts — `05-findings.md`
+- [x] 7.1.1 Add the full validate → visibility → ribbons → render integration test — `packages/react/src/integration.spec.test.tsx` ✅ (completed: 2026-11-10 16:58)
+- [x] 7.1.2 Update the demo with items, inspector, overflow and 14/24/36-month print controls — `apps/demo/src/App.tsx` ✅ (completed: 2026-11-10 16:58)
+- [x] 7.1.3 Update the Storybook story with themes, items and inspector — `apps/storybook/stories/ClassicYear.stories.tsx` ✅ (completed: 2026-11-10 16:58)
+- [x] 7.1.4 Update E2E visuals/print, CSS scoping, CSP and 14/24/36 A3 PDF evidence — `tests/e2e/classic-year.spec.ts` ✅ (completed: 2026-11-10 16:58)
+- [x] 7.1.5 Add theming/CSP/React-view docs, the pre-1.0 migration note and update README/test report — `docs/react-view.md`, `docs/security.md`, `README.md`, `docs/test-report.md`, `.changeset/` ✅ (completed: 2026-11-10 16:58)
+- [x] 7.1.6 Update roadmap, plan status and API reports — `codeops/features/year-planner/00-roadmap.md`, `codeops/00-roadmap.md`, `packages/*/etc/*.api.md` ✅ (completed: 2026-11-10 16:58)
+- [x] 7.1.7 Run `pnpm verify:full` and record PDF evidence — `docs/test-report.md` ✅ (completed: 2026-11-10 16:58)
+- [x] 7.1.8 Run the independent phase review, record findings and clean temporary artifacts — `05-findings.md` ✅ (completed: 2026-11-10 16:58)
 
 **Deliverables**:
 - [ ] Full core/React pipeline test passes

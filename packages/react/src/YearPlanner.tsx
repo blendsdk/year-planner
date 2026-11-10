@@ -32,21 +32,14 @@ import { usePlannerState } from "./state.js";
 import { resolveTheme, themeToCssVars } from "./theme.js";
 import type { YearPlannerHandle, YearPlannerProps } from "./types.js";
 
-function isKnownDate(layout: { rows: { columns: { date?: string }[] }[] }, date: string): boolean {
-  return layout.rows.some((row) => row.columns.some((column) => column.date === date));
+function escapeSelector(value: string): string {
+  const cssObject = globalThis.CSS;
+  if (cssObject && typeof cssObject.escape === "function") return cssObject.escape(value);
+  return value.replace(/["\\]/g, "\\$&");
 }
 
-/** Applies a command to a local item array using the RD-08 outcome contract. */
-function applyOutcome(
-  items: PlannerItem[],
-  updated: PlannerItem[] | undefined,
-  removed: string[] | undefined,
-): PlannerItem[] {
-  if (!updated && !removed) return items;
-  const remove = new Set([...(removed ?? []), ...(updated ?? []).map((item) => item.id)]);
-  const next = items.filter((item) => !remove.has(item.id));
-  for (const item of updated ?? []) next.push(item);
-  return next;
+function isKnownDate(layout: { rows: { columns: { date?: string }[] }[] }, date: string): boolean {
+  return layout.rows.some((row) => row.columns.some((column) => column.date === date));
 }
 
 /**
@@ -237,18 +230,27 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       if (!pendingFocus) return;
       const selector =
         pendingFocus.type === "date"
-          ? `[data-date="${pendingFocus.id}"]`
-          : `[data-yp-part="item-proxy"][data-item-id="${pendingFocus.id}"]`;
+          ? `[data-date="${escapeSelector(pendingFocus.id)}"]`
+          : `[data-yp-part="item-proxy"][data-item-id="${escapeSelector(pendingFocus.id)}"]`;
       const element = viewportRef.current?.querySelector<HTMLElement>(selector);
       element?.focus();
       setPendingFocus(undefined);
     }, [pendingFocus]);
 
+    const previousShowInspector = useRef(props.showInspector);
     useEffect(() => {
-      if (props.showInspector === false) return;
-      if (state.selection.items.length > 0 || state.selection.dates.length > 0) {
+      if (props.showInspector === false) {
+        previousShowInspector.current = false;
+        return;
+      }
+      if (
+        previousShowInspector.current === false ||
+        state.selection.items.length > 0 ||
+        state.selection.dates.length > 0
+      ) {
         setInspectorOpen(true);
       }
+      previousShowInspector.current = props.showInspector;
     }, [state.selection, props.showInspector]);
 
     useEffect(() => {
@@ -296,7 +298,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const scrollToDate = useCallback((date: string) => {
       const viewport = viewportRef.current;
       if (!viewport) return;
-      const cell = viewport.querySelector<HTMLElement>(`[data-date="${date}"]`);
+      const cell = viewport.querySelector<HTMLElement>(`[data-date="${escapeSelector(date)}"]`);
       if (!cell) return;
       viewport.scrollLeft = cell.offsetLeft - viewport.clientWidth / 2 + cell.clientWidth / 2;
     }, []);
@@ -439,6 +441,23 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       }
     };
 
+    const selectedVisibleItem = state.selection.items.find((id) =>
+      ribbons.fragments.some((fragment) => fragment.itemId === id),
+    );
+    const activeVisibleItem =
+      activeItemId && ribbons.fragments.some((fragment) => fragment.itemId === activeItemId)
+        ? activeItemId
+        : undefined;
+    const rovingItemId =
+      activeVisibleItem ??
+      selectedVisibleItem ??
+      ribbons.fragments.find(
+        (fragment) => fragment.channel === "ribbon" || fragment.channel === "annotation",
+      )?.itemId;
+    const activeFragmentId = ribbons.fragments.find(
+      (fragment) => fragment.itemId === rovingItemId,
+    )?.fragmentId;
+
     const content = (
       <>
         <div
@@ -453,12 +472,13 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             ribbons={ribbons}
             formatters={formatters}
             zoom={resolvedDisplay.options.zoom}
-            bandWidth={Number(theme.monthBandWidth)}
+            bandWidth={layout.monthBandWidth}
             layers={layers}
             items={items}
             itemsByDate={itemsByDate}
             activeDate={effectiveActiveDate}
-            activeItemId={activeItemId ?? state.selection.items[0]}
+            activeItemId={rovingItemId}
+            activeFragmentId={activeFragmentId}
             selectedItemIds={selectedItemIds}
             pendingItemIds={pipeline.pendingItemIds}
             showISOWeekNumbers={resolvedDisplay.options.showISOWeekNumbers}
@@ -471,6 +491,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             renderTooltip={props.renderTooltip}
             components={props.components ?? {}}
             displayTimeZone={resolvedDisplay.options.displayTimeZone}
+            globalReadOnly={props.readOnly === true}
             ariaLabel={props.ariaLabel ?? `Year planner ${layout.highlightYear}`}
             ariaDescribedBy={props.ariaDescribedBy}
             onFocusDate={setActiveDate}
@@ -510,7 +531,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             formatters={formatters}
             layers={layers}
             items={items}
-            bandWidth={Number(theme.monthBandWidth)}
+            bandWidth={layout.monthBandWidth}
             showISOWeekNumbers={resolvedDisplay.options.showISOWeekNumbers}
             showAnnotations={resolvedDisplay.options.showAnnotations}
             weekdayNames={formatters.weekdayNames()}
@@ -536,12 +557,4 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
 
 function getPresetClass(themeName: string): string {
   return /^[a-z0-9-]+$/.test(themeName) ? `yp-theme-${themeName}` : "";
-}
-
-/** Applies a host command outcome to an item array. */
-export function applyCommandOutcome(
-  items: PlannerItem[],
-  outcome: { updatedItems?: PlannerItem[]; removedItemIds?: string[] },
-): PlannerItem[] {
-  return applyOutcome(items, outcome.updatedItems, outcome.removedItemIds);
 }

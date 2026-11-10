@@ -45,6 +45,21 @@ describe("RD-06 print output", () => {
     expect(tree.querySelector(".yp-print-week")).not.toBeNull();
     expect(tree.querySelector('[data-print-item-id="booking"]')).not.toBeNull();
     expect(tree.querySelector(".yp-print-weekend")).not.toBeNull();
+    expect(tree.querySelectorAll(".yp-print-heading")).toHaveLength(74);
+  });
+
+  it("prints only visible compact lanes and no overflow fragments", () => {
+    const items = Array.from({ length: 20 }, (_, index) => ({
+      id: `overflow-${index}`,
+      kind: "activity" as const,
+      layerId: "ribbon",
+      period: { kind: "all-day" as const, startDate: "2027-04-01", endDateExclusive: "2027-04-04" },
+      title: `Overflow ${index}`,
+      version: 1,
+    }));
+    const { container } = render(<YearPlanner year={2027} layers={[layer]} items={items} />);
+    const tree = container.querySelector('[data-yp-part="print-pages"]') as HTMLElement;
+    expect(tree.querySelectorAll('[data-print-item-id^="overflow-"]')).toHaveLength(3);
   });
 
   it("uses the width-bound fit scale and exposes the print theme", () => {

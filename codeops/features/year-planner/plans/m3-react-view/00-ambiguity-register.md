@@ -1,6 +1,6 @@
 # Ambiguity Register: RD-06 React View, Theming and Style Integration
 
-> **Status**: ✅ GATE PASSED — all 30 items resolved
+> **Status**: ✅ GATE PASSED — all 31 items resolved
 > **Last Updated**: 2026-11-10 14:30
 > **Authority**: `--auto-design` delegated resolutions; scope follows the user objective "deliver RD-06"
 > **Policy version**: 1
@@ -48,6 +48,7 @@
 | 28 | API | Existing `YearPlannerTheme` is a preset string; RD-06 redefines it as a token object and drops `units` | Break without note / keep aliases / new names | **AI — delegated (AR-28):** follow RD-06 (`YearPlannerTheme` = token object, `YearPlannerThemeName` = preset). Keep `YearPlannerDisplay`/`YearPlannerPrint` aliases and the additive `units` prop for compatibility; document the pre-1.0 break and migration in `README.md` and a changeset. | ✅ Resolved |
 | 29 | Diagnostics | Added codes were scattered and RD-08 names differ | Scattered lists / one table / reuse core codes | **AI — delegated (AR-29):** one diagnostic table owns every RD-06 code and its core-to-public mapping; `READ_ONLY`, `STALE_REVISION`, `INVALID_PAINT_TARGET`, `INVALID_COMMAND`, `CONFIRMATION_UNAVAILABLE`, `COMMAND_TIMEOUT`, `HOST_REJECTED`, `VALIDATION_ERROR`, `UNDO_UNAVAILABLE`, `INVALID_LOCALE`, `TIMED_EDITING_UNSUPPORTED` are RD-06 public codes. Core `NOT_EDITABLE`/`STALE_VERSION`/`INVALID_PAINT_CHANNEL` map to them at the React boundary. | ✅ Resolved |
 | 30 | Packaging | Module format for the modern React package | ESM-only / dual ESM+CJS / UMD | **User directive (AR-30):** ESM-only. `"type": "module"`, `exports` expose `import` only, Vite builds `formats: ["es"]`, no CJS/UMD build, and `attw --profile esm-only` enforces it. | ✅ Resolved |
+| 31 | Data | Annotation items in local command mode | Include in local state / host-owned / duplicate | **AI — delegated (AR-31):** annotation items are host-owned in this slice. Delete/move/resize/create for annotations is rejected with `INVALID_COMMAND`; the inspector shows a host-owned note. Revisit when the host annotation editing API is defined. | ✅ Resolved |
 
 ## Delegated resolution provenance
 
@@ -257,6 +258,22 @@ Confidence: High — existing toolchain and user directive.
 Hardening: package guard test asserts `type`, export map and Vite format.
 Policy version: 1 · Root invocation ID: yp-rd06-2026-11-10T14-24Z
 Reopen triggers: a consumer requires CJS.
+```
+
+### AR-31 — Annotation edits are host-owned
+
+```text
+Authority: AI — delegated by --auto-design
+Eligibility: state-ownership boundary inside the existing annotation-as-item model.
+Objective: prevent local annotation edits from duplicating or resurrecting host data.
+Decision: annotation items are read-only for commands in this slice; the inspector explains this.
+Evidence: annotations arrive through a separate controlled prop; local items state does not own them.
+Rejected alternatives: merge annotations into local state (ownership ambiguity); allow commands (duplicate-ID churn).
+Strongest counterargument: annotations are items in RD-04 and users expect delete/move.
+Confidence: High — avoids data corruption while keeping rendering complete.
+Hardening: command rejection tests and inspector note; host editing API can replace this in a later slice.
+Policy version: 1 · Root invocation ID: yp-rd06-2026-11-10T14-24Z
+Reopen triggers: a controlled annotation editing API is specified.
 ```
 
 ## Resolution notes

@@ -29,6 +29,8 @@ describe("theme implementation", () => {
     const copy = createTheme({ ...preset, ribbon: "#000001" });
     expect(copy.ribbon).toBe("#000001");
     expect(yearPlannerPresets.modern.ribbon).not.toBe("#000001");
+    expect(getPresetTheme("constructor")).toBeUndefined();
+    expect(getPresetTheme("__proto__")).toBeUndefined();
   });
 
   it("keeps color values and unitless numbers intact", () => {

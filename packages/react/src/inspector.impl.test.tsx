@@ -43,6 +43,39 @@ describe("inspector implementation", () => {
     expect(screen.getByRole("complementary", { name: "Planner inspector" })).toBeInTheDocument();
   });
 
+  it("reopens after being closed when showInspector toggles false then true", () => {
+    const { rerender } = render(<YearPlanner year={2016} />);
+    fireEvent.click(screen.getByRole("button", { name: "Close inspector" }));
+    expect(screen.queryByRole("complementary", { name: "Planner inspector" })).toBeNull();
+    rerender(<YearPlanner year={2016} showInspector={false} />);
+    rerender(<YearPlanner year={2016} showInspector />);
+    expect(screen.getByRole("complementary", { name: "Planner inspector" })).toBeInTheDocument();
+  });
+
+  it("disables paint when the active highlight layer is locked", () => {
+    render(
+      <YearPlanner
+        year={2016}
+        groups={groups}
+        layers={[
+          layers[0] as PlannerLayer,
+          {
+            id: "highlight",
+            name: "Highlight",
+            channel: "highlight",
+            color: "#ffd166",
+            locked: true,
+          },
+        ]}
+        items={[item]}
+        activeLayerId="highlight"
+        defaultSelection={{ dates: [], items: ["booking"] }}
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Paint range" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Erase range" })).toBeDisabled();
+  });
+
   it("disables actions in a read-only planner", () => {
     render(
       <YearPlanner

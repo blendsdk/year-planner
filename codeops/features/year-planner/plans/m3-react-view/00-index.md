@@ -1,7 +1,7 @@
 # M3 React View Implementation Plan
 
 > **Feature**: Year Planner for React — rendered calendar, items, theming, inspector, slots and print
-> **Status**: Planning Complete
+> **Status**: Execution Complete
 > **Created**: 2026-11-10
 > **Implements**: year-planner/RD-06
 > **CodeOps Artifact Schema**: 1
@@ -59,7 +59,7 @@ command request pipeline are required by RD-06 acceptance criteria.
 | 03-04 | [State and Commands](03-04-state-commands.md) | Controlled state, selection, request pipeline |
 | 03-05 | [Inspector](03-05-inspector.md) | Default inspector, actions, feedback, retry |
 | 03-06 | [Print and Integrations](03-06-print-integrations.md) | A3 print tree, Fluent/MUI adapters |
-| 05 | Findings Ledger (`05-findings.md`) | Post-phase review and rulings; created in Phase 7 |
+| 05 | [Findings Ledger](05-findings.md) | Post-phase review and rulings |
 | 07 | [Testing Strategy](07-testing-strategy.md) | ST cases and verification |
 | 99 | [Execution Plan](99-execution-plan.md) | Phases and task checklist |
 

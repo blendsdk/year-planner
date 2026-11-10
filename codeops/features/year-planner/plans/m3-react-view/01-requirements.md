@@ -23,6 +23,8 @@
   React tests. AC3 is partially evidenced: the slot contract uses host
   `<button>` fixtures and token adapters; actual Fluent/MUI package components
   are RD-11 examples (AR-27).
+- Annotation items render but remain host-owned for edits (AR-31); command
+  rejection is explicit rather than a local merge.
 
 ### Minimal contracts pulled from RD-04/RD-07/RD-08
 

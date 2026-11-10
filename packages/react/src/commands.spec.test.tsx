@@ -441,3 +441,123 @@ describe("RD-06 command pipeline: host mode", () => {
     Object.defineProperty(window, "confirm", { value: original, configurable: true });
   });
 });
+
+describe("RD-06 command validation regressions", () => {
+  it("commits the same paint IDs that are rendered", async () => {
+    let count = 0;
+    const createId = (): string => {
+      count += 1;
+      return `created-${count}`;
+    };
+    const onCommitted = vi.fn();
+    const { ref, container } = harness({
+      activeLayerId: "highlight",
+      layers: [layer("highlight", { channel: "highlight" })],
+      defaultItems: [
+        item("h1", "highlight", "2016-01-04", "2016-01-08", { kind: "highlight", title: "H" }),
+      ],
+      interaction: { createId },
+      onChangeCommitted: onCommitted,
+    });
+    act(() => {
+      ref.current?.requestCommand({
+        type: "paint",
+        layerId: "highlight",
+        period: { kind: "all-day", startDate: "2016-01-06", endDateExclusive: "2016-01-09" },
+        operation: "union",
+        defaults: { kind: "highlight", title: "H" },
+        expectedVersions: { h1: 1 },
+      });
+    });
+    await waitFor(() => expect(onCommitted).toHaveBeenCalled());
+    const outcome = onCommitted.mock.calls[0]?.[0] as CommandOutcome;
+    if (!outcome.accepted) throw new Error("expected acceptance");
+    const committedIds = (outcome.updatedItems ?? []).map((entry) => entry.id);
+    const renderedIds = Array.from(
+      container.querySelectorAll('[data-yp-part="item-fragment"]'),
+    ).map((node) => node.getAttribute("data-item-id"));
+    expect(committedIds.sort()).toEqual(renderedIds.sort());
+  });
+
+  it("rejects duplicate create IDs, reverse periods and one-day violations", async () => {
+    const { ref, onDiagnostic } = harness();
+    act(() => {
+      ref.current?.requestCommand({ type: "create", item: item("a", "ribbon") });
+      ref.current?.requestCommand({
+        type: "move",
+        itemId: "a",
+        proposedPeriod: {
+          kind: "all-day",
+          startDate: "2016-01-08",
+          endDateExclusive: "2016-01-04",
+        },
+        expectedVersion: 1,
+      });
+    });
+    await waitFor(() => {
+      const codes = onDiagnostic.mock.calls.map(([entry]) => entry.code);
+      expect(codes.filter((code) => code === "INVALID_COMMAND").length).toBeGreaterThanOrEqual(2);
+    });
+  });
+
+  it("rejects invalid create kinds/periods and same-day resize", async () => {
+    const { ref, onDiagnostic } = harness();
+    act(() => {
+      ref.current?.requestCommand({
+        type: "create",
+        item: item("bad-kind", "ribbon", "2016-01-04", "2016-01-05", { kind: "nope" as never }),
+      });
+      ref.current?.requestCommand({
+        type: "create",
+        item: item("bad-period", "ribbon", "2016-01-04", "2016-01-04"),
+      });
+      ref.current?.requestCommand({
+        type: "resize",
+        itemId: "a",
+        proposedPeriod: {
+          kind: "all-day",
+          startDate: "2016-01-04",
+          endDateExclusive: "2016-01-04",
+        },
+        expectedVersion: 1,
+      });
+    });
+    await waitFor(() => {
+      const invalid = onDiagnostic.mock.calls.filter(([entry]) => entry.code === "INVALID_COMMAND");
+      expect(invalid.length).toBeGreaterThanOrEqual(3);
+    });
+  });
+
+  it("rejects annotation edits because annotations are host-owned", async () => {
+    const { ref, onDiagnostic } = harness({
+      layers: [layer("notes", { channel: "annotation" })],
+      defaultItems: [item("note", "notes", "2016-01-04", "2016-01-05", { kind: "annotation" })],
+    });
+    act(() => {
+      ref.current?.requestCommand({
+        type: "move",
+        itemId: "note",
+        proposedPeriod: {
+          kind: "all-day",
+          startDate: "2016-01-05",
+          endDateExclusive: "2016-01-06",
+        },
+        expectedVersion: 1,
+      });
+    });
+    await waitFor(() =>
+      expect(onDiagnostic).toHaveBeenCalledWith(
+        expect.objectContaining({ code: "INVALID_COMMAND" }),
+      ),
+    );
+  });
+
+  it("rejects undo and redo in read-only mode", async () => {
+    const { ref, onDiagnostic } = harness({ readOnly: true });
+    act(() => ref.current?.requestUndo());
+    act(() => ref.current?.requestRedo());
+    await waitFor(() =>
+      expect(onDiagnostic).toHaveBeenCalledWith(expect.objectContaining({ code: "READ_ONLY" })),
+    );
+  });
+});

@@ -115,6 +115,8 @@ pipeline:
   A missing, background, ribbon, annotation or foreground layer yields
   `INVALID_PAINT_TARGET` (the same code for every invalid paint target).
 - Actions never mutate `items` directly; they use the command pipeline.
+- Annotation items are host-owned (AR-31): their edit actions are disabled and
+  the body shows a host-owned note.
 
 ## Accessibility
 

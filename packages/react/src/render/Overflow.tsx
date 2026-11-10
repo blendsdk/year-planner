@@ -1,5 +1,6 @@
 import type { MonthRowLayout, PlannerItem, RibbonRow } from "@blendsdk/year-planner-core";
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
+import type { PlannerFormatters } from "../locale.js";
 import type { OverflowRenderContext } from "../types.js";
 
 /** Props for one row's overflow control. */
@@ -7,6 +8,8 @@ export interface OverflowProps {
   row: MonthRowLayout;
   ribbonRow: RibbonRow;
   items: ReadonlyMap<string, PlannerItem>;
+  formatters: PlannerFormatters;
+  displayTimeZone: string;
   renderOverflow?: ((context: OverflowRenderContext) => ReactNode) | undefined;
   onSelectItem: (itemId: string) => void;
   onFocusItem: (itemId: string) => void;
@@ -22,6 +25,8 @@ export function Overflow({
   row,
   ribbonRow,
   items,
+  formatters,
+  displayTimeZone,
   renderOverflow,
   onSelectItem,
   onFocusItem,
@@ -104,6 +109,7 @@ export function Overflow({
                     }}
                   >
                     <span>{item.title ?? item.id}</span>
+                    <small>{formatters.formatPeriod(item.period, displayTimeZone)}</small>
                   </button>
                 </li>
               ))}

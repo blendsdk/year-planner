@@ -16,6 +16,9 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ["react", "react-dom", "react/jsx-runtime", "@blendsdk/year-planner-core"],
+      output: {
+        banner: (chunk) => (chunk.fileName === "index.js" ? '"use client";' : ""),
+      },
     },
     emptyOutDir: true,
   },

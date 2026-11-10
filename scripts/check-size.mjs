@@ -30,6 +30,16 @@ for (const file of files) {
   console.log(`${file}: ${(size / 1024).toFixed(2)} kB gzip`);
 }
 
+const entrySource = readFileSync("packages/react/dist/index.js", "utf8");
+if (!entrySource.startsWith('"use client";')) {
+  console.error("React entry is missing the use client directive");
+  process.exit(1);
+}
+if (entrySource.includes("process.env")) {
+  console.error("React entry contains an unguarded process.env reference");
+  process.exit(1);
+}
+
 const totalKb = total / 1024;
 console.log(
   `Core + React package (JS + CSS): ${totalKb.toFixed(2)} kB gzip / ${BUDGET_KB} kB budget`,

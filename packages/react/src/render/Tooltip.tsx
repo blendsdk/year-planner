@@ -14,6 +14,7 @@ export interface TooltipState {
 /** Props for the owned tooltip overlay. */
 export interface TooltipProps {
   state: TooltipState;
+  id?: string;
   formatters: PlannerFormatters;
   displayTimeZone: string;
   components: YearPlannerComponents;
@@ -26,18 +27,22 @@ export interface TooltipProps {
  */
 export function Tooltip({
   state,
+  id: providedId,
   formatters,
   displayTimeZone,
   components,
   renderTooltip,
 }: TooltipProps): ReactNode {
-  const id = useId();
+  const generatedId = useId();
+  const id = providedId ?? generatedId;
   const TooltipSlot = components.Tooltip;
   const context: TooltipRenderContext = { item: state.item, fragment: state.fragment };
+  const maxX = typeof window === "undefined" ? state.x : window.innerWidth - 300;
+  const maxY = typeof window === "undefined" ? state.y : window.innerHeight - 80;
   const style: CSSProperties = {
     position: "fixed",
-    left: Math.max(8, state.x),
-    top: Math.max(8, state.y),
+    left: Math.min(Math.max(8, state.x), Math.max(8, maxX)),
+    top: Math.min(Math.max(8, state.y), Math.max(8, maxY)),
     zIndex: 20,
   };
   return (

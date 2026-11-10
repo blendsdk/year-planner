@@ -106,11 +106,12 @@ describe("RD-06 theming and geometry", () => {
   it("lets explicit units win over theme geometry", () => {
     const { container } = render(
       <YearPlannerProvider theme={{ rowHeight: 100 }}>
-        <YearPlanner year={2016} units={{ rowHeight: 80 }} />
+        <YearPlanner year={2016} units={{ rowHeight: 80, monthBand: 80 }} />
       </YearPlannerProvider>,
     );
     const row = container.querySelector('[data-row-id="2016-01"]') as HTMLElement;
     expect(row.style.height).toBe("80px");
+    expect(row.style.gridTemplateColumns).toMatch(/^80px /);
   });
 
   it("lets an explicit preset win over the provider and cssVars win over both", () => {
@@ -452,6 +453,13 @@ describe("RD-06 visibility, selection and filter", () => {
     expect(
       container.querySelector('[data-item-id="timed"] [role="button"]')?.getAttribute("aria-label"),
     ).toContain("timed");
+  });
+
+  it("reopens the inspector when showInspector changes from false to true", () => {
+    const { rerender } = render(<YearPlanner year={2016} showInspector={false} />);
+    expect(screen.queryByRole("complementary", { name: "Planner inspector" })).toBeNull();
+    rerender(<YearPlanner year={2016} showInspector />);
+    expect(screen.getByRole("complementary", { name: "Planner inspector" })).toBeInTheDocument();
   });
 
   it("moves date focus with arrow keys", () => {

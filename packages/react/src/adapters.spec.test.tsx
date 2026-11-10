@@ -62,7 +62,11 @@ describe("RD-06 framework adapters", () => {
           },
         ]}
         defaultSelection={{ dates: [], items: ["button-item"] }}
-        renderCell={() => <button type="button">Fluent-like cell button</button>}
+        renderCell={(context) =>
+          context.date === "2016-02-01" ? (
+            <button type="button">Fluent-like cell button</button>
+          ) : null
+        }
         renderInspector={() => <button type="button">MUI-like inspector button</button>}
       />,
     );

@@ -20,7 +20,7 @@ import type { MonthRowLayout } from '@blendsdk/year-planner-core';
 import type { PaintDefaults } from '@blendsdk/year-planner-core';
 import type { PlannerCommand } from '@blendsdk/year-planner-core';
 import type { PlannerFilter } from '@blendsdk/year-planner-core';
-import { PlannerItem } from '@blendsdk/year-planner-core';
+import type { PlannerItem } from '@blendsdk/year-planner-core';
 import type { PlannerLayer } from '@blendsdk/year-planner-core';
 import type { PlannerPeriod } from '@blendsdk/year-planner-core';
 import type { PlannerSelection } from '@blendsdk/year-planner-core';
@@ -38,12 +38,6 @@ export interface AnnotationRenderContext {
     // (undocumented)
     item: PlannerItem;
 }
-
-// @public
-export function applyCommandOutcome(items: PlannerItem[], outcome: {
-    updatedItems?: PlannerItem[];
-    removedItemIds?: string[];
-}): PlannerItem[];
 
 // @public
 export interface CellRenderContext extends DateMetaContext {

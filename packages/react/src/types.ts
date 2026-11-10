@@ -23,13 +23,13 @@ import type {
 import type { ComponentType, CSSProperties, ReactNode } from "react";
 import type { YearPlannerTheme, YearPlannerThemeName } from "./theme.js";
 
-/** Configuration for interaction features. RD-07 owns gesture behavior. */
+/** Configuration for interaction features. Gesture behavior is supplied by the interaction layer. */
 export interface InteractionConfig {
   /** Active interaction mode; defaults to `auto`. */
   mode?: InteractionMode;
-  /** Touch editing policy; accepted but inert in RD-06. */
+  /** Touch editing policy; accepted but inert in this release. */
   touchEditing?: "auto" | "on" | "off";
-  /** Marquee interpretation; accepted but inert in RD-06. */
+  /** Marquee interpretation; accepted but inert in this release. */
   marquee?: "items" | "dates";
   /** Defaults for inspector-created items. */
   createDefaults?: { kind: ItemKind; layerId: string };

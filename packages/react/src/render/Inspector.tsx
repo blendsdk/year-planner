@@ -1,10 +1,12 @@
 import {
   addDays,
+  canCreateItem,
   canDeleteItem,
   diffDays,
   getEffectiveVisibility,
   getItemEditability,
   getResolvedLayerPolicy,
+  isLayerEffectivelyHidden,
   type LayerGroup,
   type PlannerFilter,
   type PlannerItem,
@@ -127,6 +129,25 @@ function commandForPaint(
     },
     expectedVersions,
   };
+}
+
+function hostOwnedCreateDisabled(
+  layerId: string,
+  model: PlannerModel,
+  visibility: VisibilityState,
+  filter: PlannerFilter,
+  readOnly: boolean,
+  mode: InspectorProps["interactionMode"],
+): boolean {
+  const check = canCreateItem(layerId, {
+    model,
+    visibility,
+    filter,
+    mode,
+    ...(readOnly ? { readOnly: true } : {}),
+    activeLayerId: layerId,
+  });
+  return !check.editable;
 }
 
 /**
@@ -342,16 +363,47 @@ function DefaultInspectorBody({
               ...(activeLayerId ? { activeLayerId } : {}),
             })
           : undefined;
+        const resizeEditability = layer
+          ? getItemEditability(item.id, "resize", {
+              model,
+              visibility,
+              filter,
+              mode: interactionMode,
+              ...(readOnly ? { readOnly: true } : {}),
+              ...(activeLayerId ? { activeLayerId } : {}),
+            })
+          : undefined;
         const paintLayer = model.layers.find(
           (entry) => entry.id === activeLayerId && entry.channel === "highlight",
         );
+        const paintLayerEditable =
+          paintLayer &&
+          !readOnly &&
+          !paintLayer.locked &&
+          !paintLayer.readOnly &&
+          getResolvedLayerPolicy(paintLayer.id, model).allowPaint &&
+          !isLayerEffectivelyHidden(paintLayer.id, { model, visibility, filter }) &&
+          (interactionMode === "auto" ||
+            interactionMode === "paint" ||
+            interactionMode === "erase");
+        const paintEditability = paintLayer
+          ? getItemEditability(item.id, "paint", {
+              model,
+              visibility,
+              filter,
+              mode: interactionMode,
+              ...(readOnly ? { readOnly: true } : {}),
+              ...(activeLayerId ? { activeLayerId } : {}),
+            })
+          : undefined;
         const timed = item.period.kind !== "all-day";
+        const hostOwned = item.kind === "annotation";
         const paintCommand =
-          paintLayer && !timed
+          paintLayer && !timed && paintLayerEditable && paintEditability?.editable
             ? commandForPaint(item, selection, paintLayer.id, "union", interaction, model)
             : undefined;
         const eraseCommand =
-          paintLayer && !timed
+          paintLayer && !timed && paintLayerEditable && paintEditability?.editable
             ? commandForPaint(item, selection, paintLayer.id, "subtract", interaction, model)
             : undefined;
         return (
@@ -379,7 +431,7 @@ function DefaultInspectorBody({
             >
               <button
                 type="button"
-                disabled={!deletable?.editable}
+                disabled={hostOwned || !deletable?.editable}
                 onClick={() =>
                   void pipeline.requestCommand({
                     type: "delete",
@@ -392,7 +444,7 @@ function DefaultInspectorBody({
               </button>
               <button
                 type="button"
-                disabled={!editability?.editable || timed}
+                disabled={hostOwned || !editability?.editable || timed}
                 onClick={() =>
                   item.period.kind === "all-day" &&
                   void pipeline.requestCommand({
@@ -411,7 +463,7 @@ function DefaultInspectorBody({
               </button>
               <button
                 type="button"
-                disabled={!editability?.editable || timed}
+                disabled={hostOwned || !editability?.editable || timed}
                 onClick={() =>
                   item.period.kind === "all-day" &&
                   void pipeline.requestCommand({
@@ -430,7 +482,7 @@ function DefaultInspectorBody({
               </button>
               <button
                 type="button"
-                disabled={!editability?.editable || timed}
+                disabled={hostOwned || !resizeEditability?.editable || timed}
                 onClick={() =>
                   item.period.kind === "all-day" &&
                   diffDays(item.period.startDate, item.period.endDateExclusive) > 1 &&
@@ -450,7 +502,7 @@ function DefaultInspectorBody({
               </button>
               <button
                 type="button"
-                disabled={!editability?.editable || timed}
+                disabled={hostOwned || !resizeEditability?.editable || timed}
                 onClick={() =>
                   item.period.kind === "all-day" &&
                   void pipeline.requestCommand({
@@ -482,6 +534,7 @@ function DefaultInspectorBody({
                 Erase range
               </button>
             </div>
+            {hostOwned && <p className="yp-inspector-note">Annotation items are host-owned.</p>}
             {timed && (
               <p className="yp-inspector-note">Timed items cannot be moved, resized or painted.</p>
             )}
@@ -515,7 +568,18 @@ function DefaultInspectorBody({
       <section className="yp-inspector-create">
         <button
           type="button"
-          disabled={!createLayer || !createDate}
+          disabled={
+            !createLayer ||
+            !createDate ||
+            hostOwnedCreateDisabled(
+              createLayer,
+              model,
+              visibility,
+              filter,
+              readOnly,
+              interactionMode,
+            )
+          }
           onClick={() => {
             if (!createLayer || !createDate) return;
             const startDate = createDate;

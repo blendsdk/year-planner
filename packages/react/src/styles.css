@@ -1,0 +1,170 @@
+.yp-root {
+  --yp-band: #76bfe5;
+  --yp-band-text: #ffffff;
+  --yp-weekend: #e3f7fc;
+  --yp-context: #eaf4f5;
+  --yp-outside: #f2fafc;
+  --yp-grid: #71818b;
+  --yp-text: #1b2329;
+  --yp-muted: #4a5a63;
+  display: inline-block;
+  color: var(--yp-text);
+  font-family: Arial, Helvetica, sans-serif;
+  font-variant-numeric: tabular-nums;
+  background: #fff;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.yp-theme-classic-yellow {
+  --yp-band: #f6f368;
+  --yp-band-text: #24251d;
+  --yp-weekend: #ffffbe;
+  --yp-context: #e9e8ee;
+  --yp-outside: #ffffcb;
+  --yp-grid: #858783;
+  --yp-text: #24251d;
+  --yp-muted: #5d5e55;
+}
+
+.yp-theme-modern {
+  --yp-band: #243b53;
+  --yp-band-text: #ffffff;
+  --yp-weekend: #eef2f6;
+  --yp-context: #f5f7fa;
+  --yp-outside: #fafbfc;
+  --yp-grid: #8a99a8;
+  --yp-text: #102a43;
+  --yp-muted: #52606d;
+}
+
+.yp-grid {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  border: 1px solid var(--yp-grid);
+  border-right: 0;
+  border-bottom: 0;
+  background: #fff;
+}
+
+.yp-row {
+  display: grid;
+  min-height: 0;
+}
+
+.yp-band,
+.yp-heading,
+.yp-month,
+.yp-cell {
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid var(--yp-grid);
+  border-bottom: 1px solid var(--yp-grid);
+  box-sizing: border-box;
+}
+
+.yp-band,
+.yp-heading,
+.yp-month {
+  background: var(--yp-band);
+  color: var(--yp-band-text);
+}
+
+.yp-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.yp-month {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 13px;
+  font-size: 18px;
+  line-height: 1.16;
+  font-weight: 700;
+}
+
+.yp-month.yp-context {
+  background: var(--yp-band);
+  color: var(--yp-band-text);
+}
+
+.yp-cell {
+  position: relative;
+  background: #fff;
+  color: var(--yp-text);
+}
+
+.yp-cell.yp-weekend {
+  background: var(--yp-weekend);
+}
+
+.yp-cell.yp-context {
+  background: var(--yp-context);
+}
+
+.yp-cell.yp-context.yp-weekend {
+  background: var(--yp-weekend);
+}
+
+.yp-cell.yp-outside {
+  background: var(--yp-outside);
+}
+
+.yp-day-number {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  font-size: 12px;
+}
+
+.yp-week-number {
+  position: absolute;
+  bottom: 3px;
+  left: 5px;
+  font-size: 9px;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--yp-muted);
+}
+
+.yp-empty {
+  padding: 24px;
+  border: 1px solid var(--yp-grid);
+  color: var(--yp-muted);
+}
+
+@media print {
+  @page {
+    size: A3 landscape;
+    margin: 6mm;
+  }
+
+  .yp-root {
+    --yp-print-scale: 0.72;
+    width: calc(1995px * var(--yp-print-scale));
+    height: calc(1332px * var(--yp-print-scale));
+    overflow: hidden;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .yp-grid {
+    transform: scale(var(--yp-print-scale));
+    transform-origin: top left;
+  }
+
+  .yp-grid {
+    break-inside: auto;
+  }
+
+  .yp-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

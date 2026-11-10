@@ -1,0 +1,55 @@
+{
+  "name": "@blendsdk/react-year-planner",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "description": "React classic year planner view for Year Planner for React",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blendsdk/year-planner.git"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "build": "vite build && cp src/styles.css dist/styles.css && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run -c vitest.config.ts",
+    "test:watch": "vitest -c vitest.config.ts",
+    "pack:check": "publint && attw --pack . --profile esm-only --exclude-entrypoints ./styles.css"
+  },
+  "dependencies": {
+    "@blendsdk/year-planner-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "5.2.0",
+    "jsdom": "31.0.0",
+    "publint": "0.3.25",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "typescript": "6.0.3",
+    "vite": "7.3.8",
+    "vitest": "3.2.7"
+  }
+}

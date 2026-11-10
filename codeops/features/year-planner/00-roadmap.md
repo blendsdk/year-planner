@@ -15,9 +15,9 @@
 
 | ID | Title | RD | Plan | Stage | Status | Last Updated | Depends-on / Blocker |
 |----|-------|----|------|-------|--------|--------------|----------------------|
-| RD-01 | Foundation, packages and toolchain | [RD-01](requirements/RD-01-foundation.md) | [m1-foundation-core](plans/m1-foundation-core/00-index.md) | Plan Created | 📋 | 2026-11-10 | — |
-| RD-02 | Temporal core and interval algebra | [RD-02](requirements/RD-02-temporal-core.md) | [m1-foundation-core](plans/m1-foundation-core/00-index.md) | Plan Created | 📋 | 2026-11-10 | depends on RD-01 |
-| RD-03 | Classic year layout and dynamic months | [RD-03](requirements/RD-03-classic-year-layout.md) | [m1-foundation-core](plans/m1-foundation-core/00-index.md) | Plan Created | 📋 | 2026-11-10 | depends on RD-01, RD-02 |
+| RD-01 | Foundation, packages and toolchain | [RD-01](requirements/RD-01-foundation.md) | [m1-foundation-core](plans/m1-foundation-core/00-index.md) | Plan Preflighted | 🔬 | 2026-11-10 | — |
+| RD-02 | Temporal core and interval algebra | [RD-02](requirements/RD-02-temporal-core.md) | [m1-foundation-core](plans/m1-foundation-core/00-index.md) | Plan Preflighted | 🔬 | 2026-11-10 | depends on RD-01 |
+| RD-03 | Classic year layout and dynamic months | [RD-03](requirements/RD-03-classic-year-layout.md) | [m1-foundation-core](plans/m1-foundation-core/00-index.md) | Plan Preflighted | 🔬 | 2026-11-10 | depends on RD-01, RD-02 |
 | RD-04 | Layers, visibility, annotations and validation | [RD-04](requirements/RD-04-layers-visibility.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01, RD-02 |
 | RD-05 | Continuous ribbons, lanes, overflow and print | [RD-05](requirements/RD-05-ribbons-lanes-print.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-02, RD-03, RD-04 |
 | RD-06 | React view, theming and style integration | [RD-06](requirements/RD-06-react-view-theming.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-03, RD-04, RD-05 |

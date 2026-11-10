@@ -1,6 +1,6 @@
 # Ambiguity Register: M1 Foundation and Core
 
-> **Status**: ✅ GATE PASSED — all 10 items resolved
+> **Status**: ✅ GATE PASSED — all 14 items resolved
 > **Last Updated**: 2026-11-10 09:26
 > **Bulk acceptance note**: The user directed “proceed” after the requirements
 > preflight and the M1 plan scope was presented. The technical defaults below are
@@ -19,6 +19,10 @@
 | 8 | Scope | Deferred from this plan | Include / defer | **RD-04–RD-12 behavior (ribbons, interactions, commands, a11y audit, docs site) deferred to later plans.** | ✅ Resolved |
 | 9 | Process | Commit mode | Ask / auto / none | **Ask after each verified task (exec-plan default).** | ✅ Resolved |
 | 10 | Technical | Renderer decision | HTML/SVG/hybrid now | **M0 spike runs in this plan for evidence; M1 minimal grid uses HTML/CSS Grid; no public renderer switch.** | ✅ Resolved |
+| 11 | Behavior | `highlightYear` default | Start month / preset year | **`year` preset → `highlightYear = year`; explicit range → start month's year.** | ✅ Resolved |
+| 12 | Behavior | `contextMonths` bounds | Any integers / 0–12 and total 12–36 | **before/after integers 0–12; total 12–36; else `INVALID_CONTEXT_MONTHS`.** | ✅ Resolved |
+| 13 | Quality | CI scope in M1 | Narrow / full RD-01 matrix | **Include browser matrix, e2e/visual/print/pack-check/Storybook; a11y/bench incremental.** | ✅ Resolved |
+| 14 | Quality | Print/36-month coverage | Defer / include | **Include 2016 blue + 2017 yellow print and 36-month keyboard/print checks.** | ✅ Resolved |
 
 ## Resolution notes
 

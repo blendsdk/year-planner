@@ -45,12 +45,20 @@ type DateKey = string;
 type InstantISO = string;
 
 function parseDateKey(value: string): { ok: true; date: DateKey } | { ok: false; diagnostic: Diagnostic };
+function formatDateKey(date: DateKey): string;
 function addDays(date: DateKey, days: number): DateKey;
+function subtractDays(date: DateKey, days: number): DateKey;
 function diffDays(a: DateKey, b: DateKey): number;
 function compareDateKeys(a: DateKey, b: DateKey): -1 | 0 | 1;
+function minDate(a: DateKey, b: DateKey): DateKey;
+function maxDate(a: DateKey, b: DateKey): DateKey;
+function dayOfWeek(date: DateKey): 0 | 1 | 2 | 3 | 4 | 5 | 6; // Saturday-first
 function daysInMonth(year: number, month: number): number;
 function isoWeekOf(date: DateKey): { week: number; weekYear: number };
 function eachDate(start: DateKey, endExclusive: DateKey): DateKey[];
+function normalize(periods: PlannerPeriod[], mergeAdjacent?: boolean): PlannerPeriod[];
+function contains(period: PlannerPeriod, date: DateKey): boolean;
+function splitAtDateBoundary(period: PlannerPeriod, date: DateKey): PlannerPeriod[];
 function intersect(a: PlannerPeriod, b: PlannerPeriod): PlannerPeriod | null;
 function union(a: PlannerPeriod, b: PlannerPeriod): PlannerPeriod[];
 function subtract(a: PlannerPeriod, b: PlannerPeriod): PlannerPeriod[];
@@ -66,6 +74,8 @@ function overlaps(a: PlannerPeriod, b: PlannerPeriod): boolean;
 | Year outside 1600–9999 | `UNSUPPORTED_YEAR` | AR #1 |
 | `end <= start` | `INVALID_RANGE` | AR #1 |
 | Unknown timezone | `INVALID_TIMEZONE` | AR #10 |
+| Malformed instant | `INVALID_INSTANT` | AR #1 |
+| Timed projection fails | `TIMED_PROJECTION_FAILED` | AR #10 |
 
 ## Testing Requirements
 

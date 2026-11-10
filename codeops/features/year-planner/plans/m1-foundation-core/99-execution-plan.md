@@ -3,7 +3,7 @@
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
 > **Last Updated**: 2026-11-10 09:26
-> **Progress**: 0/40 tasks (0%)
+> **Progress**: 0/48 tasks (0%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -20,13 +20,13 @@ grid. Specification tests precede implementation in every behavior phase.
 | Phase | Title | Tasks |
 |---|---|---|
 | 0 | Toolchain spike | 4 |
-| 1 | Foundation | 10 |
-| 2 | Temporal core | 8 |
-| 3 | Classic layout | 6 |
-| 4 | Minimal React grid | 9 |
+| 1 | Foundation | 13 |
+| 2 | Temporal core | 9 |
+| 3 | Classic layout | 7 |
+| 4 | Minimal React grid | 12 |
 | 5 | Renderer evidence | 3 |
 
-**Total: 40 tasks across 6 phases.**
+**Total: 48 tasks across 6 phases.**
 
 ---
 
@@ -39,16 +39,24 @@ grid. Specification tests precede implementation in every behavior phase.
 **Reference**: 03-01, RD-01 · AR #4, #5
 **Objective**: Prove TS6 + Vite 8 + Vitest 5 + Storybook 10 + TypeDoc/API Extractor install and build together.
 
-- [ ] 0.1.1 Create root `package.json`, `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json`
-- [ ] 0.1.2 Install pinned toolchain and record versions in `docs/toolchain-spike.md`
-- [ ] 0.1.3 Build a throwaway Storybook story and TypeDoc API page; record failures/fallbacks
-- [ ] 0.1.4 Record the renderer/toolchain ADR decision or fallback in `docs/toolchain-spike.md`
+- [ ] 0.1.1 Create an isolated `spike/` package with its own manifest and pinned toolchain
+- [ ] 0.1.2 Install the spike and record versions in `docs/toolchain-spike.md`
+- [ ] 0.1.3 Build a throwaway Storybook story and TypeDoc API page in `spike/`; record failures/fallbacks
+- [ ] 0.1.4 Record the toolchain ADR decision or fallback in `docs/toolchain-spike.md`
 
-**Verify**: `pnpm install && pnpm typecheck && pnpm storybook:build`
+**Verify**: `cd spike && pnpm install && pnpm exec tsc --version && pnpm exec storybook --version`
 
 ## Phase 1: Foundation
 
 > **Reasoning**: high — package boundaries and release surface are foundational.
+
+### Step 1.0: Toolchain acceptance checks first
+
+**Reference**: 03-01, RD-01 · AR #4, #13
+**Objective**: Encode ST-37–ST-42/ST-54 as failing checks before scaffolding.
+
+- [ ] 1.0.1 [spec-author] Write `scripts/toolchain-check.sh` for ST-37–ST-42, ST-54–ST-57 and run it; record the expected red failures
+- [ ] 1.0.2 Create root `package.json`, `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json` and shared build config
 
 ### Step 1.1: Workspace and package manifests
 
@@ -62,9 +70,10 @@ grid. Specification tests precede implementation in every behavior phase.
 - [ ] 1.1.5 Configure Storybook with Vite and minimal addons
 - [ ] 1.1.6 Configure API Extractor and TypeDoc
 - [ ] 1.1.7 Add `verify` and `verify:full` scripts
-- [ ] 1.1.8 Add CI workflow with typecheck/lint/test/build/api/size/DCO
+- [ ] 1.1.8 Add CI workflow with typecheck/lint/unit/build/api/Storybook/pack/size/e2e/visual/print/browser matrix/React 18+19 smoke/tsc7-canary and DCO; a11y/bench incremental
 - [ ] 1.1.9 Add clean-consumer pack check (`publint`, `attw`, temp Vite install)
-- [ ] 1.1.10 Add package `files`/`sideEffects`/`repository` metadata and README quickstart
+- [ ] 1.1.10 Add package `files`/`sideEffects`/`repository` metadata, source maps and README quickstart
+- [ ] 1.1.11 Add CODEOWNERS, issue/PR templates and DCO documentation
 
 **Verify**: `pnpm verify`
 
@@ -77,15 +86,16 @@ grid. Specification tests precede implementation in every behavior phase.
 **Reference**: 03-02, RD-02 · AR #1, #4
 **Objective**: Encode ST-1–ST-15 before implementation.
 
-- [ ] 2.1.1 [spec-author] Write `date.spec.test.ts` for ST-1–ST-10, ST-14
-- [ ] 2.1.2 [spec-author] Write `period.spec.test.ts` for ST-11–ST-15
-- [ ] 2.1.3 Run the spec tests and record the expected red failures
+- [ ] 2.1.1 [spec-author] Write `date.spec.test.ts` for ST-1–ST-10, ST-14, ST-45–ST-47
+- [ ] 2.1.2 [spec-author] Write `period.spec.test.ts` for ST-11–ST-13, ST-15
+- [ ] 2.1.3 [spec-author] Write `interval.spec.test.ts` for ST-43–ST-44
+- [ ] 2.1.4 Run the spec tests and record the expected red failures
 
 ### Step 2.2: Implement
 
 - [ ] 2.2.1 Implement `packages/core/src/diagnostics.ts`
-- [ ] 2.2.2 Implement `packages/core/src/date.ts` (epoch-day math, ISO weeks)
-- [ ] 2.2.3 Implement `packages/core/src/period.ts` and `interval.ts`
+- [ ] 2.2.2 Implement `packages/core/src/date.ts` (epoch-day math, ISO weeks, format/subtract/min/max/dayOfWeek)
+- [ ] 2.2.3 Implement `packages/core/src/period.ts` and `interval.ts` (normalize/contains/splitAtDateBoundary)
 - [ ] 2.2.4 Run the spec tests to green
 - [ ] 2.2.5 Write `date.impl.test.ts` and `interval.impl.test.ts` for boundaries/TZ
 
@@ -100,7 +110,7 @@ grid. Specification tests precede implementation in every behavior phase.
 **Reference**: 03-03, RD-03 · AR #1
 **Objective**: Encode ST-16–ST-30 before implementation.
 
-- [ ] 3.1.1 [spec-author] Write `classic-year.spec.test.ts` for ST-16–ST-30
+- [ ] 3.1.1 [spec-author] Write `classic-year.spec.test.ts` for ST-16–ST-30, ST-48–ST-50
 - [ ] 3.1.2 Run the spec tests and record the expected red failures
 
 ### Step 3.2: Implement and verify
@@ -109,6 +119,7 @@ grid. Specification tests precede implementation in every behavior phase.
 - [ ] 3.2.2 Implement `dateToColumn`, `rowForDate`, `paginatePrintRows`
 - [ ] 3.2.3 Run the spec tests to green
 - [ ] 3.2.4 Write `classic-year.impl.test.ts` for 12/24/36-month boundaries and all month starts
+- [ ] 3.2.5 Add `classic-year.impl.test.ts` for contextMonths boundaries and 2016 tint
 
 **Verify**: `pnpm test -- --project core`
 
@@ -121,8 +132,10 @@ grid. Specification tests precede implementation in every behavior phase.
 **Reference**: 03-04, RD-01/RD-03 · AR #2, #7
 **Objective**: Encode ST-31–ST-36 before implementation.
 
-- [ ] 4.1.1 [spec-author] Write `YearPlanner.spec.test.tsx` for ST-31–ST-32, ST-35–ST-36
-- [ ] 4.1.2 Run the component tests and record the expected red failures
+- [ ] 4.1.1 [spec-author] Write `YearPlanner.spec.test.tsx` for ST-31–ST-32, ST-35–ST-36, ST-53
+- [ ] 4.1.2 [spec-author] Write `print.spec.test.ts` for ST-33, ST-51–ST-52
+- [ ] 4.1.3 [spec-author] Write `consumer.spec.test.ts` for ST-34
+- [ ] 4.1.4 Run the spec tests and record the expected red failures
 
 ### Step 4.2: Implement
 
@@ -133,6 +146,7 @@ grid. Specification tests precede implementation in every behavior phase.
 - [ ] 4.2.5 Add Playwright visual/print test and generate A3 PDF
 - [ ] 4.2.6 Run clean-consumer install/render test
 - [ ] 4.2.7 Write React impl tests for blank slots, mirrored labels and theme fallback
+- [ ] 4.2.8 Add 36-month keyboard/E2E reachability test and 2016 blue print
 
 **Verify**: `pnpm verify` and `pnpm test:e2e`
 
@@ -163,9 +177,9 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5
 
 ## Success Criteria
 
-1. ✅ All 40 tasks completed
+1. ✅ All 48 tasks completed
 2. ✅ `pnpm verify` and `pnpm verify:full` pass
-3. ✅ Core/layout coverage ≥ 90%; React grid ≥ 80%
+3. ✅ Core/layout coverage ≥ 95%; React grid ≥ 80%
 4. ✅ 2016/2017 14-row, 37-column grid verified
 5. ✅ 12/14/18/24/36-month windows verified
 6. ✅ A3 print PDF verified with `pdfinfo`/`pdftoppm`

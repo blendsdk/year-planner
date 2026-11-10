@@ -39,6 +39,7 @@ toolchain; M0 renderer spike as an evidence artifact. No AI-proposed escalation.
 | # | Document | Description |
 |---|---|---|
 | AR | [Ambiguity Register](00-ambiguity-register.md) | Plan-local decisions |
+| PF | [Preflight Report](00-preflight-report.md) | Plan audit; all critical/major resolved |
 | 00 | [Index](00-index.md) | This document |
 | 01 | [Requirements](01-requirements.md) | Delta view of RD-01–RD-03 |
 | 02 | [Current State](02-current-state.md) | Greenfield repository analysis |

@@ -39,6 +39,10 @@ tests/e2e/                   Playwright
 `test:visual`, `test:a11y`, `test:print`, `test:size`, `bench`, `build`,
 `api-report`, `docs`, `pack:check`, `verify`, `verify:full`.
 
+`verify` = typecheck + lint + unit + build + api-report + storybook:build +
+pack:check + test:size. `verify:full` adds e2e + visual + print; a11y and bench
+are wired incrementally as their suites appear.
+
 ## Implementation Details
 
 ### Root manifest
@@ -67,6 +71,8 @@ tests/e2e/                   Playwright
 - Jobs: typecheck, lint, unit, build, api-report, storybook build, e2e,
   visual, a11y, print, size, pack-check, DCO.
 - React 18 and 19 matrix for the React package smoke tests.
+- Separate `tsc7-canary` job (TS7 `--noEmit`) allowed to fail without blocking
+  release.
 
 ### Governance
 

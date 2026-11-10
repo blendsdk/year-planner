@@ -34,8 +34,9 @@ yp-root
   yp-footer (weekday headings)
 ```
 
-Each valid cell contains date number and optional ISO week number; blank slots
-are non-interactive and have no date. Month labels are mirrored.
+Each valid cell contains the date number near the upper-right and the optional
+ISO week number near the lower-left (month day 1 and Mondays); blank slots are
+non-interactive and have no date. Month labels are mirrored.
 
 ### Theming
 

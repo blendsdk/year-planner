@@ -3,7 +3,7 @@
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
 > **Last Updated**: 2026-11-10 10:15
-> **Progress**: 41/48 tasks (85%)
+> **Progress**: 42/48 tasks (88%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -42,7 +42,7 @@ grid. Specification tests precede implementation in every behavior phase.
 - [x] 0.1.1 Create an isolated `spike/` package with its own manifest and pinned toolchain ✅ (completed: 2026-11-10 10:15)
 - [x] 0.1.2 Install the spike and record versions in `docs/toolchain-spike.md` ✅ (completed: 2026-11-10 10:15)
 - [ ] 0.1.3 Build a throwaway Storybook story and TypeDoc API page in `spike/`; record failures/fallbacks
-- [ ] 0.1.4 Record the toolchain ADR decision or fallback in `docs/toolchain-spike.md`
+- [x] 0.1.4 Record the toolchain ADR decision or fallback in `docs/toolchain-spike.md` ✅ (completed: 2026-11-10 10:28)
 
 **Verify**: `cd spike && pnpm install && pnpm exec tsc --version && pnpm exec storybook --version`
 

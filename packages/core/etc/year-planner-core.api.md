@@ -18,6 +18,16 @@ export interface AllDayPeriod {
 }
 
 // @public
+export interface Assignment {
+    // (undocumented)
+    quantity?: number;
+    // (undocumented)
+    resourceId: string;
+    // (undocumented)
+    role?: string;
+}
+
+// @public
 export function buildClassicYearLayout(options: ClassicYearLayoutOptions): ClassicYearLayoutResult;
 
 // @public
@@ -140,7 +150,7 @@ export interface Diagnostic {
 export function diagnostic(code: DiagnosticCode, message: string, level?: DiagnosticLevel): Diagnostic;
 
 // @public (undocumented)
-export type DiagnosticCode = "INVALID_DATE" | "UNSUPPORTED_YEAR" | "INVALID_RANGE" | "INVALID_INSTANT" | "INVALID_TIMEZONE" | "TIMED_PROJECTION_FAILED" | "INVALID_MONTH" | "INVALID_MONTH_COUNT" | "INVALID_CONTEXT_MONTHS" | "UNSUPPORTED_VIEW_YEAR" | "MISSING_RANGE";
+export type DiagnosticCode = "INVALID_DATE" | "UNSUPPORTED_YEAR" | "INVALID_RANGE" | "INVALID_INSTANT" | "INVALID_TIMEZONE" | "TIMED_PROJECTION_FAILED" | "INVALID_MONTH" | "INVALID_MONTH_COUNT" | "INVALID_CONTEXT_MONTHS" | "UNSUPPORTED_VIEW_YEAR" | "MISSING_RANGE" | "DUPLICATE_ID" | "UNKNOWN_REFERENCE" | "GROUP_CYCLE" | "INVALID_GROUP" | "INVALID_ITEM" | "INVALID_VERSION" | "INVALID_ANNOTATION" | "INVALID_STYLE" | "INVALID_LAYER" | "INVALID_RESOURCE" | "NOT_EDITABLE" | "INVALID_PAINT_TARGET" | "INVALID_PAINT_CHANNEL" | "STALE_VERSION" | "INVALID_PRINT_OPTIONS" | "PRINT_FIT_TOO_SMALL";
 
 // @public
 export type DiagnosticLevel = "error" | "warning" | "info";
@@ -155,6 +165,9 @@ export function durationDays(period: AllDayPeriod): number;
 export function eachDate(start: DateKey, endExclusive: DateKey): DateKey[];
 
 // @public
+export function emptyPlannerModel(): PlannerModel;
+
+// @public
 export function formatDateKey(date: DateKey): string;
 
 // @public
@@ -162,6 +175,9 @@ export function fromEpochDay(epochDay: number): DateKey;
 
 // @public
 export type InstantISO = string;
+
+// @public
+export type InteractionMode = "inspect" | "select" | "paint" | "erase" | "create" | "move" | "resize" | "auto";
 
 // @public
 export function intersect(a: DateInterval, b: DateInterval): DateInterval | null;
@@ -183,6 +199,40 @@ export function isoWeekOf(date: DateKey): {
     week: number;
     weekYear: number;
 };
+
+// @public
+export function isPlainObject(value: unknown): value is Record<string, unknown>;
+
+// @public
+export type ItemKind = "highlight" | "activity" | "reservation" | "annotation";
+
+// @public
+export interface LayerGroup {
+    // (undocumented)
+    defaultVisible?: boolean;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    parentGroupId?: string;
+    // (undocumented)
+    policy?: LayerPolicy;
+}
+
+// @public
+export interface LayerPolicy {
+    // (undocumented)
+    allowCreate?: boolean;
+    // (undocumented)
+    allowDelete?: boolean;
+    // (undocumented)
+    allowMove?: boolean;
+    // (undocumented)
+    allowPaint?: boolean;
+    // (undocumented)
+    allowResize?: boolean;
+}
 
 // @public
 export function layoutSignature(layout: YearLayout): string;
@@ -240,10 +290,156 @@ export function paginatePrintRows(layout: YearLayout, rowsPerPage?: number): Mon
 export function parseDateKey(value: string): DateParseResult;
 
 // @public
+export interface PlannerAnnotationStyle {
+    // (undocumented)
+    background?: string;
+    // (undocumented)
+    label?: string;
+    // (undocumented)
+    priority?: number;
+}
+
+// @public
+export interface PlannerDataInput {
+    // (undocumented)
+    annotations?: PlannerItem[];
+    // (undocumented)
+    groups?: LayerGroup[];
+    // (undocumented)
+    items?: PlannerItem[];
+    // (undocumented)
+    layers?: PlannerLayer[];
+    // (undocumented)
+    resources?: Resource[];
+}
+
+// @public
+export interface PlannerDataValidation {
+    // (undocumented)
+    diagnostics: Diagnostic[];
+    // (undocumented)
+    model: PlannerModel;
+    // (undocumented)
+    ok: boolean;
+}
+
+// @public
+export interface PlannerFilter {
+    // (undocumented)
+    layerIds?: string[];
+    // (undocumented)
+    resourceIds?: string[];
+    // (undocumented)
+    search?: string;
+    // (undocumented)
+    statuses?: string[];
+}
+
+// @public
+export interface PlannerItem {
+    // (undocumented)
+    annotation?: PlannerAnnotationStyle;
+    // (undocumented)
+    assignments?: Assignment[];
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    color?: string;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    kind: ItemKind;
+    // (undocumented)
+    layerId: string;
+    // (undocumented)
+    locked?: boolean;
+    // (undocumented)
+    metadata?: unknown;
+    // (undocumented)
+    period: PlannerPeriod;
+    // (undocumented)
+    readOnly?: boolean;
+    // (undocumented)
+    status?: string;
+    // (undocumented)
+    style?: Record<string, string | number>;
+    // (undocumented)
+    textColor?: string;
+    // (undocumented)
+    title?: string;
+    // (undocumented)
+    version: number;
+}
+
+// @public
+export interface PlannerLayer {
+    // (undocumented)
+    channel: RenderChannel;
+    // (undocumented)
+    color: string;
+    // (undocumented)
+    defaultVisible?: boolean;
+    // (undocumented)
+    displayPriority?: number;
+    // (undocumented)
+    groupId?: string;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    label?: string;
+    // (undocumented)
+    locked?: boolean;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    opacity?: number;
+    // (undocumented)
+    pattern?: "solid" | "hatch" | "dots";
+    // (undocumented)
+    policy?: LayerPolicy;
+    // (undocumented)
+    readOnly?: boolean;
+    // (undocumented)
+    sortOrder?: number;
+}
+
+// @public
+export interface PlannerModel {
+    // (undocumented)
+    groups: LayerGroup[];
+    // (undocumented)
+    items: PlannerItem[];
+    // (undocumented)
+    layers: PlannerLayer[];
+    // (undocumented)
+    resources: Resource[];
+}
+
+// @public
 export type PlannerPeriod = AllDayPeriod | TimedPeriod;
 
 // @public
 export function projectTimedPeriod(period: TimedPeriod, timeZone: string): AllDayPeriod;
+
+// @public
+export type RenderChannel = "background" | "highlight" | "ribbon" | "annotation" | "foreground";
+
+// @public
+export interface Resource {
+    // (undocumented)
+    capacity?: {
+        quantity: number;
+        unit: string;
+    };
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    timeZone?: string;
+    // (undocumented)
+    type: string;
+}
 
 // @public
 export function rowDateRange(row: MonthRowLayout): {
@@ -256,6 +452,9 @@ export function rowForDate(layout: YearLayout, date: string): MonthRowLayout | u
 
 // @public
 export function splitAtDateBoundary(period: DateInterval, date: string): DateInterval[];
+
+// @public
+export function structuralEqual(left: unknown, right: unknown): boolean;
 
 // @public
 export function subtract(a: DateInterval, b: DateInterval): DateInterval[];
@@ -288,7 +487,28 @@ export function validateAllDayPeriod(period: AllDayPeriod): Diagnostic[];
 export function validatePeriod(period: PlannerPeriod): Diagnostic[];
 
 // @public
+export function validatePlannerData(input: PlannerDataInput, options?: ValidatePlannerDataOptions): PlannerDataValidation;
+
+// @public
+export interface ValidatePlannerDataOptions {
+    // (undocumented)
+    displayTimeZone?: string;
+}
+
+// @public
 export function validateTimedPeriod(period: TimedPeriod): Diagnostic[];
+
+// @public
+export interface VisibilityState {
+    // (undocumented)
+    hiddenChannels?: RenderChannel[];
+    // (undocumented)
+    hiddenGroupIds: string[];
+    // (undocumented)
+    hiddenItemIds: string[];
+    // (undocumented)
+    hiddenLayerIds: string[];
+}
 
 // @public
 export interface YearLayout {

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 13:13
-> **Progress**: 2/46 tasks (4%)
+> **Last Updated**: 2026-11-10 13:18
+> **Progress**: 8/46 tasks (17%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -54,15 +54,15 @@ non-blanking validation pass.
 
 ### Step 1.2: Implementation
 
-- [ ] 1.2.1 Add the M2 diagnostic codes and entity types — `packages/core/src/diagnostics.ts`, `packages/core/src/model/types.ts`
-- [ ] 1.2.2 Implement structural equality — `packages/core/src/model/equality.ts`
-- [ ] 1.2.3 Implement validation, cycle detection and normalization — `packages/core/src/model/validation.ts`
-- [ ] 1.2.4 Add the model barrel and public exports; run the spec tests green — `packages/core/src/model/index.ts`, `packages/core/src/index.ts`
+- [x] 1.2.1 Add the M2 diagnostic codes and entity types — `packages/core/src/diagnostics.ts`, `packages/core/src/model/types.ts` ✅ (completed: 2026-11-10 13:18)
+- [x] 1.2.2 Implement structural equality — `packages/core/src/model/equality.ts` ✅ (completed: 2026-11-10 13:18)
+- [x] 1.2.3 Implement validation, cycle detection and normalization — `packages/core/src/model/validation.ts` ✅ (completed: 2026-11-10 13:18)
+- [x] 1.2.4 Add the model barrel and public exports; run the spec tests green — `packages/core/src/model/index.ts`, `packages/core/src/index.ts` ✅ (completed: 2026-11-10 13:18)
 
 ### Step 1.3: Implementation tests and verify
 
-- [ ] 1.3.1 Write validation edge-case tests — `packages/core/src/model/validation.impl.test.ts`
-- [ ] 1.3.2 Run `pnpm verify` and regenerate the API report
+- [x] 1.3.1 Write validation edge-case tests — `packages/core/src/model/validation.impl.test.ts` ✅ (completed: 2026-11-10 13:18)
+- [x] 1.3.2 Run `pnpm verify` and regenerate the API report ✅ (completed: 2026-11-10 13:18)
 
 **Deliverables**:
 - [ ] All ST-1–ST-13, ST-64 and ST-76 tests pass

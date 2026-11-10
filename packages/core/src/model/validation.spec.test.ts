@@ -16,7 +16,12 @@ const layer = (id: string, groupId?: string): PlannerLayer => ({
   ...(groupId === undefined ? {} : { groupId }),
 });
 
-const item = (id: string, layerId: string, start = "2027-02-01", end = "2027-02-05"): PlannerItem => ({
+const item = (
+  id: string,
+  layerId: string,
+  start = "2027-02-01",
+  end = "2027-02-05",
+): PlannerItem => ({
   id,
   kind: "activity",
   layerId,
@@ -54,9 +59,9 @@ describe("RD-04 validation: canonical model", () => {
     });
     expect(result.ok).toBe(false);
     expect(codes(result)).toContain("UNKNOWN_REFERENCE");
-    expect(result.diagnostics.find((entry) => entry.code === "UNKNOWN_REFERENCE")?.itemIds).toEqual([
-      "bad",
-    ]);
+    expect(result.diagnostics.find((entry) => entry.code === "UNKNOWN_REFERENCE")?.itemIds).toEqual(
+      ["bad"],
+    );
     expect(result.model.items.map((entry) => entry.id)).toEqual(["good"]);
   });
 });
@@ -83,7 +88,10 @@ describe("RD-04 validation: groups", () => {
 
   it("drops groups with invalid required fields", () => {
     const result = validatePlannerData({
-      groups: [{ id: "", name: "" }, { id: "policy", name: "p", policy: { allowMove: "nope" } as never }],
+      groups: [
+        { id: "", name: "" },
+        { id: "policy", name: "p", policy: { allowMove: "nope" } as never },
+      ],
     });
     expect(codes(result).filter((code) => code === "INVALID_GROUP")).toHaveLength(2);
   });
@@ -197,12 +205,13 @@ describe("RD-04 validation: items and references", () => {
   it("drops a reverse period without leaking the title or dates", () => {
     const result = validatePlannerData({
       layers: [layer("ribbon")],
-      items: [item("bad", "ribbon", "2027-02-07", "2027-01-28")],
+      items: [{ ...item("bad", "ribbon", "2027-02-07", "2027-01-28"), title: "Secret" }],
     });
     const diagnostic = result.diagnostics.find((entry) => entry.itemIds?.includes("bad"));
     expect(diagnostic?.code).toBe("INVALID_RANGE");
     expect(diagnostic?.message).not.toContain("2027");
-    expect(diagnostic?.message).not.toContain("bad");
+    expect(diagnostic?.message).not.toContain("Secret");
+    expect(diagnostic?.message).toContain("bad");
     expect(diagnostic?.periods).toBeUndefined();
   });
 
@@ -240,13 +249,9 @@ describe("RD-04 validation: resources and layers", () => {
       items: [{ ...item("i1", "l1"), kind: "activity" }, item("i2", "l5")],
     });
     expect(codes(result)).toEqual(
-      expect.arrayContaining([
-        "DUPLICATE_ID",
-        "INVALID_LAYER",
-        "INVALID_ANNOTATION",
-      ]),
+      expect.arrayContaining(["DUPLICATE_ID", "INVALID_LAYER", "INVALID_ANNOTATION"]),
     );
-    expect(result.model.layers.map((entry) => entry.id)).toEqual(["l4"]);
+    expect(result.model.layers.map((entry) => entry.id)).toEqual(["l4", "l5"]);
     expect(result.model.resources.map((entry) => entry.id)).toEqual(["r1"]);
   });
 });

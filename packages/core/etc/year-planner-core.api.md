@@ -92,6 +92,24 @@ export interface ClassicYearUnits {
 }
 
 // @public
+export interface CommandContext {
+    baseRevision?: string;
+    requestId: string;
+}
+
+// @public
+export type CommandOutcome = {
+    accepted: true;
+    revision: string;
+    updatedItems?: PlannerItem[];
+    removedItemIds?: string[];
+} | {
+    accepted: false;
+    diagnostics: Diagnostic[];
+    latestRevision?: string;
+};
+
+// @public
 export function compareDateKeys(a: DateKey, b: DateKey): -1 | 0 | 1;
 
 // @public
@@ -174,7 +192,7 @@ export interface Diagnostic {
 export function diagnostic(code: DiagnosticCode, message: string, level?: DiagnosticLevel): Diagnostic;
 
 // @public (undocumented)
-export type DiagnosticCode = "INVALID_DATE" | "UNSUPPORTED_YEAR" | "INVALID_RANGE" | "INVALID_INSTANT" | "INVALID_TIMEZONE" | "TIMED_PROJECTION_FAILED" | "INVALID_MONTH" | "INVALID_MONTH_COUNT" | "INVALID_CONTEXT_MONTHS" | "UNSUPPORTED_VIEW_YEAR" | "MISSING_RANGE" | "DUPLICATE_ID" | "UNKNOWN_REFERENCE" | "GROUP_CYCLE" | "INVALID_GROUP" | "INVALID_ITEM" | "INVALID_VERSION" | "INVALID_ANNOTATION" | "INVALID_STYLE" | "INVALID_LAYER" | "INVALID_RESOURCE" | "NOT_EDITABLE" | "INVALID_PAINT_TARGET" | "INVALID_PAINT_CHANNEL" | "STALE_VERSION" | "INVALID_PRINT_OPTIONS" | "PRINT_FIT_TOO_SMALL";
+export type DiagnosticCode = "INVALID_DATE" | "UNSUPPORTED_YEAR" | "INVALID_RANGE" | "INVALID_INSTANT" | "INVALID_TIMEZONE" | "TIMED_PROJECTION_FAILED" | "INVALID_MONTH" | "INVALID_MONTH_COUNT" | "INVALID_CONTEXT_MONTHS" | "UNSUPPORTED_VIEW_YEAR" | "MISSING_RANGE" | "DUPLICATE_ID" | "UNKNOWN_REFERENCE" | "GROUP_CYCLE" | "INVALID_GROUP" | "INVALID_ITEM" | "INVALID_VERSION" | "INVALID_ANNOTATION" | "INVALID_STYLE" | "INVALID_LAYER" | "INVALID_RESOURCE" | "NOT_EDITABLE" | "INVALID_PAINT_TARGET" | "INVALID_PAINT_CHANNEL" | "STALE_VERSION" | "INVALID_PRINT_OPTIONS" | "PRINT_FIT_TOO_SMALL" | "READ_ONLY" | "CONFIRMATION_UNAVAILABLE" | "COMMAND_TIMEOUT" | "HOST_REJECTED" | "VALIDATION_ERROR" | "STALE_REVISION" | "UNDO_UNAVAILABLE" | "INVALID_COMMAND" | "INVALID_LOCALE" | "TIMED_EDITING_UNSUPPORTED" | "INVALID_RENDERER_OPTION";
 
 // @public
 export type DiagnosticLevel = "error" | "warning" | "info";
@@ -215,6 +233,9 @@ export interface EffectiveVisibility {
 
 // @public
 export function emptyPlannerModel(): PlannerModel;
+
+// @public
+export function emptySelection(): PlannerSelection;
 
 // @public
 export function eraseItems(context: PaintContext, layerId: string, period: AllDayPeriod): PaintResult;
@@ -400,6 +421,38 @@ export interface PlannerAnnotationStyle {
 }
 
 // @public
+export type PlannerCommand = {
+    type: "create";
+    item: PlannerItem;
+} | {
+    type: "update";
+    itemId: string;
+    patch: Partial<Omit<PlannerItem, "id" | "version">>;
+    expectedVersion: number;
+} | {
+    type: "move";
+    itemId: string;
+    proposedPeriod: PlannerPeriod;
+    expectedVersion: number;
+} | {
+    type: "resize";
+    itemId: string;
+    proposedPeriod: PlannerPeriod;
+    expectedVersion: number;
+} | {
+    type: "delete";
+    itemId: string;
+    expectedVersion: number;
+} | {
+    type: "paint";
+    layerId: string;
+    period: PlannerPeriod;
+    operation: "union" | "subtract";
+    defaults: PaintDefaults;
+    expectedVersions: Record<string, number>;
+};
+
+// @public
 export interface PlannerDataInput {
     annotations?: PlannerItem[];
     groups?: LayerGroup[];
@@ -471,6 +524,15 @@ export interface PlannerModel {
 
 // @public
 export type PlannerPeriod = AllDayPeriod | TimedPeriod;
+
+// @public
+export interface PlannerSelection {
+    anchorDate?: DateKey;
+    anchorItemId?: string;
+    dates: SelectionDateRange[];
+    focusDate?: DateKey;
+    items: string[];
+}
 
 // @public
 export function planRibbonPrint(ribbon: RibbonLayout, options?: PrintOptions): PrintPlanResult;
@@ -641,6 +703,15 @@ export function rowDateRange(row: MonthRowLayout): {
 export function rowForDate(layout: YearLayout, date: string): MonthRowLayout | undefined;
 
 // @public
+export interface SelectionDateRange {
+    endDateExclusive: DateKey;
+    startDate: DateKey;
+}
+
+// @public
+export function selectionItemIds(selection: PlannerSelection | undefined): string[];
+
+// @public
 export function serializeVisibility(state: VisibilityState): string;
 
 // @public
@@ -689,6 +760,12 @@ export interface ValidatePlannerDataOptions {
 
 // @public
 export function validateTimedPeriod(period: TimedPeriod): Diagnostic[];
+
+// @public
+export interface ValidationResult {
+    diagnostics: Diagnostic[];
+    permitted: boolean;
+}
 
 // @public
 export type VisibilityAction = {

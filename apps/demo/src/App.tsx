@@ -1,9 +1,9 @@
-import { YearPlanner, type YearPlannerTheme } from "@blendsdk/react-year-planner";
+import { YearPlanner, type YearPlannerThemeName } from "@blendsdk/react-year-planner";
 import { useState } from "react";
 
 export function App() {
   const [year, setYear] = useState(2016);
-  const [theme, setTheme] = useState<YearPlannerTheme>("classic-blue");
+  const [theme, setTheme] = useState<YearPlannerThemeName>("classic-blue");
   const [zoom, setZoom] = useState(1);
 
   return (
@@ -32,7 +32,7 @@ export function App() {
           Theme{" "}
           <select
             value={theme}
-            onChange={(event) => setTheme(event.target.value as YearPlannerTheme)}
+            onChange={(event) => setTheme(event.target.value as YearPlannerThemeName)}
           >
             <option value="classic-blue">Classic blue</option>
             <option value="classic-yellow">Classic yellow</option>

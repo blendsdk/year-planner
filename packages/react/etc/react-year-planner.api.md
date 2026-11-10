@@ -6,7 +6,21 @@
 
 import { ClassicYearLayoutOptions } from '@blendsdk/year-planner-core';
 import type { CSSProperties } from 'react';
+import { FC } from 'react';
 import { JSX } from 'react';
+import { ReactNode } from 'react';
+
+// @public
+export function createTheme(theme?: Partial<YearPlannerTheme>): YearPlannerTheme;
+
+// @public
+export function getPresetTheme(name: string): YearPlannerTheme | undefined;
+
+// @public
+export function themeToCssVars(theme: YearPlannerTheme): Record<`--yp-${string}`, string>;
+
+// @public
+export function useYearPlannerTheme(): YearPlannerTheme | undefined;
 
 // @public
 export function YearPlanner(input: YearPlannerProps): JSX.Element;
@@ -16,10 +30,13 @@ export interface YearPlannerDisplay {
     // (undocumented)
     showISOWeekNumbers?: boolean;
     // (undocumented)
-    theme?: YearPlannerTheme;
+    theme?: YearPlannerThemeName | string;
     // (undocumented)
     zoom?: number;
 }
+
+// @public
+export const yearPlannerPresets: Record<YearPlannerThemeName, YearPlannerTheme>;
 
 // @public
 export interface YearPlannerPrint {
@@ -40,7 +57,19 @@ export interface YearPlannerProps extends ClassicYearLayoutOptions {
 }
 
 // @public
-export type YearPlannerTheme = "classic-blue" | "classic-yellow" | "modern";
+export const YearPlannerProvider: FC<{
+    theme?: Partial<YearPlannerTheme>;
+    children: ReactNode;
+}>;
+
+// @public
+export type YearPlannerTheme = Record<YearPlannerTokenName, string | number>;
+
+// @public
+export type YearPlannerThemeName = "classic-blue" | "classic-yellow" | "modern" | "high-contrast" | "print";
+
+// @public
+export type YearPlannerTokenName = "surface" | "surfaceMuted" | "weekend" | "context" | "border" | "textPrimary" | "textMuted" | "textInverse" | "focusRing" | "selectionFill" | "selectionOutline" | "highlight" | "ribbon" | "annotation" | "foreground" | "rowHeight" | "laneHeight" | "monthBandWidth" | "weekendWidth" | "weekdayWidth" | "fontFamily" | "fontSize" | "fontWeight" | "printScale";
 
 // (No @packageDocumentation comment for this package)
 

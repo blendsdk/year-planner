@@ -7,16 +7,14 @@ import {
 } from "@blendsdk/year-planner-core";
 import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
 import { useState } from "react";
+import type { YearPlannerThemeName } from "./theme.js";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const WEEKDAYS = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
-/** Visual theme preset for the classic year view. */
-export type YearPlannerTheme = "classic-blue" | "classic-yellow" | "modern";
-
-/** Display options for the minimal M1 grid. */
+/** Display options for the minimal M1 grid. Kept until the M3 view replaces it. */
 export interface YearPlannerDisplay {
-  theme?: YearPlannerTheme;
+  theme?: YearPlannerThemeName | string;
   showISOWeekNumbers?: boolean;
   zoom?: number;
 }

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 14:30
-> **Progress**: 0/46 tasks (0%)
+> **Last Updated**: 2026-11-10 15:08
+> **Progress**: 6/46 tasks (13%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -47,18 +47,18 @@ tokens, presets, provider and the layered CSS foundation.
 
 ### Step 1.1: Specification tests
 
-- [ ] 1.1.1 [spec-author] Write contract/theme spec tests for ST-1–ST-4 — `packages/core/src/contracts.spec.test.ts`, `packages/react/src/theme.spec.test.tsx`
-- [ ] 1.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md`
+- [x] 1.1.1 [spec-author] Write contract/theme spec tests for ST-1–ST-4 — `packages/core/src/contracts.spec.test.ts`, `packages/react/src/theme.spec.test.tsx` ✅ (completed: 2026-11-10 15:08)
+- [x] 1.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md` ✅ (completed: 2026-11-10 15:08)
 
 ### Step 1.2: Implementation
 
-- [ ] 1.2.1 Add type-only selection/command contracts, runtime selection helpers and RD-06 diagnostic codes — `packages/core/src/contracts.ts`, `packages/core/src/model/selection.ts`, `packages/core/src/diagnostics.ts`, `packages/core/src/index.ts`
-- [ ] 1.2.2 Implement theme tokens, frozen presets, `createTheme`, `getPresetTheme`, provider and layered CSS; move the old preset-string type out of the grid — `packages/react/src/theme.ts`, `packages/react/src/provider.tsx`, `packages/react/src/styles.css`, `packages/react/src/YearPlanner.tsx`, `packages/react/src/index.ts`
+- [x] 1.2.1 Add type-only selection/command contracts, runtime selection helpers and RD-06 diagnostic codes — `packages/core/src/contracts.ts`, `packages/core/src/model/selection.ts`, `packages/core/src/diagnostics.ts`, `packages/core/src/index.ts` ✅ (completed: 2026-11-10 15:08)
+- [x] 1.2.2 Implement theme tokens, frozen presets, `createTheme`, `getPresetTheme`, provider and layered CSS; move the old preset-string type out of the grid — `packages/react/src/theme.ts`, `packages/react/src/provider.tsx`, `packages/react/src/styles.css`, `packages/react/src/YearPlanner.tsx`, `packages/react/src/index.ts` ✅ (completed: 2026-11-10 15:08)
 
 ### Step 1.3: Implementation tests and verify
 
-- [ ] 1.3.1 Write contract/theme edge-case tests — `packages/core/src/contracts.impl.test.ts`, `packages/react/src/theme.impl.test.tsx`
-- [ ] 1.3.2 Run `pnpm verify` and regenerate the API reports
+- [x] 1.3.1 Write contract/theme edge-case tests — `packages/core/src/contracts.impl.test.ts`, `packages/react/src/theme.impl.test.tsx` ✅ (completed: 2026-11-10 15:08)
+- [x] 1.3.2 Run `pnpm verify` and regenerate the API reports ✅ (completed: 2026-11-10 15:08)
 
 **Deliverables**:
 - [ ] ST-1–ST-4 pass

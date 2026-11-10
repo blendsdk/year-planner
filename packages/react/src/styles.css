@@ -1,170 +1,254 @@
-.yp-root {
-  --yp-band: #76bfe5;
-  --yp-band-text: #ffffff;
-  --yp-weekend: #e3f7fc;
-  --yp-context: #eaf4f5;
-  --yp-outside: #f2fafc;
-  --yp-grid: #71818b;
-  --yp-text: #1b2329;
-  --yp-muted: #4a5a63;
-  display: inline-block;
-  color: var(--yp-text);
-  font-family: Arial, Helvetica, sans-serif;
-  font-variant-numeric: tabular-nums;
-  background: #fff;
-  overflow-x: auto;
-  max-width: 100%;
-}
+@layer year-planner.base, year-planner.theme, year-planner.components, year-planner.overrides;
 
-.yp-theme-classic-yellow {
-  --yp-band: #f6f368;
-  --yp-band-text: #24251d;
-  --yp-weekend: #ffffbe;
-  --yp-context: #e9e8ee;
-  --yp-outside: #ffffcb;
-  --yp-grid: #858783;
-  --yp-text: #24251d;
-  --yp-muted: #5d5e55;
-}
-
-.yp-theme-modern {
-  --yp-band: #243b53;
-  --yp-band-text: #ffffff;
-  --yp-weekend: #eef2f6;
-  --yp-context: #f5f7fa;
-  --yp-outside: #fafbfc;
-  --yp-grid: #8a99a8;
-  --yp-text: #102a43;
-  --yp-muted: #52606d;
-}
-
-.yp-grid {
-  display: flex;
-  flex-direction: column;
-  width: max-content;
-  border: 1px solid var(--yp-grid);
-  border-right: 0;
-  border-bottom: 0;
-  background: #fff;
-}
-
-.yp-row {
-  display: grid;
-  min-height: 0;
-}
-
-.yp-band,
-.yp-heading,
-.yp-month,
-.yp-cell {
-  min-width: 0;
-  min-height: 0;
-  border-right: 1px solid var(--yp-grid);
-  border-bottom: 1px solid var(--yp-grid);
-  box-sizing: border-box;
-}
-
-.yp-band,
-.yp-heading,
-.yp-month {
-  background: var(--yp-band);
-  color: var(--yp-band-text);
-}
-
-.yp-heading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.yp-month {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 13px;
-  font-size: 18px;
-  line-height: 1.16;
-  font-weight: 700;
-}
-
-.yp-month.yp-context {
-  background: var(--yp-band);
-  color: var(--yp-band-text);
-}
-
-.yp-cell {
-  position: relative;
-  background: #fff;
-  color: var(--yp-text);
-}
-
-.yp-cell.yp-weekend {
-  background: var(--yp-weekend);
-}
-
-.yp-cell.yp-context {
-  background: var(--yp-context);
-}
-
-.yp-cell.yp-context.yp-weekend {
-  background: var(--yp-weekend);
-}
-
-.yp-cell.yp-outside {
-  background: var(--yp-outside);
-}
-
-.yp-day-number {
-  position: absolute;
-  top: 4px;
-  right: 5px;
-  font-size: 12px;
-}
-
-.yp-week-number {
-  position: absolute;
-  bottom: 3px;
-  left: 5px;
-  font-size: 9px;
-  font-style: italic;
-  font-weight: 700;
-  color: var(--yp-muted);
-}
-
-.yp-empty {
-  padding: 24px;
-  border: 1px solid var(--yp-grid);
-  color: var(--yp-muted);
-}
-
-@media print {
-  @page {
-    size: A3 landscape;
-    margin: 6mm;
-  }
-
-  .yp-root {
+@layer year-planner.base {
+  :where(.yp-root) {
+    --yp-surface: #ffffff;
+    --yp-surface-muted: #f7fafb;
+    --yp-weekend: #e3f7fc;
+    --yp-context: #eaf4f5;
+    --yp-border: #71818b;
+    --yp-text-primary: #1b2329;
+    --yp-text-muted: #4a5a63;
+    --yp-text-inverse: #ffffff;
+    --yp-focus-ring: #0b6bcb;
+    --yp-selection-fill: rgba(11, 107, 203, 0.18);
+    --yp-selection-outline: #0b6bcb;
+    --yp-highlight: #ffd166;
+    --yp-ribbon: #76bfe5;
+    --yp-annotation: #f6bd60;
+    --yp-foreground: #243b53;
+    --yp-row-height: 90px;
+    --yp-lane-height: 18px;
+    --yp-month-band-width: 70px;
+    --yp-weekend-width: 40px;
+    --yp-weekday-width: 55px;
+    --yp-font-family: Arial, Helvetica, sans-serif;
+    --yp-font-size: 14px;
+    --yp-font-weight: 400;
     --yp-print-scale: 0.72;
-    width: calc(1995px * var(--yp-print-scale));
-    height: calc(1332px * var(--yp-print-scale));
-    overflow: hidden;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
+    display: inline-block;
+    color: var(--yp-text-primary);
+    font-family: var(--yp-font-family);
+    font-size: var(--yp-font-size);
+    font-weight: var(--yp-font-weight);
+    font-variant-numeric: tabular-nums;
+    background: var(--yp-surface);
+    overflow-x: auto;
+    max-width: 100%;
   }
 
   .yp-grid {
-    transform: scale(var(--yp-print-scale));
-    transform-origin: top left;
-  }
-
-  .yp-grid {
-    break-inside: auto;
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    border: 1px solid var(--yp-border);
+    border-right: 0;
+    border-bottom: 0;
+    background: var(--yp-surface);
   }
 
   .yp-row {
-    break-inside: avoid;
-    page-break-inside: avoid;
+    display: grid;
+    min-height: 0;
   }
+
+  .yp-band,
+  .yp-heading,
+  .yp-month,
+  .yp-cell {
+    min-width: 0;
+    min-height: 0;
+    border-right: 1px solid var(--yp-border);
+    border-bottom: 1px solid var(--yp-border);
+    box-sizing: border-box;
+  }
+
+  .yp-band,
+  .yp-heading,
+  .yp-month {
+    background: var(--yp-ribbon);
+    color: var(--yp-text-inverse);
+  }
+
+  .yp-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .yp-month {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 13px;
+    font-size: 18px;
+    line-height: 1.16;
+    font-weight: 700;
+  }
+
+  .yp-month.yp-context {
+    background: var(--yp-ribbon);
+    color: var(--yp-text-inverse);
+  }
+
+  .yp-cell {
+    position: relative;
+    background: var(--yp-surface);
+    color: var(--yp-text-primary);
+  }
+
+  .yp-cell.yp-weekend {
+    background: var(--yp-weekend);
+  }
+
+  .yp-cell.yp-context {
+    background: var(--yp-context);
+  }
+
+  .yp-cell.yp-context.yp-weekend {
+    background: var(--yp-weekend);
+  }
+
+  .yp-cell.yp-outside {
+    background: var(--yp-surface-muted);
+  }
+
+  .yp-cell:focus-visible {
+    outline: 2px solid var(--yp-focus-ring);
+    outline-offset: -2px;
+  }
+
+  .yp-day-number {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    font-size: 12px;
+  }
+
+  .yp-week-number {
+    position: absolute;
+    bottom: 3px;
+    left: 5px;
+    font-size: 9px;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--yp-text-muted);
+  }
+
+  .yp-empty {
+    padding: 24px;
+    border: 1px solid var(--yp-border);
+    color: var(--yp-text-muted);
+  }
+
+  @media print {
+    @page {
+      size: A3 landscape;
+      margin: 6mm;
+    }
+
+    .yp-root {
+      --yp-print-scale: 0.72;
+      width: calc(1995px * var(--yp-print-scale));
+      height: calc(1332px * var(--yp-print-scale));
+      overflow: hidden;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .yp-grid {
+      transform: scale(var(--yp-print-scale));
+      transform-origin: top left;
+      break-inside: auto;
+    }
+
+    .yp-row {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+  }
+}
+
+@layer year-planner.theme {
+  .yp-theme-classic-yellow {
+    --yp-surface: #fffef2;
+    --yp-surface-muted: #fbfbe6;
+    --yp-weekend: #ffffbe;
+    --yp-context: #e9e8ee;
+    --yp-border: #858783;
+    --yp-text-primary: #24251d;
+    --yp-text-muted: #5d5e55;
+    --yp-text-inverse: #24251d;
+    --yp-focus-ring: #7a6a00;
+    --yp-selection-fill: rgba(246, 243, 104, 0.35);
+    --yp-selection-outline: #7a6a00;
+    --yp-highlight: #f6f368;
+    --yp-ribbon: #f6f368;
+    --yp-annotation: #e0a800;
+    --yp-foreground: #3b3a2a;
+  }
+
+  .yp-theme-modern {
+    --yp-surface: #ffffff;
+    --yp-surface-muted: #f5f7fa;
+    --yp-weekend: #eef2f6;
+    --yp-context: #f5f7fa;
+    --yp-border: #8a99a8;
+    --yp-text-primary: #102a43;
+    --yp-text-muted: #52606d;
+    --yp-text-inverse: #ffffff;
+    --yp-focus-ring: #2680c2;
+    --yp-selection-fill: rgba(38, 128, 194, 0.18);
+    --yp-selection-outline: #2680c2;
+    --yp-highlight: #f0b429;
+    --yp-ribbon: #243b53;
+    --yp-annotation: #9f7aea;
+    --yp-foreground: #243b53;
+  }
+
+  .yp-theme-high-contrast {
+    --yp-surface: #ffffff;
+    --yp-surface-muted: #ffffff;
+    --yp-weekend: #fff7a8;
+    --yp-context: #f2f2f2;
+    --yp-border: #000000;
+    --yp-text-primary: #000000;
+    --yp-text-muted: #1a1a1a;
+    --yp-text-inverse: #ffffff;
+    --yp-focus-ring: #0000ff;
+    --yp-selection-fill: rgba(0, 0, 255, 0.25);
+    --yp-selection-outline: #0000ff;
+    --yp-highlight: #ffff00;
+    --yp-ribbon: #000000;
+    --yp-annotation: #ff00ff;
+    --yp-foreground: #000000;
+  }
+
+  .yp-theme-print {
+    --yp-surface: #ffffff;
+    --yp-surface-muted: #ffffff;
+    --yp-weekend: #f2f2f2;
+    --yp-context: #fafafa;
+    --yp-border: #000000;
+    --yp-text-primary: #000000;
+    --yp-text-muted: #333333;
+    --yp-text-inverse: #ffffff;
+    --yp-focus-ring: #000000;
+    --yp-selection-fill: rgba(0, 0, 0, 0.12);
+    --yp-selection-outline: #000000;
+    --yp-highlight: #f2c94c;
+    --yp-ribbon: #2f5d8a;
+    --yp-annotation: #b8860b;
+    --yp-foreground: #111111;
+  }
+}
+
+@layer year-planner.components {
+  /* Item, inspector, tooltip and overflow styles are added in later phases. */
+}
+
+@layer year-planner.overrides {
+  /* Host overrides and unstyled mode are added in later phases. */
 }

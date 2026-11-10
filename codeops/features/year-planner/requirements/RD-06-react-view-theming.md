@@ -184,7 +184,7 @@ const YearPlannerProvider: FC<{
 ```
 
 `YearPlanner` is exported with `forwardRef<YearPlannerHandle, YearPlannerProps>`;
-React 18.2 consumers receive the same handle type. A missing `year`/`range`
+React 19 consumers receive the same handle type. A missing `year`/`range`
 renders an empty diagnostic state (`MISSING_RANGE`), not a guessed year.
 Controlled props win over defaults; supplying both `items` and `defaultItems`
 logs a development warning and ignores `defaultItems`.

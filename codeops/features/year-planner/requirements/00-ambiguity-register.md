@@ -1,6 +1,6 @@
 # Ambiguity Register: Year Planner for React
 
-> **Status**: ✅ GATE PASSED — all 79 items resolved (36 discovery + 34 preflight remediation + 8 reference rows + 1 runtime compatibility)
+> **Status**: ✅ GATE PASSED — all 80 items resolved (36 discovery + 34 preflight remediation + 8 reference rows + 1 runtime compatibility + 1 support change)
 > **Last Updated**: 2026-11-10 08:30
 > **Bulk acceptance note**: On 2026-11-10 the user directed “proceed” after the
 > presented defaults table and the preceding design decisions. Those defaults are
@@ -31,11 +31,11 @@
 | 19 | UX | Touch behavior | Automatic drag / scroll-first / explicit mode | **Scroll-first; explicit Touch edit mode enables drag/select; no accidental edits while scrolling.** | ✅ Resolved |
 | 20 | Behavior | Keyboard model | Grid traversal / roving focus / item list | **Roving date focus, Shift+Arrow range, Space/Enter, Escape, Delete confirmation; inspector provides move/resize/paint alternatives; focus restoration.** | ✅ Resolved |
 | 21 | Non-functional | Accessibility target | WCAG 2.2 AA / best effort | **WCAG 2.2 AA target; axe + keyboard + manual screen-reader audit; no AA claim until evidence.** | ✅ Resolved |
-| 22 | Non-functional | Support matrix | Broad legacy / modern | **Latest 2 Chrome/Edge/Firefox/Safari; React 18.2+ and 19; Node 24 CI; print Chromium; mobile basic; SSR-safe client entry.** | ✅ Resolved |
+| 22 | Non-functional | Support matrix | Broad legacy / modern | **Latest 2 Chrome/Edge/Firefox/Safari; React 19 only (AR #80); Node 24 CI; print Chromium; mobile basic; SSR-safe client entry.** | ✅ Resolved |
 | 23 | Non-functional | Performance budget | Unbounded / measured | **Benchmark 500/2k/10k items; 60 Hz drag target; record hardware/browser; no unmeasured claims; bundle budget.** | ✅ Resolved |
 | 24 | Security | Security/privacy model | Host-only / component guardrails | **Host owns auth/authorization; component must not leak hidden data via DOM/ARIA/tooltips/inspector/print; no telemetry; no raw HTML; CSP documented; untrusted metadata escaped.** | ✅ Resolved |
 | 25 | Documentation | Docs and API reference architecture | Storybook only / Storybook + TypeDoc / VitePress | **Storybook as public site; TypeDoc at `/api`; API Extractor report; TSDoc source of truth; VitePress optional later.** | ✅ Resolved |
-| 26 | Technical | Package format and exports | ESM/CJS / ESM-only / UMD | **ESM-only R1; React peer 18.2+/19; exports map; CSS export; `publint` + `attw`; no UMD.** | ✅ Resolved |
+| 26 | Technical | Package format and exports | ESM/CJS / ESM-only / UMD | **ESM-only R1; React 19 peer; exports map; CSS export; `publint` + `attw`; no UMD.** | ✅ Resolved |
 | 27 | Release | Versioning and publishing | Independent / lockstep | **Lockstep Changesets fixed group; both packages same version; npm OIDC provenance; `0.x` until stable.** | ✅ Resolved |
 | 28 | Legal | Copyright holder | Person / BlendSDK / contributors | **BlendSDK** (user may override before release). | ✅ Resolved |
 | 29 | Product | Open-source audience and success | Generic / focused | **React product teams building long-range planners (workforce leave, campaigns, maintenance; logistics secondary). Success = adoption, docs quality, issues, contributors — not revenue.** | ✅ Resolved |
@@ -100,6 +100,7 @@
 | 77 | Technical | Event storage | Per-day cells / intervals + fragments | **Interval identity + per-row fragments; never per-day event storage.** | ✅ Resolved |
 | 78 | Technical | PNG/SVG print | Raster / vector / browser print | **Browser A3 print with vector CSS/SVG shapes; no raster canvas.** | ✅ Resolved |
 | 79 | Technical (runtime) | Vite 8/Vitest 5 native binary compatibility | Force Vite 8 / fallback Vite 7 | **Vite 7.3.8 + Vitest 3.2.7 are the verified reference-environment fallback; Vite 8/Vitest 5 remain the target where native bindings support the CPU.** | ✅ Resolved |
+| 80 | Non-functional | React support policy | React 18+19 / React 19 only | **React 19 only** — user directive 2026-11-10. Peer dependency `^19.0.0`; React 18 is not supported in R1. Trade-off: narrower adoption, simpler test matrix. | ✅ Resolved |
 
 ## Resolution notes
 

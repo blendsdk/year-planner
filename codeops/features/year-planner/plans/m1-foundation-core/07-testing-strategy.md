@@ -99,7 +99,7 @@
 | ST-40 | `pnpm pack:check` | no `publint`/`attw` errors | RD-01 AC4 |
 | ST-41 | missing DCO sign-off | CI check fails | RD-01 AC7 |
 | ST-42 | package manifests | MIT, type module, files allowlist, sideEffects CSS | RD-01 AC8 |
-| ST-55 | React 18.2 and 19 smoke render | both render the grid | RD-01 AC6 |
+| ST-55 | React 19 smoke render | grid renders | RD-01 AC6 |
 | ST-56 | `pnpm verify:full` | includes e2e/visual/print | RD-01 AC9 |
 | ST-57 | CI workflow | `tsc7-canary` exists and is non-blocking | RD-01 AC6 |
 

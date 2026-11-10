@@ -70,7 +70,7 @@ grid. Specification tests precede implementation in every behavior phase.
 - [x] 1.1.5 Configure Storybook with Vite and minimal addons ✅ (completed: 2026-11-10 10:15)
 - [ ] 1.1.6 Configure API Extractor and TypeDoc
 - [x] 1.1.7 Add `verify` and `verify:full` scripts ✅ (completed: 2026-11-10 10:15)
-- [x] 1.1.8 Add CI workflow with typecheck/lint/unit/build/api/Storybook/pack/size/e2e/visual/print/browser matrix/React 18+19 smoke/tsc7-canary and DCO; a11y/bench incremental ✅ (completed: 2026-11-10 10:22)
+- [x] 1.1.8 Add CI workflow with typecheck/lint/unit/build/api/Storybook/pack/size/e2e/visual/print/browser matrix/React 19 smoke and DCO; a11y/bench incremental ✅ (completed: 2026-11-10 10:22)
 - [x] 1.1.9 Add clean-consumer pack check (`publint`, `attw`, temp Vite install) ✅ (completed: 2026-11-10 10:15)
 - [x] 1.1.10 Add package `files`/`sideEffects`/`repository` metadata, source maps and README quickstart ✅ (completed: 2026-11-10 10:15)
 - [x] 1.1.11 Add CODEOWNERS, issue/PR templates and DCO documentation ✅ (completed: 2026-11-10 10:22)

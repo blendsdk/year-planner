@@ -31,7 +31,7 @@ tests/e2e/                   Playwright
 | Package | Exports | Peers |
 |---|---|---|
 | core | `.` | none |
-| react | `.`, `./styles.css` | react/react-dom 18.2+/19 |
+| react | `.`, `./styles.css` | react/react-dom ^19 |
 
 ### Scripts
 
@@ -70,7 +70,7 @@ are wired incrementally as their suites appear.
 - Node 24, pnpm cache, `pnpm install --frozen-lockfile`.
 - Jobs: typecheck, lint, unit, build, api-report, storybook build, e2e,
   visual, a11y, print, size, pack-check, DCO.
-- React 18 and 19 matrix for the React package smoke tests.
+- React 19 smoke tests (React 18 is out of scope).
 - Separate `tsc7-canary` job (TS7 `--noEmit`) allowed to fail without blocking
   release.
 

@@ -46,7 +46,7 @@ recorded measurement.
   baseline in Chromium; Edge is covered by Chromium and Safari is approximated by
   WebKit; add real Edge/Safari smoke tests where available; mobile smoke test on
   Chromium/WebKit.
-- [ ] React matrix: 18.2 and 19 component/E2E smoke tests.
+- [ ] React 19 component/E2E smoke tests.
 - [ ] SSR smoke test: render the grid and labels to string without `window` or
   `document`, then hydrate without mismatch.
 - [ ] Clean-consumer test: packed tarballs installed in a fresh Vite app; CSS,
@@ -176,8 +176,8 @@ Test harness and evidence: **L**. Performance harness: **M**. Security tests:
    traceability matrix.
 3. [ ] Core coverage is ≥ 90% lines/branches; React coverage is ≥ 80%;
    no public export is untested.
-4. [ ] Playwright passes on Chromium, Firefox and WebKit; React 18.2 and 19
-   smoke tests pass.
+4. [ ] Playwright passes on Chromium, Firefox and WebKit; React 19 smoke
+   tests pass.
 5. [ ] Date-only tests pass under the three specified timezones.
 6. [ ] A3 PDF output reports 420×297 mm landscape and shows no clipped month
    row for 12, 14, 18, 24 and 36-month layouts; PRT-01 (2017 yellow, events,

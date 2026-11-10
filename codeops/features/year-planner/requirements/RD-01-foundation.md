@@ -29,7 +29,7 @@ not inherit a React peer dependency.
   `apps/demo`, `tests/e2e`, `docs/` and `.github/workflows/`.
 - [ ] `@blendsdk/year-planner-core` is pure TypeScript and imports no React or
   DOM APIs.
-- [ ] `@blendsdk/react-year-planner` declares React 18.2+ and 19 as peers and
+- [ ] `@blendsdk/react-year-planner` declares React 19 as its peer and
   imports the core package through its public API only.
 - [ ] ESM-only builds with generated `.d.ts`, declaration maps and source maps.
 - [ ] Public exports map for the core and React packages, a `styles.css` export
@@ -43,8 +43,8 @@ not inherit a React peer dependency.
   report, Storybook build, package validation and size check.
 - [ ] `pnpm verify:full` adds E2E, visual, accessibility, print and benchmark
   checks; release gates use `verify:full`.
-- [ ] CI runs on Node 24 with React 18.2 and React 19 matrices; browser tests
-  run Chromium, Firefox and WebKit.
+- [ ] CI runs on Node 24 with React 19; browser tests run Chromium, Firefox
+  and WebKit.
 - [ ] DCO check on every commit; MIT license; `CONTRIBUTING`, `CODE_OF_CONDUCT`,
   `SECURITY`, issue/PR templates and `CODEOWNERS`.
 - [ ] `publint` and `@arethetypeswrong/cli` pass on both packs.
@@ -93,7 +93,7 @@ year-planner/
 | Package | Runtime | Peer dependencies | Public subpaths |
 |---|---|---|---|
 | `@blendsdk/year-planner-core` | Pure TypeScript | None | `.` |
-| `@blendsdk/react-year-planner` | React | `react`, `react-dom` 18.2+/19; `@fluentui/react-components` and `@mui/material` are optional peers for adapter subpaths | `.`, `./styles.css`, `./adapters/fluent`, `./adapters/mui` |
+| `@blendsdk/react-year-planner` | React | `react`, `react-dom` ^19; `@fluentui/react-components` and `@mui/material` are optional peers for adapter subpaths | `.`, `./styles.css`, `./adapters/fluent`, `./adapters/mui` |
 
 ### Scripts
 
@@ -181,8 +181,8 @@ year-planner/
 4. [ ] `pnpm pack:check` reports no `publint` or `attw` errors for both packages.
 5. [ ] A fresh Vite app installs both packed tarballs and renders `<YearPlanner />`
    without importing internal paths.
-6. [ ] CI passes on React 18.2 and React 19; the TS7 canary may fail without
-   blocking the release job.
+6. [ ] CI passes on React 19; the TS7 canary may fail without blocking the
+   release job.
 7. [ ] The DCO check rejects a commit without `Signed-off-by`.
 8. [ ] `LICENSE` is MIT and the package manifests declare `"license": "MIT"`,
    `"type": "module"`, `"files"` allowlist and `"sideEffects"` limited to CSS.

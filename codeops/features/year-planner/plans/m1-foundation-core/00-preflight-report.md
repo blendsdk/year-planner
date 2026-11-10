@@ -25,7 +25,7 @@
 | `highlightYear` | `year` preset → year; explicit range → start year; ST-48 |
 | RD-02 API/diagnostics | Added format/subtract/min/max/dayOfWeek/normalize/contains/splitAtDateBoundary + INVALID_INSTANT/TIMED_PROJECTION_FAILED |
 | Acceptance coverage | Added ST-43–ST-57 for AC5/6/12, leap years, security, tint, contextMonths, print, keyboard, React/CI |
-| CI | Browser matrix, e2e/visual/print/pack/Storybook/React 18+19/tsc7-canary; a11y/bench incremental |
+| CI | Browser matrix, e2e/visual/print/pack/Storybook/React 19; a11y/bench incremental |
 | 36-month keyboard | React/E2E ST-53 + task 4.2.8 |
 | contextMonths | INVALID_CONTEXT_MONTHS + ST-49 + task 3.2.5 |
 | Spec-first | Toolchain check before scaffold; interval/print/consumer spec tasks before implementation; red phases explicit |

@@ -20,7 +20,7 @@ booking correctness.
 
 ## 2. Technology decisions already made
 
-- React 19 development target; peer support for React 18.2+ and 19.
+- React 19 development target and peer; React 18 is not supported in R1.
 - Strict TypeScript; TS 6.0.3 for R1; TS7 canary only.
 - Vite 8, Vitest 5, Storybook 10, Playwright, Turbo 2, pnpm 12, Changesets 3,
   Biome 2.

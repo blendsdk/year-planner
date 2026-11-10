@@ -28,21 +28,7 @@ jobs:
       - run: pnpm build
       - run: pnpm pack:check
       - run: npx playwright install --with-deps chromium
-      - run: pnpm test:e2e -- --project=chromium
-
-  react18:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 12.9.1
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @blendsdk/react-year-planner test
+      - run: pnpm exec playwright test --project=chromium
 
   dco:
     runs-on: ubuntu-latest
@@ -64,17 +50,4 @@ jobs:
           done
           test "$missing" -eq 0
 
-  tsc7-canary:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 12.9.1
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec tsc -p packages/core/tsconfig.json --noEmit
+

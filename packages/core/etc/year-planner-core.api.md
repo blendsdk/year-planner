@@ -215,6 +215,9 @@ export interface EffectiveVisibility {
 export function emptyPlannerModel(): PlannerModel;
 
 // @public
+export function eraseItems(context: PaintContext, layerId: string, period: AllDayPeriod): PaintResult;
+
+// @public
 export function formatDateKey(date: DateKey): string;
 
 // @public
@@ -350,6 +353,57 @@ export function overlaps(a: DateInterval, b: DateInterval): boolean;
 
 // @public
 export function paginatePrintRows(layout: YearLayout, rowsPerPage?: number): MonthRowLayout[][];
+
+// @public
+export interface PaintContext extends EditabilityContext {
+    // (undocumented)
+    activeLayerId: string;
+    // (undocumented)
+    createId: () => string;
+    // (undocumented)
+    expectedVersions?: Record<string, number>;
+}
+
+// @public
+export interface PaintDefaults {
+    // (undocumented)
+    annotation?: {
+        label?: string;
+        background?: string;
+        priority?: number;
+    };
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    color?: string;
+    // (undocumented)
+    kind: "highlight";
+    // (undocumented)
+    metadata?: unknown;
+    // (undocumented)
+    status?: string;
+    // (undocumented)
+    style?: Record<string, string | number>;
+    // (undocumented)
+    textColor?: string;
+    // (undocumented)
+    title?: string;
+}
+
+// @public
+export function paintItems(context: PaintContext, layerId: string, period: AllDayPeriod, defaults: PaintDefaults): PaintResult;
+
+// @public
+export interface PaintResult {
+    // (undocumented)
+    diagnostics: Diagnostic[];
+    // (undocumented)
+    ok: boolean;
+    // (undocumented)
+    removedItemIds: string[];
+    // (undocumented)
+    updatedItems: PlannerItem[];
+}
 
 // @public
 export function parseDateKey(value: string): DateParseResult;

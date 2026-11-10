@@ -68,12 +68,7 @@ function buildAncestry(model: PlannerModel): Ancestry {
   };
 }
 
-function isGroupHidden(
-  groupId: string,
-  model: PlannerModel,
-  visibility: VisibilityState,
-  ancestry: Ancestry,
-): boolean {
+function isGroupHidden(groupId: string, visibility: VisibilityState, ancestry: Ancestry): boolean {
   const hidden = new Set(visibility.hiddenGroupIds);
   let cursor: string | undefined = groupId;
   const seen = new Set<string>();
@@ -115,10 +110,7 @@ function evaluate(
 ): EffectiveVisibility {
   const layer = itemLayer(item, ancestry);
   if (!layer) return { visible: false, reason: "unknown-entity" };
-  if (
-    layer.groupId !== undefined &&
-    isGroupHidden(layer.groupId, context.model, context.visibility, ancestry)
-  ) {
+  if (layer.groupId !== undefined && isGroupHidden(layer.groupId, context.visibility, ancestry)) {
     return { visible: false, reason: "group" };
   }
   if (context.visibility.hiddenLayerIds.includes(layer.id)) {
@@ -171,10 +163,7 @@ export function isLayerEffectivelyHidden(layerId: string, context: VisibilityCon
   const ancestry = buildAncestry(context.model);
   const layer = ancestry.layerById.get(layerId);
   if (!layer) return true;
-  if (
-    layer.groupId !== undefined &&
-    isGroupHidden(layer.groupId, context.model, context.visibility, ancestry)
-  ) {
+  if (layer.groupId !== undefined && isGroupHidden(layer.groupId, context.visibility, ancestry)) {
     return true;
   }
   if (context.visibility.hiddenLayerIds.includes(layerId)) return true;
@@ -196,7 +185,7 @@ export function getGroupVisibility(
 ): "visible" | "hidden" | "mixed" {
   const ancestry = buildAncestry(context.model);
   if (!ancestry.parentOf.has(groupId)) return "hidden";
-  if (isGroupHidden(groupId, context.model, context.visibility, ancestry)) return "hidden";
+  if (isGroupHidden(groupId, context.visibility, ancestry)) return "hidden";
   const descendantLayers = context.model.layers.filter((layer) => {
     let cursor: string | undefined = layer.groupId;
     const seen = new Set<string>();

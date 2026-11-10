@@ -49,7 +49,23 @@ Restored after implementation; 17 spec tests pass.
 
 ## Phase 3 — Paint and erase
 
-Pending.
+Command:
+
+```bash
+cd packages/core
+pnpm exec vitest run src/model/paint.spec.test.ts
+```
+
+State: `packages/core/src/model/paint.ts` did not exist.
+
+```text
+Error: Cannot find module './paint' imported from
+  packages/core/src/model/paint.spec.test.ts
+Test Files  1 failed (1)
+     Tests  no tests
+```
+
+Restored after implementation; 14 spec tests pass.
 
 ## Phase 4 — Ribbon fragments and lanes
 

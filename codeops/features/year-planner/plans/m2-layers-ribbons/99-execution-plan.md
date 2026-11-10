@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 13:21
-> **Progress**: 15/46 tasks (33%)
+> **Last Updated**: 2026-11-10 13:25
+> **Progress**: 21/46 tasks (46%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -120,18 +120,18 @@ identities.
 
 ### Step 3.1: Specification tests
 
-- [ ] 3.1.1 [spec-author] Write paint/erase spec tests for ST-31–ST-42, ST-69–ST-71 and ST-81 — `packages/core/src/model/paint.spec.test.ts`
-- [ ] 3.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md`
+- [x] 3.1.1 [spec-author] Write paint/erase spec tests for ST-31–ST-42, ST-69–ST-71 and ST-81 — `packages/core/src/model/paint.spec.test.ts` ✅ (completed: 2026-11-10 13:25)
+- [x] 3.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md` ✅ (completed: 2026-11-10 13:25)
 
 ### Step 3.2: Implementation
 
-- [ ] 3.2.1 Implement atomic paint/erase — `packages/core/src/model/paint.ts`
-- [ ] 3.2.2 Export the module and run the spec tests green — `packages/core/src/model/index.ts`, `packages/core/src/index.ts`
+- [x] 3.2.1 Implement atomic paint/erase — `packages/core/src/model/paint.ts` ✅ (completed: 2026-11-10 13:25)
+- [x] 3.2.2 Export the module and run the spec tests green — `packages/core/src/model/index.ts`, `packages/core/src/index.ts` ✅ (completed: 2026-11-10 13:25)
 
 ### Step 3.3: Implementation tests and verify
 
-- [ ] 3.3.1 Write paint/erase edge-case tests — `packages/core/src/model/paint.impl.test.ts`
-- [ ] 3.3.2 Run `pnpm verify`
+- [x] 3.3.1 Write paint/erase edge-case tests — `packages/core/src/model/paint.impl.test.ts` ✅ (completed: 2026-11-10 13:25)
+- [x] 3.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 13:25)
 
 **Deliverables**:
 - [ ] All ST-31–ST-42, ST-69–ST-71 and ST-81 tests pass

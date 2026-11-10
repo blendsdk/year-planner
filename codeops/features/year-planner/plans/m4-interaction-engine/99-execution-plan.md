@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 20:04
-> **Progress**: 6/33 tasks (18%)
+> **Last Updated**: 2026-11-10 20:32
+> **Progress**: 12/33 tasks (36%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -79,7 +79,7 @@ bounded by the task-size criteria).
 ---
 ## Phase 2: Gesture engine, coordinates and marquee
 
-> **Phase baseline tree**: recorded by the executor at phase start.
+> **Phase baseline tree**: 1911162342169cbf638dec44d04224ea2a7a5f99
 > **Reasoning**: high — the FSM, coordinate mapping and cancellation matrix are
 > the highest-risk correctness surface.
 
@@ -88,28 +88,27 @@ bounded by the task-size criteria).
 
 ### Step 2.1: Specification tests
 
-- [ ] 2.1.1 [spec-author] Write gesture/geometry spec tests for ST-23–ST-41 — `packages/react/src/interaction/gesture.spec.test.tsx`
-- [ ] 2.1.2 Run the gesture spec tests and record the expected red failures — `docs/m4-red-phase.md`
+- [x] 2.1.1 [spec-author] Write gesture/geometry spec tests for ST-23–ST-41 — `packages/react/src/interaction/gesture.spec.test.tsx` ✅ (completed: 2026-11-10 20:32)
+- [x] 2.1.2 Run the gesture spec tests and record the expected red failures — `docs/m4-red-phase.md` ✅ (completed: 2026-11-10 20:32)
 
 ### Step 2.2: Implementation
 
-- [ ] 2.2.1 Implement the FSM, activation matrix, threshold, move/resize math, marquee intersection, design rect conversion, auto-scroll delta and signature-based cancellation — `packages/react/src/interaction/gesture.ts`
-- [ ] 2.2.2 Implement target classification, editability callback support, design-unit mapping and ribbon-row-height date mapping — `packages/react/src/interaction/pointer.ts`, `packages/react/src/geometry.ts`
+- [x] 2.2.1 Implement the FSM, activation matrix, threshold, move/resize math, marquee intersection, design rect conversion, auto-scroll delta and signature-based cancellation — `packages/react/src/interaction/gesture.ts` ✅ (completed: 2026-11-10 20:32)
+- [x] 2.2.2 Implement target classification, editability callback support, design-unit mapping and ribbon-row-height date mapping — `packages/react/src/interaction/pointer.ts`, `packages/react/src/geometry.ts` ✅ (completed: 2026-11-10 20:32)
 
 ### Step 2.3: Implementation tests and verify
 
-- [ ] 2.3.1 Write gesture edge tests for threshold boundaries, tie-breaks, blank slots, expanded rows and cancellation signatures — `packages/react/src/interaction/gesture.impl.test.tsx`
-- [ ] 2.3.2 Run `pnpm verify`
+- [x] 2.3.1 Write gesture edge tests for threshold boundaries, tie-breaks, blank slots, expanded rows and cancellation signatures — `packages/react/src/interaction/gesture.impl.test.tsx` ✅ (completed: 2026-11-10 20:32)
+- [x] 2.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 20:32)
 
 **Deliverables**:
-- [ ] ST-23–ST-41 pass
-- [ ] FSM and geometry modules import no React or DOM
-- [ ] Expanded/lane-grown rows map to the correct date; no phantom dates
+- [x] ST-23–ST-41 pass ✅ (completed: 2026-11-10 20:32)
+- [x] FSM and geometry modules import no React or DOM ✅ (completed: 2026-11-10 20:32)
+- [x] Expanded/lane-grown rows map to the correct date; no phantom dates ✅ (completed: 2026-11-10 20:32)
 
 **Verify**: `pnpm verify:full`
 
 ---
-
 ## Phase 3: Pointer wiring, commands and previews
 
 > **Phase baseline tree**: recorded by the executor at phase start.

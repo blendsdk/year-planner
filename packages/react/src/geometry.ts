@@ -96,17 +96,37 @@ export function pointToFragment(
   return hitTestRibbon(createRibbonHitIndex(ribbons), x, y);
 }
 
-/** Maps a client point to a date key, or `undefined` over a blank slot. */
+/** Maps a client point to day-plane design units. */
+export function pointToDesign(
+  point: { clientX: number; clientY: number },
+  view: ViewGeometry,
+): { x: number; y: number } {
+  return { x: designX(point.clientX, view), y: designY(point.clientY, view) };
+}
+
+/**
+ * Maps a client point to a date key, or `undefined` over a blank slot.
+ *
+ * When a ribbon layout is supplied, the vertical lookup uses the rendered row
+ * heights (`top`/`height`), which can grow with expanded density or lane
+ * overflow. Without it, the uniform layout row height is used for compatibility.
+ */
 export function pointToDate(
   layout: YearLayout,
   point: { clientX: number; clientY: number },
   view: ViewGeometry,
+  ribbons?: RibbonLayout,
 ): DateKey | undefined {
   const x = designX(point.clientX, view);
   const y = designY(point.clientY, view);
   if (x < 0 || y < 0) return undefined;
-  const rowIndex = Math.floor(y / layout.rowHeight);
-  const row = layout.rows[rowIndex];
+  let row: (typeof layout.rows)[number] | undefined;
+  if (ribbons) {
+    const ribbonRow = ribbons.rows.find((entry) => y >= entry.top && y < entry.top + entry.height);
+    row = ribbonRow ? layout.rows[ribbonRow.rowIndex] : undefined;
+  } else {
+    row = layout.rows[Math.floor(y / layout.rowHeight)];
+  }
   if (!row) return undefined;
   const column = row.columns.find((entry) => x >= entry.x && x < entry.x + entry.width);
   return column?.date;

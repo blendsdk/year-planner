@@ -81,7 +81,21 @@ pass.
 
 ## Phase 5 — Inspector
 
-Pending.
+Command:
+
+```bash
+cd packages/react && pnpm exec vitest run src/inspector.spec.test.tsx
+```
+
+State: there was no inspector aside, detail list, overflow list or feedback
+area.
+
+```text
+TestingLibraryElementError: Unable to find role "complementary"
+```
+
+Restored after implementation; 10 inspector spec tests and 4 implementation
+tests pass.
 
 ## Phase 6 — Print and adapters
 

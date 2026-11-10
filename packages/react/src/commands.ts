@@ -7,7 +7,6 @@ import {
   type DiagnosticCode,
   diagnostic,
   eraseItems,
-  getEffectiveVisibility,
   getItemEditability,
   getResolvedLayerPolicy,
   isLayerEffectivelyHidden,
@@ -63,6 +62,11 @@ export interface CommandPipeline {
 }
 
 let fallbackCounter = 0;
+
+/** Returns a stable new item ID from the host factory or a UUID/fallback. */
+export function createPlannerId(interaction?: { createId?: () => string }): string {
+  return interaction?.createId?.() ?? defaultId();
+}
 
 function defaultId(): string {
   const cryptoObject = globalThis.crypto;
@@ -263,7 +267,7 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
       }
       if (command.type === "paint") {
         const layer = layerFor(state.model, command.layerId);
-        if (!layer || layer.channel !== "highlight" || command.layerId !== input.activeLayerId) {
+        if (layer?.channel !== "highlight" || command.layerId !== input.activeLayerId) {
           return failure(
             command,
             "INVALID_PAINT_TARGET",

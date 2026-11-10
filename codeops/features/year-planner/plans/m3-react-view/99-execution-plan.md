@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 15:30
-> **Progress**: 26/46 tasks (57%)
+> **Last Updated**: 2026-11-10 15:40
+> **Progress**: 32/46 tasks (70%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -181,18 +181,18 @@ feedback, retry/dismiss and keyboard behavior.
 
 ### Step 5.1: Specification tests
 
-- [ ] 5.1.1 [spec-author] Write inspector spec tests for ST-62–ST-72 — `packages/react/src/inspector.spec.test.tsx`
-- [ ] 5.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md`
+- [x] 5.1.1 [spec-author] Write inspector spec tests for ST-62–ST-72 — `packages/react/src/inspector.spec.test.tsx` ✅ (completed: 2026-11-10 15:40)
+- [x] 5.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md` ✅ (completed: 2026-11-10 15:40)
 
 ### Step 5.2: Implementation
 
-- [ ] 5.2.1 Implement the inspector shell, selected-item details and actions — `packages/react/src/render/Inspector.tsx`
-- [ ] 5.2.2 Implement overflow list, feedback, retry/dismiss and focus — `packages/react/src/render/Inspector.tsx`, `packages/react/src/YearPlanner.tsx`
+- [x] 5.2.1 Implement the inspector shell, selected-item details and actions — `packages/react/src/render/Inspector.tsx` ✅ (completed: 2026-11-10 15:40)
+- [x] 5.2.2 Implement overflow list, feedback, retry/dismiss and focus — `packages/react/src/render/Inspector.tsx`, `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-10 15:40)
 
 ### Step 5.3: Implementation tests and verify
 
-- [ ] 5.3.1 Write inspector edge-case tests — `packages/react/src/inspector.impl.test.tsx`
-- [ ] 5.3.2 Run `pnpm verify`
+- [x] 5.3.1 Write inspector edge-case tests — `packages/react/src/inspector.impl.test.tsx` ✅ (completed: 2026-11-10 15:40)
+- [x] 5.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:40)
 
 **Deliverables**:
 - [ ] ST-62–ST-72 pass

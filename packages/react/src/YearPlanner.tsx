@@ -24,6 +24,7 @@ import { useCommandPipeline } from "./commands.js";
 import { createFormatters } from "./locale.js";
 import { resolveDisplayOptions } from "./options.js";
 import { useYearPlannerTheme } from "./provider.js";
+import { Inspector } from "./render/Inspector.js";
 import { YearGrid } from "./render/YearGrid.js";
 import { usePlannerState } from "./state.js";
 import { resolveTheme, themeToCssVars } from "./theme.js";
@@ -182,6 +183,9 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const [activeDate, setActiveDate] = useState<string | undefined>(undefined);
     const [activeItemId, setActiveItemId] = useState<string | undefined>(undefined);
     const [geometryVersion, setGeometryVersion] = useState(0);
+    const [inspectorOpen, setInspectorOpen] = useState(props.showInspector !== false);
+    const inspectorRef = useRef<HTMLElement>(null);
+    const [focusInspector, setFocusInspector] = useState(false);
     const viewportRef = useRef<HTMLDivElement>(null);
     const warnedInteractiveSlot = useRef(false);
     const [pendingFocus, setPendingFocus] = useState<
@@ -201,6 +205,19 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       element?.focus();
       setPendingFocus(undefined);
     }, [pendingFocus]);
+
+    useEffect(() => {
+      if (props.showInspector === false) return;
+      if (state.selection.items.length > 0 || state.selection.dates.length > 0) {
+        setInspectorOpen(true);
+      }
+    }, [state.selection, props.showInspector]);
+
+    useEffect(() => {
+      if (!focusInspector) return;
+      inspectorRef.current?.focus();
+      setFocusInspector(false);
+    }, [focusInspector]);
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: re-scan when ribbons or slot renderers change
     useEffect(() => {
@@ -296,6 +313,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       [state],
     );
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: the handle closes over current state and pipeline
     useImperativeHandle(
       ref,
       () => ({
@@ -326,7 +344,11 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         },
         requestUndo: pipeline.requestUndo,
         requestRedo: pipeline.requestRedo,
-        openInspector: () => undefined,
+        openInspector: () => {
+          if (props.showInspector === false) return;
+          setInspectorOpen(true);
+          setFocusInspector(true);
+        },
         getEffectiveVisibility: (id) => {
           const result = resolveEffectiveVisibility(id, {
             model: state.model,
@@ -364,6 +386,20 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         </div>
       );
     }
+
+    const inspectorFocusDate = state.selection.focusDate ?? effectiveActiveDate;
+    const activeRowId = inspectorFocusDate?.slice(0, 7);
+    const overflowRow = activeRowId
+      ? ribbons.rows.find((row) => row.rowId === activeRowId)
+      : ribbons.rows[0];
+    const closeInspector = (): void => {
+      setInspectorOpen(false);
+      if (activeItemId ?? state.selection.items[0]) {
+        setPendingFocus({ type: "item", id: (activeItemId ?? state.selection.items[0]) as string });
+      } else if (effectiveActiveDate) {
+        setPendingFocus({ type: "date", id: effectiveActiveDate });
+      }
+    };
 
     const content = (
       <>
@@ -406,6 +442,28 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             onFocusItem={focusItem}
           />
         </div>
+        <Inspector
+          model={state.model}
+          visibility={state.visibility}
+          filter={state.filter}
+          selection={state.selection}
+          open={props.showInspector !== false && inspectorOpen}
+          readOnly={props.readOnly === true}
+          interactionMode={state.interactionMode}
+          activeLayerId={props.activeLayerId}
+          activeDate={effectiveActiveDate}
+          formatters={formatters}
+          displayTimeZone={resolvedDisplay.options.displayTimeZone}
+          overflowRow={overflowRow}
+          pipeline={pipeline}
+          interaction={props.interaction}
+          components={props.components ?? {}}
+          renderInspector={props.renderInspector}
+          onClose={closeInspector}
+          onSelectItem={selectItem}
+          onFocusItem={focusItem}
+          asideRef={inspectorRef}
+        />
       </>
     );
     const Root = props.components?.Root;

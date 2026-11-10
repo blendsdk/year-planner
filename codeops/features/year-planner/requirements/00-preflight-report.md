@@ -66,7 +66,7 @@ TypeDoc/API Extractor + GH Pages) remains an M0 spike, not a requirements findin
 |---|---|
 | RD count | 12 |
 | Required RD sections | All present |
-| Ambiguity register | 78 rows, 78 resolved, 0 open |
+| Ambiguity register | 79 rows, 79 resolved, 0 open (AR #79 runtime Vite/Vitest fallback) |
 | Roadmap rows | 12 RDs |
 | Internal links | No broken links |
 | Acceptance numbering | Sequential in every RD |

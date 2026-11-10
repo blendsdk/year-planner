@@ -71,9 +71,10 @@ workspace hygiene.
 
 ### External Dependencies
 
-- Node 24, pnpm 12.9, TypeScript 6.0.3, Vite 8, Vitest 5, Storybook 10,
-  Playwright 1.65, Turbo 2.11, Biome 2.6, Changesets 3, API Extractor 7.60,
-  TypeDoc 0.28.20+, React 19 dev / peer 18.2+.
+- Node 24, pnpm 12.9, TypeScript 6.0.3, Vite 7.3.8/Vitest 3.2.7 fallback
+  (Vite 8/Vitest 5 target), Storybook 10, Playwright 1.65, Turbo 2.11,
+  Biome 2.6, Changesets 3, API Extractor 7.60, TypeDoc 0.28.20+, React 19 dev
+  / peer 18.2+.
 
 ## Risks and Concerns
 

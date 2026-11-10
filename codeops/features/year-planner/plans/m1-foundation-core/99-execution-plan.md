@@ -37,7 +37,7 @@ grid. Specification tests precede implementation in every behavior phase.
 ### Step 0.1: Pin and verify the toolchain
 
 **Reference**: 03-01, RD-01 · AR #4, #5
-**Objective**: Prove TS6 + Vite 8 + Vitest 5 + Storybook 10 + TypeDoc/API Extractor install and build together.
+**Objective**: Prove TS6 + Vite 7.3.8 + Vitest 3.2.7 (Vite 8/Vitest 5 target) + Storybook 10 + TypeDoc/API Extractor install and build together.
 
 - [x] 0.1.1 Create an isolated `spike/` package with its own manifest and pinned toolchain ✅ (completed: 2026-11-10 10:15)
 - [x] 0.1.2 Install the spike and record versions in `docs/toolchain-spike.md` ✅ (completed: 2026-11-10 10:15)

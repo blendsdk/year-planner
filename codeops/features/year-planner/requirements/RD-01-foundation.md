@@ -36,7 +36,8 @@ not inherit a React peer dependency.
   and no deep-import contract.
 - [ ] Strict TypeScript 6.0.3 build; a TS7 canary typecheck job that does not
   gate release.
-- [ ] Vite 8 build, Vitest 5 tests, Storybook 10, Playwright, Turbo, pnpm,
+- [ ] Vite 7.3.8/Vitest 3.2.7 fallback build/tests (Vite 8/Vitest 5 target where
+  native bindings support the CPU), Storybook 10, Playwright, Turbo, pnpm,
   Changesets and Biome configured and documented.
 - [ ] `pnpm verify` runs typecheck, lint, unit/component tests, build, API
   report, Storybook build, package validation and size check.
@@ -124,8 +125,8 @@ year-planner/
 | Node | 24 LTS |
 | pnpm | 12.9.x |
 | TypeScript | 6.0.3 |
-| Vite | 8.3.x |
-| Vitest | 5.1.x |
+| Vite | 7.3.8 fallback; Vite 8 target |
+| Vitest | 3.2.7 fallback; Vitest 5 target |
 | Storybook | 10.6.x |
 | Playwright | 1.65.x |
 | Turbo | 2.11.x |

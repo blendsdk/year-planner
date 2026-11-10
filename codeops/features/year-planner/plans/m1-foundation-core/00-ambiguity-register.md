@@ -1,6 +1,6 @@
 # Ambiguity Register: M1 Foundation and Core
 
-> **Status**: ✅ GATE PASSED — all 14 items resolved
+> **Status**: ✅ GATE PASSED — all 15 items resolved
 > **Last Updated**: 2026-11-10 09:26
 > **Bulk acceptance note**: The user directed “proceed” after the requirements
 > preflight and the M1 plan scope was presented. The technical defaults below are
@@ -23,6 +23,7 @@
 | 12 | Behavior | `contextMonths` bounds | Any integers / 0–12 and total 12–36 | **before/after integers 0–12; total 12–36; else `INVALID_CONTEXT_MONTHS`.** | ✅ Resolved |
 | 13 | Quality | CI scope in M1 | Narrow / full RD-01 matrix | **Include browser matrix, e2e/visual/print/pack-check/Storybook; a11y/bench incremental.** | ✅ Resolved |
 | 14 | Quality | Print/36-month coverage | Defer / include | **Include 2016 blue + 2017 yellow print and 36-month keyboard/print checks.** | ✅ Resolved |
+| 15 | Technical (runtime) | Vite 8/Vitest 5 native binary fails on reference CPU | Force Vite 8 / fallback Vite 7 | **Use Vite 7.3.8 + Vitest 3.2.7 in this environment; Vite 8/Vitest 5 remain the target where native bindings support the CPU.** Evidence: `Illegal instruction (core dumped)` from Vitest 5/Vite 8 on Intel i5-3470S; Vite 7/Vitest 3 pass all suites. Revisit on CI hardware or after a compatible Rolldown release. | ✅ Resolved |
 
 ## Resolution notes
 

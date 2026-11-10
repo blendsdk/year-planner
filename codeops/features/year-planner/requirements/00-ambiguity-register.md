@@ -1,6 +1,6 @@
 # Ambiguity Register: Year Planner for React
 
-> **Status**: ✅ GATE PASSED — all 78 items resolved (36 discovery + 34 preflight remediation + 8 reference rows)
+> **Status**: ✅ GATE PASSED — all 79 items resolved (36 discovery + 34 preflight remediation + 8 reference rows + 1 runtime compatibility)
 > **Last Updated**: 2026-11-10 08:30
 > **Bulk acceptance note**: On 2026-11-10 the user directed “proceed” after the
 > presented defaults table and the preceding design decisions. Those defaults are
@@ -99,6 +99,7 @@
 | 76 | UX | Compact lane density | 2 / 3 / 5 lanes | **3 visible lanes + overflow count/list.** | ✅ Resolved |
 | 77 | Technical | Event storage | Per-day cells / intervals + fragments | **Interval identity + per-row fragments; never per-day event storage.** | ✅ Resolved |
 | 78 | Technical | PNG/SVG print | Raster / vector / browser print | **Browser A3 print with vector CSS/SVG shapes; no raster canvas.** | ✅ Resolved |
+| 79 | Technical (runtime) | Vite 8/Vitest 5 native binary compatibility | Force Vite 8 / fallback Vite 7 | **Vite 7.3.8 + Vitest 3.2.7 are the verified reference-environment fallback; Vite 8/Vitest 5 remain the target where native bindings support the CPU.** | ✅ Resolved |
 
 ## Resolution notes
 

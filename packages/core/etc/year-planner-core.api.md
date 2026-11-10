@@ -31,6 +31,12 @@ export interface Assignment {
 export function buildClassicYearLayout(options: ClassicYearLayoutOptions): ClassicYearLayoutResult;
 
 // @public
+export function canCreateItem(layerId: string, context: EditabilityContext): Editability;
+
+// @public
+export function canDeleteItem(itemId: string, context: EditabilityContext): Editability;
+
+// @public
 export function clampToRow(row: MonthRowLayout, date: string): string;
 
 // @public
@@ -84,6 +90,15 @@ export function compareDateKeys(a: DateKey, b: DateKey): -1 | 0 | 1;
 
 // @public
 export function contains(period: DateInterval, date: string): boolean;
+
+// @public
+export function countVisibleItems(context: VisibilityContext): number;
+
+// @public
+export function createInitialVisibility(model: PlannerModel, preset?: VisibilityPresetOptions): VisibilityState;
+
+// @public
+export function createVisibilityPreset(options?: VisibilityPresetOptions): VisibilityState;
 
 // @public
 export interface DateInterval {
@@ -165,6 +180,38 @@ export function durationDays(period: AllDayPeriod): number;
 export function eachDate(start: DateKey, endExclusive: DateKey): DateKey[];
 
 // @public
+export interface Editability {
+    // (undocumented)
+    editable: boolean;
+    // (undocumented)
+    reason: EditabilityReason;
+}
+
+// @public
+export interface EditabilityContext extends VisibilityContext {
+    // (undocumented)
+    activeLayerId?: string;
+    // (undocumented)
+    mode?: InteractionMode;
+    // (undocumented)
+    readOnly?: boolean;
+}
+
+// @public
+export type EditabilityReason = "editable" | "global-read-only" | "hidden" | "item-locked" | "layer-locked" | "policy" | "interaction-mode" | "unknown-entity";
+
+// @public
+export type EditAction = "move" | "resize" | "paint" | "create" | "delete";
+
+// @public
+export interface EffectiveVisibility {
+    // (undocumented)
+    reason: VisibilityReason;
+    // (undocumented)
+    visible: boolean;
+}
+
+// @public
 export function emptyPlannerModel(): PlannerModel;
 
 // @public
@@ -172,6 +219,21 @@ export function formatDateKey(date: DateKey): string;
 
 // @public
 export function fromEpochDay(epochDay: number): DateKey;
+
+// @public
+export function getEffectiveVisibility(itemId: string, context: VisibilityContext): EffectiveVisibility;
+
+// @public
+export function getGroupVisibility(groupId: string, context: VisibilityContext): "visible" | "hidden" | "mixed";
+
+// @public
+export function getItemEditability(itemId: string, action: Exclude<EditAction, "create" | "delete">, context: EditabilityContext): Editability;
+
+// @public
+export function getLayerChannel(layerId: string, context: VisibilityContext): RenderChannel | undefined;
+
+// @public
+export function getResolvedLayerPolicy(layerId: string, model: PlannerModel): ResolvedLayerPolicy;
 
 // @public
 export type InstantISO = string;
@@ -190,6 +252,9 @@ export function isDateInterval(value: unknown): value is AllDayPeriod;
 
 // @public
 export function isDateKey(value: string): value is DateKey;
+
+// @public
+export function isLayerEffectivelyHidden(layerId: string, context: VisibilityContext): boolean;
 
 // @public
 export function isLeapYear(year: number): boolean;
@@ -425,6 +490,12 @@ export function projectTimedPeriod(period: TimedPeriod, timeZone: string): AllDa
 export type RenderChannel = "background" | "highlight" | "ribbon" | "annotation" | "foreground";
 
 // @public
+export type ResolvedLayerPolicy = Required<LayerPolicy>;
+
+// @public
+export function resolveItemVisibility(context: VisibilityContext): ReadonlyMap<string, EffectiveVisibility>;
+
+// @public
 export interface Resource {
     // (undocumented)
     capacity?: {
@@ -449,6 +520,9 @@ export function rowDateRange(row: MonthRowLayout): {
 
 // @public
 export function rowForDate(layout: YearLayout, date: string): MonthRowLayout | undefined;
+
+// @public
+export function serializeVisibility(state: VisibilityState): string;
 
 // @public
 export function splitAtDateBoundary(period: DateInterval, date: string): DateInterval[];
@@ -499,6 +573,75 @@ export interface ValidatePlannerDataOptions {
 export function validateTimedPeriod(period: TimedPeriod): Diagnostic[];
 
 // @public
+export type VisibilityAction = {
+    type: "showItem";
+    itemId: string;
+} | {
+    type: "hideItem";
+    itemId: string;
+} | {
+    type: "toggleItem";
+    itemId: string;
+} | {
+    type: "showLayer";
+    layerId: string;
+} | {
+    type: "hideLayer";
+    layerId: string;
+} | {
+    type: "toggleLayer";
+    layerId: string;
+} | {
+    type: "showGroup";
+    groupId: string;
+} | {
+    type: "hideGroup";
+    groupId: string;
+} | {
+    type: "toggleGroup";
+    groupId: string;
+} | {
+    type: "showChannel";
+    channel: RenderChannel;
+} | {
+    type: "hideChannel";
+    channel: RenderChannel;
+} | {
+    type: "toggleChannel";
+    channel: RenderChannel;
+} | {
+    type: "reset";
+};
+
+// @public
+export interface VisibilityContext {
+    // (undocumented)
+    filter?: PlannerFilter;
+    // (undocumented)
+    model: PlannerModel;
+    // (undocumented)
+    visibility: VisibilityState;
+}
+
+// @public
+export interface VisibilityPresetOptions {
+    // (undocumented)
+    hideChannels?: RenderChannel[];
+    // (undocumented)
+    hideGroupIds?: string[];
+    // (undocumented)
+    hideItemIds?: string[];
+    // (undocumented)
+    hideLayerIds?: string[];
+}
+
+// @public
+export type VisibilityReason = "visible" | "group" | "layer" | "item" | "filter" | "channel" | "unknown-entity";
+
+// @public
+export function visibilityReducer(context: VisibilityContext, state: VisibilityState, action: VisibilityAction): VisibilityState;
+
+// @public
 export interface VisibilityState {
     // (undocumented)
     hiddenChannels?: RenderChannel[];
@@ -509,6 +652,9 @@ export interface VisibilityState {
     // (undocumented)
     hiddenLayerIds: string[];
 }
+
+// @public
+export function visibleItems(context: VisibilityContext): PlannerItem[];
 
 // @public
 export interface YearLayout {

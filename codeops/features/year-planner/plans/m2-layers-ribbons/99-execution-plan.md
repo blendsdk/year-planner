@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 13:18
-> **Progress**: 8/46 tasks (17%)
+> **Last Updated**: 2026-11-10 13:21
+> **Progress**: 15/46 tasks (33%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -85,19 +85,19 @@ and policy-based editability.
 
 ### Step 2.1: Specification tests
 
-- [ ] 2.1.1 [spec-author] Write visibility/editability spec tests for ST-14–ST-30 and ST-65–ST-68, ST-78 — `packages/core/src/model/visibility.spec.test.ts`
-- [ ] 2.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md`
+- [x] 2.1.1 [spec-author] Write visibility/editability spec tests for ST-14–ST-30 and ST-65–ST-68, ST-78 — `packages/core/src/model/visibility.spec.test.ts` ✅ (completed: 2026-11-10 13:21)
+- [x] 2.1.2 Run the spec tests and record the expected red failures — `docs/m2-red-phase.md` ✅ (completed: 2026-11-10 13:21)
 
 ### Step 2.2: Implementation
 
-- [ ] 2.2.1 Implement visibility precedence, filters, tri-state helpers, reducer and presets — `packages/core/src/model/visibility.ts`
-- [ ] 2.2.2 Implement policy resolution and editability — `packages/core/src/model/editability.ts`
-- [ ] 2.2.3 Export the modules and run the spec tests green — `packages/core/src/model/index.ts`, `packages/core/src/index.ts`
+- [x] 2.2.1 Implement visibility precedence, filters, tri-state helpers, reducer and presets — `packages/core/src/model/visibility.ts` ✅ (completed: 2026-11-10 13:21)
+- [x] 2.2.2 Implement policy resolution and editability — `packages/core/src/model/editability.ts` ✅ (completed: 2026-11-10 13:21)
+- [x] 2.2.3 Export the modules and run the spec tests green — `packages/core/src/model/index.ts`, `packages/core/src/index.ts` ✅ (completed: 2026-11-10 13:21)
 
 ### Step 2.3: Implementation tests and verify
 
-- [ ] 2.3.1 Write visibility/editability edge-case tests — `packages/core/src/model/visibility.impl.test.ts`
-- [ ] 2.3.2 Run `pnpm verify`
+- [x] 2.3.1 Write visibility/editability edge-case tests — `packages/core/src/model/visibility.impl.test.ts` ✅ (completed: 2026-11-10 13:21)
+- [x] 2.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 13:21)
 
 **Deliverables**:
 - [ ] All ST-14–ST-30 and ST-65–ST-68, ST-78 tests pass

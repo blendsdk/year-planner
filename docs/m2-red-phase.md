@@ -28,7 +28,24 @@ section of `docs/test-report.md`.
 
 ## Phase 2 — Visibility and editability
 
-Pending.
+Command:
+
+```bash
+cd packages/core
+pnpm exec vitest run src/model/visibility.spec.test.ts
+```
+
+State: `packages/core/src/model/visibility.ts` and `editability.ts` did not
+exist.
+
+```text
+Error: Cannot find module './visibility' imported from
+  packages/core/src/model/visibility.spec.test.ts
+Test Files  1 failed (1)
+     Tests  no tests
+```
+
+Restored after implementation; 17 spec tests pass.
 
 ## Phase 3 — Paint and erase
 

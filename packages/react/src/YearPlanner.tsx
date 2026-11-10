@@ -20,6 +20,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useCommandPipeline } from "./commands.js";
 import { createFormatters } from "./locale.js";
 import { resolveDisplayOptions } from "./options.js";
 import { useYearPlannerTheme } from "./provider.js";
@@ -93,6 +94,24 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const state = usePlannerState({
       ...props,
       displayTimeZone: resolvedDisplay.options.displayTimeZone,
+    });
+    const pipeline = useCommandPipeline({
+      state,
+      ...(props.readOnly ? { readOnly: true } : {}),
+      ...(props.activeLayerId ? { activeLayerId: props.activeLayerId } : {}),
+      ...(props.interaction?.createId ? { createId: props.interaction.createId } : {}),
+      ...(props.interaction?.requestId ? { requestId: props.interaction.requestId } : {}),
+      ...(props.interaction?.commandTimeoutMs
+        ? { commandTimeoutMs: props.interaction.commandTimeoutMs }
+        : {}),
+      ...(props.interaction?.confirmChange
+        ? { confirmChange: props.interaction.confirmChange }
+        : {}),
+      ...(props.validateChange ? { validateChange: props.validateChange } : {}),
+      ...(props.onChangeRequest ? { onChangeRequest: props.onChangeRequest } : {}),
+      ...(props.onChangeCommitted ? { onChangeCommitted: props.onChangeCommitted } : {}),
+      ...(props.onChangeRejected ? { onChangeRejected: props.onChangeRejected } : {}),
+      ...(props.onDiagnostic ? { onDiagnostic: props.onDiagnostic } : {}),
     });
 
     const ribbons = useMemo(() => {
@@ -302,9 +321,11 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         focusDate,
         scrollToDate,
         setInteractionMode: (mode: InteractionMode) => state.setInteractionMode(mode),
-        requestCommand: () => undefined,
-        requestUndo: () => undefined,
-        requestRedo: () => undefined,
+        requestCommand: (command) => {
+          void pipeline.requestCommand(command);
+        },
+        requestUndo: pipeline.requestUndo,
+        requestRedo: pipeline.requestRedo,
         openInspector: () => undefined,
         getEffectiveVisibility: (id) => {
           const result = resolveEffectiveVisibility(id, {
@@ -315,7 +336,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           return { visible: result.visible, reason: result.reason };
         },
       }),
-      [state, focusItem, focusDate, scrollToDate, isDisabledDate],
+      [state, focusItem, focusDate, scrollToDate, isDisabledDate, pipeline],
     );
 
     const className = [
@@ -365,6 +386,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             activeDate={effectiveActiveDate}
             activeItemId={activeItemId ?? state.selection.items[0]}
             selectedItemIds={selectedItemIds}
+            pendingItemIds={pipeline.pendingItemIds}
             showISOWeekNumbers={resolvedDisplay.options.showISOWeekNumbers}
             showAnnotations={resolvedDisplay.options.showAnnotations}
             getDateMeta={props.getDateMeta}

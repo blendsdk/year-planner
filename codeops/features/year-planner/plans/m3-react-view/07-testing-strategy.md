@@ -134,6 +134,7 @@ metrics; core stays at 95%. No test dependency is added.
 | ST-82 | Host-button slot fixture | A host `<button>` renders in cell/inspector; no button nested in a proxy; adapters map tokens (actual Fluent/MUI packages deferred to RD-11 examples) | RD-06 AC3 (partial, AR-27) |
 | ST-83 | Print with `units={{ monthBand: 80, weekday: 60 }}` | `ribbon.totalWidth` changes; print page surface width and scale use it; content still fits A3 | R-03 |
 | ST-84 | `connectorMode:"edge-path"` | `INVALID_RENDERER_OPTION`; no connectors; view still renders | AR-9 |
+| ST-85 | Package manifest | `type: "module"`; no `require` condition; Vite format is `es`; no CJS/UMD files declared | AR-30 |
 
 ## Test Categories
 
@@ -150,7 +151,7 @@ metrics; core stays at 95%. No test dependency is added.
 | `packages/react/src/commands.spec.test.tsx` | ST-48–ST-61 | 4 |
 | `packages/react/src/inspector.spec.test.tsx` | ST-62–ST-72 | 5 |
 | `packages/react/src/print.spec.test.tsx` | ST-73–ST-76, ST-83 | 6 |
-| `packages/react/src/adapters.spec.test.tsx` | ST-77–ST-79, ST-82 | 6 |
+| `packages/react/src/adapters.spec.test.tsx` | ST-77–ST-79, ST-82, ST-85 | 6 |
 | `tests/e2e/classic-year.spec.ts` | ST-80–ST-81 + visuals/print | 7 |
 
 ### Implementation Tests

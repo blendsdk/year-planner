@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 15:24
-> **Progress**: 20/46 tasks (43%)
+> **Last Updated**: 2026-11-10 15:30
+> **Progress**: 26/46 tasks (57%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -148,18 +148,18 @@ uncontrolled apply, feedback hooks and undo/redo.
 
 ### Step 4.1: Specification tests
 
-- [ ] 4.1.1 [spec-author] Write command spec tests for ST-48–ST-61 — `packages/react/src/commands.spec.test.tsx`
-- [ ] 4.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md`
+- [x] 4.1.1 [spec-author] Write command spec tests for ST-48–ST-61 — `packages/react/src/commands.spec.test.tsx` ✅ (completed: 2026-11-10 15:30)
+- [x] 4.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md` ✅ (completed: 2026-11-10 15:30)
 
 ### Step 4.2: Implementation
 
-- [ ] 4.2.1 Implement local checks, command shapes and diagnostic mapping — `packages/react/src/commands.ts`
-- [ ] 4.2.2 Implement host flow, timeout, uncontrolled apply, undo/redo and confirm — `packages/react/src/commands.ts`, `packages/react/src/state.ts`
+- [x] 4.2.1 Implement local checks, command shapes and diagnostic mapping — `packages/react/src/commands.ts` ✅ (completed: 2026-11-10 15:30)
+- [x] 4.2.2 Implement host flow, timeout, uncontrolled apply, undo/redo and confirm — `packages/react/src/commands.ts`, `packages/react/src/state.ts` ✅ (completed: 2026-11-10 15:30)
 
 ### Step 4.3: Implementation tests and verify
 
-- [ ] 4.3.1 Write command edge-case tests — `packages/react/src/commands.impl.test.tsx`
-- [ ] 4.3.2 Run `pnpm verify`
+- [x] 4.3.1 Write command edge-case tests — `packages/react/src/commands.impl.test.tsx` ✅ (completed: 2026-11-10 15:30)
+- [x] 4.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:30)
 
 **Deliverables**:
 - [ ] ST-48–ST-61 pass
@@ -214,7 +214,7 @@ subpath exports.
 
 ### Step 6.1: Specification tests
 
-- [ ] 6.1.1 [spec-author] Write print/adapter spec tests for ST-73–ST-79, ST-82 and ST-83 — `packages/react/src/print.spec.test.tsx`, `packages/react/src/adapters.spec.test.tsx`
+- [ ] 6.1.1 [spec-author] Write print/adapter/ESM spec tests for ST-73–ST-79, ST-82, ST-83 and ST-85 — `packages/react/src/print.spec.test.tsx`, `packages/react/src/adapters.spec.test.tsx`
 - [ ] 6.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md`
 
 ### Step 6.2: Implementation
@@ -228,7 +228,7 @@ subpath exports.
 - [ ] 6.3.2 Run `pnpm verify`
 
 **Deliverables**:
-- [ ] ST-73–ST-79, ST-82 and ST-83 pass
+- [ ] ST-73–ST-79, ST-82, ST-83 and ST-85 pass
 - [ ] 1/2/3 A3 pages for 14/24/36 months
 - [ ] Adapter subpaths build and typecheck
 

@@ -164,6 +164,9 @@ lib: {
 
 - `peerDependenciesMeta` marks `@fluentui/react-components` and `@mui/material`
   optional.
+- **ESM-only** (AR-30): `"type": "module"`, every export map condition exposes
+  `import` only, Vite builds `formats: ["es"]`, and no CJS/UMD output exists.
+  `attw --profile esm-only` is the package gate.
 - `scripts/check-size.mjs` includes the adapter JS files in the gzip budget.
 
 ## Instance isolation

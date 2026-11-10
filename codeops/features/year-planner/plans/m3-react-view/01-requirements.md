@@ -17,6 +17,8 @@
   no global resets, SSR safety, CSP documentation, non-color layer identity.
 - RD-06 Should Have: `data-yp-theme`, per-instance variables, token mapping and
   explicit `dir="ltr"`. Fluent/MUI example stories are RD-11 (AR-27).
+- **ESM-only packaging** (user directive, AR-30): `"type": "module"`, `import`-only
+  export map, Vite `formats: ["es"]`, no CJS/UMD.
 - RD-06 AC1–AC18: AC1–AC2, AC10–AC13 in unit/E2E tests; AC4–AC9, AC14–AC18 in
   React tests. AC3 is partially evidenced: the slot contract uses host
   `<button>` fixtures and token adapters; actual Fluent/MUI package components

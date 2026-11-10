@@ -63,7 +63,21 @@ pass.
 
 ## Phase 4 — Command pipeline
 
-Pending.
+Command:
+
+```bash
+cd packages/react && pnpm exec vitest run src/commands.spec.test.tsx
+```
+
+State: the public handle exposed no-op command methods, so delete/move/paint
+requests produced no state change, diagnostics or host callbacks.
+
+```text
+AssertionError: expected [] to have a length of 4 but got 0
+```
+
+Restored after implementation; 13 command spec tests and 6 implementation tests
+pass.
 
 ## Phase 5 — Inspector
 

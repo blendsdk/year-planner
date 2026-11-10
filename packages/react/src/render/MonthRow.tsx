@@ -36,6 +36,7 @@ export interface MonthRowProps {
   activeDate: DateKey | undefined;
   activeItemId: string | undefined;
   selectedItemIds: ReadonlySet<string>;
+  pendingItemIds: ReadonlySet<string>;
   showISOWeekNumbers: boolean;
   showAnnotations: boolean;
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
@@ -70,6 +71,7 @@ export function MonthRow({
   activeDate,
   activeItemId,
   selectedItemIds,
+  pendingItemIds,
   showISOWeekNumbers,
   showAnnotations,
   getDateMeta,
@@ -145,6 +147,7 @@ export function MonthRow({
           zoom={zoom}
           showAnnotations={showAnnotations}
           selectedItemIds={selectedItemIds}
+          pendingItemIds={pendingItemIds}
           activeItemId={activeItemId}
           components={components}
           renderItem={renderItem}

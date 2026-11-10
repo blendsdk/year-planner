@@ -25,6 +25,7 @@ export interface ItemLayerProps {
   zoom: number;
   showAnnotations: boolean;
   selectedItemIds: ReadonlySet<string>;
+  pendingItemIds: ReadonlySet<string>;
   activeItemId: string | undefined;
   components: YearPlannerComponents;
   displayTimeZone: string;
@@ -53,6 +54,7 @@ export function ItemLayer({
   zoom,
   showAnnotations,
   selectedItemIds,
+  pendingItemIds,
   activeItemId,
   components,
   displayTimeZone,
@@ -141,6 +143,7 @@ export function ItemLayer({
         data-yp-layer={layer.id}
         data-yp-layer-label={layer.label ?? layer.name}
         data-yp-selected={selected ? "true" : "false"}
+        data-yp-pending={pendingItemIds.has(item.id) ? "true" : "false"}
         className={`yp-fragment yp-fragment-${fragment.channel} yp-pattern-${layer.pattern ?? "solid"}`}
         style={sharedStyle}
       >
@@ -149,6 +152,7 @@ export function ItemLayer({
           role="button"
           tabIndex={item.id === activeItemId ? 0 : -1}
           aria-pressed={selected}
+          aria-busy={pendingItemIds.has(item.id) ? "true" : undefined}
           aria-label={`${label}, ${periodLabel}`}
           data-yp-part="item-proxy"
           data-item-id={item.id}

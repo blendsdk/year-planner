@@ -34,6 +34,7 @@ export interface YearGridProps {
   activeDate: DateKey | undefined;
   activeItemId: string | undefined;
   selectedItemIds: ReadonlySet<string>;
+  pendingItemIds: ReadonlySet<string>;
   showISOWeekNumbers: boolean;
   showAnnotations: boolean;
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
@@ -81,6 +82,7 @@ export function YearGrid({
   activeDate,
   activeItemId,
   selectedItemIds,
+  pendingItemIds,
   showISOWeekNumbers,
   showAnnotations,
   getDateMeta,
@@ -150,6 +152,7 @@ export function YearGrid({
             activeDate={activeDate}
             activeItemId={activeItemId}
             selectedItemIds={selectedItemIds}
+            pendingItemIds={pendingItemIds}
             showISOWeekNumbers={showISOWeekNumbers}
             showAnnotations={showAnnotations}
             getDateMeta={getDateMeta}

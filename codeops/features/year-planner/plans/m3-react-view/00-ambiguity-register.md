@@ -1,6 +1,6 @@
 # Ambiguity Register: RD-06 React View, Theming and Style Integration
 
-> **Status**: ✅ GATE PASSED — all 29 items resolved
+> **Status**: ✅ GATE PASSED — all 30 items resolved
 > **Last Updated**: 2026-11-10 14:30
 > **Authority**: `--auto-design` delegated resolutions; scope follows the user objective "deliver RD-06"
 > **Policy version**: 1
@@ -47,6 +47,7 @@
 | 27 | Testing | AC3 requires actual Fluent/MUI Buttons, but the repo has no Fluent/MUI dependency | Add dev dependencies / slot fixture + adapters / skip AC3 | **AI — delegated (AR-27):** verify the structural contract with host `<button>` fixtures in `renderCell`/`renderInspector` and the adapter mappings; actual Fluent/MUI example components remain RD-11 (Should Have) because adding those packages would add a large dev-only dependency outside RD-06. AC3 is recorded as partially evidenced, not fully claimed. | ✅ Resolved |
 | 28 | API | Existing `YearPlannerTheme` is a preset string; RD-06 redefines it as a token object and drops `units` | Break without note / keep aliases / new names | **AI — delegated (AR-28):** follow RD-06 (`YearPlannerTheme` = token object, `YearPlannerThemeName` = preset). Keep `YearPlannerDisplay`/`YearPlannerPrint` aliases and the additive `units` prop for compatibility; document the pre-1.0 break and migration in `README.md` and a changeset. | ✅ Resolved |
 | 29 | Diagnostics | Added codes were scattered and RD-08 names differ | Scattered lists / one table / reuse core codes | **AI — delegated (AR-29):** one diagnostic table owns every RD-06 code and its core-to-public mapping; `READ_ONLY`, `STALE_REVISION`, `INVALID_PAINT_TARGET`, `INVALID_COMMAND`, `CONFIRMATION_UNAVAILABLE`, `COMMAND_TIMEOUT`, `HOST_REJECTED`, `VALIDATION_ERROR`, `UNDO_UNAVAILABLE`, `INVALID_LOCALE`, `TIMED_EDITING_UNSUPPORTED` are RD-06 public codes. Core `NOT_EDITABLE`/`STALE_VERSION`/`INVALID_PAINT_CHANNEL` map to them at the React boundary. | ✅ Resolved |
+| 30 | Packaging | Module format for the modern React package | ESM-only / dual ESM+CJS / UMD | **User directive (AR-30):** ESM-only. `"type": "module"`, `exports` expose `import` only, Vite builds `formats: ["es"]`, no CJS/UMD build, and `attw --profile esm-only` enforces it. | ✅ Resolved |
 
 ## Delegated resolution provenance
 
@@ -240,6 +241,22 @@ Confidence: High — mapping is explicit and tested.
 Hardening: table in 03-04 and a test per mapped code.
 Policy version: 1 · Root invocation ID: yp-rd06-2026-11-10T14-24Z
 Reopen triggers: RD-08 collapses the vocabularies.
+```
+
+### AR-30 — ESM-only package
+
+```text
+Authority: user directive, recorded by the planner
+Eligibility: packaging mechanism, not product scope.
+Objective: ship a modern ESM-only React package with no dual-build drift.
+Decision: ESM-only; no CJS, UMD or `require` export.
+Evidence: the repo already uses `"type": "module"`, `exports` with `import` only, Vite `formats: ["es"]` and `attw --profile esm-only`.
+Rejected alternatives: dual ESM+CJS (extra build, export-map risk, no consumer need); UMD (obsolete for a React 19 library).
+Strongest counterargument: older CommonJS hosts cannot require it.
+Confidence: High — existing toolchain and user directive.
+Hardening: package guard test asserts `type`, export map and Vite format.
+Policy version: 1 · Root invocation ID: yp-rd06-2026-11-10T14-24Z
+Reopen triggers: a consumer requires CJS.
 ```
 
 ## Resolution notes

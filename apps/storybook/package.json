@@ -10,7 +10,8 @@
   "dependencies": {
     "@blendsdk/react-year-planner": "workspace:*",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "@blendsdk/year-planner-core": "workspace:*"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "10.6.6",

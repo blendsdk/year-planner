@@ -46,7 +46,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
 | Clean consumer | **PASS** — packed core + React installed and built |
-| Storybook | **PASS** — static build succeeds |
+| Storybook | **PASS** — static build succeeds; **118 stories across 9 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
 | Bundle size | **44.26 kB gzip** including core, React, adapters and CSS; 60 kB budget |

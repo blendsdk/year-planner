@@ -233,6 +233,9 @@ importers:
       '@blendsdk/react-year-planner':
         specifier: workspace:*
         version: link:../../packages/react
+      '@blendsdk/year-planner-core':
+        specifier: workspace:*
+        version: link:../../packages/core
       react:
         specifier: 19.3.1
         version: 19.3.1

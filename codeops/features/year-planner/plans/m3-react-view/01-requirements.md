@@ -43,7 +43,7 @@
   cancellation, accepted-not-applied timeout, controlled-host undo.
 - RD-09: full axe and screen-reader conformance, live announcements.
 - RD-10: performance benchmarks and full security gate suite.
-- RD-11: complete Storybook and API documentation set.
+- RD-11: complete Storybook and API documentation set. RD-06 now ships a broad baseline story suite because the project mandate is to create as many stories as possible.
 - RD-12: versioning, changelog and publishing.
 - RTL, configurable week start, aggregated density, SVG/PDF file export,
   loading/error slots, raw HTML injection, mandatory Fluent/MUI dependencies.

@@ -154,6 +154,14 @@ The component reads no browser globals during render, uses explicit `en-US` and
 `"use client"` so React Server Component bundlers place it in a client boundary.
 A node `renderToString` test and a hydration test guard this contract.
 
+## Storybook
+
+The project mandate is to create as many stories as possible. The Storybook site
+currently contains **118 stories across nine files**, covering themes, layouts,
+zoom, locales, items, annotations, channels, overflow, inspector states, slots,
+print modes, controlled/filter/read-only states and token adapters. Run
+`pnpm storybook` locally or build the static site with `pnpm storybook:build`.
+
 ## ESM-only package
 
 `packages/react/package.json` is `"type": "module"`; every export map condition

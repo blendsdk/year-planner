@@ -27,6 +27,8 @@ accessibility/performance evidence.
 
 - [ ] README quickstart: install, render a 14-month view from static data,
   import CSS, controlled selection and visibility, print.
+- [ ] Storybook is exhaustive: every meaningful component state gets a story,
+  and contributors should err on the side of adding more stories.
 - [ ] Storybook 10 site with stories for:
   - 2016 classic-blue, 2017 classic-yellow, 2027 overlaps;
   - 12, 14, 18, 24 and 36-month windows;

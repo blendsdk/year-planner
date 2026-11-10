@@ -36,6 +36,8 @@ generated API docs.
 system, Redux, runtime CSS-in-JS, resource timeline, recurrence engine,
 optimizer or commercial licensing infrastructure.
 
+**Documentation mandate:** create as many Storybook stories as possible; every meaningful state is documented visually.
+
 **Approved complexity:** user-mandated toolchain — Storybook, API Extractor/
 TypeDoc, Playwright, Turbo, Changesets and npm provenance. No AI-proposed
 complexity escalation remains open.

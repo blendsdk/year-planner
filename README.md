@@ -24,7 +24,7 @@ and January of the next year — with:
 | Temporal core (dates, ISO weeks, half-open intervals) | Done — M1 |
 | Classic 12–36 month layout, 37 day slots | Done — M1 |
 | Minimal React grid, classic themes, ISO weeks, print | Done — M1 |
-| Storybook site, demo, clean-consumer check, CI | Done — M1 |
+| Storybook site, demo, clean-consumer check, CI | Done — M1; 118-story RD-06 suite |
 | API Extractor reports and generated TypeDoc API | Done — M1 |
 | Renderer evidence gate and ADR | Done — HTML renderer, optional SVG shape plane |
 | Entity model, validation, layers, visibility, editability | Done — M2 core |
@@ -90,6 +90,15 @@ Resource timeline, recurrence, scenarios, dependencies, split/merge, batch
 multi-move, data providers, timed-event editing, RTL, configurable week start,
 aggregated density, SVG/PDF export and a second domain demo. These are not
 stubbed or presented as implemented.
+
+## Documentation mandate
+
+Every public component, prop combination, state and edge case gets a Storybook
+story. Prefer more stories over fewer: themes, window sizes, zoom, locale,
+items, annotations, channels, overflow, inspector states, slots, print modes,
+controlled states, filters, read-only and error states are all part of the
+documented surface. Stories are part of the definition of done, not an optional
+extra.
 
 ## Development
 

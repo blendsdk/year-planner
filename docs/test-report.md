@@ -1,6 +1,6 @@
 # Test Report — Year Planner for React (M1 + M2 + RD-06 + RD-07)
 
-> **Date**: 2026-11-10
+> **Date**: 2026-11-11
 > **Scope**: M1 foundation/temporal core/classic grid; M2 layers, visibility,
 > paint/erase, ribbons, hit index and print planning; RD-06 rendered view,
 > theming, slots, inspector, adapters and A3 print output; RD-07 pointer,
@@ -52,7 +52,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
 | Bundle size | **54.10 kB gzip** including core, React, adapters and CSS; 60 kB budget |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
-| CI | **Green** — [run 42918546320](https://github.com/blendsdk/year-planner/actions/runs/42918546320), `verify` + `browsers` jobs |
+| CI | **Green** — [run 42922446935](https://github.com/blendsdk/year-planner/actions/runs/42922446935), `verify` + `browsers` jobs |
 
 The coverage thresholds are enforced by Vitest: core 95% and React 80% for
 lines, branches, functions and statements.

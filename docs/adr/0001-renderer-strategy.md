@@ -67,7 +67,7 @@ plane, SVG shapes with HTML proxies, and a limited full-SVG row.
 | Keyboard | Date focus works in all variants; SVG row also works in all 3 browsers |
 | Accessibility | axe 0 serious/critical in all 12 combinations |
 | Print | 1 A3 landscape page in Chromium for all variants |
-| Size | Shared harness 8.26–8.29 kB gzip; no material strategy difference |
+| Size | Shared harness 8.27–8.30 kB gzip; no material strategy difference |
 | Complexity | HTML-only has one coordinate system; SVG variants add an overlay/proxy layer |
 
 ## Alternatives Rejected

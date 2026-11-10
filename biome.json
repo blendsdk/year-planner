@@ -21,6 +21,7 @@
       "spike/**",
       "!**/dist",
       "!**/coverage",
+      "!spike/renderer/evidence",
       "!**/etc",
       "!**/temp",
       "!**/storybook-static",

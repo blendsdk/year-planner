@@ -3,6 +3,8 @@ import {
   buildClassicYearLayout,
   isoWeekOf,
   type MonthRowLayout,
+  maxDate,
+  minDate,
   type YearLayout,
 } from "@blendsdk/year-planner-core";
 
@@ -132,8 +134,8 @@ export function buildFragments(layout: YearLayout): SpikeFragment[] {
   layout.rows.forEach((row, rowIndex) => {
     const rowFragments: SpikeFragment[] = [];
     for (const item of SPIKE_ITEMS) {
-      const start = Math.max(item.startDate, row.firstDate);
-      const end = Math.min(item.endDateExclusive, row.endDateExclusive);
+      const start = maxDate(item.startDate, row.firstDate);
+      const end = minDate(item.endDateExclusive, row.endDateExclusive);
       if (start >= end) continue;
       const startColumn = columnFor(row, start);
       const endColumnExclusive = columnFor(row, addDays(end, -1)) + 1;

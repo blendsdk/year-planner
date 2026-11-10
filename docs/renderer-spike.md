@@ -84,12 +84,12 @@ chunks measure the **shared harness**, not an isolated production renderer:
 
 | Variant | JS gzip | CSS gzip | Total route gzip |
 |---|---|---|---|
-| `html-only` | 7.04 kB | 1.22 kB | 8.26 kB |
+| `html-only` | 7.05 kB | 1.22 kB | 8.27 kB |
 | `html-svg` | 7.05 kB | 1.22 kB | 8.27 kB |
-| `svg-shapes` | 7.05 kB | 1.22 kB | 8.26 kB |
-| `full-svg-row` | 7.08 kB | 1.22 kB | 8.29 kB |
+| `svg-shapes` | 7.05 kB | 1.22 kB | 8.27 kB |
+| `full-svg-row` | 7.08 kB | 1.22 kB | 8.30 kB |
 
-Source size of the shared harness: `grid.ts` 229 lines, `render.ts` 584 lines,
+Source size of the shared harness: `grid.ts` 244 lines, `render.ts` 589 lines,
 and four 16–17-line variant modules. The near-identical route sizes are expected:
 all variants share the DOM helpers and sample data. An isolated production
 bundle would be smaller; the difference between strategies is not large enough

@@ -23,7 +23,8 @@ fragment but has no design-unit export and no threshold/cancel model.
 
 Add `interaction/gesture.ts` and `interaction/pointer.ts`:
 
-- `pointer.ts` classifies event targets and exposes design-unit mapping.
+- `pointer.ts` classifies event targets.
+- `geometry.ts` exposes `pointToDesign` and ribbon-row-aware date mapping.
 - `gesture.ts` owns the FSM, activation matrix, marquee intersection,
   auto-scroll delta and commit intents.
 - `useInteraction.ts` owns listeners, capture, rAF and command/selection calls.
@@ -82,15 +83,28 @@ export type ActiveGesture =
       itemId: string;
       grabOffsetDays: number;
       pointerDate: DateKey;
+      fallbackDate: DateKey;
     }
-  | { kind: "resize"; itemId: string; edge: "start" | "end"; pointerDate: DateKey }
+  | {
+      kind: "resize";
+      itemId: string;
+      edge: "start" | "end";
+      pointerDate: DateKey;
+      fallbackDate: DateKey;
+    }
   | {
       kind: "paint";
       operation: "union" | "subtract";
       anchorDate: DateKey;
       focusDate: DateKey;
     }
-  | { kind: "create"; anchorDate: DateKey; focusDate: DateKey };
+  | { kind: "create"; anchorDate: DateKey; focusDate: DateKey }
+  | {
+      kind: "blocked";
+      code: "INVALID_COMMAND" | "TIMED_EDITING_UNSUPPORTED";
+      message: string;
+      fallbackDate: DateKey;
+    };
 
 /** Finite-state machine state. */
 export type GestureState =
@@ -144,7 +158,6 @@ export function moveGesture(input: {
 /** Produces the commit intent; never mutates canonical items. */
 export function endGesture(input: {
   state: GestureState;
-  point: GesturePoint;
   design: DesignPoint;
   date: DateKey | undefined;
   context: GestureContext;

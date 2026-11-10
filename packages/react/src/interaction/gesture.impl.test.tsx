@@ -1,5 +1,6 @@
 import type { PlannerItem, RibbonLayout } from "@blendsdk/year-planner-core";
 import { describe, expect, it } from "vitest";
+import { pointToDesign } from "../geometry.js";
 import {
   autoScrollDelta,
   beginGesture,
@@ -79,7 +80,6 @@ const move = (
 const end = (state: ReturnType<typeof begin>, date: string | undefined, ctx = context()) =>
   endGesture({
     state,
-    point: { clientX: 150, clientY: 100 },
     design: { x: 50, y: 0 },
     date,
     context: ctx,
@@ -360,6 +360,7 @@ describe("gesture engine internals", () => {
     expect(classifyTarget(proxy, "2027-02-01")).toMatchObject({
       kind: "item",
       itemId: "a",
+      fragmentId: "a",
       annotation: false,
     });
 
@@ -464,5 +465,78 @@ describe("gesture engine internals", () => {
     const again = move(active, 160, "2027-01-30", timed);
     if (active.phase !== "active" || again.phase !== "active") throw new Error("expected active");
     expect(again.gesture).toEqual(active.gesture);
+  });
+
+  it("maps a client point to design units", () => {
+    expect(
+      pointToDesign(
+        { clientX: 266.25, clientY: 36.5 },
+        {
+          zoom: 1.25,
+          monthBandWidth: 70,
+          scrollLeft: 200,
+          scrollTop: 0,
+          viewportRect: { left: 0, top: 0, width: 1200, height: 800 },
+          headerHeight: 36,
+        },
+      ),
+    ).toEqual({ x: 303, y: 0.4 });
+  });
+
+  it("holds the last date for move, resize and paint when the pointer leaves valid cells", () => {
+    const moveState = begin(proxy("2027-01-28"), "2027-01-28");
+    const activeMove = move(moveState, 140, "2027-02-02");
+    expect(end(activeMove, undefined)).toMatchObject({
+      kind: "move",
+      proposedPeriod: { startDate: "2027-02-02" },
+    });
+
+    const resizeCtx = context({ items: new Map([["a", item("a", "2027-02-01", "2027-02-06")]]) });
+    const resizeState = begin(
+      { kind: "resize", itemId: "a", edge: "end", date: "2027-02-01" },
+      "2027-02-01",
+      resizeCtx,
+    );
+    const activeResize = move(resizeState, 140, "2027-02-02", resizeCtx);
+    expect(end(activeResize, undefined, resizeCtx)).toMatchObject({
+      kind: "resize",
+      proposedPeriod: { endDateExclusive: "2027-02-03" },
+    });
+
+    const paintCtx = context({ mode: "paint" });
+    const paintState = begin(cell("2027-02-01"), "2027-02-01", paintCtx);
+    const activePaint = move(paintState, 140, "2027-02-02", paintCtx);
+    expect(end(activePaint, undefined, paintCtx)).toMatchObject({
+      kind: "paint",
+      endDateExclusive: "2027-02-03",
+    });
+  });
+
+  it("returns idle for a move on an idle gesture", () => {
+    expect(move({ phase: "idle" }, 140, "2027-02-01").phase).toBe("idle");
+  });
+
+  it("reports timed editing when the item becomes timed before completion", () => {
+    const state = begin(proxy("2027-01-28"), "2027-01-28");
+    const active = move(state, 140, "2027-02-02");
+    const timed = context({
+      items: new Map([
+        [
+          "a",
+          item("a", "2027-01-28", "2027-02-07", {
+            period: {
+              kind: "timed",
+              start: "2027-01-28T08:00:00Z",
+              endExclusive: "2027-01-28T10:00:00Z",
+              timeZone: "UTC",
+            },
+          }),
+        ],
+      ]),
+    });
+    expect(end(active, "2027-02-02", timed)).toMatchObject({
+      kind: "invalid",
+      code: "TIMED_EDITING_UNSUPPORTED",
+    });
   });
 });

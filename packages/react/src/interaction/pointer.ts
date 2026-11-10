@@ -3,7 +3,7 @@ import type { GestureTarget } from "./gesture.js";
 
 const RESIZE_SELECTOR = '[data-yp-part="resize-start"], [data-yp-part="resize-end"]';
 const HOST_SELECTOR =
-  'button, a, input, select, textarea, [contenteditable="true"], [role="textbox"]';
+  'button, a, input, select, textarea, [contenteditable="true"], [role="textbox"], [role="link"], [role="checkbox"], [role="button"]:not([data-yp-part="item-proxy"])';
 const PROXY_SELECTOR = '[data-yp-part="item-proxy"]';
 const FRAGMENT_SELECTOR = '[data-yp-part="item-fragment"]';
 const CELL_SELECTOR = '[data-yp-part="day-cell"]';
@@ -27,8 +27,8 @@ export function isHostInteractive(target: EventTarget | null): boolean {
  * Classifies a pointer-down or click target using the documented hit priority:
  * resize handle, host control, item proxy, date cell, nothing.
  *
- * The pointer date comes from the coordinate mapper; the DOM supplies only
- * stable identity attributes.
+ * The pointer date comes from the coordinate mapper; the DOM supplies stable
+ * identity attributes and the cell date.
  */
 export function classifyTarget(
   target: EventTarget | null,

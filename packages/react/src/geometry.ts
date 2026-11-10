@@ -121,7 +121,7 @@ export function pointToDate(
   const y = designY(point.clientY, view);
   if (x < 0 || y < 0) return undefined;
   let row: (typeof layout.rows)[number] | undefined;
-  if (ribbons) {
+  if (ribbons && ribbons.rows.length > 0) {
     const ribbonRow = ribbons.rows.find((entry) => y >= entry.top && y < entry.top + entry.height);
     row = ribbonRow ? layout.rows[ribbonRow.rowIndex] : undefined;
   } else {

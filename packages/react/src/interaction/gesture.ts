@@ -3,12 +3,13 @@ import {
   type DateKey,
   diffDays,
   type InteractionMode,
+  isAllDayPeriod,
   type PlannerItem,
   type PlannerPeriod,
   type RibbonLayout,
 } from "@blendsdk/year-planner-core";
 import type { ViewGeometry } from "../geometry.js";
-import type { SelectionModifiers } from "./selection.js";
+import { rangeBetween, type SelectionModifiers } from "./selection.js";
 
 /** A pointer position in client coordinates. */
 export interface GesturePoint {
@@ -223,9 +224,10 @@ export function autoScrollDelta(input: {
   const edge = input.edge ?? 32;
   const maxStep = input.maxStep ?? 12;
   const { left, top, width, height } = input.viewportRect;
+  const clamp = (value: number) => Math.max(-maxStep, Math.min(maxStep, value));
   return {
-    x: axisDelta(input.point.clientX, left, left + width, edge, maxStep),
-    y: axisDelta(input.point.clientY, top, top + height, edge, maxStep),
+    x: clamp(axisDelta(input.point.clientX, left, left + width, edge, maxStep)),
+    y: clamp(axisDelta(input.point.clientY, top, top + height, edge, maxStep)),
   };
 }
 
@@ -238,12 +240,13 @@ function rangeHasDisabled(
   endDateExclusive: DateKey,
   isDisabled: (date: DateKey) => boolean,
 ): boolean {
-  let cursor = startDate;
-  while (cursor < endDateExclusive) {
-    if (isDisabled(cursor)) return true;
-    cursor = addDays(cursor, 1);
-  }
-  return false;
+  if (startDate >= endDateExclusive) return false;
+  const ranges = rangeBetween(startDate, addDays(endDateExclusive, -1), isDisabled);
+  return (
+    ranges.length !== 1 ||
+    ranges[0]?.startDate !== startDate ||
+    ranges[0]?.endDateExclusive !== endDateExclusive
+  );
 }
 
 function invalid(
@@ -270,22 +273,8 @@ function activate(
   const mode = context.mode;
   if (target.kind === "none" || target.kind === "host-control") return undefined;
 
-  if (target.kind === "resize") {
-    if ((mode === "auto" || mode === "resize") && context.isEditable(target.itemId, "resize")) {
-      const source = context.items.get(target.itemId);
-      return {
-        kind: "resize",
-        itemId: target.itemId,
-        edge: target.edge,
-        pointerDate: target.date,
-        fallbackDate: source?.period.kind === "all-day" ? source.period.startDate : target.date,
-      };
-    }
-    return undefined;
-  }
-
-  if (target.kind === "item" && target.annotation) return undefined;
-
+  // Mode × target matrix: paint/erase/create always act as range gestures,
+  // auto/move move a body, auto/resize resize a handle, select/inspect click.
   const rangeGesture = (): ActiveGesture => {
     if (mode === "paint") {
       return {
@@ -313,6 +302,23 @@ function activate(
     };
   };
 
+  if (target.kind === "resize") {
+    if (mode === "paint" || mode === "erase" || mode === "create") {
+      return rangeGesture();
+    }
+    if ((mode === "auto" || mode === "resize") && context.isEditable(target.itemId, "resize")) {
+      const source = context.items.get(target.itemId);
+      return {
+        kind: "resize",
+        itemId: target.itemId,
+        edge: target.edge,
+        pointerDate: target.date,
+        fallbackDate: source?.period.kind === "all-day" ? source.period.startDate : target.date,
+      };
+    }
+    return undefined;
+  }
+
   if (target.kind === "cell") {
     if (mode === "auto" && context.marquee === "items") {
       return { kind: "marquee", anchor: state.startDesign, current: state.startDesign };
@@ -320,19 +326,19 @@ function activate(
     return rangeGesture();
   }
 
+  if (target.annotation) return undefined;
   if (mode === "paint" || mode === "erase" || mode === "create") {
     return rangeGesture();
   }
   if (mode !== "auto" && mode !== "move") return undefined;
-  if (target.kind !== "item") return undefined;
   if (!context.isEditable(target.itemId, "move")) return undefined;
   const source = context.items.get(target.itemId);
   if (!source) return undefined;
-  if (!isAllDay(source.period)) {
+  if (!isAllDayPeriod(source.period)) {
     return blocked(
       "TIMED_EDITING_UNSUPPORTED",
       "Timed editing is not supported",
-      source.period.kind === "timed" ? source.period.start.slice(0, 10) : target.date,
+      source.period.start.slice(0, 10),
     );
   }
   return {
@@ -457,7 +463,7 @@ function finishMove(
 ): GestureCompletion {
   const source = context.items.get(gesture.itemId);
   if (!source) return invalid("INVALID_COMMAND", "The item no longer exists", gesture.pointerDate);
-  if (!isAllDay(source.period)) {
+  if (!isAllDayPeriod(source.period)) {
     return invalid(
       "TIMED_EDITING_UNSUPPORTED",
       "Timed editing is not supported",
@@ -488,7 +494,7 @@ function finishResize(
 ): GestureCompletion {
   const source = context.items.get(gesture.itemId);
   if (!source) return invalid("INVALID_COMMAND", "The item no longer exists", gesture.pointerDate);
-  if (!isAllDay(source.period)) {
+  if (!isAllDayPeriod(source.period)) {
     return invalid(
       "TIMED_EDITING_UNSUPPORTED",
       "Timed editing is not supported",
@@ -523,7 +529,6 @@ function finishResize(
 /** Produces the commit intent; never mutates canonical items. */
 export function endGesture(input: {
   state: GestureState;
-  point: GesturePoint;
   design: DesignPoint;
   date: DateKey | undefined;
   context: GestureContext;
@@ -534,7 +539,17 @@ export function endGesture(input: {
     if (state.target.kind === "none" || state.target.kind === "host-control") {
       return { kind: "none" };
     }
-    return { kind: "click", target: state.target, modifiers: state.modifiers };
+    const target: GestureTarget =
+      state.target.kind === "resize"
+        ? {
+            kind: "item",
+            itemId: state.target.itemId,
+            fragmentId: state.target.itemId,
+            date: state.target.date,
+            annotation: false,
+          }
+        : state.target;
+    return { kind: "click", target, modifiers: state.modifiers };
   }
   const gesture = state.gesture;
   switch (gesture.kind) {

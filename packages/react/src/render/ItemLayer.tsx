@@ -152,6 +152,7 @@ export function ItemLayer({
         key={fragment.fragmentId}
         data-yp-part="item-fragment"
         data-item-id={item.id}
+        data-fragment-id={fragment.fragmentId}
         data-fragment-index={index}
         data-yp-channel={fragment.channel}
         data-yp-layer={layer.id}
@@ -231,20 +232,24 @@ export function ItemLayer({
             </>
           )}
         </div>
-        <button
-          type="button"
-          data-yp-part="resize-start"
-          tabIndex={-1}
-          aria-label="Resize start"
-          className="yp-resize-handle yp-resize-start"
-        />
-        <button
-          type="button"
-          data-yp-part="resize-end"
-          tabIndex={-1}
-          aria-label="Resize end"
-          className="yp-resize-handle yp-resize-end"
-        />
+        {fragment.channel !== "annotation" && (
+          <>
+            <button
+              type="button"
+              data-yp-part="resize-start"
+              tabIndex={-1}
+              aria-label="Resize start"
+              className="yp-resize-handle yp-resize-start"
+            />
+            <button
+              type="button"
+              data-yp-part="resize-end"
+              tabIndex={-1}
+              aria-label="Resize end"
+              className="yp-resize-handle yp-resize-end"
+            />
+          </>
+        )}
       </div>
     );
   });

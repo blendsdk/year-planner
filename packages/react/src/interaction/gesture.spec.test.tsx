@@ -101,7 +101,6 @@ const end = (
 ) =>
   endGesture({
     state,
-    point: point(140),
     design,
     date,
     context: ctx,
@@ -197,22 +196,28 @@ describe("RD-07 gesture engine", () => {
   it("maps through rendered ribbon row heights when provided", () => {
     const result = buildClassicYearLayout({ year: 2027 });
     if (!result.ok) throw new Error("layout failed");
-    const rows: RibbonRow[] = result.layout.rows.map((row, index) => ({
-      rowId: row.rowId,
-      rowIndex: index,
-      top: index * (index === 0 ? 180 : 90),
-      height: index === 0 ? 180 : 90,
-      laneCount: 1,
-      visibleLaneCount: 1,
-      overflowCount: 0,
-      overflow: [],
-      fragments: [],
-    }));
+    let top = 0;
+    const rows: RibbonRow[] = result.layout.rows.map((row, index) => {
+      const height = index === 0 ? 180 : 90;
+      const entry = {
+        rowId: row.rowId,
+        rowIndex: index,
+        top,
+        height,
+        laneCount: 1,
+        visibleLaneCount: 1,
+        overflowCount: 0,
+        overflow: [],
+        fragments: [],
+      };
+      top += height;
+      return entry;
+    });
     const ribbons: RibbonLayout = { ...ribbonLayout([]), rows };
     expect(
       pointToDate(
         result.layout,
-        { clientX: 215, clientY: 136 },
+        { clientX: 380, clientY: 236 },
         {
           zoom: 1,
           monthBandWidth: 70,
@@ -223,7 +228,7 @@ describe("RD-07 gesture engine", () => {
         },
         ribbons,
       ),
-    ).toBe("2026-12-01");
+    ).toBe("2027-01-01");
   });
 
   it("does not start a gesture on a blank target", () => {
@@ -416,5 +421,44 @@ describe("RD-07 gesture engine", () => {
     const active = move(state, 140, "2027-02-04", context({ mode: "select" }));
     const completion = end(active, "2027-02-04", context({ mode: "select" }));
     expect(completion).toMatchObject({ kind: "select", modifiers: shift });
+  });
+
+  it("cancels and restores when the mode changes mid-gesture", () => {
+    const before = { signature: "same", mode: "auto" as const };
+    const after = { signature: "same", mode: "select" as const };
+    expect(gestureContextChanged(before, after)).toBe(true);
+    const active = move(begin(proxy("2027-01-28"), "2027-01-28"), 140, "2027-02-02");
+    expect(cancelGesture(active)).toEqual({
+      state: { phase: "idle" },
+      restore: { itemId: "a", date: "2027-01-28" },
+    });
+  });
+
+  it("paints from a resize handle in paint mode", () => {
+    const ctx = context({ mode: "paint" });
+    const state = begin(handle("end", "2027-02-01"), "2027-02-01", ctx);
+    const active = move(state, 140, "2027-02-02", ctx);
+    expect(end(active, "2027-02-02", ctx)).toMatchObject({
+      kind: "paint",
+      operation: "union",
+      startDate: "2027-02-01",
+      endDateExclusive: "2027-02-03",
+    });
+  });
+
+  it("falls back to the parent item when a handle is clicked in select mode", () => {
+    const ctx = context({ mode: "select" });
+    const state = begin(handle("end", "2027-02-01"), "2027-02-01", ctx);
+    expect(end(state, "2027-02-01", ctx)).toEqual({
+      kind: "click",
+      target: {
+        kind: "item",
+        itemId: "a",
+        fragmentId: "a",
+        date: "2027-02-01",
+        annotation: false,
+      },
+      modifiers: plain,
+    });
   });
 });

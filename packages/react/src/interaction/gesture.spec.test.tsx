@@ -56,6 +56,7 @@ const proxy = (date: string): GestureTarget => ({
 const handle = (edge: "start" | "end", date: string): GestureTarget => ({
   kind: "resize",
   itemId: "a",
+  fragmentId: "a-0",
   edge,
   date,
 });
@@ -454,7 +455,7 @@ describe("RD-07 gesture engine", () => {
       target: {
         kind: "item",
         itemId: "a",
-        fragmentId: "a",
+        fragmentId: "a-0",
         date: "2027-02-01",
         annotation: false,
       },

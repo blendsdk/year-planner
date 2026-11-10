@@ -41,7 +41,13 @@ export type GestureTarget =
       date: DateKey;
       annotation: boolean;
     }
-  | { kind: "resize"; itemId: string; edge: "start" | "end"; date: DateKey }
+  | {
+      kind: "resize";
+      itemId: string;
+      fragmentId: string;
+      edge: "start" | "end";
+      date: DateKey;
+    }
   | { kind: "host-control" }
   | { kind: "none" };
 
@@ -231,10 +237,6 @@ export function autoScrollDelta(input: {
   };
 }
 
-function isAllDay(period: PlannerPeriod): period is PlannerPeriod & { kind: "all-day" } {
-  return period.kind === "all-day";
-}
-
 function rangeHasDisabled(
   startDate: DateKey,
   endDateExclusive: DateKey,
@@ -313,7 +315,8 @@ function activate(
         itemId: target.itemId,
         edge: target.edge,
         pointerDate: target.date,
-        fallbackDate: source?.period.kind === "all-day" ? source.period.startDate : target.date,
+        fallbackDate:
+          source && isAllDayPeriod(source.period) ? source.period.startDate : target.date,
       };
     }
     return undefined;
@@ -544,7 +547,7 @@ export function endGesture(input: {
         ? {
             kind: "item",
             itemId: state.target.itemId,
-            fragmentId: state.target.itemId,
+            fragmentId: state.target.fragmentId,
             date: state.target.date,
             annotation: false,
           }

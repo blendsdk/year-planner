@@ -181,7 +181,7 @@ describe("gesture engine internals", () => {
 
   it("does not resize in select mode", () => {
     const state = begin(
-      { kind: "resize", itemId: "a", edge: "end", date: "2027-02-01" },
+      { kind: "resize", itemId: "a", fragmentId: "a-0", edge: "end", date: "2027-02-01" },
       "2027-02-01",
       context({ mode: "select" }),
     );
@@ -262,7 +262,7 @@ describe("gesture engine internals", () => {
       isDisabled: (date) => date === "2027-02-04",
     });
     const state = begin(
-      { kind: "resize", itemId: "a", edge: "end", date: "2027-02-04" },
+      { kind: "resize", itemId: "a", fragmentId: "a-0", edge: "end", date: "2027-02-04" },
       "2027-02-04",
       ctx,
     );
@@ -352,6 +352,7 @@ describe("gesture engine internals", () => {
     expect(classifyTarget(handle, "2027-02-01")).toEqual({
       kind: "resize",
       itemId: "a",
+      fragmentId: "a",
       edge: "start",
       date: "2027-02-01",
     });
@@ -403,7 +404,7 @@ describe("gesture engine internals", () => {
       restore: { itemId: "a", date: "2027-01-28" },
     });
     const resizePending = begin(
-      { kind: "resize", itemId: "a", edge: "end", date: "2027-02-01" },
+      { kind: "resize", itemId: "a", fragmentId: "a-0", edge: "end", date: "2027-02-01" },
       "2027-02-01",
     );
     expect(cancelGesture(resizePending)).toEqual({
@@ -493,7 +494,7 @@ describe("gesture engine internals", () => {
 
     const resizeCtx = context({ items: new Map([["a", item("a", "2027-02-01", "2027-02-06")]]) });
     const resizeState = begin(
-      { kind: "resize", itemId: "a", edge: "end", date: "2027-02-01" },
+      { kind: "resize", itemId: "a", fragmentId: "a-0", edge: "end", date: "2027-02-01" },
       "2027-02-01",
       resizeCtx,
     );

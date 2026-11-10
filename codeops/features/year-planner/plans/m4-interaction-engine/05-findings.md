@@ -32,3 +32,30 @@
 - `RV-001-10`: ST-11's expected value was corrected before promotion to
   match the RD-07 anchor/focus rule (the toggled item remains focused while its
   anchor clears); the spec oracle and implementation now agree.
+
+## Phase 2 — Gesture engine
+
+| Finding | Phase | Severity | Area | Ruling |
+|---|---|---|---|---|
+| RV-002-1 | 2 | MAJOR | gesture/handle-paint-mode | fixed |
+| RV-002-2 | 2 | MAJOR | gesture/handle-click-fallback | fixed |
+| RV-002-3 | 2 | MAJOR | pointer/fragment-id | fixed |
+| RV-002-4 | 2 | MAJOR | gesture/coverage | fixed |
+| RV-002-5 | 2 | MAJOR | geometry/pointToDesign | fixed |
+| RV-002-6 | 2 | MINOR | tests/mode-matrix | fixed |
+| RV-002-7 | 2 | MINOR | tests/expanded-row-fixture | fixed |
+| RV-002-8 | 2 | MINOR | tests/auto-scroll-ramp | fixed |
+| RV-002-9 | 2 | MINOR | tests/cancel-mode-combined | fixed |
+| RV-002-10 | 2 | MINOR | render/annotation-handles | fixed |
+| RV-002-11 | 2 | MINOR | gesture/dry | fixed |
+| RV-002-12 | 2 | MINOR | gesture/dead-branches | fixed |
+| RV-002-13 | 2 | MINOR | gesture/unused-point | fixed |
+| RV-002-14 | 2 | MINOR | gesture/auto-scroll-clamp | fixed |
+| RV-002-15 | 2 | MINOR | pointer/host-selector | fixed |
+| RV-002-16 | 2 | MINOR | geometry/empty-rows | fixed |
+| RV-002-17 | 2 | MINOR | tests/unused-import | fixed |
+| RV-002-18 | 2 | MINOR | plan/gesture-drift | fixed |
+| RV-002-19 | 2 | MINOR | gesture/dead-wrapper | fixed |
+| RV-002-20 | 2 | MINOR | gesture/fabricated-fragment-id | fixed |
+| RV-002-21 | 2 | MINOR | render/annotation-handle-test | fixed |
+| RV-002-22 | 2 | MINOR | pointer/aria-host-roles | fixed |

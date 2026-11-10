@@ -46,7 +46,8 @@ function itemLabel(item: PlannerItem): string {
  * Renders visible fragments for one row.
  *
  * Backdrop channels never take focus or pointer events. Ribbon, annotation and
- * foreground fragments expose a focusable proxy and sibling resize handles.
+ * foreground fragments expose a focusable proxy; ribbon and foreground
+ * fragments also expose sibling resize handles.
  */
 export function ItemLayer({
   row,

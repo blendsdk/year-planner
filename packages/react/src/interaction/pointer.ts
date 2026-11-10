@@ -3,7 +3,7 @@ import type { GestureTarget } from "./gesture.js";
 
 const RESIZE_SELECTOR = '[data-yp-part="resize-start"], [data-yp-part="resize-end"]';
 const HOST_SELECTOR =
-  'button, a, input, select, textarea, [contenteditable="true"], [role="textbox"], [role="link"], [role="checkbox"], [role="button"]:not([data-yp-part="item-proxy"])';
+  'button, a, input, select, textarea, [contenteditable="true"], [role="textbox"], [role="link"], [role="checkbox"], [role="radio"], [role="switch"], [role="tab"], [role="slider"], [role="combobox"], [role="option"], [role="menuitem"], [role="treeitem"], [role="button"]:not([data-yp-part="item-proxy"])';
 const PROXY_SELECTOR = '[data-yp-part="item-proxy"]';
 const FRAGMENT_SELECTOR = '[data-yp-part="item-fragment"]';
 const CELL_SELECTOR = '[data-yp-part="day-cell"]';
@@ -45,6 +45,7 @@ export function classifyTarget(
     return {
       kind: "resize",
       itemId,
+      fragmentId: handle.closest(FRAGMENT_SELECTOR)?.getAttribute("data-fragment-id") ?? itemId,
       edge: handle.getAttribute("data-yp-part") === "resize-start" ? "start" : "end",
       date,
     };

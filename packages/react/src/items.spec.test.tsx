@@ -162,6 +162,8 @@ describe("RD-06 fragment rendering", () => {
     expect(proxy(container, "a")).toHaveAttribute("tabindex", "0");
     expect(proxy(container, "b")).toHaveAttribute("tabindex", "-1");
     const wrapper = proxy(container, "a")?.parentElement;
+    expect(wrapper?.getAttribute("data-fragment-id")).toBeTruthy();
+    expect(wrapper?.getAttribute("data-fragment-id")).not.toBe("a");
     expect(wrapper?.querySelector('[data-yp-part="resize-start"]')).not.toBeNull();
     expect(wrapper?.querySelector('[data-yp-part="resize-end"]')).not.toBeNull();
     expect(proxy(container, "a")?.querySelector("button")).toBeNull();

@@ -20,7 +20,7 @@ packages/react/src/
 │   ├── gesture.ts         pure FSM, marquee intersection, auto-scroll
 │   ├── pointer.ts         target classification and design-unit mapping
 │   ├── preview.ts         range projection into row fragments
-│   ├── commands.ts        shared paint/create builders
+│   ├── builders.ts         shared paint/create builders
 │   └── useInteraction.ts  DOM listeners, rAF, commands, focus
 ├── render/
 │   ├── SelectionPreview.tsx  per-row preview fragments
@@ -121,35 +121,46 @@ Stories are static states; drag previews are ephemeral and proven by E2E.
 
 ### E2E scenarios
 
-Add `tests/e2e/interaction.spec.ts`:
+Add `tests/e2e/interaction.spec.ts` and a Chromium touch project
+(`playwright.config.ts`, `devices["Pixel 5"]`, `hasTouch: true`,
+`testMatch` for the interaction file). The touch test uses CDP
+`Input.dispatchTouchEvent` so a real swipe proves scroll-first behavior.
 
 | Scenario | Assertion |
 | --- | --- |
 | Date drag Jan 28 → Feb 6 | selection `[2027-01-28, 2027-02-07)`; two preview fragments |
 | Marquee over three ribbons | exactly the three intersecting item IDs |
-| Move a 10-day item | duration preserved; fragments in both rows |
+| Move a 10-day item to a cross-month target | duration preserved; fragments in both rows |
+| Move across a year boundary | duration preserved; December and January fragments |
 | Resize end | one-day minimum; invalid drag shows a diagnostic and no commit |
 | Paint/erase | highlight item splits/merges; undo restores |
 | Keyboard | Shift+Arrow range, Space toggle, Enter inspector |
-| Touch policy | off/auto do not edit; on selects |
+| Touch policy | off/auto swipe scrolls; on swipe selects; no accidental edit |
 | Mode change mid-drag | preview cleared and no command |
 | Host buttons | AC3 cell buttons still work and start no gesture |
 
 ### Documentation
 
 - Add `docs/interaction.md`: modes, modifier matrix, pointer/touch, keyboard,
-  previews, undo, focus, host responsibilities and examples.
+  previews, undo, focus, host responsibilities, host-control key ownership and
+  examples.
 - Update `docs/react-view.md` with the interaction section and touch ownership.
 - Update `README.md` feature/status table and usage example.
 - Update `docs/test-report.md` counts, E2E evidence and known gaps.
 - Update `docs/security.md` with pointer/selection safety notes.
+- Update stale public comments and demo copy that say pointer gestures, touch or
+  undo are "inert" or "later slices" (`packages/react/src/types.ts`,
+  `packages/react/src/YearPlanner.tsx`, `packages/react/src/commands.ts`,
+  `apps/demo/src/App.tsx`).
 - Add `.changeset/rd07-interaction.md`.
 
 ### API report and size
 
-- Run `pnpm api-report`; commit `packages/core/etc/year-planner-core.api.md` and
+- Run `pnpm api-report` before `pnpm verify`; commit
+  `packages/core/etc/year-planner-core.api.md` and
   `packages/react/etc/react-year-planner.api.md`.
-- `focusItemId` and `doubleClick` appear as optional additions.
+- `focusItemId` appears in the core report (the React report imports
+  `PlannerSelection`); `doubleClick` appears in the React report.
 - `pnpm test:size` must stay under 60 kB gzip.
 - No new dependency or package export.
 
@@ -169,9 +180,10 @@ Add `tests/e2e/interaction.spec.ts`:
 | --- | --- | --- |
 | Demo fixture absent | `?interaction=1` falls back to the normal demo | AR-31 |
 | Storybook story drift | Static build + story count | AR-30 |
-| API report stale | `pnpm api-report` in verify | AR-31 |
+| API report stale | `pnpm api-report` before `pnpm verify`; `api-report:ci` checks it | AR-31 |
 | Bundle budget exceeded | Size gate fails | AR-36 |
 | Existing E2E snapshot changes | Re-baseline only for intentional interaction CSS; review image | AR-35 |
+| Heading navigation | RD-07 FSM defines no heading transition; headings stay presentation-only, RD-09 owns navigation | AR-37 |
 
 ## Testing Requirements
 

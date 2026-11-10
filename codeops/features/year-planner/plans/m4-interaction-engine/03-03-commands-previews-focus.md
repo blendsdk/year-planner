@@ -21,7 +21,9 @@ rather than creating a second edit path.
 
 ### Proposed Changes
 
-- Extract shared `buildPaintCommand` and `buildCreateItem` helpers.
+- Extract shared `buildPaintCommand` and `buildCreateItem` helpers into
+  `interaction/builders.ts` (the existing `src/commands.ts` pipeline keeps its
+  name).
 - Add `SelectionPreview` and `Marquee` render components.
 - Add `useInteraction` for pointer listeners, rAF, keyboard, touch, commands
   and focus.
@@ -55,13 +57,16 @@ export function buildCreateItem(input: {
 ```
 
 `buildPaintCommand` returns `undefined` when the layer is missing or is not a
-highlight layer. It includes `expectedVersions` for every effectively visible
-highlight item on the layer that intersects the range, matching the core paint
-reducer. The inspector uses the same helper.
+highlight layer. Its `expectedVersions` include every effectively visible,
+unlocked and editable highlight item on the layer that intersects the range —
+the same filter as the core paint reducer (`affectedItems`). The inspector uses
+the same helper.
 
 `buildCreateItem` uses `interaction.createDefaults.layerId` first, then
 `activeLayerId`; kind defaults to `activity`; version is 1; ID comes from
-`createId`.
+`createPlannerId(interaction)` so `interaction.createId`, `crypto.randomUUID()`
+and the monotonic fallback all keep working. Paint defaults come from
+`interaction.paintDefaults ?? { kind: "highlight" }`.
 
 ### Preview projection
 
@@ -110,14 +115,22 @@ export type GesturePreview =
     };
 ```
 
-`selection` and item/range previews render as per-row fragments with
-`data-yp-part="selection-preview"` or `data-yp-part="gesture-preview"`,
+Persistent selected ranges render as per-row fragments with
+`data-yp-part="selection"` and `data-preview-kind="selection"`. They remain
+visible after pointerup and for controlled selection.
+
+Transient drag previews render with `data-yp-part="selection-preview"` for date
+drags or `data-yp-part="gesture-preview"` for move/resize/paint/create, plus
 `data-preview-kind`, `data-preview-start`, `data-preview-end` and
 `data-preview-valid`. They are `aria-hidden="true"` and use the selection or
 layer color with a dashed outline for invalid ranges.
 
+Every preview and the marquee has `pointer-events: none`. Date-selection
+previews sit above cells and below item proxies; move/resize previews sit above
+item proxies so the proposed range is visible over the original item.
+
 The marquee renders as a fixed screen rectangle with
-`data-yp-part="marquee"`, `aria-hidden="true"`.
+`data-yp-part="marquee"`, `aria-hidden="true"`, using `designRectToScreen`.
 
 ### Move/resize preview
 
@@ -130,7 +143,7 @@ cancel the preview disappears and the original is unchanged.
 | Situation | Target |
 | --- | --- |
 | Command accepted, item still visible | Item proxy (first fragment) |
-| Item removed/hidden | Selection `focusDate`, then item start date, then first enabled cell |
+| Item removed/hidden | Selection `focusDate`, then item start date, then nearest enabled cell; announce in a polite live region |
 | Gesture cancelled | Source item, else gesture start date |
 | Selection controlled externally | `focusItemId`, else `focusDate`, else first enabled cell |
 | Lane repack / row clipping | Same item by ID, first visible fragment |
@@ -138,7 +151,11 @@ cancel the preview disappears and the original is unchanged.
 
 `YearPlanner` keeps `activeDate` and `activeItemId` in sync with
 `selection.focusDate`/`focusItemId`. An effect prunes selected item IDs that are
-no longer effectively visible after visibility/filter changes.
+no longer effectively visible after visibility/filter changes. When focus falls
+back because an item was hidden or removed, the planner updates a polite
+`role="status"` live region (`data-yp-part="focus-status"`) with a generic
+"focus moved to <date>" message. RD-09 can refine the wording and full
+announcement policy.
 
 ### Keyboard matrix
 
@@ -148,16 +165,32 @@ no longer effectively visible after visibility/filter changes.
 | Cell | Shift+Arrow | Extend/replace date range from the anchor |
 | Cell | Space | Toggle the focused date in selection |
 | Cell | Enter | Select the date and open the inspector |
-| Cell | Escape | Cancel a gesture, else clear selection |
-| Cell | Delete | Delete the selected/focused item through the pipeline |
 | Proxy | Arrow | Move between visible proxies in visual order |
 | Proxy | Shift+Arrow | Extend a date range from the item start |
 | Proxy | Space | Toggle the item |
 | Proxy | Enter | Select the item and open the inspector |
-| Proxy | Delete | Delete the item with permission and confirmation |
 | Grid root | Ctrl/Cmd+A | Select all visible items, clear dates |
 | Grid root | Ctrl/Cmd+Shift+key | Ignored, no diagnostic |
-| Grid root | Escape | Clear selection when no gesture is active |
+| Grid root | Escape | Cancel gesture, else clear selection |
+| Grid root | Delete | Delete `focusItemId`, else the sole selected item, else no-op diagnostic |
+
+The grid root is the single owner of Ctrl/Cmd+A, Escape and Delete. Cell/proxy
+handlers do not handle those keys. Every cell/proxy/root handler returns early
+when `event.defaultPrevented` is true or the event target is a host interactive
+control (`button`, `a`, `input`, `select`, `textarea`, `[contenteditable]`,
+`role="button"` outside a planner-owned proxy). The overflow popover calls
+`stopPropagation`/`preventDefault` on Escape so closing it does not clear the
+selection.
+
+### Click ownership and host controls
+
+A planner-originated pointer sequence owns its selection. On pointerup the hook
+applies the click/gesture result and sets a one-shot suppression flag; the
+native `click` that follows is consumed and ignored. Programmatic and keyboard
+clicks still use the existing native click handlers. Both the pointerdown
+classifier and the click/key handlers call one `isHostInteractive(target)` guard,
+so a host button/input inside a cell keeps its own events and never selects a
+date or starts a gesture.
 
 ### Touch policy
 
@@ -167,13 +200,16 @@ no longer effectively visible after visibility/filter changes.
 - `"off"` never starts a touch gesture.
 - The grid root sets `touch-action: none` only while touch editing is on;
   otherwise it leaves native panning intact.
+- Chromium E2E uses a touch-enabled project and CDP touch events to prove that a
+  real swipe scrolls when editing is off and selects when it is on.
 - No built-in touch chrome is added; the host owns the toggle (AR-20).
 
 ### Double-click
 
 `interaction.doubleClick` defaults to `"inspect"`. A non-drag double-click on an
-item selects it and opens the inspector. `"none"` disables the behavior. A drag
-never triggers it.
+item selects it, opens the inspector and moves keyboard focus into it.
+`"none"` keeps the normal single-click behavior but does not focus the
+inspector, so the difference is observable. A drag never triggers it.
 
 ### Undo integration
 
@@ -191,7 +227,8 @@ for move, resize, paint, erase, create, update and delete.
 - `CellLayer` receives modifier-aware click/key callbacks.
 - `ItemLayer` receives modifier-aware click/key callbacks and resize-handle
   pointer targets.
-- `MonthRow` renders preview fragments above cells and below item proxies.
+- `MonthRow` renders persistent selection and date previews above cells, and
+  move/resize previews above item proxies, all with `pointer-events: none`.
 - `Inspector` uses the shared paint/create builders.
 
 ## Error Handling
@@ -203,7 +240,7 @@ for move, resize, paint, erase, create, update and delete.
 | Move/resize timed item | `TIMED_EDITING_UNSUPPORTED`; no command | AR-15 |
 | Invalid resize/period | `INVALID_COMMAND`; no command; restore | AR-15 |
 | Read-only/locked item | Pipeline rejects `READ_ONLY`; preview is still discarded | AR-26 |
-| Host rejection/timeout | Pipeline feedback; preview gone; original remains | AR-29 |
+| Host rejection/timeout | Pipeline feedback; preview gone; original remains; RD-08 owns rollback | AR-26 |
 | Hidden item selected | Prune selection; focus nearby date | AR-19 |
 | Annotation edit | No gesture; inspect only | AR-24 |
 

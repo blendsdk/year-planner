@@ -114,7 +114,7 @@ announcements/WCAG to RD-09 and cross-browser evidence to RD-10._
 | `packages/react/src/interaction/selection.ts` | Pure modifier/range/item policy |
 | `packages/react/src/interaction/gesture.ts` | Pure gesture FSM and marquee intersection |
 | `packages/react/src/interaction/pointer.ts` | Target classification and coordinate helpers |
-| `packages/react/src/interaction/commands.ts` | Shared paint/create command builders |
+| `packages/react/src/interaction/builders.ts` | Shared paint/create command builders |
 | `packages/react/src/interaction/preview.ts` | Preview projection into row fragments |
 | `packages/react/src/interaction/useInteraction.ts` | DOM wiring, rAF, commands, focus |
 | `packages/react/src/render/SelectionPreview.tsx` | Selection/gesture preview overlay |

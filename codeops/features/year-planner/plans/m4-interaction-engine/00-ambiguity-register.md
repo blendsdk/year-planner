@@ -1,6 +1,6 @@
 # Ambiguity Register: RD-07 Interaction Engine, Selection and Keyboard
 
-> **Status**: ✅ GATE PASSED — all 36 items resolved
+> **Status**: ✅ GATE PASSED — all 37 items resolved
 > **Last Updated**: 2026-11-10 19:32
 > **Authority**: `--auto-design` delegated resolutions; scope follows the user objective "deliver RD-07"
 > **Policy version**: 1
@@ -27,7 +27,7 @@
 | 7 | Technical | Modifier abstraction | Check `ctrlKey` only / `ctrlKey \|\| metaKey` helper / platform sniffing | **AI — delegated (AR-7):** one `isMod(event)` helper using `ctrlKey \|\| metaKey`; never platform sniffing. Ctrl/Cmd+Shift is checked first and ignored without a diagnostic. | ✅ Resolved |
 | 8 | Behavioral | Semantics of each interaction mode | Names only / full matrix / auto-only | **AI — delegated (AR-8):** `inspect` selects and inspects; `select` selects dates/items only; `paint`/`erase` drag paints/erases and click selects; `create` drag creates and click selects; `move` item drag moves; `resize` handle drag resizes; `auto` moves/resizes/selects as RD-07 states. No silent paint in `auto`. | ✅ Resolved |
 | 9 | Behavioral | Click vs drag boundary | Fire both / threshold only / mode-dependent threshold | **AI — delegated (AR-9):** 4 CSS px Euclidean threshold. Below threshold is a click selection; at/above performs the mode gesture. A completed drag suppresses the following click. Paint/create require a drag; a click never emits a command. | ✅ Resolved |
-| 10 | Technical | Pointer event attachment and capture | Per-cell/proxy listeners / grid-root delegation / document listeners | **AI — delegated (AR-10):** pointer listeners are delegated on the grid root; pointer capture is taken on the root with feature detection; host interactive controls (`button, a, input, select, textarea`) inside cells are ignored. Click/keyboard handlers remain for compatibility. | ✅ Resolved |
+| 10 | Technical | Pointer event attachment, capture and click ownership | Per-cell/proxy listeners / grid-root delegation / document listeners | **AI — delegated (AR-10):** pointer listeners are delegated on the grid root; pointer capture is taken on the root with feature detection; host interactive controls (`button, a, input, select, textarea, [contenteditable]`) are ignored for pointer, click and key events. A planner-originated pointer sequence owns its selection and suppresses the following native click; native clicks remain for keyboard/programmatic paths. | ✅ Resolved |
 | 11 | Technical | Pointer-to-date mapping with scroll/zoom/blank slots | DOM rects per cell / prefix-width math / hit index only | **AI — delegated (AR-11):** map client coordinates through viewport rect, scroll, header and zoom using existing prefix-width geometry; reject blank slots and outside rows, holding the last valid date during a gesture. Never invent a date. | ✅ Resolved |
 | 12 | Technical | Auto-scroll behavior | None / native scroll only / rAF edge scroll | **AI — delegated (AR-12):** rAF edge auto-scroll with a 32 px activation zone and 12 px maximum per frame; stops on pointerup/cancel/unmount; recomputes the pointer date after each scroll. | ✅ Resolved |
 | 13 | Technical | Marquee interpretation and geometry | DOM rectangles / design-unit intersection / date rectangle | **AI — delegated (AR-13):** marquee is a design-unit rectangle intersected with visible fragment bounds; default selects items, `interaction.marquee: "dates"` or the `select` tool selects a chronological date range instead. Hidden, overflow and backdrop fragments never intersect. | ✅ Resolved |
@@ -38,11 +38,11 @@
 | 18 | UX | Keyboard ownership | Per-cell only / grid root only / mixed | **AI — delegated (AR-18):** cells own date arrows/Shift extension/Space/Enter/Escape; item proxies own item traversal and Space/Enter; the grid root owns Ctrl/Cmd+A, Escape fallback and Delete. All use the same selection and command helpers. | ✅ Resolved |
 | 19 | Behavioral | Focus restoration after commit/hide/repack | Keep DOM focus / restore item / nearest cell | **AI — delegated (AR-19):** restore focus to the logical item when it remains visible; otherwise focus the selection focus date, then the item start, then the first enabled cell. Hidden selected items are pruned from selection. RD-09 owns announcements. | ✅ Resolved |
 | 20 | UX | What is the explicit Touch edit toggle | Built-in button / host-controlled prop / gesture-only | **AI — delegated (AR-20):** the existing `interaction.touchEditing` prop is the explicit toggle; the host flips it to `"on"`. `"auto"` behaves as off until then. No new built-in chrome; `touch-action: none` applies only while `"on"`. | ✅ Resolved |
-| 21 | Behavioral | When a pointer gesture cancels | Only Escape / pointercancel / every model change | **AI — delegated (AR-21):** cancel on Escape, pointercancel, lost capture, unmount, and any change to layout signature, items identity, visibility, filter or interaction mode during an active or pending gesture. Restore original preview and focus. | ✅ Resolved |
+| 21 | Behavioral | When a pointer gesture cancels | Only Escape / pointercancel / every model change | **AI — delegated (AR-21):** cancel on Escape, pointercancel, lost capture, unmount, and any real change to `RibbonLayout.signature` (layout, items, visibility, filter, fragments) or the interaction mode. Equal-content objects recreated by a controlled host do not cancel. Restore original preview and focus. | ✅ Resolved |
 | 22 | Behavioral | Undo/redo integration | New history layer / reuse pipeline / host-only | **AI — delegated (AR-22):** reuse the existing command-pipeline history for uncontrolled move/resize/paint/erase/create/delete; selection changes are not undoable; a new edit clears redo; controlled mode creates no local entry. | ✅ Resolved |
 | 23 | Behavioral | Double-click action | None / inspect / host callback | **AI — delegated (AR-23):** add `interaction.doubleClick?: "inspect" \| "none"` defaulting to `"inspect"`; a non-drag double-click on an item selects it and opens the inspector. A drag never triggers it. | ✅ Resolved |
 | 24 | Behavioral | Annotation pointer behavior | Drag/edit / inspect only / ignore | **AI — delegated (AR-24):** annotation items remain host-owned; pointer down selects and inspects only, never moves/resizes/deletes or paints them. Commands remain rejected by the pipeline. | ✅ Resolved |
-| 25 | Behavioral | Disabled dates | Skip / clamp / allow | **AI — delegated (AR-25):** disabled dates are not selectable, focusable, paintable, movable or resizable; arrow navigation skips them; range operations reject a range containing one. `aria-disabled` stays exposed. | ✅ Resolved |
+| 25 | Behavioral | Disabled dates | Skip / clamp / allow | **AI — delegated (AR-25):** disabled dates are not selectable, focusable, paintable, movable or resizable; arrow navigation skips them. A selection range splits around a disabled date; move/resize/paint reject a range containing one. Dates outside the visible layout are not selectable but are not treated as disabled for edit validation. `aria-disabled` stays exposed. | ✅ Resolved |
 | 26 | UX | Diagnostic vocabulary | New codes / reuse RD-06 table / silent | **AI — delegated (AR-26):** reuse the RD-06 public codes `READ_ONLY`, `INVALID_COMMAND`, `INVALID_PAINT_TARGET`, `TIMED_EDITING_UNSUPPORTED`, `STALE_REVISION`, `HOST_REJECTED`; no new codes except none. Messages describe the rule, not hidden data. | ✅ Resolved |
 | 27 | Data & state | Selection callback timing during drag | Emit per pointermove / emit on pointerup / never | **AI — delegated (AR-27):** drag previews are local; one `onSelectionChange`/controlled update is emitted on pointerup. Clicks and keyboard changes emit immediately. | ✅ Resolved |
 | 28 | Testing | Test layers and files | Unit only / jsdom only / pure + jsdom + Playwright | **AI — delegated (AR-28):** pure policy/FSM tests, jsdom pointer/keyboard tests, Playwright pointer/E2E tests, plus the existing full verify. No new test harness or dependency. | ✅ Resolved |
@@ -51,9 +51,10 @@
 | 31 | Docs | API report and documentation updates | None / minimal / full | **AI — delegated (AR-31):** update API Extractor reports for `focusItemId` and `doubleClick`, add `docs/interaction.md`, update `docs/react-view.md`, README, test report, changeset and roadmap. | ✅ Resolved |
 | 32 | Performance | Pointer move update strategy | Every event / rAF coalescing / throttle | **AI — delegated (AR-32):** coalesce pointer move work into one rAF tick per frame; auto-scroll shares the same loop. No worker, observer or new dependency. | ✅ Resolved |
 | 33 | Security | Untrusted pointer geometry and host controls | Trust DOM / clamp and validate / ignore host controls | **AI — delegated (AR-33):** clamp coordinates to valid rows/dates, never synthesize dates from blank slots, ignore host interactive controls, never hit-test hidden items, and pass only typed commands to the pipeline. No HTML/script from pointer data. | ✅ Resolved |
-| 34 | Accessibility | RD-09 boundary | Full ARIA/announcements here / minimal semantics / skip | **AI — delegated (AR-34):** RD-07 keeps existing ARIA grid/proxy semantics, marks previews `aria-hidden`, and restores focus. Announcements, full keyboard audit and WCAG conformance remain RD-09. | ✅ Resolved |
+| 34 | Accessibility | RD-09 boundary | Full ARIA/announcements here / minimal semantics / skip | **AI — delegated (AR-34):** RD-07 keeps existing ARIA grid/proxy semantics, marks previews `aria-hidden`, restores focus, and adds a minimal polite live-region message when focus falls back from a hidden/removed item. Full announcement policy, keyboard audit and WCAG conformance remain RD-09. | ✅ Resolved |
 | 35 | Compatibility | Existing RD-06 tests and handlers | Rewrite tests / preserve behavior / break APIs | **AI — delegated (AR-35):** preserve RD-06 public props, handle, click selection and arrow-focus behavior; extend handlers with modifiers rather than replacing them. New internal modules only. | ✅ Resolved |
 | 36 | Packaging | New dependencies or bundle surface | Pointer library / native Pointer Events / pan library | **AI — delegated (AR-36):** use native Pointer Events, rAF and existing geometry; no dependency. Keep ESM-only package and the 60 kB budget. | ✅ Resolved |
+| 37 | Behavioral | RD-07 hit-test priority lists month/weekday headings, but its FSM defines no heading transition | Implement heading navigation / leave headings presentation-only / defer to RD-09 | **AI — delegated (AR-37):** headings stay presentation-only in this slice; the RD-07 FSM has no heading state and RD-09 owns keyboard navigation. No pointer target is invented. | ✅ Resolved |
 
 ## Delegated resolution provenance
 
@@ -383,7 +384,7 @@ Reopen triggers: RD-09/RD-11 requires a component-owned touch control.
 Authority: AI — delegated by --auto-design
 Eligibility: failure/recovery design.
 Objective: never commit a stale gesture.
-Decision: cancel on Escape, pointercancel, lost capture, unmount, and changes to layout signature, items identity, visibility, filter or mode.
+Decision: cancel on Escape, pointercancel, lost capture, unmount, and changes to `RibbonLayout.signature` (layout, items, visibility, filter, fragments) or mode; equal-content re-renders do not cancel.
 Evidence: RD-07 explicitly lists these triggers.
 Rejected alternatives: only pointercancel (stale commits); only mode changes (year changes).
 Strongest counterargument: controlled hosts that replace item arrays every render could cancel constantly.
@@ -615,6 +616,22 @@ Confidence: High — suppress-click flag isolates drags.
 Hardening: full existing suite plus new tests.
 Policy version: 1 · Root invocation ID: yp-rd07-2026-11-10T19-32Z
 Reopen triggers: an RD-06 behavior must change for RD-07 correctness.
+```
+
+### AR-37 — Heading navigation
+
+```text
+Authority: AI — delegated by --auto-design
+Eligibility: interpretation of an internal inconsistency in the RD's hit-test list.
+Objective: avoid inventing a heading workflow the FSM and ACs never define.
+Decision: month/weekday headings remain presentation-only; no heading gesture target in R1.
+Evidence: RD-07's FSM lists only cell/item/handle/annotation pointer-down states; no AC requires heading navigation; RD-09 owns keyboard navigation.
+Rejected alternatives: invent month/weekday click behavior (new product behavior); implement keyboard heading navigation (RD-09).
+Strongest counterargument: hit-test priority #5 names heading navigation.
+Confidence: Med — the FSM contradiction is explicit; reopen if RD-09 requires heading targets.
+Hardening: recorded as an accepted observation; no code or test claims heading navigation.
+Policy version: 1 · Root invocation ID: yp-rd07-2026-11-10T19-32Z
+Reopen triggers: RD-09 or a host requires month/weekday heading interaction.
 ```
 
 ### AR-36 — Dependencies

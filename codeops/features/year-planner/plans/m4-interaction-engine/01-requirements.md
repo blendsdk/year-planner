@@ -39,7 +39,9 @@
 | Visual item order | Start date, row, lane, ID | AR-6 |
 | Mode matrix | inspect/select never edit; paint/erase/create above threshold; move/resize scoped | AR-8 |
 | Touch toggle | Host-controlled `touchEditing` prop, no built-in chrome | AR-20 |
-| Double-click | `interaction.doubleClick: "inspect" \| "none"`, default inspect | AR-23 |
+| Double-click | `interaction.doubleClick: "inspect" \| "none"`, default inspect/focus | AR-23 |
+| Focus announcement | Minimal polite live region when focus falls back | AR-34 |
+| Heading navigation | Presentation-only in this slice | AR-37 |
 | Selection callback timing | One emission on pointerup; immediate for click/keyboard | AR-27 |
 | Verify command | `pnpm verify` per task; `pnpm verify:full` per phase/completion | AR-29 |
 

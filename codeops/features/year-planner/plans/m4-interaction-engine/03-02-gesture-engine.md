@@ -67,7 +67,10 @@ export interface GestureContext {
   marquee: "items" | "dates";
   threshold: number;
   items: ReadonlyMap<string, PlannerItem>;
+  /** True only for a known date whose host metadata says disabled. */
   isDisabled: (date: DateKey) => boolean;
+  /** Precomputed editability for move/resize; supplied by the view. */
+  isEditable: (itemId: string, action: "move" | "resize") => boolean;
 }
 
 /** Active gesture kinds. */
@@ -100,11 +103,13 @@ export type GestureState =
       modifiers: SelectionModifiers;
       anchorDate: DateKey;
       lastDate: DateKey;
+      startDesign: DesignPoint;
     }
   | {
       phase: "active";
       gesture: ActiveGesture;
       start: GesturePoint;
+      startDesign: DesignPoint;
       pointerId: number;
       modifiers: SelectionModifiers;
       lastDate: DateKey;
@@ -120,6 +125,7 @@ export type GestureState =
 export function beginGesture(input: {
   target: GestureTarget;
   point: GesturePoint;
+  design: DesignPoint;
   pointerId: number;
   modifiers: SelectionModifiers;
   date: DateKey;
@@ -138,6 +144,8 @@ export function moveGesture(input: {
 /** Produces the commit intent; never mutates canonical items. */
 export function endGesture(input: {
   state: GestureState;
+  point: GesturePoint;
+  design: DesignPoint;
   date: DateKey | undefined;
   context: GestureContext;
 }): GestureCompletion;
@@ -212,10 +220,22 @@ export type GestureCompletion =
 | Annotation proxy | click/inspect only | click/inspect | click/inspect | click/inspect | click/inspect | click/inspect |
 | Host control / blank | idle | idle | idle | idle | idle | idle |
 
-Paint/erase/create convert an item or handle target into the cell date beneath
-the pointer, so a gesture can start over a ribbon. Move/resize require an
-editable all-day item; timed items complete with
-`TIMED_EDITING_UNSUPPORTED`.
+A resize handle in a mode where resize is not editable falls back to its parent
+item target for click selection. Paint/erase/create convert an item or handle
+target into the cell date beneath the pointer, so a gesture can start over a
+ribbon. Move/resize require
+`context.isEditable(itemId, "move" | "resize")` and an all-day item; the view
+computes editability with the core `getItemEditability` precedence, so a
+locked/read-only/hidden/policy-denied item never starts a preview. Timed items
+complete with `TIMED_EDITING_UNSUPPORTED`.
+
+### Heading targets
+
+RD-07's FSM defines no month/weekday heading transition; headings stay
+presentation-only in this slice. RD-09 owns keyboard navigation. This is
+recorded as an accepted observation, not an implemented gesture target. If a
+later slice makes headings interactive, they become a click-only target with
+priority below cells.
 
 ### Threshold and click exclusivity
 
@@ -237,8 +257,9 @@ proposedEnd = addDays(proposedStart, duration)
 ```
 
 The start is clamped to the layout's first/last known date only for preview;
-the command may address a date outside the visible window. The range must not
-contain a disabled date.
+the command may address a date outside the visible window. Only a known date
+whose host metadata says disabled blocks the range; an unknown out-of-window
+date is not treated as disabled.
 
 ### Resize proposal
 
@@ -253,6 +274,24 @@ The range is chronological: `min(anchor, focus)` to `addDays(max(anchor, focus),
 1)`. A reversed pointer path is valid; a missing date holds the last valid date.
 A range containing a disabled date completes as `invalid` with
 `INVALID_COMMAND`.
+
+### Marquee geometry
+
+```ts
+/** Builds a normalized rectangle from two design points. */
+export function designRectBetween(start: DesignPoint, end: DesignPoint): DesignRect;
+
+/** Converts a design rectangle to fixed screen coordinates for the marquee. */
+export function designRectToScreen(
+  rect: DesignRect,
+  view: ViewGeometry,
+): { left: number; top: number; width: number; height: number };
+```
+
+The marquee stores the pointerup design point, not only the last pointermove, so
+a press-release without an intervening move still produces the correct
+rectangle. The fixed rectangle uses `designRectToScreen`; it is
+`pointer-events: none` and `aria-hidden`.
 
 ### Marquee intersection
 
@@ -300,14 +339,15 @@ gesture:
 
 | Trigger | Comparison |
 | --- | --- |
-| Layout/year/range | `layout.signature` |
-| Items | array identity |
-| Visibility | `visibility` object identity |
-| Filter | `filter` object identity |
+| Layout/year/range, items, visibility, filter | `ribbons.signature` (already covers layout, items, visibility, filter and fragments) |
 | Interaction mode | mode string |
 | Escape | key event |
 | Pointer cancel/lost capture | pointer event |
 | Unmount | effect cleanup |
+
+Equal-content arrays/objects recreated by a controlled host keep the same
+signature and do **not** cancel the gesture. A real content change does. Raw
+array/object identity is never a cancellation trigger.
 
 Cancellation restores focus to the source item or gesture start date.
 
@@ -323,6 +363,8 @@ Cancellation restores focus to the source item or gesture start date.
 | Error Case | Handling Strategy | AR Ref |
 | --- | --- | --- |
 | Pointer outside valid rows | Hold last valid date; no invented date | AR-11 |
+| Expanded/lane-grown row height | Map y through `ribbonRow.top`/`height`, not `layout.rowHeight` | AR-11 |
+| Unknown out-of-window date | Not a disabled date; edit validation applies only to known dates | AR-25 |
 | Blank slot at pointer up | Use last valid date | AR-11 |
 | Timed item move/resize | `TIMED_EDITING_UNSUPPORTED`, no command | AR-15 |
 | Invalid resize | `INVALID_COMMAND`, no command, restore | AR-15 |

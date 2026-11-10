@@ -24,6 +24,11 @@ Add optional `focusItemId` to the canonical contract and implement the policy in
 `packages/react/src/interaction/selection.ts`. The module is internal to the
 React package; it is not re-exported from the package entry.
 
+`SelectionDateRange` is the canonical element type of `PlannerSelection.dates`
+(`packages/core/src/contracts.ts:8-13`). It is structurally identical to the
+core `DateInterval` (`packages/core/src/interval.ts:4-7`); no new public date
+type is introduced.
+
 ## Implementation Details
 
 ### New Types/Interfaces
@@ -137,23 +142,25 @@ export function isDateSelected(
 
 ### Selection matrix
 
-| Input | Dates | Items | Anchor / focus |
-| --- | --- | --- | --- |
-| Plain date click | one day, replaces | cleared | `anchorDate = focusDate = date`; item anchor/focus cleared |
-| Shift date click | one range from anchor to date | cleared | anchor kept; `focusDate = date` |
-| Mod date click | toggles one date, splitting/merging | kept | anchor kept; `focusDate = date`; anchor cleared when no dates remain |
-| Plain date drag (select tool) | one range anchor→focus | cleared | anchor = drag anchor; focus = last valid date |
-| Shift date drag | one range from anchor→focus | cleared | anchor kept; focus = last valid date |
-| Mod date drag | union of existing dates + anchor→focus | kept | anchor kept; focus = last valid date |
-| Plain item click | cleared | one item | `anchorItemId = focusItemId = item`; date anchor/focus cleared |
-| Shift item click | cleared | visual-order range inclusive | anchor kept; `focusItemId = item` |
-| Mod item click | kept | toggles one item | anchor kept; `focusItemId = item`; anchor cleared when no items remain |
-| Plain marquee | cleared | intersecting items | no anchor; `focusItemId` = last intersecting in visual order |
-| Shift marquee | cleared | existing + intersecting | no anchor; focus = last intersecting |
-| Mod marquee | kept | toggles intersecting | no anchor; focus = last intersecting |
-| Mod+Shift any click | unchanged | unchanged | unchanged; no diagnostic |
-| Ctrl/Cmd+A | cleared | all visible | no anchor; focus = last visible |
-| Escape (idle) | cleared | cleared | all anchors/focus cleared |
+| Input | Dates | Items | `anchorDate` / `focusDate` | `anchorItemId` / `focusItemId` |
+| --- | --- | --- | --- | --- |
+| Plain date click | one day, replaces | cleared | `date` / `date` | cleared / cleared |
+| Shift date click | one range from anchor to date | cleared | `existing ?? focusDate ?? date` / `date` | cleared / cleared |
+| Mod date click (add) | toggles one date, splits/merges | kept | `existing ?? date` / `date` | kept / kept |
+| Mod date click (last date removed) | empty | kept | cleared / `date` | kept / kept |
+| Plain date drag (select tool) | one range anchor→focus | cleared | drag anchor / last valid date | cleared / cleared |
+| Shift date drag | one range from anchor→focus | cleared | `existing ?? drag anchor` / last valid date | cleared / cleared |
+| Mod date drag | union of existing dates + anchor→focus | kept | `existing ?? drag anchor` / last valid date | kept / kept |
+| Plain item click | cleared | one item | cleared / cleared | `item` / `item` |
+| Shift item click | cleared | visual-order range inclusive | cleared / cleared | `existing ?? item` / `item` |
+| Mod item click (add) | kept | toggles one item | kept / kept | `existing ?? item` / `item` |
+| Mod item click (last item removed) | kept | empty | kept / kept | cleared / `item` |
+| Plain marquee | cleared | intersecting items | cleared / cleared | cleared / last intersecting |
+| Shift marquee | cleared | existing + intersecting | cleared / cleared | cleared / last intersecting |
+| Mod marquee | kept | toggles intersecting | kept / kept | cleared / last intersecting |
+| Mod+Shift any click or drag | unchanged | unchanged | unchanged | unchanged |
+| Ctrl/Cmd+A | cleared | all visible | cleared / cleared | cleared / last visible |
+| Escape (idle) | cleared | cleared | cleared / cleared | cleared / cleared |
 
 ### Range rules
 
@@ -163,7 +170,12 @@ export function isDateSelected(
 - Removing a date from `[a, d)` yields `[a, date)` and `[date+1, d)` when both
   sides remain.
 - A range crossing a disabled date is split around that date for selection.
-  Move/resize/paint validate the full range separately and reject it.
+  Move/resize/paint validate the full range separately and reject it with
+  `INVALID_COMMAND`.
+- A date outside the visible layout is not selectable or focusable. For edit
+  validation, an unknown date is not treated as disabled; only a known date
+  whose `getDateMeta` says `disabled` blocks an edit range. This keeps moves
+  across the visible-window edge possible without inventing a disabled rule.
 - No date arithmetic is performed on strings beyond `addDays` from the core.
 
 ### Visual order
@@ -180,7 +192,10 @@ Items with no visible fragment are excluded.
 ## Integration Points
 
 - `YearPlanner` calls the click policies from cell/proxy clicks.
-- `useInteraction` calls drag/marquee policies.
+- `useInteraction` calls drag/marquee policies and suppresses the native click
+  for every planner-originated pointer sequence, so selection is emitted once.
+- Cell/proxy/root key handlers guard host controls before calling any policy and
+  ignore Ctrl/Cmd+Shift.
 - Cell/proxy keyboard handlers call click/toggle policies.
 - `SelectionPreview` reads selected ranges; `ItemLayer` reads selected item IDs.
 

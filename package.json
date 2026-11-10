@@ -18,12 +18,13 @@
     "test:print": "playwright test --grep @print",
     "test:size": "node scripts/check-size.mjs",
     "test:consumer": "bash scripts/clean-consumer.sh",
+    "test:toolchain": "bash scripts/toolchain-check.sh",
     "dev": "pnpm --filter @blendsdk/year-planner-demo dev",
     "storybook": "pnpm --filter @blendsdk/year-planner-storybook storybook",
     "storybook:build": "pnpm --filter @blendsdk/year-planner-storybook build",
     "api-report": "node scripts/check-api.mjs",
     "pack:check": "pnpm -r pack:check",
-    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm pack:check",
+    "verify": "pnpm test:toolchain && pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm pack:check",
     "verify:full": "pnpm verify && pnpm test:e2e && pnpm test:consumer"
   },
   "devDependencies": {

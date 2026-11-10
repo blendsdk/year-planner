@@ -3,7 +3,7 @@
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
 > **Last Updated**: 2026-11-10 10:15
-> **Progress**: 37/48 tasks (77%)
+> **Progress**: 41/48 tasks (85%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -55,7 +55,7 @@ grid. Specification tests precede implementation in every behavior phase.
 **Reference**: 03-01, RD-01 · AR #4, #13
 **Objective**: Encode ST-37–ST-42/ST-54 as failing checks before scaffolding.
 
-- [ ] 1.0.1 [spec-author] Write `scripts/toolchain-check.sh` for ST-37–ST-42, ST-54–ST-57 and run it; record the expected red failures
+- [x] 1.0.1 [spec-author] Write `scripts/toolchain-check.sh` for ST-37–ST-42, ST-54–ST-57 and run it; record the expected red failures ✅ (completed: 2026-11-10 10:22)
 - [x] 1.0.2 Create root `package.json`, `pnpm-workspace.yaml`, `turbo.json`, `tsconfig.base.json` and shared build config ✅ (completed: 2026-11-10 10:15)
 
 ### Step 1.1: Workspace and package manifests
@@ -65,15 +65,15 @@ grid. Specification tests precede implementation in every behavior phase.
 
 - [x] 1.1.1 Create `packages/core/package.json`, `tsconfig.json`, `src/index.ts` ✅ (completed: 2026-11-10 10:15)
 - [x] 1.1.2 Create `packages/react/package.json`, `tsconfig.json`, Vite config ✅ (completed: 2026-11-10 10:15)
-- [ ] 1.1.3 Configure Biome, Changesets and DCO check
+- [x] 1.1.3 Configure Biome, Changesets and DCO check ✅ (completed: 2026-11-10 10:22)
 - [x] 1.1.4 Configure Vitest projects and coverage thresholds ✅ (completed: 2026-11-10 10:15)
 - [x] 1.1.5 Configure Storybook with Vite and minimal addons ✅ (completed: 2026-11-10 10:15)
 - [ ] 1.1.6 Configure API Extractor and TypeDoc
 - [x] 1.1.7 Add `verify` and `verify:full` scripts ✅ (completed: 2026-11-10 10:15)
-- [ ] 1.1.8 Add CI workflow with typecheck/lint/unit/build/api/Storybook/pack/size/e2e/visual/print/browser matrix/React 18+19 smoke/tsc7-canary and DCO; a11y/bench incremental
+- [x] 1.1.8 Add CI workflow with typecheck/lint/unit/build/api/Storybook/pack/size/e2e/visual/print/browser matrix/React 18+19 smoke/tsc7-canary and DCO; a11y/bench incremental ✅ (completed: 2026-11-10 10:22)
 - [x] 1.1.9 Add clean-consumer pack check (`publint`, `attw`, temp Vite install) ✅ (completed: 2026-11-10 10:15)
 - [x] 1.1.10 Add package `files`/`sideEffects`/`repository` metadata, source maps and README quickstart ✅ (completed: 2026-11-10 10:15)
-- [ ] 1.1.11 Add CODEOWNERS, issue/PR templates and DCO documentation
+- [x] 1.1.11 Add CODEOWNERS, issue/PR templates and DCO documentation ✅ (completed: 2026-11-10 10:22)
 
 **Verify**: `pnpm verify`
 

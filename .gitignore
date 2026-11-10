@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+lib/
+storybook-static/
+*.tsbuildinfo
+
+# Test output
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.nyc_output/
+
+# Tool caches
+.turbo/
+.vite/
+.cache/
+.eslintcache
+.biome/
+
+# Local environment
+.env
+.env.*
+!.env.example
+*.local
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Reference material that must not be published
+_reference/
+reference/original-images/
+reference/legacy-reconstruction/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

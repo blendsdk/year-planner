@@ -83,3 +83,23 @@ describe("print internals", () => {
     expect(result.ok).toBe(false);
   });
 });
+
+describe("print no-warning regression", () => {
+  it("does not warn when a small ribbon fits at scale 1", () => {
+    const source = ribbonFor(12);
+    const first = source.rows[0];
+    if (!first) throw new Error("missing row");
+    const ribbon = {
+      ...source,
+      totalWidth: 1000,
+      rows: [{ ...first, height: 100 }],
+      headerHeight: 0,
+      footerHeight: 0,
+    };
+    const result = planRibbonPrint(ribbon, { mode: "fit" });
+    if (!result.ok) throw new Error("plan");
+    expect(result.plan.scale).toBe(1);
+    expect(result.plan.requiresPaginate).toBe(false);
+    expect(result.plan.diagnostics).toHaveLength(0);
+  });
+});

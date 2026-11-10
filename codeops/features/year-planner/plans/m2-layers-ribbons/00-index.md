@@ -1,7 +1,7 @@
 # M2 Layers and Ribbons Implementation Plan
 
 > **Feature**: Year Planner — layer model, visibility, annotations, validation, paint/erase, continuous ribbons, lanes, overflow and print planning
-> **Status**: Planning Complete
+> **Status**: Execution Complete
 > **Created**: 2026-11-10
 > **Implements**: year-planner/RD-04, year-planner/RD-05
 > **CodeOps Artifact Schema**: 1
@@ -48,6 +48,7 @@ report.
 |---|---|---|
 | AR | [Ambiguity Register](00-ambiguity-register.md) | Zero-Ambiguity Gate decisions (audit trail) |
 | PF | [Preflight Report](00-preflight-report.md) | Plan audit; findings resolved |
+| 05 | [Findings Ledger](05-findings.md) | Post-phase review and rulings |
 | 00 | [Index](00-index.md) | This document |
 | 01 | [Requirements](01-requirements.md) | Delta view of RD-04 and RD-05 |
 | 02 | [Current State](02-current-state.md) | Existing core analysis and gaps |

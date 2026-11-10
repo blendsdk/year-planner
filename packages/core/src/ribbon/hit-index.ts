@@ -2,19 +2,29 @@ import type { RibbonLayout } from "./types.js";
 
 /** One fragment's absolute hit bounds. */
 export interface RibbonHitEntry {
+  /** Fragment identity. */
   fragmentId: string;
+  /** Canonical item identity. */
   itemId: string;
+  /** Month row identity. */
   rowId: string;
+  /** Day-plane x position in design units. */
   x: number;
+  /** Absolute y position in design units. */
   y: number;
+  /** Width in design units. */
   width: number;
+  /** Height in design units. */
   height: number;
 }
 
 /** Lookup tables for fragment and item hit-testing. */
 export interface RibbonHitIndex {
+  /** Entries sorted by y, lane and x. */
   entries: RibbonHitEntry[];
+  /** Lookup by fragment ID. */
   byFragmentId: ReadonlyMap<string, RibbonHitEntry>;
+  /** All fragments for one item. */
   byItemId: ReadonlyMap<string, RibbonHitEntry[]>;
 }
 
@@ -30,20 +40,23 @@ export interface RibbonHitIndex {
 export function createRibbonHitIndex(ribbon: RibbonLayout): RibbonHitIndex {
   const rows = new Map(ribbon.rows.map((row) => [row.rowId, row]));
   const sorted = ribbon.fragments
-    .map((fragment) => {
+    .flatMap((fragment) => {
       const row = rows.get(fragment.rowId);
-      return {
-        entry: {
-          fragmentId: fragment.fragmentId,
-          itemId: fragment.itemId,
-          rowId: fragment.rowId,
-          x: fragment.x,
-          y: (row?.top ?? 0) + fragment.y,
-          width: fragment.width,
-          height: fragment.height,
+      if (!row) return [];
+      return [
+        {
+          entry: {
+            fragmentId: fragment.fragmentId,
+            itemId: fragment.itemId,
+            rowId: fragment.rowId,
+            x: fragment.x,
+            y: row.top + fragment.y,
+            width: fragment.width,
+            height: fragment.height,
+          },
+          lane: fragment.lane,
         },
-        lane: fragment.lane,
-      };
+      ];
     })
     .sort((left, right) => {
       if (left.entry.y !== right.entry.y) return left.entry.y - right.entry.y;

@@ -207,3 +207,28 @@ describe("paint internals", () => {
     expect(foreground.diagnostics.map((entry) => entry.code)).toContain("INVALID_PAINT_CHANNEL");
   });
 });
+
+describe("paint regressions from phase review", () => {
+  it("reports UNKNOWN_REFERENCE when the active layer does not exist", () => {
+    const result = eraseItems(
+      {
+        ...context([]),
+        activeLayerId: "missing",
+      },
+      "missing",
+      { kind: "all-day", startDate: "2027-06-12", endDateExclusive: "2027-06-13" },
+    );
+    expect(result.ok).toBe(false);
+    expect(result.diagnostics.map((entry) => entry.code)).toContain("UNKNOWN_REFERENCE");
+  });
+
+  it("does not attach item ids to a reverse-range diagnostic", () => {
+    const result = paintItems(
+      context([highlight("a", "2027-06-10", "2027-06-14")]),
+      "highlights",
+      { kind: "all-day", startDate: "2027-06-15", endDateExclusive: "2027-06-12" },
+      { kind: "highlight" },
+    );
+    expect(result.diagnostics[0]?.itemIds).toBeUndefined();
+  });
+});

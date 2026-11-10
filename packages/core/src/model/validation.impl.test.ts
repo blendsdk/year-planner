@@ -25,7 +25,7 @@ describe("structural equality", () => {
     expect(structuralEqual({ a: 1, b: [2, 3] }, { b: [2, 3], a: 1 })).toBe(true);
     expect(structuralEqual([1, 2], [2, 1])).toBe(false);
     expect(structuralEqual(Number.NaN, Number.NaN)).toBe(true);
-    expect(structuralEqual({ a: undefined }, {})).toBe(false);
+    expect(structuralEqual({ a: undefined }, {})).toBe(true);
   });
 
   it("compares non-plain objects by identity", () => {
@@ -215,5 +215,101 @@ describe("validation error branches", () => {
       layers: [layer("l", { policy: [] as never })],
     });
     expect(result.diagnostics.map((entry) => entry.code)).toContain("INVALID_LAYER");
+  });
+});
+
+describe("validation duplicate and malformed-input regressions", () => {
+  it("returns only one group for a duplicate id and prefers the valid entity", () => {
+    const duplicate = validatePlannerData({
+      groups: [
+        { id: "g", name: "first", policy: { allowMove: "no" } as never },
+        { id: "g", name: "second" },
+      ],
+    });
+    expect(duplicate.model.groups).toHaveLength(1);
+    expect(duplicate.model.groups[0]?.name).toBe("second");
+    const validFirst = validatePlannerData({
+      groups: [
+        { id: "g", name: "first" },
+        { id: "g", name: "second" },
+      ],
+    });
+    expect(validFirst.model.groups).toHaveLength(1);
+    expect(validFirst.model.groups[0]?.name).toBe("first");
+  });
+
+  it("collapses the same object reference added twice", () => {
+    const shared = item("shared", "l");
+    const result = validatePlannerData({ layers: [layer("l")], items: [shared, shared] });
+    expect(result.model.items).toHaveLength(1);
+    expect(result.diagnostics.map((entry) => entry.code)).toContain("DUPLICATE_ID");
+  });
+
+  it("does not throw on null entries and keeps valid siblings", () => {
+    const result = validatePlannerData({
+      groups: [null as never, { id: "g", name: "G" }],
+      layers: [null as never, layer("l", { groupId: "g" })],
+      resources: [null as never, { id: "r", name: "R", type: "person", capacity: null as never }],
+      items: [null as never, item("good", "l")],
+    });
+    const codes = result.diagnostics.map((entry) => entry.code);
+    expect(codes).toEqual(
+      expect.arrayContaining([
+        "INVALID_GROUP",
+        "INVALID_LAYER",
+        "INVALID_RESOURCE",
+        "INVALID_ITEM",
+      ]),
+    );
+    expect(result.model.groups).toHaveLength(1);
+    expect(result.model.layers).toHaveLength(1);
+    expect(result.model.items.map((entry) => entry.id)).toEqual(["good"]);
+  });
+
+  it("does not throw on non-array collections", () => {
+    const result = validatePlannerData({
+      groups: {} as never,
+      layers: "nope" as never,
+      resources: 42 as never,
+      items: null as never,
+    });
+    expect(result.ok).toBe(false);
+    expect(result.diagnostics).toHaveLength(4);
+  });
+
+  it("rejects non-string item titles and non-boolean flags", () => {
+    const result = validatePlannerData({
+      layers: [layer("l")],
+      items: [
+        item("title", "l", { title: 42 as never }),
+        item("flag", "l", { locked: "yes" as never }),
+        item("good", "l"),
+      ],
+    });
+    expect(result.diagnostics.filter((entry) => entry.code === "INVALID_ITEM")).toHaveLength(2);
+    expect(result.model.items.map((entry) => entry.id)).toEqual(["good"]);
+  });
+
+  it("rejects unknown policy keys and does not pollute prototypes", () => {
+    const policy = JSON.parse('{"allowMove":true,"__proto__":{"polluted":true}}');
+    const result = validatePlannerData({
+      layers: [layer("l", { policy })],
+    });
+    expect(result.diagnostics.map((entry) => entry.code)).toContain("INVALID_LAYER");
+    expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+  });
+
+  it("preserves annotation text color", () => {
+    const annotation = {
+      ...item("holiday", "notes"),
+      kind: "annotation" as const,
+      textColor: "#111111",
+      annotation: { label: "OH", background: "#ffd166" },
+    };
+    const result = validatePlannerData({
+      layers: [{ ...layer("notes"), channel: "annotation" }],
+      annotations: [annotation],
+    });
+    expect(result.model.items[0]?.textColor).toBe("#111111");
   });
 });

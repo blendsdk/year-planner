@@ -91,10 +91,11 @@ layer (AR-7). Filters never mutate items or IDs.
 `getGroupVisibility` returns:
 
 - `hidden` when the group or an ancestor is hidden;
-- otherwise `mixed` when descendant items include both visible and hidden ones;
-- otherwise `visible` when at least one descendant layer is not hidden (or a
-  visible item exists);
-- otherwise `hidden` when every descendant layer is hidden (AR-6).
+- with no descendant items: `visible` when at least one descendant layer is not
+  hidden, otherwise `hidden` (AR-6);
+- with descendant items: `mixed` when both visible and hidden items exist,
+  `visible` when at least one is visible, otherwise `hidden`. Empty hidden
+  layers do not force `mixed`.
 
 ### Filter rules
 

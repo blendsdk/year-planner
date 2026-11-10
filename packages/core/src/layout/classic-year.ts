@@ -200,9 +200,10 @@ export function buildClassicYearLayout(options: ClassicYearLayoutOptions): Class
   }
 
   const totalDayWidth = rows[0]?.prefixWidths[37] ?? 0;
-  const signature = rows
-    .map((row) => `${row.rowId}:${row.firstDate}:${row.prefixWidths[37]}:${row.kind}`)
-    .join("|");
+  const signature = [
+    `${units.monthBand}:${units.weekend}:${units.weekday}:${units.rowHeight}:${units.headerHeight}`,
+    ...rows.map((row) => `${row.rowId}:${row.firstDate}:${row.prefixWidths[37]}:${row.kind}`),
+  ].join("|");
 
   return {
     ok: true,

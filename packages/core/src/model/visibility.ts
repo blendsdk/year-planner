@@ -19,14 +19,19 @@ export type VisibilityReason =
 
 /** Result of resolving one item's effective visibility. */
 export interface EffectiveVisibility {
+  /** Whether the item is effectively visible. */
   visible: boolean;
+  /** First hiding reason, or `visible`. */
   reason: VisibilityReason;
 }
 
 /** Everything needed to resolve visibility. */
 export interface VisibilityContext {
+  /** Validated planner model. */
   model: PlannerModel;
+  /** Hidden group, layer, item and channel state. */
   visibility: VisibilityState;
+  /** Optional host filter. */
   filter?: PlannerFilter;
 }
 
@@ -48,9 +53,13 @@ export type VisibilityAction =
 
 /** Options for a serializable visibility preset. */
 export interface VisibilityPresetOptions {
+  /** Group IDs to hide. */
   hideGroupIds?: string[];
+  /** Layer IDs to hide. */
   hideLayerIds?: string[];
+  /** Item IDs to hide. */
   hideItemIds?: string[];
+  /** Render channels to hide. */
   hideChannels?: RenderChannel[];
 }
 
@@ -99,7 +108,12 @@ function matchesFilter(item: PlannerItem, filter: PlannerFilter | undefined): bo
     if (item.status === undefined || !filter.statuses.includes(item.status)) return false;
   }
   const search = filter.search?.trim().toLowerCase();
-  if (search && !(item.title ?? "").toLowerCase().includes(search)) return false;
+  if (
+    search &&
+    !(typeof item.title === "string" ? item.title : "").toLowerCase().includes(search)
+  ) {
+    return false;
+  }
   return true;
 }
 
@@ -197,19 +211,14 @@ export function getGroupVisibility(
     return false;
   });
   if (descendantLayers.length === 0) return "hidden";
-  const states: boolean[] = [];
-  for (const layer of descendantLayers) {
-    if (isLayerEffectivelyHidden(layer.id, context)) {
-      states.push(false);
-      continue;
-    }
-    const items = context.model.items.filter((item) => item.layerId === layer.id);
-    if (items.length === 0) {
-      states.push(true);
-      continue;
-    }
-    for (const item of items) states.push(evaluate(item, context, ancestry).visible);
+  const layerIds = new Set(descendantLayers.map((layer) => layer.id));
+  const descendantItems = context.model.items.filter((item) => layerIds.has(item.layerId));
+  if (descendantItems.length === 0) {
+    return descendantLayers.some((layer) => !isLayerEffectivelyHidden(layer.id, context))
+      ? "visible"
+      : "hidden";
   }
+  const states = descendantItems.map((item) => evaluate(item, context, ancestry).visible);
   const anyVisible = states.some(Boolean);
   const anyHidden = states.some((state) => !state);
   if (anyVisible && anyHidden) return "mixed";

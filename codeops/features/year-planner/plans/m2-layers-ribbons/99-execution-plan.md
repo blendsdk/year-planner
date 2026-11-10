@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 13:34
-> **Progress**: 40/46 tasks (87%)
+> **Last Updated**: 2026-11-10 14:02
+> **Progress**: 46/46 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -255,12 +255,12 @@ and close RD-04/RD-05 for the core slice.
 
 ### Step 7.1: Integration and closeout
 
-- [ ] 7.1.1 Add the 12/24/36-month validate → visibility → ribbons → print integration test — `packages/core/src/integration.spec.test.ts`
-- [ ] 7.1.2 Update the test report with M2 results and honest renderer gaps — `docs/test-report.md`
-- [ ] 7.1.3 Update the README milestone table and finalize the red-phase record — `README.md`, `docs/m2-red-phase.md`
-- [ ] 7.1.4 Update the roadmap rows and this plan to Done/100% — `codeops/features/year-planner/00-roadmap.md`, `codeops/00-roadmap.md`
-- [ ] 7.1.5 Run `pnpm verify:full`, regenerate the API report and TypeDoc — `packages/core/etc/year-planner-core.api.md`, `docs/api/`
-- [ ] 7.1.6 Run the post-phase quality review, record findings and clean up temporary artifacts — `05-findings.md`
+- [x] 7.1.1 Add the 12/24/36-month validate → visibility → ribbons → print integration test — `packages/core/src/integration.spec.test.ts` ✅ (completed: 2026-11-10 14:02)
+- [x] 7.1.2 Update the test report with M2 results and honest renderer gaps — `docs/test-report.md` ✅ (completed: 2026-11-10 14:02)
+- [x] 7.1.3 Update the README milestone table and finalize the red-phase record — `README.md`, `docs/m2-red-phase.md` ✅ (completed: 2026-11-10 14:02)
+- [x] 7.1.4 Update the roadmap rows and this plan to Done/100% — `codeops/features/year-planner/00-roadmap.md`, `codeops/00-roadmap.md` ✅ (completed: 2026-11-10 14:02)
+- [x] 7.1.5 Run `pnpm verify:full`, regenerate the API report and TypeDoc — `packages/core/etc/year-planner-core.api.md`, `docs/api/` ✅ (completed: 2026-11-10 14:02)
+- [x] 7.1.6 Run the post-phase quality review, record findings and clean up temporary artifacts — `05-findings.md` ✅ (completed: 2026-11-10 14:02)
 
 **Deliverables**:
 - [ ] Integration test passes

@@ -21,14 +21,19 @@ export type EditabilityReason =
 
 /** Result of an editability check. */
 export interface Editability {
+  /** Whether the action is allowed. */
   editable: boolean;
+  /** First denying reason, or `editable`. */
   reason: EditabilityReason;
 }
 
 /** Everything needed to resolve editability. */
 export interface EditabilityContext extends VisibilityContext {
+  /** Global read-only guardrail. */
   readOnly?: boolean;
+  /** Active interaction mode; defaults to `auto`. */
   mode?: InteractionMode;
+  /** Active layer that accepts create operations. */
   activeLayerId?: string;
 }
 

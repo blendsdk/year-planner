@@ -24,12 +24,8 @@ export function structuralEqual(left: unknown, right: unknown): boolean {
     return left.every((value, index) => structuralEqual(value, right[index]));
   }
   if (!isPlainObject(left) || !isPlainObject(right)) return false;
-  const leftKeys = Object.keys(left);
-  const rightKeys = Object.keys(right);
-  if (leftKeys.length !== rightKeys.length) return false;
-  return leftKeys.every(
-    (key) => Object.hasOwn(right, key) && structuralEqual(left[key], right[key]),
-  );
+  const keys = new Set([...Object.keys(left), ...Object.keys(right)]);
+  return [...keys].every((key) => structuralEqual(left[key], right[key]));
 }
 
 /** Returns whether a value is a plain object. */

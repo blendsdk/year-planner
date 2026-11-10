@@ -1,3 +1,5 @@
+import type { PlannerPeriod } from "./period.js";
+
 /** A stable diagnostic emitted by the pure core. */
 export type DiagnosticLevel = "error" | "warning" | "info";
 
@@ -36,7 +38,7 @@ export interface Diagnostic {
   message: string;
   itemIds?: string[];
   resourceIds?: string[];
-  periods?: unknown[];
+  periods?: PlannerPeriod[];
 }
 
 export function diagnostic(

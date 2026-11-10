@@ -24,15 +24,9 @@ export interface AllDayPeriod {
 }
 
 // @public
-export function assignLanes(candidates: LaneCandidate[], previousLanes: ReadonlyMap<string, number>): ReadonlyMap<string, number>;
-
-// @public
 export interface Assignment {
-    // (undocumented)
     quantity?: number;
-    // (undocumented)
     resourceId: string;
-    // (undocumented)
     role?: string;
 }
 
@@ -171,7 +165,7 @@ export interface Diagnostic {
     // (undocumented)
     message: string;
     // (undocumented)
-    periods?: unknown[];
+    periods?: PlannerPeriod[];
     // (undocumented)
     resourceIds?: string[];
 }
@@ -196,19 +190,14 @@ export function eachDate(start: DateKey, endExclusive: DateKey): DateKey[];
 
 // @public
 export interface Editability {
-    // (undocumented)
     editable: boolean;
-    // (undocumented)
     reason: EditabilityReason;
 }
 
 // @public
 export interface EditabilityContext extends VisibilityContext {
-    // (undocumented)
     activeLayerId?: string;
-    // (undocumented)
     mode?: InteractionMode;
-    // (undocumented)
     readOnly?: boolean;
 }
 
@@ -220,9 +209,7 @@ export type EditAction = "move" | "resize" | "paint" | "create" | "delete";
 
 // @public
 export interface EffectiveVisibility {
-    // (undocumented)
     reason: VisibilityReason;
-    // (undocumented)
     visible: boolean;
 }
 
@@ -294,43 +281,28 @@ export type ItemKind = "highlight" | "activity" | "reservation" | "annotation";
 
 // @public
 export interface LaneCandidate {
-    // (undocumented)
     displayPriority: number;
-    // (undocumented)
     fragment: RibbonFragment;
-    // (undocumented)
     item: PlannerItem;
-    // (undocumented)
     sortOrder: number;
-    // (undocumented)
     sourceDays: number;
 }
 
 // @public
 export interface LayerGroup {
-    // (undocumented)
     defaultVisible?: boolean;
-    // (undocumented)
     id: string;
-    // (undocumented)
     name: string;
-    // (undocumented)
     parentGroupId?: string;
-    // (undocumented)
     policy?: LayerPolicy;
 }
 
 // @public
 export interface LayerPolicy {
-    // (undocumented)
     allowCreate?: boolean;
-    // (undocumented)
     allowDelete?: boolean;
-    // (undocumented)
     allowMove?: boolean;
-    // (undocumented)
     allowPaint?: boolean;
-    // (undocumented)
     allowResize?: boolean;
 }
 
@@ -388,37 +360,21 @@ export function paginatePrintRows(layout: YearLayout, rowsPerPage?: number): Mon
 
 // @public
 export interface PaintContext extends EditabilityContext {
-    // (undocumented)
     activeLayerId: string;
-    // (undocumented)
     createId: () => string;
-    // (undocumented)
     expectedVersions?: Record<string, number>;
 }
 
 // @public
 export interface PaintDefaults {
-    // (undocumented)
-    annotation?: {
-        label?: string;
-        background?: string;
-        priority?: number;
-    };
-    // (undocumented)
+    annotation?: PlannerAnnotationStyle;
     className?: string;
-    // (undocumented)
     color?: string;
-    // (undocumented)
     kind: "highlight";
-    // (undocumented)
     metadata?: unknown;
-    // (undocumented)
     status?: string;
-    // (undocumented)
     style?: Record<string, string | number>;
-    // (undocumented)
     textColor?: string;
-    // (undocumented)
     title?: string;
 }
 
@@ -427,13 +383,9 @@ export function paintItems(context: PaintContext, layerId: string, period: AllDa
 
 // @public
 export interface PaintResult {
-    // (undocumented)
     diagnostics: Diagnostic[];
-    // (undocumented)
     ok: boolean;
-    // (undocumented)
     removedItemIds: string[];
-    // (undocumented)
     updatedItems: PlannerItem[];
 }
 
@@ -442,127 +394,78 @@ export function parseDateKey(value: string): DateParseResult;
 
 // @public
 export interface PlannerAnnotationStyle {
-    // (undocumented)
     background?: string;
-    // (undocumented)
     label?: string;
-    // (undocumented)
     priority?: number;
 }
 
 // @public
 export interface PlannerDataInput {
-    // (undocumented)
     annotations?: PlannerItem[];
-    // (undocumented)
     groups?: LayerGroup[];
-    // (undocumented)
     items?: PlannerItem[];
-    // (undocumented)
     layers?: PlannerLayer[];
-    // (undocumented)
     resources?: Resource[];
 }
 
 // @public
 export interface PlannerDataValidation {
-    // (undocumented)
     diagnostics: Diagnostic[];
-    // (undocumented)
     model: PlannerModel;
-    // (undocumented)
     ok: boolean;
 }
 
 // @public
 export interface PlannerFilter {
-    // (undocumented)
     layerIds?: string[];
-    // (undocumented)
     resourceIds?: string[];
-    // (undocumented)
     search?: string;
-    // (undocumented)
     statuses?: string[];
 }
 
 // @public
 export interface PlannerItem {
-    // (undocumented)
     annotation?: PlannerAnnotationStyle;
-    // (undocumented)
     assignments?: Assignment[];
-    // (undocumented)
     className?: string;
-    // (undocumented)
     color?: string;
-    // (undocumented)
     id: string;
-    // (undocumented)
     kind: ItemKind;
-    // (undocumented)
     layerId: string;
-    // (undocumented)
     locked?: boolean;
-    // (undocumented)
     metadata?: unknown;
-    // (undocumented)
     period: PlannerPeriod;
-    // (undocumented)
     readOnly?: boolean;
-    // (undocumented)
     status?: string;
-    // (undocumented)
     style?: Record<string, string | number>;
-    // (undocumented)
     textColor?: string;
-    // (undocumented)
     title?: string;
-    // (undocumented)
     version: number;
 }
 
 // @public
 export interface PlannerLayer {
-    // (undocumented)
     channel: RenderChannel;
-    // (undocumented)
     color: string;
-    // (undocumented)
     defaultVisible?: boolean;
-    // (undocumented)
     displayPriority?: number;
-    // (undocumented)
     groupId?: string;
-    // (undocumented)
     id: string;
-    // (undocumented)
     label?: string;
-    // (undocumented)
     locked?: boolean;
-    // (undocumented)
     name: string;
-    // (undocumented)
     opacity?: number;
-    // (undocumented)
     pattern?: "solid" | "hatch" | "dots";
-    // (undocumented)
     policy?: LayerPolicy;
-    // (undocumented)
     readOnly?: boolean;
-    // (undocumented)
     sortOrder?: number;
 }
 
 // @public
 export interface PlannerModel {
-    // (undocumented)
     groups: LayerGroup[];
-    // (undocumented)
     items: PlannerItem[];
-    // (undocumented)
     layers: PlannerLayer[];
-    // (undocumented)
     resources: Resource[];
 }
 
@@ -583,25 +486,17 @@ export type PrintMode = "paginate" | "fit";
 
 // @public
 export interface PrintOptions {
-    // (undocumented)
     mode?: PrintMode;
-    // (undocumented)
     page?: PrintPageSize;
-    // (undocumented)
     rowsPerPage?: number;
 }
 
 // @public
 export interface PrintPage {
-    // (undocumented)
     contentHeight: number;
-    // (undocumented)
     firstRowIndex: number;
-    // (undocumented)
     index: number;
-    // (undocumented)
     rows: RibbonRow[];
-    // (undocumented)
     scale: number;
 }
 
@@ -610,17 +505,11 @@ export type PrintPageSize = "A3";
 
 // @public
 export interface PrintPlan {
-    // (undocumented)
     diagnostics: Diagnostic[];
-    // (undocumented)
     mode: PrintMode;
-    // (undocumented)
     page: PrintPageSize;
-    // (undocumented)
     pages: PrintPage[];
-    // (undocumented)
     requiresPaginate: boolean;
-    // (undocumented)
     scale: number;
 }
 
@@ -647,160 +536,98 @@ export function resolveItemVisibility(context: VisibilityContext): ReadonlyMap<s
 
 // @public
 export interface Resource {
-    // (undocumented)
     capacity?: {
         quantity: number;
         unit: string;
     };
-    // (undocumented)
     id: string;
-    // (undocumented)
     name: string;
-    // (undocumented)
     timeZone?: string;
-    // (undocumented)
     type: string;
 }
 
 // @public
 export interface RibbonFragment {
-    // (undocumented)
     channel: RenderChannel;
-    // (undocumented)
     clippedEndExclusive: DateKey;
-    // (undocumented)
     clippedStart: DateKey;
-    // (undocumented)
     endColumnExclusive: number;
-    // (undocumented)
     fragmentId: string;
-    // (undocumented)
     height: number;
-    // (undocumented)
     isEndClipped: boolean;
-    // (undocumented)
     isStartClipped: boolean;
-    // (undocumented)
     itemId: string;
-    // (undocumented)
     lane: number;
-    // (undocumented)
     rowId: string;
-    // (undocumented)
     rowIndex: number;
-    // (undocumented)
     sourcePeriod: PlannerPeriod;
-    // (undocumented)
     startColumn: number;
-    // (undocumented)
     width: number;
-    // (undocumented)
     x: number;
-    // (undocumented)
     y: number;
 }
 
 // @public
 export interface RibbonHitEntry {
-    // (undocumented)
     fragmentId: string;
-    // (undocumented)
     height: number;
-    // (undocumented)
     itemId: string;
-    // (undocumented)
     rowId: string;
-    // (undocumented)
     width: number;
-    // (undocumented)
     x: number;
-    // (undocumented)
     y: number;
 }
 
 // @public
 export interface RibbonHitIndex {
-    // (undocumented)
     byFragmentId: ReadonlyMap<string, RibbonHitEntry>;
-    // (undocumented)
     byItemId: ReadonlyMap<string, RibbonHitEntry[]>;
-    // (undocumented)
     entries: RibbonHitEntry[];
 }
 
 // @public
 export interface RibbonLayout {
-    // (undocumented)
     compactMaxLanes: number;
-    // (undocumented)
     density: "compact" | "expanded";
-    // (undocumented)
     footerHeight: number;
-    // (undocumented)
     fragments: RibbonFragment[];
-    // (undocumented)
     headerHeight: number;
-    // (undocumented)
     height: number;
-    // (undocumented)
     laneHeight: number;
-    // (undocumented)
     laneTop: number;
-    // (undocumented)
     monthBandWidth: number;
-    // (undocumented)
     rows: RibbonRow[];
-    // (undocumented)
     signature: string;
-    // (undocumented)
     totalDayWidth: number;
-    // (undocumented)
     totalWidth: number;
 }
 
 // @public
 export interface RibbonOptions {
-    // (undocumented)
     compactMaxLanes?: number;
-    // (undocumented)
     density?: "compact" | "expanded";
-    // (undocumented)
     displayTimeZone?: string;
-    // (undocumented)
     laneHeight?: number;
-    // (undocumented)
     laneTop?: number;
 }
 
 // @public
 export interface RibbonOverflowEntry {
-    // (undocumented)
     itemId: string;
-    // (undocumented)
     period: PlannerPeriod;
-    // (undocumented)
     title?: string;
 }
 
 // @public
 export interface RibbonRow {
-    // (undocumented)
     fragments: RibbonFragment[];
-    // (undocumented)
     height: number;
-    // (undocumented)
     laneCount: number;
-    // (undocumented)
     overflow: RibbonOverflowEntry[];
-    // (undocumented)
     overflowCount: number;
-    // (undocumented)
     rowId: string;
-    // (undocumented)
     rowIndex: number;
-    // (undocumented)
     top: number;
-    // (undocumented)
     visibleLaneCount: number;
 }
 
@@ -857,7 +684,6 @@ export function validatePlannerData(input: PlannerDataInput, options?: ValidateP
 
 // @public
 export interface ValidatePlannerDataOptions {
-    // (undocumented)
     displayTimeZone?: string;
 }
 
@@ -907,23 +733,16 @@ export type VisibilityAction = {
 
 // @public
 export interface VisibilityContext {
-    // (undocumented)
     filter?: PlannerFilter;
-    // (undocumented)
     model: PlannerModel;
-    // (undocumented)
     visibility: VisibilityState;
 }
 
 // @public
 export interface VisibilityPresetOptions {
-    // (undocumented)
     hideChannels?: RenderChannel[];
-    // (undocumented)
     hideGroupIds?: string[];
-    // (undocumented)
     hideItemIds?: string[];
-    // (undocumented)
     hideLayerIds?: string[];
 }
 
@@ -935,13 +754,9 @@ export function visibilityReducer(context: VisibilityContext, state: VisibilityS
 
 // @public
 export interface VisibilityState {
-    // (undocumented)
     hiddenChannels?: RenderChannel[];
-    // (undocumented)
     hiddenGroupIds: string[];
-    // (undocumented)
     hiddenItemIds: string[];
-    // (undocumented)
     hiddenLayerIds: string[];
 }
 

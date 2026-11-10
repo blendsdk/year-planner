@@ -127,6 +127,12 @@ Test Files  1 failed (1)
 
 Restored after implementation; 8 spec tests pass.
 
+## Green state
+
+All M2 phases are green: **203 core tests pass** with **99.43% lines / 96.06%
+branches**. The specific test counts per phase are recorded in the M2 section of
+`docs/test-report.md`.
+
 ## What this proves
 
 - The specification tests fail when the behavior is absent, so a green run is

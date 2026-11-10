@@ -32,6 +32,13 @@ const RENDER_CHANNELS: RenderChannel[] = [
 ];
 const ITEM_KINDS: ItemKind[] = ["highlight", "activity", "reservation", "annotation"];
 const PATTERNS: NonNullable<PlannerLayer["pattern"]>[] = ["solid", "hatch", "dots"];
+const POLICY_KEYS: Array<keyof LayerPolicy> = [
+  "allowMove",
+  "allowResize",
+  "allowPaint",
+  "allowCreate",
+  "allowDelete",
+];
 
 /** Returns an empty, valid planner model. */
 export function emptyPlannerModel(): PlannerModel {
@@ -59,14 +66,27 @@ export function validatePlannerData(
   options: ValidatePlannerDataOptions = {},
 ): PlannerDataValidation {
   const diagnostics: Diagnostic[] = [];
-  const groups = validateGroups(input.groups ?? [], diagnostics);
+  const groups = validateGroups(
+    collection(input.groups, "groups", "INVALID_GROUP", diagnostics),
+    diagnostics,
+  );
   const groupIds = new Set(groups.map((entry) => entry.id));
-  const layers = validateLayers(input.layers ?? [], groupIds, diagnostics);
+  const layers = validateLayers(
+    collection(input.layers, "layers", "INVALID_LAYER", diagnostics),
+    groupIds,
+    diagnostics,
+  );
   const layerById = new Map(layers.map((entry) => [entry.id, entry]));
-  const resources = validateResources(input.resources ?? [], diagnostics);
+  const resources = validateResources(
+    collection(input.resources, "resources", "INVALID_RESOURCE", diagnostics),
+    diagnostics,
+  );
   const resourceIds = new Set(resources.map((entry) => entry.id));
   const items = validateItems(
-    [...(input.items ?? []), ...(input.annotations ?? [])],
+    [
+      ...collection(input.items, "items", "INVALID_ITEM", diagnostics),
+      ...collection(input.annotations, "annotations", "INVALID_ANNOTATION", diagnostics),
+    ],
     layerById,
     resourceIds,
     options.displayTimeZone ?? "UTC",
@@ -87,6 +107,20 @@ function push(
 ): void {
   const entry: Diagnostic = { ...diagnostic(code, message), ...extra };
   diagnostics.push(entry);
+}
+
+function collection<T>(
+  value: T[] | undefined,
+  label: string,
+  code: DiagnosticCode,
+  diagnostics: Diagnostic[],
+): T[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) {
+    push(diagnostics, code, `${label} must be an array`);
+    return [];
+  }
+  return value;
 }
 
 function isNonEmptyString(value: unknown): value is string {
@@ -111,9 +145,9 @@ function isPattern(value: unknown): value is NonNullable<PlannerLayer["pattern"]
 
 function isPolicy(value: unknown): value is LayerPolicy {
   if (!isPlainObject(value)) return false;
-  return ["allowMove", "allowResize", "allowPaint", "allowCreate", "allowDelete"].every(
-    (key) => value[key] === undefined || typeof value[key] === "boolean",
-  );
+  const keys = Object.keys(value);
+  if (!keys.every((key) => (POLICY_KEYS as string[]).includes(key))) return false;
+  return POLICY_KEYS.every((key) => value[key] === undefined || typeof value[key] === "boolean");
 }
 
 function isValidTimeZone(value: string): boolean {
@@ -128,6 +162,10 @@ function isValidTimeZone(value: string): boolean {
 function validateGroups(input: LayerGroup[], diagnostics: Diagnostic[]): LayerGroup[] {
   const byId = new Map<string, LayerGroup>();
   for (const group of input) {
+    if (!isPlainObject(group)) {
+      push(diagnostics, "INVALID_GROUP", "Group must be an object");
+      continue;
+    }
     if (!isNonEmptyString(group.id) || !isNonEmptyString(group.name)) {
       push(diagnostics, "INVALID_GROUP", "Group requires a non-empty id and name");
       continue;
@@ -163,7 +201,7 @@ function validateGroups(input: LayerGroup[], diagnostics: Diagnostic[]): LayerGr
       const at = path.indexOf(cursor);
       if (at >= 0) {
         const cycle = path.slice(at).sort();
-        const key = cycle.join("|");
+        const key = JSON.stringify(cycle);
         if (!seenCycles.has(key)) {
           seenCycles.add(key);
           for (const id of cycle) inCycle.add(id);
@@ -188,7 +226,7 @@ function validateGroups(input: LayerGroup[], diagnostics: Diagnostic[]): LayerGr
       }
     }
   }
-  return input.filter((group) => valid.has(group.id));
+  return [...valid.values()];
 }
 
 function validateLayers(
@@ -198,6 +236,10 @@ function validateLayers(
 ): PlannerLayer[] {
   const byId = new Map<string, PlannerLayer>();
   for (const layer of input) {
+    if (!isPlainObject(layer)) {
+      push(diagnostics, "INVALID_LAYER", "Layer must be an object");
+      continue;
+    }
     if (!isNonEmptyString(layer.id) || !isNonEmptyString(layer.name)) {
       push(diagnostics, "INVALID_LAYER", "Layer requires a non-empty id and name");
       continue;
@@ -238,12 +280,16 @@ function validateLayers(
     }
     byId.set(layer.id, layer);
   }
-  return input.filter((layer) => byId.get(layer.id) === layer);
+  return [...byId.values()];
 }
 
 function validateResources(input: Resource[], diagnostics: Diagnostic[]): Resource[] {
   const byId = new Map<string, Resource>();
   for (const resource of input) {
+    if (!isPlainObject(resource)) {
+      push(diagnostics, "INVALID_RESOURCE", "Resource must be an object");
+      continue;
+    }
     if (
       !isNonEmptyString(resource.id) ||
       !isNonEmptyString(resource.name) ||
@@ -254,6 +300,10 @@ function validateResources(input: Resource[], diagnostics: Diagnostic[]): Resour
     }
     if (byId.has(resource.id)) {
       push(diagnostics, "DUPLICATE_ID", `Duplicate resource id: ${resource.id}`);
+      continue;
+    }
+    if (resource.capacity !== undefined && !isPlainObject(resource.capacity)) {
+      push(diagnostics, "INVALID_RESOURCE", `Invalid resource capacity: ${resource.id}`);
       continue;
     }
     if (
@@ -273,7 +323,7 @@ function validateResources(input: Resource[], diagnostics: Diagnostic[]): Resour
     }
     byId.set(resource.id, resource);
   }
-  return input.filter((resource) => byId.get(resource.id) === resource);
+  return [...byId.values()];
 }
 
 function validateItems(
@@ -285,6 +335,10 @@ function validateItems(
 ): PlannerItem[] {
   const byId = new Map<string, PlannerItem>();
   for (const item of input) {
+    if (!isPlainObject(item)) {
+      push(diagnostics, "INVALID_ITEM", "Item must be an object");
+      continue;
+    }
     if (!isNonEmptyString(item.id) || !isItemKind(item.kind) || !isNonEmptyString(item.layerId)) {
       push(diagnostics, "INVALID_ITEM", "Item requires a non-empty id, kind and layerId");
       continue;
@@ -295,6 +349,25 @@ function validateItems(
     }
     if (!Number.isInteger(item.version) || item.version < 1) {
       push(diagnostics, "INVALID_VERSION", `Invalid item version: ${item.id}`, {
+        itemIds: [item.id],
+      });
+      continue;
+    }
+    if (
+      (["title", "color", "textColor", "className", "status"] as const).some(
+        (key) => item[key] !== undefined && typeof item[key] !== "string",
+      )
+    ) {
+      push(diagnostics, "INVALID_ITEM", `Invalid item field: ${item.id}`, {
+        itemIds: [item.id],
+      });
+      continue;
+    }
+    if (
+      (item.locked !== undefined && typeof item.locked !== "boolean") ||
+      (item.readOnly !== undefined && typeof item.readOnly !== "boolean")
+    ) {
+      push(diagnostics, "INVALID_ITEM", `Invalid item flag: ${item.id}`, {
         itemIds: [item.id],
       });
       continue;
@@ -354,7 +427,7 @@ function validateItems(
     }
     byId.set(item.id, item);
   }
-  return input.filter((item) => byId.get(item.id) === item);
+  return [...byId.values()];
 }
 
 function validateItemPeriod(item: PlannerItem, displayTimeZone: string): Diagnostic | undefined {

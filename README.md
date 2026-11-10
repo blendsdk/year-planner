@@ -16,22 +16,27 @@ and January of the next year — with:
 > package names may change before the first release. The repository currently
 > contains the **M1 foundation slice**; the full R1 experience is in progress.
 
-## Current milestone
+## Current milestones
 
 | Area | State |
 |---|---|
-| Temporal core (dates, ISO weeks, half-open intervals) | Done |
-| Classic 12–36 month layout, 37 day slots | Done |
-| Minimal React grid, classic themes, ISO weeks, print | Done |
-| Storybook site, demo, clean-consumer check, CI | Done |
-| API Extractor reports and generated TypeDoc API | Done |
+| Temporal core (dates, ISO weeks, half-open intervals) | Done — M1 |
+| Classic 12–36 month layout, 37 day slots | Done — M1 |
+| Minimal React grid, classic themes, ISO weeks, print | Done — M1 |
+| Storybook site, demo, clean-consumer check, CI | Done — M1 |
+| API Extractor reports and generated TypeDoc API | Done — M1 |
 | Renderer evidence gate and ADR | Done — HTML renderer, optional SVG shape plane |
-| Layers, visibility, ribbons, interactions, commands | Not implemented yet |
+| Entity model, validation, layers, visibility, editability | Done — M2 core |
+| Paint/erase, ribbons, lanes, compact overflow, hit index | Done — M2 core |
+| A3 paginate/fit print planning | Done — M2 core |
+| React rendering of items, inspector, tooltips, slots | Not implemented — RD-06 |
+| Selection, pointer/keyboard interaction, commands, undo | Not implemented — RD-07/RD-08 |
 
 The renderer decision is recorded in
 [ADR 0001](docs/adr/0001-renderer-strategy.md), with measurements in
-[docs/renderer-spike.md](docs/renderer-spike.md). The M1 test evidence is in
-[docs/test-report.md](docs/test-report.md).
+[docs/renderer-spike.md](docs/renderer-spike.md). Test evidence for M1 and M2 is
+in [docs/test-report.md](docs/test-report.md); the M2 plan is in
+[`codeops/features/year-planner/plans/m2-layers-ribbons/`](codeops/features/year-planner/plans/m2-layers-ribbons/00-index.md).
 
 ## Packages
 

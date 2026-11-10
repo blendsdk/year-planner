@@ -70,7 +70,7 @@ function buildSignature(
     fragments: fragments
       .map(
         (fragment) =>
-          `${fragment.fragmentId}:${fragment.clippedStart}:${fragment.clippedEndExclusive}:${fragment.startColumn}:${fragment.endColumnExclusive}:${fragment.lane}:${fragment.channel}`,
+          `${fragment.fragmentId}:${fragment.clippedStart}:${fragment.clippedEndExclusive}:${fragment.startColumn}:${fragment.endColumnExclusive}:${fragment.lane}:${fragment.channel}:${fragment.x}:${fragment.width}:${fragment.y}:${fragment.height}`,
       )
       .sort(),
   });
@@ -136,6 +136,14 @@ export function buildRibbonLayout(
   }
   if (!Number.isFinite(laneTop) || laneTop < 0) {
     throw new RangeError(`laneTop must be non-negative: ${laneTop}`);
+  }
+  if (density !== "compact" && density !== "expanded") {
+    throw new RangeError(`density must be compact or expanded: ${String(density)}`);
+  }
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: displayTimeZone }).format(0);
+  } catch {
+    throw new RangeError(`Invalid displayTimeZone: ${displayTimeZone}`);
   }
   const layerById = new Map(context.model.layers.map((entry) => [entry.id, entry]));
   const itemsById = new Map(context.model.items.map((entry) => [entry.id, entry]));

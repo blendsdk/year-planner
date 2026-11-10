@@ -9,27 +9,41 @@ export type PrintMode = "paginate" | "fit";
 
 /** Print options accepted by `planRibbonPrint`. */
 export interface PrintOptions {
+  /** Page size; A3 landscape is the only R1 baseline. */
   page?: PrintPageSize;
+  /** Paginate by rows or fit everything on one page. */
   mode?: PrintMode;
+  /** Maximum rows per page, 1-14; defaults to 14. */
   rowsPerPage?: number;
 }
 
 /** One planned print page. */
 export interface PrintPage {
+  /** Zero-based page index. */
   index: number;
+  /** Layout row index of the first row on the page. */
   firstRowIndex: number;
+  /** Rows placed on the page without splitting. */
   rows: RibbonRow[];
+  /** Header, footer and row heights in design units. */
   contentHeight: number;
+  /** Uniform scale that fits both A3 dimensions. */
   scale: number;
 }
 
 /** A complete print plan. */
 export interface PrintPlan {
+  /** Page size used by the plan. */
   page: PrintPageSize;
+  /** Paginate or fit mode. */
   mode: PrintMode;
+  /** Planned pages. */
   pages: PrintPage[];
+  /** Global fit scale; `1` for paginate. */
   scale: number;
+  /** True when fit mode should fall back to paginate. */
   requiresPaginate: boolean;
+  /** Print warnings, including `PRINT_FIT_TOO_SMALL`. */
   diagnostics: Diagnostic[];
 }
 

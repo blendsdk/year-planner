@@ -3,34 +3,50 @@ import { type DateInterval, normalize, subtract } from "../interval.js";
 import { type AllDayPeriod, validateAllDayPeriod } from "../period.js";
 import { type EditabilityContext, getResolvedLayerPolicy } from "./editability.js";
 import { structuralEqual } from "./equality.js";
-import type { PlannerItem, PlannerLayer } from "./types.js";
+import type { PlannerAnnotationStyle, PlannerItem, PlannerLayer } from "./types.js";
 import { getEffectiveVisibility, isLayerEffectivelyHidden } from "./visibility.js";
 
 /** Defaults used when paint creates or merges a highlight. */
 export interface PaintDefaults {
+  /** Paint always creates highlight items. */
   kind: "highlight";
+  /** Optional item title. */
   title?: string;
+  /** Optional item color. */
   color?: string;
+  /** Optional text color. */
   textColor?: string;
+  /** Optional host class name. */
   className?: string;
+  /** Optional flat style values. */
   style?: Record<string, string | number>;
+  /** Optional status. */
   status?: string;
+  /** Optional host metadata. */
   metadata?: unknown;
-  annotation?: { label?: string; background?: string; priority?: number };
+  /** Optional annotation badge data. */
+  annotation?: PlannerAnnotationStyle;
 }
 
 /** Everything needed to run a paint or erase operation. */
 export interface PaintContext extends EditabilityContext {
+  /** Layer that accepts the paint or erase. */
   activeLayerId: string;
+  /** Factory for new item identities; must never return a used ID. */
   createId: () => string;
+  /** Optional optimistic-concurrency versions for affected items. */
   expectedVersions?: Record<string, number>;
 }
 
 /** Result of a paint or erase operation. */
 export interface PaintResult {
+  /** True when the operation was applied. */
   ok: boolean;
+  /** New items plus affected non-matching items returned unchanged. */
   updatedItems: PlannerItem[];
+  /** Source IDs removed by the operation. */
   removedItemIds: string[];
+  /** Failure diagnostics; empty on success. */
   diagnostics: Diagnostic[];
 }
 
@@ -179,19 +195,18 @@ function prepare(
   context: PaintContext,
   layerId: string,
   range: AllDayPeriod,
-): { ok: true; layer: PlannerLayer; affected: PlannerItem[] } | { ok: false; result: PaintResult } {
+): { ok: true; affected: PlannerItem[] } | { ok: false; result: PaintResult } {
   const diagnostics: Diagnostic[] = [];
   const layer = context.model.layers.find((entry) => entry.id === layerId);
   if (!guard(layer, layerId, context, diagnostics))
     return { ok: false, result: failed(diagnostics) };
   const rangeDiagnostics = validateAllDayPeriod(range);
   if (rangeDiagnostics.length > 0) return { ok: false, result: failed(rangeDiagnostics) };
-  if (!layer) return { ok: false, result: failed(diagnostics) };
   const affected = affectedItems(context, layerId, range);
   if (staleVersion(affected, context.expectedVersions, diagnostics)) {
     return { ok: false, result: failed(diagnostics) };
   }
-  return { ok: true, layer, affected };
+  return { ok: true, affected };
 }
 
 /** Applies a paint-union operation over an all-day range. */

@@ -87,3 +87,16 @@ describe("hit index internals", () => {
     expect(hitTestRibbon(index, ribbon.x, ribbon.y)?.itemId).toBe("top");
   });
 });
+
+describe("hit index missing-row regression", () => {
+  it("skips a fragment whose row is absent", () => {
+    const ribbon = build([item("a", "ribbon", "2027-02-01", "2027-02-04")]);
+    const broken = {
+      ...ribbon,
+      fragments: ribbon.fragments.map((fragment) => ({ ...fragment, rowId: "missing" })),
+    };
+    const index = createRibbonHitIndex(broken);
+    expect(index.entries).toHaveLength(0);
+    expect(index.byFragmentId.size).toBe(0);
+  });
+});

@@ -153,3 +153,31 @@ describe("ribbon internals", () => {
     expect(first.signature).toBe(second.signature);
   });
 });
+
+describe("ribbon option and signature regressions", () => {
+  it("marks a single-row fragment as not clipped", () => {
+    const ribbons = build([item("single", "ribbon", "2027-02-01", "2027-02-05")]);
+    const fragment = ribbons.fragments.find((entry) => entry.itemId === "single");
+    expect(fragment?.isStartClipped).toBe(false);
+    expect(fragment?.isEndClipped).toBe(false);
+  });
+
+  it("rejects an unknown density and display zone", () => {
+    expect(() => build([], { density: "aggregated" as never })).toThrow(RangeError);
+    expect(() => build([], { displayTimeZone: "Mars/Olympus" })).toThrow(RangeError);
+  });
+
+  it("changes the layout and ribbon signature when slot units change", () => {
+    const result = buildClassicYearLayout({ year: 2027, units: { weekday: 60 } });
+    if (!result.ok) throw new Error("layout");
+    const model: PlannerModel = {
+      groups: [],
+      layers: [layer("ribbon")],
+      items: [item("a", "ribbon", "2027-02-01", "2027-02-03")],
+      resources: [],
+    };
+    const standard = buildRibbonLayout(layout2027, { model, visibility: state() }, {});
+    const wider = buildRibbonLayout(result.layout, { model, visibility: state() }, {});
+    expect(wider.signature).not.toBe(standard.signature);
+  });
+});

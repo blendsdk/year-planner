@@ -242,3 +242,129 @@ describe("editability internals", () => {
     );
   });
 });
+
+describe("visibility regressions from phase review", () => {
+  it("ignores empty hidden layers when descendant items exist", () => {
+    const mixed: PlannerModel = {
+      groups: [{ id: "g", name: "G" }],
+      layers: [layer("visible", { groupId: "g" }), layer("hidden", { groupId: "g" })],
+      items: [item("i", "visible")],
+      resources: [],
+    };
+    expect(
+      getGroupVisibility("g", {
+        model: mixed,
+        visibility: state({ hiddenLayerIds: ["hidden"] }),
+      }),
+    ).toBe("visible");
+  });
+
+  it("uses layer states only when a group has no items", () => {
+    const noItems: PlannerModel = {
+      groups: [{ id: "g", name: "G" }],
+      layers: [layer("visible", { groupId: "g" }), layer("hidden", { groupId: "g" })],
+      items: [],
+      resources: [],
+    };
+    expect(
+      getGroupVisibility("g", {
+        model: noItems,
+        visibility: state({ hiddenLayerIds: ["hidden"] }),
+      }),
+    ).toBe("visible");
+    expect(
+      getGroupVisibility("g", {
+        model: noItems,
+        visibility: state({ hiddenLayerIds: ["visible", "hidden"] }),
+      }),
+    ).toBe("hidden");
+  });
+
+  it("supports showGroup and toggle add paths", () => {
+    const context = { model, visibility: state() };
+    expect(
+      visibilityReducer(context, state({ hiddenGroupIds: ["g"] }), {
+        type: "showGroup",
+        groupId: "g",
+      }).hiddenGroupIds,
+    ).toEqual([]);
+    expect(
+      visibilityReducer(context, state({ hiddenItemIds: ["i"] }), {
+        type: "toggleItem",
+        itemId: "i",
+      }).hiddenItemIds,
+    ).toEqual([]);
+    expect(
+      visibilityReducer(context, state({ hiddenLayerIds: ["l"] }), {
+        type: "toggleLayer",
+        layerId: "l",
+      }).hiddenLayerIds,
+    ).toEqual([]);
+    expect(
+      visibilityReducer(context, state({ hiddenChannels: ["ribbon"] }), {
+        type: "toggleChannel",
+        channel: "ribbon",
+      }).hiddenChannels,
+    ).toEqual([]);
+  });
+
+  it("resolves partial policies per field from root to leaf", () => {
+    const policies: PlannerModel = {
+      groups: [
+        { id: "root", name: "Root", policy: { allowMove: false } },
+        { id: "leaf", name: "Leaf", parentGroupId: "root", policy: { allowResize: false } },
+      ],
+      layers: [layer("l", { groupId: "leaf", policy: { allowPaint: false } })],
+      items: [item("i", "l")],
+      resources: [],
+    };
+    expect(getResolvedLayerPolicy("l", policies)).toEqual({
+      allowMove: false,
+      allowResize: false,
+      allowPaint: false,
+      allowCreate: true,
+      allowDelete: true,
+    });
+  });
+
+  it("allows the matching mode and auto for move/resize", () => {
+    expect(getItemEditability("i", "move", { model, visibility: state(), mode: "move" })).toEqual({
+      editable: true,
+      reason: "editable",
+    });
+    expect(
+      getItemEditability("i", "resize", { model, visibility: state(), mode: "resize" }),
+    ).toEqual({ editable: true, reason: "editable" });
+    expect(getItemEditability("i", "resize", { model, visibility: state(), mode: "auto" })).toEqual(
+      { editable: true, reason: "editable" },
+    );
+  });
+
+  it("checks allowCreate and accepts an undefined active layer", () => {
+    const denied: PlannerModel = {
+      ...model,
+      layers: [
+        layer("l", { groupId: "g", policy: { allowCreate: false } }),
+        layer("bg", { channel: "background" }),
+      ],
+    };
+    expect(canCreateItem("l", { model: denied, visibility: state(), mode: "auto" })).toEqual({
+      editable: false,
+      reason: "policy",
+    });
+    expect(canCreateItem("l", { model, visibility: state(), mode: "auto" })).toEqual({
+      editable: true,
+      reason: "editable",
+    });
+  });
+
+  it("does not throw on a non-string title during search", () => {
+    const broken: PlannerModel = {
+      ...model,
+      items: [{ ...item("i", "l"), title: 42 as never }],
+    };
+    expect(
+      visibleItems({ model: broken, visibility: state(), filter: { search: "alpha" } }),
+    ).toHaveLength(0);
+  });
+});

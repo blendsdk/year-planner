@@ -47,7 +47,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | API Extractor | **PASS** — both reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
 | Bundle size | **8.98 kB gzip** including core, React and CSS; 60 kB budget |
-| CI | **Green** — see the latest `main` run on GitHub Actions |
+| CI | **Green** — [run 42821164337](https://github.com/blendsdk/year-planner/actions/runs/42821164337), `verify` + `browsers` jobs |
 
 The coverage thresholds are enforced by Vitest: core 95% and React 80% for
 lines, branches, functions and statements.

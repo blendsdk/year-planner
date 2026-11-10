@@ -9,14 +9,18 @@ import type { ReactNode } from "react";
 import { rowTemplate, scaledRowHeight } from "../geometry.js";
 import type { PlannerFormatters } from "../locale.js";
 import type {
+  AnnotationRenderContext,
   CellRenderContext,
   DateMeta,
   DateMetaContext,
   ItemRenderContext,
+  OverflowRenderContext,
+  TooltipRenderContext,
   YearPlannerComponents,
 } from "../types.js";
 import { CellLayer } from "./CellLayer.js";
 import { ItemLayer } from "./ItemLayer.js";
+import { Overflow } from "./Overflow.js";
 
 /** Props for one interactive month row. */
 export interface MonthRowProps {
@@ -38,6 +42,10 @@ export interface MonthRowProps {
   renderCell?: ((context: CellRenderContext) => ReactNode) | undefined;
   renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
   components: YearPlannerComponents;
+  displayTimeZone: string;
+  renderAnnotation?: ((context: AnnotationRenderContext) => ReactNode) | undefined;
+  renderOverflow?: ((context: OverflowRenderContext) => ReactNode) | undefined;
+  renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
   onFocusDate: (date: DateKey) => void;
   onMoveFocus: (date: DateKey, delta: number) => void;
   onSelectDate: (date: DateKey) => void;
@@ -68,6 +76,10 @@ export function MonthRow({
   renderCell,
   renderItem,
   components,
+  displayTimeZone,
+  renderAnnotation,
+  renderOverflow,
+  renderTooltip,
   onFocusDate,
   onMoveFocus,
   onSelectDate,
@@ -136,6 +148,17 @@ export function MonthRow({
           activeItemId={activeItemId}
           components={components}
           renderItem={renderItem}
+          renderAnnotation={renderAnnotation}
+          renderTooltip={renderTooltip}
+          displayTimeZone={displayTimeZone}
+          onSelectItem={onSelectItem}
+          onFocusItem={onFocusItem}
+        />
+        <Overflow
+          row={row}
+          ribbonRow={ribbonRow}
+          items={items}
+          renderOverflow={renderOverflow}
           onSelectItem={onSelectItem}
           onFocusItem={onFocusItem}
         />

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 15:18
-> **Progress**: 13/46 tasks (28%)
+> **Last Updated**: 2026-11-10 15:24
+> **Progress**: 20/46 tasks (43%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -114,19 +114,19 @@ overflow, tooltips, `getDateMeta` and all slots.
 
 ### Step 3.1: Specification tests
 
-- [ ] 3.1.1 [spec-author] Write item/slot spec tests for ST-28–ST-47 — `packages/react/src/items.spec.test.tsx`
-- [ ] 3.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md`
+- [x] 3.1.1 [spec-author] Write item/slot spec tests for ST-28–ST-47 — `packages/react/src/items.spec.test.tsx` ✅ (completed: 2026-11-10 15:24)
+- [x] 3.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md` ✅ (completed: 2026-11-10 15:24)
 
 ### Step 3.2: Implementation
 
-- [ ] 3.2.1 Implement the fragment/item layer, proxy and resize handles — `packages/react/src/render/ItemLayer.tsx`
-- [ ] 3.2.2 Implement overflow, tooltip and focus behavior — `packages/react/src/render/Overflow.tsx`, `packages/react/src/render/Tooltip.tsx`
-- [ ] 3.2.3 Implement cells, `getDateMeta` composition and render/structural slots — `packages/react/src/render/CellLayer.tsx`, `packages/react/src/render/slots.tsx`
+- [x] 3.2.1 Implement the fragment/item layer, proxy and resize handles — `packages/react/src/render/ItemLayer.tsx` ✅ (completed: 2026-11-10 15:24)
+- [x] 3.2.2 Implement overflow, tooltip and focus behavior — `packages/react/src/render/Overflow.tsx`, `packages/react/src/render/Tooltip.tsx` ✅ (completed: 2026-11-10 15:24)
+- [x] 3.2.3 Implement cells, `getDateMeta` composition and render/structural slots — `packages/react/src/render/CellLayer.tsx`, `packages/react/src/render/slots.tsx` ✅ (completed: 2026-11-10 15:24)
 
 ### Step 3.3: Implementation tests and verify
 
-- [ ] 3.3.1 Write item/slot edge-case tests — `packages/react/src/items.impl.test.tsx`
-- [ ] 3.3.2 Run `pnpm verify`
+- [x] 3.3.1 Write item/slot edge-case tests — `packages/react/src/items.impl.test.tsx` ✅ (completed: 2026-11-10 15:24)
+- [x] 3.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:24)
 
 **Deliverables**:
 - [ ] ST-28–ST-47 pass

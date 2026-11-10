@@ -45,7 +45,21 @@ Restored after implementation; 26 shell/state spec tests and 2 SSR tests pass.
 
 ## Phase 3 — Items, annotations and slots
 
-Pending.
+Command:
+
+```bash
+cd packages/react && pnpm exec vitest run src/items.spec.test.tsx
+```
+
+State: only date cells rendered; there were no proxies, annotation badges,
+overflow popovers or tooltips.
+
+```text
+TestingLibraryElementError: Unable to find role "tooltip"
+```
+
+Restored after implementation; 17 item spec tests and 5 implementation tests
+pass.
 
 ## Phase 4 — Command pipeline
 

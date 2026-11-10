@@ -10,10 +10,13 @@ import type { ReactNode } from "react";
 import { rowTemplate } from "../geometry.js";
 import type { PlannerFormatters } from "../locale.js";
 import type {
+  AnnotationRenderContext,
   CellRenderContext,
   DateMeta,
   DateMetaContext,
   ItemRenderContext,
+  OverflowRenderContext,
+  TooltipRenderContext,
   YearPlannerComponents,
 } from "../types.js";
 import { MonthRow } from "./MonthRow.js";
@@ -36,7 +39,11 @@ export interface YearGridProps {
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
   renderCell?: ((context: CellRenderContext) => ReactNode) | undefined;
   renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
+  renderAnnotation?: ((context: AnnotationRenderContext) => ReactNode) | undefined;
+  renderOverflow?: ((context: OverflowRenderContext) => ReactNode) | undefined;
+  renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
   components: YearPlannerComponents;
+  displayTimeZone: string;
   ariaLabel: string;
   ariaDescribedBy?: string | undefined;
   onFocusDate: (date: DateKey) => void;
@@ -79,7 +86,11 @@ export function YearGrid({
   getDateMeta,
   renderCell,
   renderItem,
+  renderAnnotation,
+  renderOverflow,
+  renderTooltip,
   components,
+  displayTimeZone,
   ariaLabel,
   ariaDescribedBy,
   onFocusDate,
@@ -144,7 +155,11 @@ export function YearGrid({
             getDateMeta={getDateMeta}
             renderCell={renderCell}
             renderItem={renderItem}
+            renderAnnotation={renderAnnotation}
+            renderOverflow={renderOverflow}
+            renderTooltip={renderTooltip}
             components={components}
+            displayTimeZone={displayTimeZone}
             onFocusDate={onFocusDate}
             onMoveFocus={onMoveFocus}
             onSelectDate={onSelectDate}

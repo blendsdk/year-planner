@@ -164,6 +164,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const [activeItemId, setActiveItemId] = useState<string | undefined>(undefined);
     const [geometryVersion, setGeometryVersion] = useState(0);
     const viewportRef = useRef<HTMLDivElement>(null);
+    const warnedInteractiveSlot = useRef(false);
     const [pendingFocus, setPendingFocus] = useState<
       { type: "date" | "item"; id: string } | undefined
     >(undefined);
@@ -181,6 +182,22 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       element?.focus();
       setPendingFocus(undefined);
     }, [pendingFocus]);
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: re-scan when ribbons or slot renderers change
+    useEffect(() => {
+      if (warnedInteractiveSlot.current) return;
+      const proxies = viewportRef.current?.querySelectorAll('[data-yp-part="item-proxy"]');
+      if (!proxies) return;
+      for (const proxy of proxies) {
+        if (proxy.querySelector("button, a, input, select, textarea, [tabindex]")) {
+          warnedInteractiveSlot.current = true;
+          console.warn(
+            "YearPlanner: renderItem/ItemFragment content must not contain interactive controls inside the item proxy.",
+          );
+          return;
+        }
+      }
+    }, [ribbons, props.renderItem, props.components?.ItemFragment]);
 
     useEffect(() => {
       const element = viewportRef.current;
@@ -353,7 +370,11 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             getDateMeta={props.getDateMeta}
             renderCell={props.renderCell}
             renderItem={props.renderItem}
+            renderAnnotation={props.renderAnnotation}
+            renderOverflow={props.renderOverflow}
+            renderTooltip={props.renderTooltip}
             components={props.components ?? {}}
+            displayTimeZone={resolvedDisplay.options.displayTimeZone}
             ariaLabel={props.ariaLabel ?? `Year planner ${layout.highlightYear}`}
             ariaDescribedBy={props.ariaDescribedBy}
             onFocusDate={setActiveDate}

@@ -14,7 +14,7 @@ export interface SelectionPreviewProps {
   totalDayWidth: number;
   height: number;
   variant: PreviewVariant;
-  previewKind?: string | undefined;
+  previewKind?: "move" | "resize" | "paint" | "erase" | "create" | undefined;
   itemId?: string | undefined;
   layerId?: string | undefined;
   color?: string | undefined;

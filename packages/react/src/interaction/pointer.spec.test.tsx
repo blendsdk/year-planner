@@ -535,6 +535,10 @@ describe("RD-07 pointer wiring", () => {
     ) as HTMLElement;
     expect(fragment.style.left).toBe(`${column?.x}px`);
     expect(fragment).toHaveAttribute("data-preview-kind", "move");
+    const layer = harness.container.querySelector(
+      '[data-yp-part="gesture-preview-layer"]',
+    ) as HTMLElement;
+    expect(layer.style.left).toBe("0px");
   });
 
   it("allows delete when confirmation succeeds", async () => {

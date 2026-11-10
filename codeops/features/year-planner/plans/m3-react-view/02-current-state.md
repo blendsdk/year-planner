@@ -24,7 +24,7 @@
 | `packages/react/src/YearPlanner.tsx` | Current minimal grid | Replace with the full view composition |
 | `packages/react/src/styles.css` | Flat stylesheet | Rewrite with `@layer`, tokens, fragments, inspector, print |
 | `packages/react/src/index.ts` | Public barrel | Export props, theme, provider, handle, contracts |
-| `packages/react/package.json` | Exports/deps | Add adapter subpaths and optional peer metadata |
+| `packages/react/package.json` | Exports/deps | Add adapter subpaths; no design-system peer |
 | `packages/react/vite.config.ts` | Single-entry build | Add adapter entries |
 | `packages/core/src/index.ts` | Core barrel | Export contracts |
 | `apps/demo/src/App.tsx` | Minimal demo | Show items, inspector, overflow and print windows |

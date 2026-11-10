@@ -9,6 +9,7 @@ import {
   type PlannerFilter,
   type PlannerItem,
   type PlannerSelection,
+  planRibbonPrint,
   getEffectiveVisibility as resolveEffectiveVisibility,
 } from "@blendsdk/year-planner-core";
 import {
@@ -25,6 +26,7 @@ import { createFormatters } from "./locale.js";
 import { resolveDisplayOptions } from "./options.js";
 import { useYearPlannerTheme } from "./provider.js";
 import { Inspector } from "./render/Inspector.js";
+import { PrintPages } from "./render/PrintPages.js";
 import { YearGrid } from "./render/YearGrid.js";
 import { usePlannerState } from "./state.js";
 import { resolveTheme, themeToCssVars } from "./theme.js";
@@ -133,6 +135,31 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       }
     }, [layout, state.model, state.visibility, state.filter, resolvedDisplay.options]);
 
+    const printResult = useMemo(() => {
+      if (!ribbons) return undefined;
+      const requested = props.print ?? {};
+      const planOptions = {
+        ...(requested.page ? { page: requested.page } : {}),
+        ...(requested.mode ? { mode: requested.mode } : {}),
+        ...(requested.rowsPerPage === undefined ? {} : { rowsPerPage: requested.rowsPerPage }),
+      };
+      const requestedPlan = planRibbonPrint(ribbons, planOptions);
+      if (requestedPlan.ok) {
+        return {
+          pages: requestedPlan.plan.pages,
+          diagnostics: requestedPlan.plan.diagnostics,
+        };
+      }
+      const fallback = planRibbonPrint(ribbons);
+      return {
+        pages: fallback.ok ? fallback.plan.pages : [],
+        diagnostics: [
+          ...requestedPlan.diagnostics,
+          ...(fallback.ok ? fallback.plan.diagnostics : []),
+        ],
+      };
+    }, [ribbons, props.print]);
+
     const formatters = useMemo(
       () => createFormatters(resolvedDisplay.options.locale),
       [resolvedDisplay.options.locale],
@@ -162,9 +189,20 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const selectedItemIds = useMemo(() => new Set(state.selection.items), [state.selection.items]);
 
     const layoutDiagnostics = layoutResult.ok ? [] : layoutResult.diagnostics;
+    const printDiagnostics = printResult?.diagnostics ?? [];
     const diagnostics = useMemo(
-      () => [...layoutDiagnostics, ...state.validation.diagnostics, ...resolvedDisplay.diagnostics],
-      [layoutDiagnostics, state.validation.diagnostics, resolvedDisplay.diagnostics],
+      () => [
+        ...layoutDiagnostics,
+        ...state.validation.diagnostics,
+        ...resolvedDisplay.diagnostics,
+        ...printDiagnostics,
+      ],
+      [
+        layoutDiagnostics,
+        state.validation.diagnostics,
+        resolvedDisplay.diagnostics,
+        printDiagnostics,
+      ],
     );
     const seenDiagnostics = useRef(new Set<string>());
     useEffect(() => {
@@ -464,6 +502,20 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           onFocusItem={focusItem}
           asideRef={inspectorRef}
         />
+        {printResult && (
+          <PrintPages
+            layout={layout}
+            ribbons={ribbons}
+            pages={printResult.pages}
+            formatters={formatters}
+            layers={layers}
+            items={items}
+            bandWidth={Number(theme.monthBandWidth)}
+            showISOWeekNumbers={resolvedDisplay.options.showISOWeekNumbers}
+            showAnnotations={resolvedDisplay.options.showAnnotations}
+            weekdayNames={formatters.weekdayNames()}
+          />
+        )}
       </>
     );
     const Root = props.components?.Root;

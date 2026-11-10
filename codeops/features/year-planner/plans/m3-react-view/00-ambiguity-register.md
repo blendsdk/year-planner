@@ -262,5 +262,5 @@ Reopen triggers: a consumer requires CJS.
 ## Resolution notes
 
 - All rows are eligible technical mechanisms inside the confirmed RD-06 behavior; no row expands product scope. AR-27 records the one reduced evidence claim (actual Fluent/MUI package components) and AR-28 records the intentional pre-1.0 API break.
-- No new dependency, service, infrastructure or generalized framework is added. Fluent/MUI adapters are pure mapping functions with optional peers.
+- No new dependency, service, infrastructure or generalized framework is added. Fluent/MUI adapters are pure mapping functions; no design-system peer is installed or declared.
 - RD-07/RD-08 retain pointer gestures, selection algebra, rollback and full command lifecycle.

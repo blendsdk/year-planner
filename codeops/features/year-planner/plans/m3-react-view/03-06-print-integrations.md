@@ -106,8 +106,8 @@ Mapping:
 - No import from `@fluentui/react-components`; the function accepts a plain
   object.
 - Missing tokens are omitted so CSS defaults/theme presets still apply.
-- `@fluentui/react-components` is declared as an optional peer for host
-  clarity, but the adapter has no runtime dependency.
+- The adapter has no runtime dependency and declares no peer: hosts that use
+  Fluent already have it, and the mapper only accepts a plain object.
 
 ## MUI adapter
 
@@ -138,7 +138,8 @@ export function muiThemeToCssVars(theme: MuiLikeTheme): Record<`--yp-${string}`,
 | `typography.fontFamily` | `--yp-font-family` |
 | `typography.fontSize` | `--yp-font-size` |
 
-Missing values are omitted. `@mui/material` is an optional peer, never imported.
+Missing values are omitted. The adapter never imports `@mui/material` and
+  declares no peer.
 
 ## Package and build contract
 
@@ -162,8 +163,8 @@ lib: {
 "./adapters/mui": { "types": "./dist/adapters/mui.d.ts", "import": "./dist/adapters/mui.js" }
 ```
 
-- `peerDependenciesMeta` marks `@fluentui/react-components` and `@mui/material`
-  optional.
+- Adapters declare no Fluent/MUI peer, so package installation does not pull
+  either design system into the workspace.
 - **ESM-only** (AR-30): `"type": "module"`, every export map condition exposes
   `import` only, Vite builds `formats: ["es"]`, and no CJS/UMD output exists.
   `attw --profile esm-only` is the package gate.

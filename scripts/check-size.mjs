@@ -18,6 +18,8 @@ function coreJavaScriptFiles(directory) {
 const files = [
   ...coreJavaScriptFiles("packages/core/dist"),
   "packages/react/dist/index.js",
+  "packages/react/dist/adapters/fluent.js",
+  "packages/react/dist/adapters/mui.js",
   "packages/react/dist/styles.css",
 ];
 

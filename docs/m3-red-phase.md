@@ -99,7 +99,21 @@ tests pass.
 
 ## Phase 6 — Print and adapters
 
-Pending.
+Command:
+
+```bash
+cd packages/react && pnpm exec vitest run src/print.spec.test.tsx src/adapters.spec.test.tsx
+```
+
+State: no print tree existed and adapters were absent; package exports had no
+adapter subpaths.
+
+```text
+Error: Failed to load url ./adapters/fluent
+```
+
+Restored after implementation; 11 print/adapter spec tests and 6 implementation
+tests pass.
 
 ## What this proves
 

@@ -52,7 +52,7 @@
 | defaultVisibility | Field mapping documented |
 | Inspector context | Visible selected items only |
 | Print fit/width | No auto-fallback; rows re-stacked; surface uses `ribbon.totalWidth`; non-default units test |
-| Adapter build/size | Vite entries, export objects, optional peers, size-check update |
+| Adapter build/size | Vite entries, export objects, no design-system peer, size-check update |
 | Create layer | `createDefaults.layerId` then `activeLayerId`; check uses chosen layer |
 | Layer identity | Opacity, pattern classes and labels tested |
 | RD-07 no-ops | `touchEditing`/`marquee` accepted no-ops until RD-07 |

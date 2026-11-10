@@ -21,7 +21,15 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./adapters/fluent": {
+      "types": "./dist/adapters/fluent.d.ts",
+      "import": "./dist/adapters/fluent.js"
+    },
+    "./adapters/mui": {
+      "types": "./dist/adapters/mui.d.ts",
+      "import": "./dist/adapters/mui.js"
+    }
   },
   "scripts": {
     "build": "vite build && cp src/styles.css dist/styles.css && tsc -p tsconfig.build.json",

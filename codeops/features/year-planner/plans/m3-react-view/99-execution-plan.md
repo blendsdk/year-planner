@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 15:40
-> **Progress**: 32/46 tasks (70%)
+> **Last Updated**: 2026-11-10 15:44
+> **Progress**: 38/46 tasks (83%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -214,18 +214,18 @@ subpath exports.
 
 ### Step 6.1: Specification tests
 
-- [ ] 6.1.1 [spec-author] Write print/adapter/ESM spec tests for ST-73–ST-79, ST-82, ST-83 and ST-85 — `packages/react/src/print.spec.test.tsx`, `packages/react/src/adapters.spec.test.tsx`
-- [ ] 6.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md`
+- [x] 6.1.1 [spec-author] Write print/adapter/ESM spec tests for ST-73–ST-79, ST-82, ST-83 and ST-85 — `packages/react/src/print.spec.test.tsx`, `packages/react/src/adapters.spec.test.tsx` ✅ (completed: 2026-11-10 15:44)
+- [x] 6.1.2 Run the spec tests and record the expected red failures — `docs/m3-red-phase.md` ✅ (completed: 2026-11-10 15:44)
 
 ### Step 6.2: Implementation
 
-- [ ] 6.2.1 Implement the hidden print tree, page scales and print CSS — `packages/react/src/render/PrintPages.tsx`, `packages/react/src/styles.css`
-- [ ] 6.2.2 Implement Fluent/MUI adapters, subpath exports, optional peers and adapter size accounting — `packages/react/src/adapters/fluent.ts`, `packages/react/src/adapters/mui.ts`, `packages/react/package.json`, `packages/react/vite.config.ts`, `scripts/check-size.mjs`
+- [x] 6.2.1 Implement the hidden print tree, page scales and print CSS — `packages/react/src/render/PrintPages.tsx`, `packages/react/src/styles.css` ✅ (completed: 2026-11-10 15:44)
+- [x] 6.2.2 Implement Fluent/MUI adapters, subpath exports and adapter size accounting — `packages/react/src/adapters/fluent.ts`, `packages/react/src/adapters/mui.ts`, `packages/react/package.json`, `packages/react/vite.config.ts`, `scripts/check-size.mjs` ✅ (completed: 2026-11-10 15:44)
 
 ### Step 6.3: Implementation tests and verify
 
-- [ ] 6.3.1 Write print/adapter edge-case tests — `packages/react/src/print.impl.test.tsx`, `packages/react/src/adapters.impl.test.tsx`
-- [ ] 6.3.2 Run `pnpm verify`
+- [x] 6.3.1 Write print/adapter edge-case tests — `packages/react/src/print.impl.test.tsx`, `packages/react/src/adapters.impl.test.tsx` ✅ (completed: 2026-11-10 15:44)
+- [x] 6.3.2 Run `pnpm verify` ✅ (completed: 2026-11-10 15:44)
 
 **Deliverables**:
 - [ ] ST-73–ST-79, ST-82, ST-83 and ST-85 pass

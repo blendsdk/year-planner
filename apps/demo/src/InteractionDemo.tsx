@@ -6,7 +6,7 @@ import type {
   PlannerLayer,
   PlannerSelection,
 } from "@blendsdk/year-planner-core";
-import { createRef, useState } from "react";
+import { useRef, useState } from "react";
 
 const layers: PlannerLayer[] = [
   { id: "bookings", name: "Bookings", channel: "ribbon", color: "#1d4e89", label: "B" },
@@ -67,8 +67,6 @@ const initialItems: PlannerItem[] = [
   },
 ];
 
-let createdCounter = 0;
-
 const modes: InteractionMode[] = [
   "auto",
   "inspect",
@@ -82,12 +80,16 @@ const modes: InteractionMode[] = [
 
 /** Uncontrolled-items interaction fixture used by browser tests. */
 export function InteractionDemo() {
-  const ref = createRef<YearPlannerHandle>();
+  const ref = useRef<YearPlannerHandle>(null);
+  const createdCounter = useRef(0);
   const [mode, setMode] = useState<InteractionMode>("auto");
   const [touchEditing, setTouchEditing] = useState<"auto" | "on" | "off">("off");
   const [readOnly, setReadOnly] = useState(false);
   const [selection, setSelection] = useState<PlannerSelection>({ dates: [], items: [] });
-  const [itemsJson, setItemsJson] = useState<string>("[]");
+  const [itemsJson, setItemsJson] = useState<string>(() =>
+    JSON.stringify(initialItems.map((entry) => ({ id: entry.id, period: entry.period }))),
+  );
+  const [diagnostics, setDiagnostics] = useState<string[]>([]);
 
   return (
     <main style={{ padding: 16, fontFamily: "Arial, sans-serif" }}>
@@ -147,8 +149,8 @@ export function InteractionDemo() {
           createDefaults: { kind: "activity", layerId: "bookings" },
           confirmChange: () => true,
           createId: () => {
-            createdCounter += 1;
-            return `created-${createdCounter}`;
+            createdCounter.current += 1;
+            return `created-${createdCounter.current}`;
           },
         }}
         selection={selection}
@@ -158,12 +160,14 @@ export function InteractionDemo() {
             JSON.stringify(next.map((entry) => ({ id: entry.id, period: entry.period }))),
           )
         }
+        onDiagnostic={(entry) => setDiagnostics((previous) => [...previous, entry.code])}
         getDateMeta={(date) =>
           date === "2027-03-10" ? { disabled: true, label: "Off" } : undefined
         }
       />
       <pre data-testid="selection-json">{JSON.stringify(selection)}</pre>
       <pre data-testid="items-json">{itemsJson}</pre>
+      <pre data-testid="diagnostics-json">{JSON.stringify(diagnostics)}</pre>
     </main>
   );
 }

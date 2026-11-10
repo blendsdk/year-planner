@@ -133,9 +133,9 @@ Add `tests/e2e/interaction.spec.ts` and a Chromium touch project
 | Move a 10-day item to a cross-month target | duration preserved; fragments in both rows |
 | Move across a year boundary | duration preserved; December and January fragments |
 | Resize end | one-day minimum; invalid drag shows a diagnostic and no commit |
-| Paint/erase | highlight item splits/merges; undo restores |
-| Keyboard | Shift+Arrow range, Space toggle, Enter inspector |
-| Touch policy | off/auto swipe scrolls; on swipe selects; no accidental edit |
+| Paint/erase | exact split periods; paint creates a range; undo restores |
+| Keyboard | Arrow focus, Shift+Arrow range, Space toggle, Enter inspector, inspector move-by-week |
+| Touch policy | `off`/`auto` leave `touch-action: auto` and select nothing; `on` sets `none` and selects |
 | Mode change mid-drag | preview cleared and no command |
 | Host buttons | AC3 cell buttons still work and start no gesture |
 

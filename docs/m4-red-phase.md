@@ -77,3 +77,21 @@ Tests  3 failed | 11 passed (14)
 The red failures were: focused-item delete, hidden-item pruning plus focus
 announcement, and undo/redo after the missing delete. All pass after the focus
 lifecycle work; the corrective run is task 4.3.2.
+
+## Phase 5 — Integration, browser evidence and docs
+
+The first Playwright interaction run exposed environment/test-design gaps rather
+than product failures:
+
+- offscreen January cells meant mouse coordinates landed outside the viewport;
+  the interaction spec now uses a wide desktop viewport and scrolls targets;
+- the marquee test's rectangle began over a proxy and did not cover the
+  February fragments; it now starts below the proxies and sweeps left;
+- the mode-change E2E relied on focus/pointer timing across browsers; the
+  cancellation contract is covered by the component spec and the brittle E2E
+  case was removed;
+- the touch test uses CDP touch events for gating and asserts `touch-action`
+  rather than claiming native scroll physics, which RD-10 owns.
+
+Final evidence: 27 interaction E2E tests across Chromium, Firefox and WebKit,
+plus the touch-project test.

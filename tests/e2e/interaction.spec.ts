@@ -18,6 +18,9 @@ const selection = async (page: Page) =>
 const items = async (page: Page) =>
   JSON.parse((await page.getByTestId("items-json").textContent()) ?? "[]");
 
+const diagnostics = async (page: Page) =>
+  JSON.parse((await page.getByTestId("diagnostics-json").textContent()) ?? "[]");
+
 test.describe("RD-07 interaction demo", () => {
   test.use({ viewport: { width: 2400, height: 1400 } });
 
@@ -71,6 +74,7 @@ test.describe("RD-07 interaction demo", () => {
 
   test("moves a ten-day item to a cross-month target", async ({ page }) => {
     const proxy = page.locator('[data-yp-part="item-proxy"][data-item-id="booking"]').first();
+    await expect(proxy).toBeVisible();
     await proxy.scrollIntoViewIfNeeded();
     await cell(page, "2027-02-20").scrollIntoViewIfNeeded();
     const start = await proxy.boundingBox();
@@ -92,6 +96,7 @@ test.describe("RD-07 interaction demo", () => {
     const handle = page
       .locator('[data-yp-part="item-fragment"][data-item-id="booking"] [data-yp-part="resize-end"]')
       .first();
+    await expect(handle).toBeAttached();
     await handle.scrollIntoViewIfNeeded();
     await cell(page, "2027-02-04").scrollIntoViewIfNeeded();
     const start = await handle.boundingBox();
@@ -114,16 +119,24 @@ test.describe("RD-07 interaction demo", () => {
     await cell(page, "2027-06-14").scrollIntoViewIfNeeded();
     await cell(page, "2027-06-16").scrollIntoViewIfNeeded();
     await dragCells(page, "2027-06-14", "2027-06-16");
-    const highlightCount = async () =>
-      (await items(page)).filter(
-        (entry: { period: { startDate: string; endDateExclusive: string } }) =>
-          entry.period.kind === "all-day" &&
-          entry.period.startDate >= "2027-06-10" &&
-          entry.period.startDate < "2027-06-21",
-      ).length;
-    await expect.poll(highlightCount).toBe(2);
+    const highlightPeriods = async () =>
+      (await items(page))
+        .map((entry: { period: { startDate: string; endDateExclusive: string } }) => entry.period)
+        .filter(
+          (period: { startDate: string; endDateExclusive: string }) =>
+            period.startDate >= "2027-06-10" && period.startDate < "2027-06-21",
+        )
+        .sort((left: { startDate: string }, right: { startDate: string }) =>
+          left.startDate.localeCompare(right.startDate),
+        );
+    await expect.poll(highlightPeriods).toEqual([
+      { kind: "all-day", startDate: "2027-06-10", endDateExclusive: "2027-06-14" },
+      { kind: "all-day", startDate: "2027-06-17", endDateExclusive: "2027-06-21" },
+    ]);
     await page.getByRole("button", { name: "Undo" }).click();
-    await expect.poll(highlightCount).toBe(1);
+    await expect
+      .poll(highlightPeriods)
+      .toEqual([{ kind: "all-day", startDate: "2027-06-10", endDateExclusive: "2027-06-21" }]);
   });
 
   test("supports keyboard range, toggle, inspect and select-all", async ({ page }) => {
@@ -138,5 +151,64 @@ test.describe("RD-07 interaction demo", () => {
     await cell(page, "2027-02-01").focus();
     await page.keyboard.press("Control+a");
     await expect.poll(async () => ((await selection(page)).items ?? []).length).toBeGreaterThan(0);
+  });
+
+  test("paints a new highlight range", async ({ page }) => {
+    await page.getByTestId("interaction-mode").selectOption("paint");
+    await cell(page, "2027-07-01").scrollIntoViewIfNeeded();
+    await cell(page, "2027-07-03").scrollIntoViewIfNeeded();
+    await dragCells(page, "2027-07-01", "2027-07-03");
+    await expect
+      .poll(async () =>
+        (await items(page)).some(
+          (entry: { period: { startDate: string; endDateExclusive: string } }) =>
+            entry.period.startDate === "2027-07-01" &&
+            entry.period.endDateExclusive === "2027-07-04",
+        ),
+      )
+      .toBe(true);
+  });
+
+  test("shows an invalid resize diagnostic and keeps the item", async ({ page }) => {
+    const handle = page
+      .locator('[data-yp-part="item-fragment"][data-item-id="booking"] [data-yp-part="resize-end"]')
+      .first();
+    await expect(handle).toBeAttached();
+    await handle.scrollIntoViewIfNeeded();
+    await cell(page, "2027-01-27").scrollIntoViewIfNeeded();
+    const start = await handle.boundingBox();
+    const target = await cell(page, "2027-01-27").boundingBox();
+    if (!start || !target) throw new Error("missing invalid resize target");
+    await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(target.x + target.width / 2, target.y + target.height / 2, { steps: 8 });
+    await page.mouse.up();
+    await expect.poll(async () => (await diagnostics(page)).includes("INVALID_COMMAND")).toBe(true);
+    await expect
+      .poll(
+        async () =>
+          (await items(page)).find((entry: { id: string }) => entry.id === "booking")?.period,
+      )
+      .toEqual({ kind: "all-day", startDate: "2027-01-28", endDateExclusive: "2027-02-07" });
+  });
+
+  test("supports arrow focus, Space toggle and inspector move-by-week", async ({ page }) => {
+    await cell(page, "2027-02-01").focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(cell(page, "2027-02-02")).toHaveAttribute("tabindex", "0");
+    await page.keyboard.press(" ");
+    await expect
+      .poll(async () => (await selection(page)).dates)
+      .toEqual([{ startDate: "2027-02-02", endDateExclusive: "2027-02-03" }]);
+
+    await page.locator('[data-yp-part="item-proxy"][data-item-id="booking"]').first().click();
+    await page.keyboard.press("Enter");
+    await page.getByRole("button", { name: "Move later" }).click();
+    await expect
+      .poll(
+        async () =>
+          (await items(page)).find((entry: { id: string }) => entry.id === "booking")?.period,
+      )
+      .toEqual({ kind: "all-day", startDate: "2027-02-04", endDateExclusive: "2027-02-14" });
   });
 });

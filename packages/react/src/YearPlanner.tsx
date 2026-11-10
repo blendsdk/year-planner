@@ -76,9 +76,9 @@ function isKnownDate(layout: { rows: { columns: { date?: string }[] }[] }, date:
  * Renders a classic year planner with items, annotations, themes, inspector
  * hooks and print output.
  *
- * Controlled props win over defaults. Pointer gestures and the full command
- * lifecycle belong to later slices; the inspector and imperative handle use the
- * shared request pipeline.
+ * Controlled props win over defaults. Pointer, keyboard and touch gestures,
+ * the inspector and the imperative handle all use the shared request pipeline;
+ * rollback and stale-response handling belong to the command lifecycle slice.
  */
 export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
   function YearPlanner(props, ref) {

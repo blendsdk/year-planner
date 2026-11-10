@@ -39,6 +39,7 @@ with `defaultSelection`. Date ranges and item IDs coexist.
 | Ctrl/Cmd+Shift+key | Reserved; no change and no diagnostic |
 | Escape | Cancel a gesture, else clear selection |
 | Marquee drag | Intersecting items; Shift adds, Ctrl/Cmd toggles |
+| `marquee: "dates"` | In `auto`, an empty-cell drag selects a date range instead of items |
 
 Ranges are half-open `[startDate, endDateExclusive)`, sorted and merged.
 Toggling a date inside a range splits it. A disabled date is never selected;

@@ -231,11 +231,11 @@ Phase 5 Integration, stories, docs and closeout
 
 **Feature is complete when:**
 
-1. ✅ All phases completed and every ST case passes
-2. ✅ `pnpm verify:full` passes
-3. ✅ No warnings/errors; no dead code or unused parameters
-4. ✅ Security: hidden/locked items not hit-testable; no phantom dates; typed commands only
-5. ✅ Documentation and Storybook updated; API reports current
-6. ✅ RD-06 tests and behavior remain green
-7. ✅ CI `verify` and `browsers` jobs green
-8. ✅ Roadmap and plan progress reconciled
+1. [ ] All phases completed and every ST case passes
+2. [ ] `pnpm verify:full` passes
+3. [ ] No warnings/errors; no dead code or unused parameters
+4. [ ] Security: hidden/locked items not hit-testable; no phantom dates; typed commands only
+5. [ ] Documentation and Storybook updated; API reports current
+6. [ ] RD-06 tests and behavior remain green
+7. [ ] CI `verify` and `browsers` jobs green
+8. [ ] Roadmap and plan progress reconciled

@@ -61,7 +61,7 @@ lines, branches, functions and statements.
 
 | Area | Evidence |
 |---|---|
-| Modes | `auto`, `inspect`, `select`, `paint`, `erase`, `create`, `move`, `resize`; invalid modes are rejected by the layout/option contract |
+| Modes | `auto`, `inspect`, `select`, `paint`, `erase`, `create`, `move`, `resize`; modes are a TypeScript union; no runtime mode validator is claimed |
 | Selection | Plain/Shift/Ctrl/Cmd date and item matrix; anchor/focus transitions; visual-order item ranges; merged/split ranges; Ctrl/Cmd+A; reserved Ctrl/Cmd+Shift |
 | Pointer | Grid-root delegation, 4 px threshold, pointer capture, rAF move coalescing, edge auto-scroll, lost-capture cancel, one-shot click suppression |
 | Commands | Move, resize, paint, erase, create and delete through the existing pipeline; duration/grab offset; one-day minimum; disabled ranges rejected |

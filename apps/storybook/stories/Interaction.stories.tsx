@@ -103,9 +103,9 @@ export const ItemRangeSelection: Story = {
   args: {
     defaultSelection: {
       dates: [],
-      items: ["booking", "maintenance", "training"],
+      items: ["booking", "maintenance"],
       anchorItemId: "booking",
-      focusItemId: "training",
+      focusItemId: "maintenance",
     },
   },
 };
@@ -114,7 +114,7 @@ export const SelectAllVisible: Story = {
   args: {
     defaultSelection: {
       dates: [],
-      items: ["booking", "maintenance", "training", "holiday"],
+      items: ["booking", "maintenance", "training", "holiday", "background", "preview"],
     },
   },
 };

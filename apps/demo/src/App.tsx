@@ -119,8 +119,8 @@ export function App() {
       <div className="demo-chrome">
         <h1 style={{ marginTop: 0 }}>Year Planner for React</h1>
         <p style={{ maxWidth: 760 }}>
-          RD-06 view: ribbons, annotations, overflow, inspector, themes, slots and A3 print pages.
-          Pointer editing and undo history arrive in later slices.
+          RD-07 view: ribbons, annotations, overflow, drag selection, move/resize, paint/erase,
+          inspector, themes, slots and A3 print pages.
         </p>
       </div>
       <div

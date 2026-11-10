@@ -158,7 +158,8 @@
 | `packages/react/src/interaction/pointer.spec.test.tsx` | ST-42–ST-70 | Pointer wiring, commands, previews |
 | `packages/react/src/interaction/keyboard.spec.test.tsx` | ST-71–ST-90 | Keyboard, focus, touch, undo |
 | `packages/react/src/interaction.integration.spec.test.tsx` | ST-89–ST-90 | Controlled/uncontrolled composition |
-| `tests/e2e/interaction.spec.ts` | ST-91–ST-97 | Real browser gestures and touch |
+| `tests/e2e/interaction.spec.ts` | ST-91–ST-95, ST-97 | Real browser gestures |
+| `tests/e2e/interaction-touch.spec.ts` | ST-96 | Touch gating and `touch-action` |
 | Release checks | ST-98 | Storybook/API/size |
 
 ### Implementation Tests

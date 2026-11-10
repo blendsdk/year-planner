@@ -1,6 +1,6 @@
 # Security Notes — Year Planner for React
 
-> **Scope**: RD-06 rendering, styles, slots and diagnostics
+> **Scope**: RD-06 rendering/styles/slots and RD-07 pointer/selection input
 > **Status**: Implemented controls; a full security gate suite is RD-10
 
 ## Trust boundary

@@ -14,8 +14,8 @@ and January of the next year — with:
 
 > **Status: pre-alpha.** No package has been published yet. APIs, styles and
 > package names may change before the first release. The repository now contains
-> the **M1 + M2 core + RD-06 rendered view** slices; pointer interaction and the
-> full command lifecycle are still in progress.
+> the **M1 + M2 core + RD-06 rendered view + RD-07 interaction** slices; the full
+> command lifecycle is still in progress.
 
 ## Current milestones
 
@@ -24,7 +24,7 @@ and January of the next year — with:
 | Temporal core (dates, ISO weeks, half-open intervals) | Done — M1 |
 | Classic 12–36 month layout, 37 day slots | Done — M1 |
 | Minimal React grid, classic themes, ISO weeks, print | Done — M1 |
-| Storybook site, demo, clean-consumer check, CI | Done — M1; 118-story RD-06 suite |
+| Storybook site, demo, clean-consumer check, CI | Done — M1; 144-story suite across RD-06 and RD-07 |
 | API Extractor reports and generated TypeDoc API | Done — M1 |
 | Renderer evidence gate and ADR | Done — HTML renderer, optional SVG shape plane |
 | Entity model, validation, layers, visibility, editability | Done — M2 core |

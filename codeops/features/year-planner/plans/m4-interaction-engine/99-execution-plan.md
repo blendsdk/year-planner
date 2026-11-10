@@ -47,7 +47,7 @@ bounded by the task-size criteria).
 
 ## Phase 1: Selection policy and item focus
 
-> **Phase baseline tree**: 19e0f23e7c6d365c34c10f735fbff045f51ffea1
+> **Phase baseline tree**: 9af663502a89b1d1b30c0150f968bc750f0f26be
 > **Reasoning**: high — the modifier matrix and the additive public field are
 > hard to reverse once tests and docs depend on them.
 

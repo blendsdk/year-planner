@@ -109,7 +109,14 @@ describe("RD-07 selection policy", () => {
 
   it("replaces items and clears dates on a plain item click", () => {
     const next = applyItemClick(
-      selection({ dates: [day("2027-01-05")], anchorDate: "2027-01-05" }),
+      selection({
+        dates: [day("2027-01-05")],
+        anchorDate: "2027-01-05",
+        focusDate: "2027-01-05",
+        items: ["a"],
+        anchorItemId: "a",
+        focusItemId: "a",
+      }),
       "b",
       plain,
       ["a", "b"],
@@ -130,6 +137,9 @@ describe("RD-07 selection policy", () => {
         dates: [range("2027-02-01", "2027-02-04")],
         anchorDate: "2027-02-01",
         focusDate: "2027-02-03",
+        items: ["a"],
+        anchorItemId: "a",
+        focusItemId: "a",
       }),
       "2027-02-05",
       shift,
@@ -196,7 +206,14 @@ describe("RD-07 selection policy", () => {
 
   it("selects an inclusive item range in visual order on Shift click", () => {
     const next = applyItemClick(
-      selection({ items: ["b"], anchorItemId: "b", focusItemId: "b" }),
+      selection({
+        dates: [day("2027-02-01")],
+        anchorDate: "2027-02-01",
+        focusDate: "2027-02-01",
+        items: ["b"],
+        anchorItemId: "b",
+        focusItemId: "b",
+      }),
       "d",
       shift,
       ["a", "b", "c", "d"],
@@ -254,7 +271,13 @@ describe("RD-07 selection policy", () => {
 
   it("selects all visible items and clears dates", () => {
     const next = selectAllVisible(
-      selection({ dates: [day("2027-02-01")], items: ["b"], anchorItemId: "b" }),
+      selection({
+        dates: [day("2027-02-01")],
+        anchorDate: "2027-02-01",
+        focusDate: "2027-02-01",
+        items: ["b"],
+        anchorItemId: "b",
+      }),
       ["a", "b", "c"],
     );
     expect(next.items).toEqual(["a", "b", "c"]);
@@ -267,7 +290,13 @@ describe("RD-07 selection policy", () => {
 
   it("replaces items on a plain marquee and clears dates", () => {
     const next = applyItemMarquee(
-      selection({ dates: [day("2027-02-01")], items: ["a"], anchorItemId: "a" }),
+      selection({
+        dates: [day("2027-02-01")],
+        anchorDate: "2027-02-01",
+        focusDate: "2027-02-01",
+        items: ["a"],
+        anchorItemId: "a",
+      }),
       ["b", "c"],
       plain,
       ["a", "b", "c"],
@@ -280,7 +309,14 @@ describe("RD-07 selection policy", () => {
 
   it("adds intersecting items on a Shift marquee and clears dates", () => {
     const next = applyItemMarquee(
-      selection({ dates: [day("2027-02-01")], items: ["a", "b"] }),
+      selection({
+        dates: [day("2027-02-01")],
+        anchorDate: "2027-02-01",
+        focusDate: "2027-02-01",
+        items: ["a", "b"],
+        anchorItemId: "a",
+        focusItemId: "b",
+      }),
       ["c"],
       shift,
       ["a", "b", "c"],
@@ -293,7 +329,14 @@ describe("RD-07 selection policy", () => {
 
   it("toggles intersecting items on a mod marquee and keeps dates", () => {
     const next = applyItemMarquee(
-      selection({ dates: [day("2027-02-01")], items: ["a", "b"] }),
+      selection({
+        dates: [day("2027-02-01")],
+        anchorDate: "2027-02-01",
+        focusDate: "2027-02-01",
+        items: ["a", "b"],
+        anchorItemId: "a",
+        focusItemId: "b",
+      }),
       ["a", "c"],
       mod,
       ["a", "b", "c"],
@@ -361,5 +404,82 @@ describe("RD-07 selection policy", () => {
       range("2027-02-04", "2027-02-06"),
     ]);
     expect(next.focusDate).toBe("2027-02-05");
+  });
+
+  it("ignores plain and mod clicks on a disabled date", () => {
+    const input = selection({ dates: [day("2027-02-01")], items: ["a"] });
+    const isDisabled = (date: string) => date === "2027-02-03";
+    expect(applyDateClick(input, "2027-02-03", plain, isDisabled)).toEqual(input);
+    expect(applyDateClick(input, "2027-02-03", mod, isDisabled)).toEqual(input);
+  });
+
+  it("adds a date from an empty selection and sets the anchor", () => {
+    const next = applyDateClick(selection(), "2027-02-03", mod);
+    expect(next.dates).toEqual([day("2027-02-03")]);
+    expect(next.anchorDate).toBe("2027-02-03");
+    expect(next.focusDate).toBe("2027-02-03");
+  });
+
+  it("clears a mod drag anchor when every date is disabled", () => {
+    const next = applyDateDrag(selection(), "2027-02-01", "2027-02-03", mod, () => true);
+    expect(next.dates).toEqual([]);
+    expect(next.anchorDate).toBeUndefined();
+  });
+
+  it("ignores a click for an item missing from visual order", () => {
+    const input = selection({ dates: [day("2027-02-01")], items: ["a"] });
+    expect(applyItemClick(input, "missing", plain, ["a"])).toEqual(input);
+  });
+
+  it("orders equal start/row items by lane", () => {
+    const layout = ribbons([fragment("b", 0, 1), fragment("a", 0, 0)]);
+    expect(visualItemOrder([item("a"), item("b")], layout, new Set(["a", "b"]))).toEqual([
+      "a",
+      "b",
+    ]);
+  });
+
+  it("uses a timed item start and its first fragment position", () => {
+    const layout = ribbons([
+      fragment("multi", 2, 0),
+      fragment("multi", 0, 2),
+      fragment("other", 1, 0),
+    ]);
+    const timed = {
+      ...item("multi", "2027-02-02"),
+      period: {
+        kind: "timed" as const,
+        start: "2027-02-02T08:00:00Z",
+        endExclusive: "2027-02-02T10:00:00Z",
+        timeZone: "UTC",
+      },
+    };
+    expect(
+      visualItemOrder([item("other", "2027-02-01"), timed], layout, new Set(["multi", "other"])),
+    ).toEqual(["other", "multi"]);
+  });
+
+  it("falls back to the clicked item when the Shift anchor is not visible", () => {
+    const next = applyItemClick(selection({ items: ["a"], anchorItemId: "missing" }), "c", shift, [
+      "a",
+      "c",
+    ]);
+    expect(next.items).toEqual(["c"]);
+    expect(next.anchorItemId).toBe("c");
+    expect(next.focusItemId).toBe("c");
+  });
+
+  it("keeps the earliest fragment when a later fragment shares the row and a lower lane", () => {
+    const layout = ribbons([fragment("a", 0, 2), fragment("a", 0, 1), fragment("b", 0, 3)]);
+    expect(visualItemOrder([item("a"), item("b")], layout, new Set(["a", "b"]))).toEqual([
+      "a",
+      "b",
+    ]);
+  });
+
+  it("omits focus when a marquee or select-all set has no items", () => {
+    expect(applyItemMarquee(selection(), [], mod, []).focusItemId).toBeUndefined();
+    expect(applyItemMarquee(selection(), [], plain, []).focusItemId).toBeUndefined();
+    expect(selectAllVisible(selection(), []).focusItemId).toBeUndefined();
   });
 });

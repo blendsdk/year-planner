@@ -1,10 +1,14 @@
 import {
   addDays,
+  contains,
   type DateKey,
+  emptySelection,
+  normalize,
   type PlannerItem,
   type PlannerSelection,
   type RibbonLayout,
   type SelectionDateRange,
+  subtract,
 } from "@blendsdk/year-planner-core";
 
 /** Keyboard or pointer modifiers relevant to selection. */
@@ -38,30 +42,13 @@ function isReserved(modifiers: SelectionModifiers): boolean {
 
 /** Sorts, drops empty ranges and merges overlapping or adjacent ranges. */
 export function normalizeDateRanges(ranges: readonly SelectionDateRange[]): SelectionDateRange[] {
-  const valid = ranges
-    .filter((range) => range.startDate < range.endDateExclusive)
-    .sort((left, right) => left.startDate.localeCompare(right.startDate));
-  const result: SelectionDateRange[] = [];
-  for (const range of valid) {
-    const current = result.at(-1);
-    if (!current) {
-      result.push({ ...range });
-      continue;
-    }
-    if (range.startDate <= current.endDateExclusive) {
-      if (range.endDateExclusive > current.endDateExclusive) {
-        current.endDateExclusive = range.endDateExclusive;
-      }
-      continue;
-    }
-    result.push({ ...range });
-  }
-  return result;
+  const valid = ranges.filter((range) => range.startDate < range.endDateExclusive);
+  return normalize(valid, true);
 }
 
 /** True when a date lies in any selected range. */
 export function isDateSelected(ranges: readonly SelectionDateRange[], date: DateKey): boolean {
-  return ranges.some((range) => range.startDate <= date && date < range.endDateExclusive);
+  return ranges.some((range) => contains(range, date));
 }
 
 /**
@@ -109,21 +96,7 @@ export function removeDate(
   ranges: readonly SelectionDateRange[],
   date: DateKey,
 ): SelectionDateRange[] {
-  const result: SelectionDateRange[] = [];
-  for (const range of ranges) {
-    if (date < range.startDate || date >= range.endDateExclusive) {
-      result.push({ ...range });
-      continue;
-    }
-    if (range.startDate < date) {
-      result.push({ startDate: range.startDate, endDateExclusive: date });
-    }
-    const after = addDays(date, 1);
-    if (after < range.endDateExclusive) {
-      result.push({ startDate: after, endDateExclusive: range.endDateExclusive });
-    }
-  }
-  return normalizeDateRanges(result);
+  return normalizeDateRanges(ranges.flatMap((range) => subtract(range, oneDay(date))));
 }
 
 /** Toggles one date in a set of ranges. */
@@ -145,6 +118,7 @@ export function applyDateClick(
   isDisabled?: DisabledDatePredicate,
 ): PlannerSelection {
   if (isReserved(modifiers)) return selection;
+  if (isDisabled?.(date) === true) return selection;
   if (modifiers.mod) {
     const dates = toggleDate(selection.dates, date, isDisabled);
     const anchorDate = dates.length > 0 ? (selection.anchorDate ?? date) : undefined;
@@ -174,7 +148,13 @@ export function applyDateClick(
   };
 }
 
-/** Plain/Shift/Ctrl date drag policy; focus is the current pointer date. */
+/**
+ * Plain/Shift/Ctrl date drag policy; focus is the current pointer date.
+ *
+ * `selection` must be the gesture-start snapshot. A mod drag unions the dragged
+ * range into that snapshot; `anchor` is ignored when `selection.anchorDate`
+ * already exists.
+ */
 export function applyDateDrag(
   selection: PlannerSelection,
   anchor: DateKey,
@@ -185,11 +165,13 @@ export function applyDateDrag(
   if (isReserved(modifiers)) return selection;
   const dragged = rangeBetween(anchor, focus, isDisabled);
   if (modifiers.mod) {
+    const dates = normalizeDateRanges([...selection.dates, ...dragged]);
+    const anchorDate = dates.length > 0 ? (selection.anchorDate ?? anchor) : undefined;
     return {
-      dates: normalizeDateRanges([...selection.dates, ...dragged]),
+      dates,
       items: selection.items,
-      anchorDate: selection.anchorDate ?? anchor,
       focusDate: focus,
+      ...(anchorDate ? { anchorDate } : {}),
       ...(selection.anchorItemId ? { anchorItemId: selection.anchorItemId } : {}),
       ...(selection.focusItemId ? { focusItemId: selection.focusItemId } : {}),
     };
@@ -223,6 +205,7 @@ export function applyItemClick(
   visualOrder: readonly string[],
 ): PlannerSelection {
   if (isReserved(modifiers)) return selection;
+  if (!visualOrder.includes(itemId)) return selection;
   if (modifiers.mod) {
     const items = toggleInList(selection.items, itemId);
     const anchorItemId = items.length > 0 ? (selection.anchorItemId ?? itemId) : undefined;
@@ -317,7 +300,7 @@ export function selectAllVisible(
 
 /** Clears dates, items, anchors and focus. */
 export function clearSelection(): PlannerSelection {
-  return { dates: [], items: [] };
+  return emptySelection();
 }
 
 /**
@@ -349,19 +332,18 @@ export function visualItemOrder(
   const startOf = (item: PlannerItem): string =>
     item.period.kind === "all-day" ? item.period.startDate : item.period.start;
   return items
-    .filter((item) => visible.has(item.id) && firstFragment.has(item.id))
+    .flatMap((item) => {
+      const position = firstFragment.get(item.id);
+      return visible.has(item.id) && position
+        ? [{ id: item.id, start: startOf(item), ...position }]
+        : [];
+    })
     .sort((left, right) => {
-      const start = startOf(left).localeCompare(startOf(right));
+      const start = left.start.localeCompare(right.start);
       if (start !== 0) return start;
-      const leftFragment = firstFragment.get(left.id) as { rowIndex: number; lane: number };
-      const rightFragment = firstFragment.get(right.id) as { rowIndex: number; lane: number };
-      if (leftFragment.rowIndex !== rightFragment.rowIndex) {
-        return leftFragment.rowIndex - rightFragment.rowIndex;
-      }
-      if (leftFragment.lane !== rightFragment.lane) {
-        return leftFragment.lane - rightFragment.lane;
-      }
+      if (left.rowIndex !== right.rowIndex) return left.rowIndex - right.rowIndex;
+      if (left.lane !== right.lane) return left.lane - right.lane;
       return left.id.localeCompare(right.id);
     })
-    .map((item) => item.id);
+    .map((entry) => entry.id);
 }

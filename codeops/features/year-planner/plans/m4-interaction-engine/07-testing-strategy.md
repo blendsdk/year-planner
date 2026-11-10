@@ -40,7 +40,7 @@
 | ST-10 | Item `a` selected, date selected; Mod+click item `c` | Items `[a,c]`, dates kept, focus `c`, anchor kept | RD-07 Ctrl/Cmd item toggle |
 | ST-11 | One selected item `a`; Mod+click `a` | Items empty, `anchorItemId` cleared, `focusItemId` stays `a`; dates kept | RD-07 anchor/focus |
 | ST-12 | Ctrl/Cmd+Shift click on a date or item | Selection deep-equals the input; no diagnostic callback | RD-07 reserved combination / AR-7 |
-| ST-13 | Ctrl/Cmd+Shift date drag or Shift+Arrow | Selection deep-equals the input; no diagnostic | RD-07 reserved combination / AR-7 |
+| ST-13 | Ctrl/Cmd+Shift date drag | Selection deep-equals the input; no diagnostic | RD-07 reserved combination / AR-7 |
 | ST-14 | Visible `[a,b,c]`, item `b` and a date selected; Ctrl/Cmd+A | Items `[a,b,c]`, dates empty, date anchor/focus cleared, item anchor cleared, focus `c` | RD-07 Ctrl/Cmd+A |
 | ST-15 | Marquee intersects `[b,c]` while `[a]` and dates selected | Items `[b,c]`, dates empty, all anchors cleared, focus `c` | RD-07 marquee replace |
 | ST-16 | Shift+marquee intersects `[c]` with `[a,b]` selected | Items `[a,b,c]`, dates empty, item anchor cleared, focus `c` | RD-07 Shift marquee |
@@ -114,7 +114,7 @@
 | # | Input / Scenario | Expected Output / Behavior | Source |
 |---|------------------|----------------------------|--------|
 | ST-71 | ArrowRight on a cell | Focus moves to the next enabled date, one tab stop | RD-07 keyboard / AC11 |
-| ST-72 | Shift+ArrowRight twice from Feb 1 | Selection `[Feb 1, Feb 4)`; anchor Feb 1, focus Feb 3 | RD-07 Shift+Arrow / AC11 |
+| ST-72 | Shift+ArrowRight twice from Feb 1; Ctrl/Cmd+Shift+Arrow | Selection `[Feb 1, Feb 4)`; anchor Feb 1, focus Feb 3; reserved modifier changes nothing | RD-07 Shift+Arrow / AC11 / AR-7 |
 | ST-73 | Space on a focused date/item | Toggles that date/item without clearing the other selection kind | RD-07 Space / AC11 |
 | ST-74 | Enter on an item proxy | Selects the item and opens the inspector | RD-07 Enter / AC11 |
 | ST-75 | Escape with an active gesture, then idle, then again | First cancels; second clears selection; third is a no-op | RD-07 Escape |

@@ -18,4 +18,6 @@ State: `interaction/selection.ts` did not exist.
 Error: Failed to resolve import "./selection.js" from "src/interaction/selection.spec.test.tsx".
 ```
 
-Restored after implementation; see the phase completion note.
+The project's established red-phase convention is an unresolved module import;
+the per-case assertions cannot run until the module exists. The corrective run
+is recorded in `99-execution-plan.md` task 1.3.2.

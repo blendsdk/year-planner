@@ -39,7 +39,9 @@ not inherit a React peer dependency.
 - [ ] Vite 8 build, Vitest 5 tests, Storybook 10, Playwright, Turbo, pnpm,
   Changesets and Biome configured and documented.
 - [ ] `pnpm verify` runs typecheck, lint, unit/component tests, build, API
-  report, Storybook build and package validation.
+  report, Storybook build, package validation and size check.
+- [ ] `pnpm verify:full` adds E2E, visual, accessibility, print and benchmark
+  checks; release gates use `verify:full`.
 - [ ] CI runs on Node 24 with React 18.2 and React 19 matrices; browser tests
   run Chromium, Firefox and WebKit.
 - [ ] DCO check on every commit; MIT license; `CONTRIBUTING`, `CODE_OF_CONDUCT`,
@@ -90,7 +92,7 @@ year-planner/
 | Package | Runtime | Peer dependencies | Public subpaths |
 |---|---|---|---|
 | `@blendsdk/year-planner-core` | Pure TypeScript | None | `.` |
-| `@blendsdk/react-year-planner` | React | `react`, `react-dom` 18.2+/19 | `.`, `./styles.css`, `./adapters/fluent`, `./adapters/mui` |
+| `@blendsdk/react-year-planner` | React | `react`, `react-dom` 18.2+/19; `@fluentui/react-components` and `@mui/material` are optional peers for adapter subpaths | `.`, `./styles.css`, `./adapters/fluent`, `./adapters/mui` |
 
 ### Scripts
 
@@ -98,15 +100,22 @@ year-planner/
 |---|---|
 | `pnpm dev` | Runs the demo app |
 | `pnpm storybook` | Runs Storybook |
+| `pnpm storybook:build` | Builds the static Storybook site |
 | `pnpm typecheck` | `tsc --noEmit` across packages |
 | `pnpm lint` | Biome check |
 | `pnpm test` | Vitest unit/component tests |
 | `pnpm test:e2e` | Playwright |
+| `pnpm test:visual` | Playwright visual snapshots |
+| `pnpm test:a11y` | axe + keyboard checks |
+| `pnpm test:print` | A3 PDF/print checks |
+| `pnpm test:size` | Bundle-size budget |
+| `pnpm bench` | Layout/pointer benchmark harness |
 | `pnpm build` | Builds both packages |
 | `pnpm api-report` | API Extractor report |
 | `pnpm docs` | TypeDoc + Storybook build |
 | `pnpm pack:check` | `publint` + `attw` |
-| `pnpm verify` | Aggregate gate |
+| `pnpm verify` | Fast aggregate gate |
+| `pnpm verify:full` | Full release gate |
 
 ### Toolchain versions
 
@@ -123,7 +132,7 @@ year-planner/
 | Changesets | 3.0.x |
 | Biome | 2.6.x |
 | API Extractor | 7.60.x |
-| TypeDoc | 0.28.x |
+| TypeDoc | >=0.28.20 <0.29 |
 
 ---
 
@@ -143,7 +152,7 @@ year-planner/
 | Package family | One package, two packages | Core + React | Enforces framework-neutral core and React adapter | AR #2 |
 | Repository | BlendSDK monorepo, separate | Separate | Independent release cadence; no React peer for server users | AR #3 |
 | Module format | ESM/CJS, ESM-only, UMD | ESM-only | Modern React tooling; lower packaging complexity | AR #26 |
-| TypeScript | TS7, TS6 | TS6.0.3, TS7 canary | Storybook/TypeDoc/API Extractor need the TS6 API | AR #4 |
+| TypeScript | TS7, TS6 | TS6.0.3, TS7 canary | Storybook/TypeDoc/API Extractor need the TS6 API | AR #71 |
 | Versioning | Independent, lockstep | Lockstep | Two tightly coupled packages | AR #27 |
 
 ---
@@ -174,7 +183,10 @@ year-planner/
 6. [ ] CI passes on React 18.2 and React 19; the TS7 canary may fail without
    blocking the release job.
 7. [ ] The DCO check rejects a commit without `Signed-off-by`.
-8. [ ] `LICENSE` is MIT and the package manifests declare `"license": "MIT"`.
-9. [ ] No secrets, tokens or private keys are present in the repository or CI logs.
-10. [ ] Security requirements verified: no raw HTML, no `eval`, no runtime shell,
+8. [ ] `LICENSE` is MIT and the package manifests declare `"license": "MIT"`,
+   `"type": "module"`, `"files"` allowlist and `"sideEffects"` limited to CSS.
+9. [ ] `pnpm verify:full` is the documented release gate; `verify` omits
+   browser/print/a11y checks deliberately.
+10. [ ] No secrets, tokens or private keys are present in the repository or CI logs.
+11. [ ] Security requirements verified: no raw HTML, no `eval`, no runtime shell,
     no hidden data logging.

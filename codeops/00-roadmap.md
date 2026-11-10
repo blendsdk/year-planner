@@ -13,7 +13,7 @@
 
 | Feature | Roadmap | Stage Summary | Progress | Status | Last Updated |
 |---------|---------|---------------|----------|--------|--------------|
-| year-planner | [→](features/year-planner/00-roadmap.md) | 12 RDs drafted | 0/12 RDs | ⬜ | 2026-11-10 |
+| year-planner | [→](features/year-planner/00-roadmap.md) | 12 RDs preflighted | 0/12 RDs | ⬜ | 2026-11-10 |
 
 ## Archived
 

@@ -31,12 +31,18 @@ January of `year + 1`. It is the default, not a hardcoded requirement.
 - [ ] Configurable window from **12 to 36** month rows. The 37 day columns are
   fixed: 31 days plus at most 6 leading blank slots always fit.
 - [ ] `year` + `contextMonths` preset: `{ before: 1, after: 1 }` produces the
-  classic 14; `{ before: 0, after: 0 }` produces 12.
-- [ ] Explicit `range` form: `{ start: { year, month }, monthCount }` with
-  `monthCount >= 12` and `<= 36`; invalid values produce a diagnostic.
-- [ ] `highlightYear` controls which calendar year receives the “current” tint
-  when the window spans multiple years; default is the year of the first
-  current-year month.
+  classic 14; `{ before: 0, after: 0 }` produces 12. `before`/`after` are
+  integers 0–12 and `before + 12 + after` must be 12–36; otherwise emit a
+  diagnostic.
+- [ ] Explicit `range` form: `{ start: { year, month }, monthCount }` where
+  `month` is **0–11**, `monthCount >= 12` and `<= 36`; invalid values produce a
+  diagnostic.
+- [ ] Classic view years are **1601–9998** so the previous December and
+  following January are inside the supported date core (1600–9999).
+- [ ] `highlightYear` controls which calendar year receives the “current” tint:
+  a month is current when its calendar year equals `highlightYear`; all other
+  months are context. Default is the year of the start month. The classic
+  preset defaults `highlightYear` to `year`.
 - [ ] Each row exposes: year, month index, context/current kind, first date,
   end-exclusive date, first column, days in month, 37 column descriptors and
   prefix widths.
@@ -76,7 +82,17 @@ January of `year + 1`. It is the default, not a hardcoded requirement.
 ### Layout shape
 
 ```ts
+interface DayColumnLayout {
+  columnIndex: number; // 0-36
+  date?: DateKey;      // absent for blank slots
+  isWeekend: boolean;
+  isContextMonth: boolean;
+  x: number;           // design units
+  width: number;       // design units
+}
+
 interface MonthRowLayout {
+  rowId: string;       // stable row identity, e.g. "2027-01"
   rowIndex: number;
   year: number;
   monthIndex: number; // 0-11
@@ -115,8 +131,10 @@ an interval to a partial last day.
 
 ### Validation
 
-- `monthCount < 12`, `monthCount > 36`, a non-Gregorian month, or a start date
-  outside 1600–9999 returns a typed diagnostic and does not render.
+- `monthCount < 12`, `monthCount > 36`, a month outside 0–11, a view year
+  outside 1601–9998, or a window whose end date exceeds 9999-12-31 returns a
+  typed diagnostic and does not render. A start at `9999-06` with 12 months is
+  invalid.
 - The component never invents dates for blank slots.
 - Duplicate or missing month rows are a layout error, not silently repaired.
 
@@ -175,10 +193,15 @@ Row generation and prefix sums: **M**. Month-window validation: **S**.
    context tint and correct year labels.
 9. [ ] `monthCount: 11` and `monthCount: 37` are rejected with a diagnostic and
    no rows are rendered.
-10. [ ] Blank slots have no `DateKey`, are not focusable/selectable and never
+10. [ ] A 24-month window renders 24 rows and a 36-month window renders 36 rows;
+    `monthCount: 37` is rejected. The 36-month layout remains keyboard reachable.
+11. [ ] Blank slots have no `DateKey`, are not focusable/selectable and never
     appear in selection or drag results.
-11. [ ] Weekend columns are consistently narrower than weekday columns at the
+12. [ ] Weekend columns are consistently narrower than weekday columns at the
     default scale; prefix sums are monotonic.
-12. [ ] Identical inputs produce identical row metadata and prefix widths.
-13. [ ] Security requirements verified: no phantom dates, no HTML injection, no
+13. [ ] Identical inputs produce identical row metadata and prefix widths.
+14. [ ] A range starting at `9999-06` with 12 months is rejected because the end
+    exceeds 9999-12-31; a range starting at `1600-01` is rejected because the
+    view year is outside 1601–9998.
+15. [ ] Security requirements verified: no phantom dates, no HTML injection, no
     unvalidated year/month input.

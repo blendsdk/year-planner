@@ -64,7 +64,8 @@ complexity escalation remains open.
 | Annotation | Date-bound label/decoration; host-supplied holidays use this |
 | Marquee | Rectangular pointer selection; defaults to item intersection |
 | Controlled mode | Host owns items/visibility/selection; component emits requests |
-| Command | Typed proposal to create/update/move/resize/delete/paint/bulk |
+| Command | Typed proposal to create/update/move/resize/delete/paint |
+| Uncontrolled mode | Component owns initial items/visibility/selection and emits change callbacks; local undo is available |
 | Diagnostic | Stable-coded error/warning/info with entity and interval context |
 
 ## Document Index
@@ -72,6 +73,8 @@ complexity escalation remains open.
 | # | Document | Description | Depends On |
 |---|----------|-------------|------------|
 | **AR** | [Ambiguity Register](00-ambiguity-register.md) | Zero-Ambiguity Gate decisions | — |
+| **TR** | [Traceability Matrix](00-traceability.md) | Handoff cases and RD acceptance criteria to spec-test IDs | — |
+| **PF** | [Preflight Report](00-preflight-report.md) | 7-pass audit; all critical/major findings resolved | — |
 | **RD-01** | [Foundation, Packages and Toolchain](RD-01-foundation.md) | Repo, two packages, build/test/docs toolchain, governance | — |
 | **RD-02** | [Temporal Core and Interval Algebra](RD-02-temporal-core.md) | Date-only/timed periods, ISO weeks, interval algebra | RD-01 |
 | **RD-03** | [Classic Year Layout and Dynamic Months](RD-03-classic-year-layout.md) | 14×37 grid, 12–36 month windows, prefix widths | RD-01, RD-02 |
@@ -106,9 +109,10 @@ RD-01 Foundation
 
 | Phase | Documents | Description |
 |---|---|---|
-| **A: MVP** | RD-01 → RD-06 | Foundation, temporal core, layout, layers, ribbons, React view |
+| **M0** | renderer/toolchain spike | Compare HTML/SVG/hybrid, verify TS6 + Vite 8 + Storybook 10 + TypeDoc, record ADR. |
+| **A: MVP** | RD-01 → RD-06 | Foundation, temporal core, layout, layers, ribbons, React view. Start the spec-test harness and API report here; apply RD-09 focus/ARIA semantics early. |
 | **B: Interaction** | RD-07 → RD-08 | Selection/gestures, keyboard, commands, rollback |
-| **C: Release quality** | RD-09 → RD-12 | Accessibility, quality evidence, docs, release |
+| **C: Release quality** | RD-09 → RD-12 | Manual accessibility audit, quality evidence, docs, release |
 
 ## Key Architecture Decisions
 
@@ -127,18 +131,34 @@ RD-01 Foundation
 
 ## Traceability
 
-| Source | Covered by |
+| Handoff case | RD acceptance criterion |
 |---|---|
-| Handoff CAL-01–05 | RD-02, RD-03 |
-| Handoff RIB-01–04 | RD-05 |
-| Handoff LAY-01–03 | RD-04 |
-| Handoff INT-01–05, ACC-01 | RD-07, RD-09 |
-| Handoff SCH-01–03 | RD-08 (mock host) |
-| Handoff PRT-01 | RD-05, RD-10 |
-| Dynamic months (new) | RD-03, RD-05, RD-06 |
-| Theming/Fluent/MUI (new) | RD-06 |
-| Storybook/API docs (new) | RD-11 |
-| Open-source governance (new) | RD-01, RD-12 |
+| CAL-01 | RD-03 AC1–2 |
+| CAL-02 | RD-03 AC3; RD-02 AC1 |
+| CAL-03 | RD-03 AC5; RD-02 AC3 |
+| CAL-04 | RD-03 AC6; RD-02 AC4 |
+| CAL-05 | RD-03 AC12 |
+| RIB-01 | RD-05 AC1 |
+| RIB-02 | RD-05 AC3 (fixture IDs `booking-jan-a`, `booking-jan-b`, `maintenance-jan`) |
+| RIB-03 | RD-05 AC2 |
+| RIB-04 | RD-05 AC4 |
+| LAY-01 | RD-04 AC1 |
+| LAY-02 | RD-04 AC2 |
+| LAY-03 | RD-04 AC9 |
+| INT-01 | RD-07 AC1 |
+| INT-02 | RD-07 AC5 |
+| INT-03 | RD-07 AC9 |
+| INT-04 | RD-07 AC11; RD-09 AC1 |
+| INT-05 | RD-07 AC8 |
+| SCH-01 | RD-08 AC6 |
+| SCH-02 | RD-08 AC2, AC5 |
+| SCH-03 | RD-08 AC1 |
+| ACC-01 | RD-09 AC1; RD-07 AC11 |
+| PRT-01 | RD-05 AC11; RD-10 AC6; RD-11 AC11 |
+| Dynamic months | RD-03 AC7–10; RD-05 AC9, AC12 |
+| Theming/Fluent/MUI | RD-06 AC1–3, AC11 |
+| Storybook/API docs | RD-11 AC1–11 |
+| Open-source governance | RD-01 AC7–11; RD-12 AC1–12 |
 
 ## Commonly Forgotten Requirements — Final Check
 

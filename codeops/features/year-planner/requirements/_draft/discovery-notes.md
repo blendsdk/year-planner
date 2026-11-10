@@ -129,7 +129,7 @@ export, second domain demo, UMD/CJS, commercial support.
 | Annotation | Date-bound label/decoration, including host-supplied holidays |
 | Marquee | Rectangular pointer selection; defaults to item intersection |
 | Controlled mode | Host owns items/visibility/selection; component emits requests |
-| Command | Typed proposal to create/update/move/resize/delete/paint/bulk |
+| Command | Typed proposal to create/update/move/resize/delete/paint |
 | Diagnostic | Stable-coded error/warning/info with entity and interval context |
 
 ## 10. Structuring notes

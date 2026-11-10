@@ -29,14 +29,15 @@ accessibility/performance evidence.
   import CSS, controlled selection and visibility, print.
 - [ ] Storybook 10 site with stories for:
   - 2016 classic-blue, 2017 classic-yellow, 2027 overlaps;
-  - 12, 14, 18 and 24-month windows;
+  - 12, 14, 18, 24 and 36-month windows;
   - cross-month and cross-year ribbons;
   - three overlapping ribbons and compact overflow;
   - visibility/group/layer/item controls;
   - select, multi-select, Ctrl/Cmd/Shift, marquee, paint/erase, move/resize;
   - keyboard focus and item inspector;
   - classic themes, high contrast, unstyled and Fluent/MUI wrappers;
-  - empty/loading/error? (loading/error deferred; document);
+  - empty state, inspector and tooltip;
+  - PRT-01 exact 2017-yellow print sample;
   - A3 print preview.
 - [ ] TSDoc on every public class, interface, type, function, hook and component
   prop; `@example` on public entry points.
@@ -45,9 +46,9 @@ accessibility/performance evidence.
 - [ ] TypeDoc HTML reference at `/api` for core and React packages, with search
   and cross-links.
 - [ ] Documentation pages: getting started, controlled API, visibility
-  semantics, selection/keyboard, theming, customization/holidays, dynamic months,
-  print, accessibility status, performance status, limitations, migration and
-  FAQ.
+  semantics, selection/keyboard, theming, customization/holidays,
+  inspector/tooltip, dynamic months, print, accessibility status, performance
+  status, limitations, migration and FAQ.
 - [ ] GH Pages deployment of Storybook at `/` and TypeDoc at `/api/` under the
   repository base path.
 - [ ] A runnable demo app with controlled items, visibility, selection and a mock
@@ -56,9 +57,11 @@ accessibility/performance evidence.
 - [ ] A `docs/test-report.md` with commands, results, browser/AT matrix and known
   gaps.
 - [ ] A `DEFERRED.md` listing resource timeline, recurrence, scenarios,
-  dependencies, split/merge, data provider, timed editing, RTL, week start,
-  aggregated density, SVG/PDF export, second demo, CJS/UMD and commercial
-  support.
+  dependencies, split/merge, batch multi-move/bulk, data provider/loading/error
+  states, controlled-host undo, timed editing, RTL, week start, aggregated
+  density, SVG/PDF export, optimizer, full headless composition, Shadow DOM,
+  milestones, parent/child activities, non-Gregorian calendars, drag between
+  layers/resources, second demo, CJS/UMD and commercial support.
 - [ ] No claim of WCAG conformance, booking correctness, healthcare safety or
   unmeasured performance.
 
@@ -92,6 +95,8 @@ TSDoc comments
 ### GH Pages
 
 - Base path: `/<repo>/`; Storybook `base` and TypeDoc links configured.
+- The repository is private first; keep the docs build in CI and enable Pages at
+  the public release (confirm the GitHub plan supports Pages for the repo).
 - Deploy artifact: `storybook-static/` with `api/` copied in.
 - Use `actions/configure-pages`, `actions/upload-pages-artifact`,
   `actions/deploy-pages`.
@@ -162,6 +167,8 @@ Storybook stories: **L**. API docs pipeline: **M**. Guides: **M**.
 9. [ ] `DEFERRED.md` lists every deferred capability and no deferred feature is
    described as implemented.
 10. [ ] The docs state the accessibility/performance evidence status honestly.
-11. [ ] No source photo, legacy code or unlicensed asset is published.
-12. [ ] Security requirements verified: synthetic data only, no secrets, no raw
+11. [ ] Storybook includes 24/36-month, inspector/tooltip and exact PRT-01
+    print stories.
+12. [ ] No source photo, legacy code or unlicensed asset is published.
+13. [ ] Security requirements verified: synthetic data only, no secrets, no raw
     HTML examples.

@@ -37,8 +37,9 @@ CLA. Releases are lockstep and provenance-signed.
   policy stating best-effort community support with no SLA.
 - [ ] Security response process: private vulnerability reporting, triage,
   coordinated disclosure, dependency updates.
-- [ ] Release checklist: `pnpm verify`, API report, docs build, Storybook build,
-  print sample, browser/React matrix, changelog, provenance.
+- [ ] Release checklist: `pnpm verify:full`, API report, docs build, Storybook
+  build, print sample, browser/React matrix, changelog, provenance, package
+  contents check, `docs/renderer-spike.md` + renderer ADR.
 - [ ] `DEFERRED.md` and README limitations reviewed before release.
 - [ ] Version/deprecation policy: breaking changes in major versions; deprecation
   notes at least one minor before removal where practical.
@@ -79,14 +80,34 @@ PR → CI (typecheck, lint, unit, e2e, visual, a11y, print, build, api-report)
 
 ### Package metadata
 
+React package manifest (the core package uses the same fields without
+`./styles.css` and adapter exports):
+
 ```json
 {
+  "type": "module",
   "license": "MIT",
   "repository": { "type": "git", "url": "https://github.com/blendsdk/year-planner" },
+  "homepage": "https://github.com/blendsdk/year-planner#readme",
+  "bugs": { "url": "https://github.com/blendsdk/year-planner/issues" },
   "publishConfig": { "access": "public" },
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } }
+  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md", "THIRD_PARTY_NOTICES.md"],
+  "sideEffects": ["**/*.css"],
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./styles.css": "./dist/styles.css",
+    "./adapters/fluent": { "types": "./dist/adapters/fluent.d.ts", "import": "./dist/adapters/fluent.js" },
+    "./adapters/mui": { "types": "./dist/adapters/mui.d.ts", "import": "./dist/adapters/mui.js" }
+  }
 }
 ```
+
+- GitHub Actions are pinned to full commit SHAs and run with explicit
+  `permissions`.
+- `pnpm audit --prod` (or an equivalent SCA tool) runs in CI; high/critical
+  findings block release.
+- `npm pack --dry-run` is reviewed before publishing; no source maps pointing at
+  private paths, no test fixtures, no photos.
 
 ### Support policy
 
@@ -152,9 +173,14 @@ Release automation: **M**. Governance/support: **S**.
 7. [ ] `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` and issue/PR
    templates exist and are linked from the README.
 8. [ ] The support policy states best-effort support and no SLA.
-9. [ ] The release checklist includes `pnpm verify`, API report, docs build,
-   Storybook build, print sample, browser/React matrix and changelog.
+9. [ ] The release checklist includes `pnpm verify:full`, API report, docs build,
+   Storybook build, print sample, browser/React matrix, changelog and
+   `npm pack --dry-run` review.
 10. [ ] The first public release occurs only after license and asset review;
     photos/legacy code are absent.
-11. [ ] Security requirements verified: OIDC only, least-privilege CI, no secrets,
+11. [ ] GitHub Actions are pinned to full commit SHAs; `npm pack --dry-run`
+    contains only the `files` allowlist.
+12. [ ] `pnpm audit --prod` (or equivalent SCA) reports no high/critical
+    vulnerabilities before release.
+13. [ ] Security requirements verified: OIDC only, least-privilege CI, no secrets,
     no untrusted release scripts.

@@ -38,7 +38,9 @@ date-only value never silently becomes midnight UTC.
 - [ ] `TimedPeriod` is `{ kind: 'timed'; start; endExclusive; timeZone }` with
   RFC 3339 instants and a valid IANA zone; requires `start < endExclusive`.
 - [ ] Timed periods can be projected to the date span they touch in an explicit
-  display zone; projection is deterministic and DST-aware via `Intl`.
+  `displayTimeZone`; projection is deterministic and DST-aware via `Intl`.
+  The React view defaults `displayTimeZone` to `UTC` (RD-06). Timed move/resize
+  is rejected with `TIMED_EDITING_UNSUPPORTED` (RD-08).
 - [ ] Interval operations: intersect, union, subtract, normalize, merge
   touching intervals, contains, overlaps and split at a date boundary.
 - [ ] Touching intervals `[a,b)` and `[b,c)` are **not** overlapping.
@@ -111,10 +113,10 @@ Date parsing and math: **S**. Interval algebra: **M**. Timed projection: **M**.
 
 | Decision | Options Considered | Chosen | Rationale | AR Ref |
 |---|---|---|---|---|
-| Date range | Any JS year, 1600–9999, 1970–2100 | 1600–9999 | Avoids JS year 0–99 trap; documented Gregorian range | AR #13 |
-| Date representation | JS Date, string, Temporal | Validated string + integer math | No timezone drift; no polyfill dependency | AR #5 |
-| Timed events | Full editing, projection only, exclude | Projection only | Keeps R1 classic view date-focused | AR #5 |
-| Interval boundary | Closed, half-open | Half-open | Adjacent intervals do not overlap; matches handoff | AR #4 |
+| Date range | Any JS year, 1600–9999, 1970–2100 | 1600–9999 core; view 1601–9998 | Avoids JS year 0–99 trap; context months stay in range | AR #60 |
+| Date representation | JS Date, string, Temporal | Validated string + integer math | No timezone drift; no polyfill dependency | AR #72 |
+| Timed events | Full editing, projection only, exclude | Projection only | Keeps R1 classic view date-focused | AR #5, #46 |
+| Interval boundary | Closed, half-open | Half-open | Adjacent intervals do not overlap; matches handoff | AR #73 |
 
 ---
 

@@ -44,9 +44,9 @@ no per-day gaps or cell borders through the shape.
   consume lanes; annotations use fill/badge areas; foreground is reserved for
   preview/active operations.
 - [ ] Lane allocation is deterministic: sort by start date ascending, then
-  longer duration first, then layer `sortOrder`/`displayPriority`, then stable
-  item ID; assign the lowest free lane; reuse the previous row's lane for the
-  same item when free.
+  longer duration first, then layer `sortOrder` ascending, then
+  `displayPriority` descending, then stable item ID; assign the lowest free lane;
+  reuse the previous row's lane for the same item when free.
 - [ ] Two items whose date intervals overlap cannot share a lane in the same
   row. Touching half-open intervals may share a lane.
 - [ ] Compact density: default maximum of 3 visible lanes; hidden fragments
@@ -123,8 +123,34 @@ interface RibbonFragment {
 ### Print model
 
 - `print={{ page: 'A3', mode: 'paginate' | 'fit', rowsPerPage?: number }}`.
-- Default pagination keeps at least 7 month rows per A3 page at readable size.
-- `@media print` removes interactive chrome, preserves color, avoids row splits.
+- Default **paginate** rules:
+  - 12–14 months: one A3 landscape page;
+  - 15–28 months: two pages;
+  - 29–36 months: three pages;
+  - default rows per page = 14; `rowsPerPage` must be 1–14. (14 rows/page
+    yields exactly 1/2/3 pages for 12–14/15–28/29–36.)
+- `fit`: scale all rows onto one A3 page; if the resulting scale would make
+  date text smaller than 7 pt, emit a diagnostic and require paginate.
+- `@media print` removes interactive chrome, uses `print-color-adjust: exact`,
+  and never splits a month row across pages.
+- A3 landscape is 420×297 mm; the PDF check uses `pdfinfo` and `pdftoppm`.
+
+### Renderer evidence gate
+
+Before RD-05/RD-06 implementation, the M0 spike must compare:
+
+| Variant | Required evidence |
+|---|---|
+| HTML-only | Visual continuity, print, keyboard focus, custom content |
+| HTML + SVG connectors/selection | Added visual value and low complexity |
+| SVG shapes + HTML proxies | Alignment, focus, custom content, print |
+| Limited full-SVG row | Documented accessibility/custom-content limits |
+
+Criteria: visual fidelity, 60 Hz pointer preview, A3 print, axe/keyboard,
+Fluent/MUI content, bundle size and code size. **Owner:** architecture lead
+(requirements owner). **Enforcement:** RD-12 release checklist requires
+`docs/renderer-spike.md` and the ADR; RD-05 AC14 is the gate. HTML-only is the fallback. No public renderer switch is exposed before
+the gate passes.
 
 ### Complexity
 
@@ -146,9 +172,9 @@ Fragment projection: **M**. Lane packing: **M**. Print pagination: **M**.
 
 | Decision | Options Considered | Chosen | Rationale | AR Ref |
 |---|---|---|---|---|
-| Event storage | Per-day cells, intervals | Intervals + fragments | Continuous shapes and overlap support | AR #4 |
+| Event storage | Per-day cells, intervals | Intervals + fragments | Continuous shapes and overlap support | AR #77 |
 | Default renderer | HTML, SVG, hybrid | HTML hypothesis; spike decides | Evidence-based; no ideological choice | AR #11, #36 |
-| Compact lanes | 2, 3, 5 | 3 + overflow | Handoff default; readable annual rows | AR #4 |
+| Compact lanes | 2, 3, 5 | 3 + overflow | Handoff default; readable annual rows | AR #76 |
 | Aggregated density | Implement, defer | Defer | Not required for R1 | AR #10 |
 | Connectors | Always, off, optional | Off by default | Avoid misleading cross-row shapes | AR #12 |
 | Print | Single page, paginate | Paginate | Dynamic month windows | AR #14 |
@@ -187,9 +213,22 @@ Fragment projection: **M**. Lane packing: **M**. Print pagination: **M**.
 7. [ ] Expanded mode renders all twenty items and the row height grows without
    clipping.
 8. [ ] A hidden item never appears in an overflow list or tooltip.
-9. [ ] A3 print of 14 months has no clipped row, all month labels and weekends
-   aligned; an 18-month print paginates without splitting a month row.
+9. [ ] With default `rowsPerPage: 14`, A3 print of 14 months has no clipped row,
+   all month labels and weekends aligned; 18, 24 and 36-month prints paginate
+   without splitting a month row.
 10. [ ] The layout signature is identical for identical inputs and changes when
     an item, visibility state or month window changes.
-11. [ ] Security requirements verified: hidden items excluded, labels escaped,
+11. [ ] PRT-01: the 2017 yellow theme with OH annotations, ISO week numbers and
+    a ribbon prints on one A3 landscape page with all rows aligned and colors
+    preserved.
+12. [ ] `fit` on an 18-month window scales to one page; if the scale would make
+    date text smaller than 7 pt, a diagnostic is emitted and paginate is
+    required.
+13. [ ] With default `rowsPerPage: 14`, a 36-month window renders 36 rows and
+    prints three pages; 15/28/29-month boundary windows print 2/2/3 pages; the
+    1,332-cell grid remains operable and keyboard reachable.
+14. [ ] The M0 renderer spike produces `docs/renderer-spike.md` and an ADR with
+    the four variants, criteria and a recorded decision; no public renderer
+    switch exists before that decision.
+15. [ ] Security requirements verified: hidden items excluded, labels escaped,
     no raw HTML.

@@ -21,5 +21,5 @@ responsible for tenant isolation, authorization, data storage and booking
 correctness.
 
 The component must not leak hidden item details through the DOM, accessibility
-tree, tooltips, diagnostics or exports. Visibility is presentation, not
-authorization.
+tree, tooltips, diagnostics, inspector or print output. Visibility is
+presentation, not authorization.

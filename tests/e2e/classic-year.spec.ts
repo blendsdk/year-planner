@@ -174,3 +174,16 @@ test.describe("RD-06 items, inspector and print", () => {
     expect(requests).toEqual([]);
   });
 });
+
+test.describe("AC3 design-system fixtures", () => {
+  test("renders real Fluent UI v9 and MUI buttons in cells and the inspector", async ({ page }) => {
+    await page.goto("/?ac3=1");
+    await page.locator("select").nth(0).selectOption("2027");
+    await expect(page.getByRole("button", { name: "Fluent cell button" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "MUI cell button" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Fluent inspector button" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "MUI inspector button" })).toBeVisible();
+    await expect(page.locator('[data-yp-part="item-proxy"] button')).toHaveCount(0);
+    await expect(page.locator('[data-yp-part="day-cell"] button')).toHaveCount(2);
+  });
+});

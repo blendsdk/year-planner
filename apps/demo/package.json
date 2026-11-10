@@ -16,6 +16,10 @@
   "devDependencies": {
     "@vitejs/plugin-react": "5.2.0",
     "typescript": "6.0.3",
-    "vite": "7.3.8"
+    "vite": "7.3.8",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fluentui/react-components": "^9.75.1",
+    "@mui/material": "^9.5.0"
   }
 }

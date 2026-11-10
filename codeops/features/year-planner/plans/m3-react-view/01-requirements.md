@@ -20,9 +20,8 @@
 - **ESM-only packaging** (user directive, AR-30): `"type": "module"`, `import`-only
   export map, Vite `formats: ["es"]`, no CJS/UMD.
 - RD-06 AC1–AC18: AC1–AC2, AC10–AC13 in unit/E2E tests; AC4–AC9, AC14–AC18 in
-  React tests. AC3 is partially evidenced: the slot contract uses host
-  `<button>` fixtures and token adapters; actual Fluent/MUI package components
-  are RD-11 examples (AR-27).
+  React tests. AC3 is proven with real Fluent UI v9 and MUI Buttons in a
+  dev-only demo fixture, across Chromium, Firefox and WebKit (AR-27).
 - Annotation items render but remain host-owned for edits (AR-31); command
   rejection is explicit rather than a local merge.
 

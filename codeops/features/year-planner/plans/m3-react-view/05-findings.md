@@ -59,15 +59,16 @@
 | React coverage | **92.54% lines / 91.55% branches / 98.34% functions** |
 | Core coverage | **99.43% lines / 96.08% branches / 100% functions** |
 | `pnpm verify` | PASS |
-| `pnpm verify:full` | PASS — Playwright 20 passed / 4 skipped, clean consumer |
+| `pnpm verify:full` | PASS — Playwright 23 passed / 4 skipped, clean consumer |
 | PDFs | 1 page (14 months), 2 pages (24), 3 pages (36), all A3 |
 | Bundle | **44.26 kB gzip** / 60 kB |
 | ESM guard | Built entry starts with `"use client"`; no `process.env`; import-only exports |
 
 ## Accepted notes
 
-- AC3 remains partial per AR-27: host-button fixture and token adapters are
-  proven; actual Fluent/MUI component examples belong to RD-11.
+- AC3 is fully evidenced by the dev-only Fluent UI v9/MUI fixture and its
+  three-browser Playwright test; the published library keeps zero
+  design-system dependencies.
 - RD-07 owns pointer gestures and the full selection matrix.
 - RD-08 owns rollback, stale-response cancellation and accepted-not-applied.
 - Annotation editing is host-owned in this slice (AR-31).

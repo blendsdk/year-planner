@@ -44,7 +44,7 @@
 | 24 | SSR | Server/client stability | Client-only / explicit defaults / suppress hydration | **AI — delegated (AR-24):** no `window`/`document` during render; effects and observers only after mount; explicit locale/zone defaults; stable `useId`-based IDs. | ✅ Resolved |
 | 25 | Security | Untrusted metadata and inline styles | Trust metadata / allow style attributes / sanitize | **AI — delegated (AR-25):** only typed host presentation inputs (`style`, `cssVars`, theme tokens, `getDateMeta`, item `style`/`className`/colors) may supply CSS; item style passes an allowlist and `url()`/`expression()`/`javascript:` values are dropped. `metadata` is never interpreted, rendered as HTML or used for URLs. CSP documentation covers `style-src-attr 'unsafe-inline'`. | ✅ Resolved |
 | 26 | Process | Verify and commit mode | `pnpm verify` / `pnpm verify:full` | **AI — delegated (AR-26):** `pnpm verify` per task, `pnpm verify:full` at phase and plan completion; `git commit -s` and push after each verified task per the user objective. | ✅ Resolved |
-| 27 | Testing | AC3 requires actual Fluent/MUI Buttons, but the repo has no Fluent/MUI dependency | Add dev dependencies / slot fixture + adapters / skip AC3 | **AI — delegated (AR-27):** verify the structural contract with host `<button>` fixtures in `renderCell`/`renderInspector` and the adapter mappings; actual Fluent/MUI example components remain RD-11 (Should Have) because adding those packages would add a large dev-only dependency outside RD-06. AC3 is recorded as partially evidenced, not fully claimed. | ✅ Resolved |
+| 27 | Testing | AC3 requires actual Fluent/MUI Buttons, but the repo has no Fluent/MUI dependency | Add dev dependencies / slot fixture + adapters / skip AC3 | **AI — delegated (AR-27):** add real Fluent UI v9 and MUI Buttons as dev-only dependencies of the private demo; prove them in cells and the inspector with a Playwright fixture across Chromium, Firefox and WebKit. The library package keeps zero design-system dependencies. | ✅ Resolved |
 | 28 | API | Existing `YearPlannerTheme` is a preset string; RD-06 redefines it as a token object and drops `units` | Break without note / keep aliases / new names | **AI — delegated (AR-28):** follow RD-06 (`YearPlannerTheme` = token object, `YearPlannerThemeName` = preset). Keep `YearPlannerDisplay`/`YearPlannerPrint` aliases and the additive `units` prop for compatibility; document the pre-1.0 break and migration in `README.md` and a changeset. | ✅ Resolved |
 | 29 | Diagnostics | Added codes were scattered and RD-08 names differ | Scattered lists / one table / reuse core codes | **AI — delegated (AR-29):** one diagnostic table owns every RD-06 code and its core-to-public mapping; `READ_ONLY`, `STALE_REVISION`, `INVALID_PAINT_TARGET`, `INVALID_COMMAND`, `CONFIRMATION_UNAVAILABLE`, `COMMAND_TIMEOUT`, `HOST_REJECTED`, `VALIDATION_ERROR`, `UNDO_UNAVAILABLE`, `INVALID_LOCALE`, `TIMED_EDITING_UNSUPPORTED` are RD-06 public codes. Core `NOT_EDITABLE`/`STALE_VERSION`/`INVALID_PAINT_CHANNEL` map to them at the React boundary. | ✅ Resolved |
 | 30 | Packaging | Module format for the modern React package | ESM-only / dual ESM+CJS / UMD | **User directive (AR-30):** ESM-only. `"type": "module"`, `exports` expose `import` only, Vite builds `formats: ["es"]`, no CJS/UMD build, and `attw --profile esm-only` enforces it. | ✅ Resolved |
@@ -202,12 +202,12 @@ Reopen triggers: a sanitizer contract is added.
 Authority: AI — delegated by --auto-design
 Eligibility: test-evidence mechanism, not product behavior.
 Objective: prove host design-system buttons can render without breaking the proxy contract without adding large dependencies.
-Decision: use host <button> fixtures in renderCell/renderInspector and adapter mapping tests; actual Fluent/MUI package components stay RD-11 examples.
-Evidence: RD-06 forbids mandatory Fluent/MUI dependencies; the repo has neither package; AC3's structural risk is nested interactive controls.
-Rejected alternatives: install Fluent/MUI (large dev-only dependency); skip AC3 silently (dishonest).
-Strongest counterargument: a plain button is not a Fluent Button.
-Confidence: Med — structural contract is proven; library-specific rendering is not.
-Hardening: explicit partial-claim note in the test report; RD-11 owns examples.
+Decision: install Fluent UI v9 and MUI as dev-only dependencies of the private demo and render their real Buttons in cells and the inspector; prove with Playwright across three browsers.
+Evidence: RD-06 forbids mandatory Fluent/MUI dependencies in the library; a private fixture can carry dev-only packages without affecting consumers.
+Rejected alternatives: plain host buttons (does not prove AC3); skip AC3 silently (dishonest).
+Strongest counterargument: the fixture adds dev dependency weight.
+Confidence: High — the actual component libraries render and the fixture is not published.
+Hardening: E2E asserts both cell buttons, both inspector buttons and no nested proxy button.
 Policy version: 1 · Root invocation ID: yp-rd06-2026-11-10T14-24Z
 Reopen triggers: RD-11 adds the example stories/packages.
 ```

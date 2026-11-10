@@ -40,7 +40,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | React tests | **140 passed** (20 files) |
 | Core coverage | **99.43% lines, 96.08% branches, 100% functions** |
 | React coverage | **92.54% lines, 91.55% branches, 98.34% functions** |
-| Playwright | **20 passed, 4 skipped** (PDF is Chromium-only) |
+| Playwright | **23 passed, 4 skipped** (PDF is Chromium-only) |
 | Browsers | Chromium, Firefox, WebKit |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
@@ -71,7 +71,7 @@ lines, branches, functions and statements.
 | State | Controlled/uncontrolled items/visibility/selection/filter; dev warnings; deterministic seeding |
 | Commands | Local read-only/version/period checks, host validation, timeout, accept/reject, retry/dismiss, uncontrolled undo/redo, annotation host-ownership |
 | Inspector | Details, visibility/editability, overflow, create/move/resize/paint/erase/delete, keyboard reachable |
-| Adapters | Fluent UI v9 and MUI token mappings; no design-system dependency or peer |
+| Adapters | Fluent UI v9 and MUI token mappings; real Buttons proven in a dev-only demo fixture across three browsers; no design-system dependency in the library |
 | Print | Hidden per-page tree, 37 headers/footers, 1/2/3 A3 pages, per-page scale, labels/weekends/ISO weeks/ribbons |
 | SSR | Node `renderToString` plus jsdom hydration with no mismatch errors |
 | CSP | Documented `style-src-attr 'unsafe-inline'`; Playwright CSP-header test |
@@ -132,7 +132,7 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 | Pointer selection matrix, marquee, drag/move/resize previews, paint gestures | Not implemented — RD-07 |
 | Full command lifecycle: rollback, stale responses, accepted-not-applied | Not implemented — RD-08 |
 | Controlled-host undo history | Not implemented; rejected with `UNDO_UNAVAILABLE` |
-| Actual Fluent UI v9/MUI component example stories | Token adapters and host-button slot tests exist; library examples are RD-11 (AR-27) |
+| Fluent UI v9/MUI example stories | Real Buttons are proven in the demo fixture; Storybook examples remain RD-11 polish |
 | Annotation editing | Rendered but host-owned in this slice (AR-31) |
 | Geometry via arbitrary `cssVars` | CSS variables change visually; use theme tokens or `units` for layout geometry |
 | Full axe and manual screen-reader audit | Not performed; WCAG conformance is not claimed |

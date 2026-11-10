@@ -1,5 +1,7 @@
 import { YearPlanner, type YearPlannerThemeName } from "@blendsdk/react-year-planner";
 import type { PlannerItem, PlannerLayer } from "@blendsdk/year-planner-core";
+import { Button as FluentButton, FluentProvider, webLightTheme } from "@fluentui/react-components";
+import { createTheme, Button as MuiButton, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 
 const groups = [
@@ -97,9 +99,9 @@ const securityItem: PlannerItem = {
 
 export function App() {
   const [year, setYear] = useState(2016);
-  const securityMode =
-    typeof window !== "undefined" &&
-    new URLSearchParams(window.location.search).get("security") === "1";
+  const search = typeof window === "undefined" ? "" : window.location.search;
+  const securityMode = new URLSearchParams(search).get("security") === "1";
+  const ac3Mode = new URLSearchParams(search).get("ac3") === "1";
   const [theme, setTheme] = useState<YearPlannerThemeName>("classic-blue");
   const [months, setMonths] = useState(14);
   const [zoom, setZoom] = useState(1);
@@ -165,20 +167,57 @@ export function App() {
           Print A3
         </button>
       </div>
-      <YearPlanner
-        {...layoutProps}
-        groups={groups}
-        layers={layers}
-        resources={[
-          { id: "alice", name: "Alice", type: "person" },
-          { id: "bob", name: "Bob", type: "person" },
-        ]}
-        items={items}
-        defaultSelection={{ dates: [], items: year === 2027 ? ["booking"] : [] }}
-        display={{ theme, zoom, showISOWeekNumbers: true }}
-        print={{ mode: "paginate" }}
-        activeLayerId="bookings"
-      />
+      {(() => {
+        const planner = (
+          <YearPlanner
+            {...layoutProps}
+            groups={groups}
+            layers={layers}
+            resources={[
+              { id: "alice", name: "Alice", type: "person" },
+              { id: "bob", name: "Bob", type: "person" },
+            ]}
+            items={items}
+            defaultSelection={{ dates: [], items: year === 2027 ? ["booking"] : [] }}
+            display={{ theme, zoom, showISOWeekNumbers: true }}
+            print={{ mode: "paginate" }}
+            activeLayerId="bookings"
+            renderCell={
+              ac3Mode
+                ? (context) => {
+                    if (context.date === "2027-02-01") {
+                      return <FluentButton size="small">Fluent cell button</FluentButton>;
+                    }
+                    if (context.date === "2027-02-02") {
+                      return (
+                        <MuiButton size="small" variant="contained">
+                          MUI cell button
+                        </MuiButton>
+                      );
+                    }
+                    return null;
+                  }
+                : undefined
+            }
+            renderInspector={
+              ac3Mode
+                ? () => (
+                    <div>
+                      <FluentButton>Fluent inspector button</FluentButton>
+                      <MuiButton variant="contained">MUI inspector button</MuiButton>
+                    </div>
+                  )
+                : undefined
+            }
+          />
+        );
+        if (!ac3Mode) return planner;
+        return (
+          <FluentProvider theme={webLightTheme}>
+            <ThemeProvider theme={createTheme()}>{planner}</ThemeProvider>
+          </FluentProvider>
+        );
+      })()}
     </main>
   );
 }

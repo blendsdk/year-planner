@@ -44,6 +44,7 @@ export interface UseInteractionInput {
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
   showAnnotations: boolean;
+  focusedItemId?: string | undefined;
   onFocusItem: (itemId: string) => void;
   onFocusDate: (date: DateKey) => void;
   openInspector: () => void;

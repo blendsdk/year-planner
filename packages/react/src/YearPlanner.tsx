@@ -7,6 +7,7 @@ import {
   diffDays,
   type InteractionMode,
   type PlannerFilter,
+  type PlannerSelection,
   planRibbonPrint,
   type RibbonLayout,
   getEffectiveVisibility as resolveEffectiveVisibility,
@@ -246,6 +247,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const [inspectorOpen, setInspectorOpen] = useState(props.showInspector !== false);
     const inspectorRef = useRef<HTMLElement>(null);
     const [focusInspector, setFocusInspector] = useState(false);
+    const [focusAnnouncement, setFocusAnnouncement] = useState<string | undefined>(undefined);
     const viewportRef = useRef<HTMLDivElement>(null);
     const warnedInteractiveSlot = useRef(false);
     const [pendingFocus, setPendingFocus] = useState<
@@ -257,14 +259,42 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
 
     useEffect(() => {
       if (!pendingFocus) return;
+      const viewport = viewportRef.current;
+      if (!viewport) {
+        setPendingFocus(undefined);
+        return;
+      }
       const selector =
         pendingFocus.type === "date"
           ? `[data-date="${escapeSelector(pendingFocus.id)}"]`
           : `[data-yp-part="item-proxy"][data-item-id="${escapeSelector(pendingFocus.id)}"]`;
-      const element = viewportRef.current?.querySelector<HTMLElement>(selector);
-      element?.focus();
+      const element = viewport.querySelector<HTMLElement>(selector);
+      if (element) {
+        element.focus();
+        setPendingFocus(undefined);
+        return;
+      }
+      const fallbackItem =
+        pendingFocus.type === "item"
+          ? state.items.find((entry) => entry.id === pendingFocus.id)
+          : undefined;
+      const fallback =
+        state.selection.focusDate ??
+        (fallbackItem?.period.kind === "all-day"
+          ? fallbackItem.period.startDate
+          : fallbackItem?.period.kind === "timed"
+            ? fallbackItem.period.start.slice(0, 10)
+            : undefined) ??
+        firstDate;
+      const cell = fallback
+        ? viewport.querySelector<HTMLElement>(`[data-date="${escapeSelector(fallback)}"]`)
+        : null;
+      if (cell) {
+        cell.focus();
+        setFocusAnnouncement(`Focus moved to ${fallback}`);
+      }
       setPendingFocus(undefined);
-    }, [pendingFocus]);
+    }, [pendingFocus, state.items, state.selection.focusDate, firstDate]);
 
     const previousShowInspector = useRef(props.showInspector);
     useEffect(() => {
@@ -369,11 +399,53 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       getDateMeta: props.getDateMeta,
       itemsByDate,
       showAnnotations: resolvedDisplay.options.showAnnotations,
+      focusedItemId: activeItemId,
       onFocusItem: focusItem,
       onFocusDate: focusDate,
       openInspector,
       onDiagnostic: props.onDiagnostic,
     });
+
+    useEffect(() => {
+      const visible = new Set(
+        state.items
+          .filter(
+            (entry) =>
+              resolveEffectiveVisibility(entry.id, {
+                model: state.model,
+                visibility: state.visibility,
+                filter: state.filter,
+              }).visible,
+          )
+          .map((entry) => entry.id),
+      );
+      const items = state.selection.items.filter((id) => visible.has(id));
+      if (items.length === state.selection.items.length) return;
+      const focusHidden =
+        state.selection.focusItemId !== undefined && !visible.has(state.selection.focusItemId);
+      const next: PlannerSelection = { ...state.selection, items };
+      if (focusHidden) {
+        delete next.focusItemId;
+        delete next.anchorItemId;
+      }
+      state.setSelection(next);
+      if (focusHidden) {
+        const fallback = state.selection.focusDate ?? firstDate;
+        if (fallback) {
+          focusDate(fallback);
+          setFocusAnnouncement(`Focus moved to ${fallback}`);
+        }
+      }
+    }, [
+      firstDate,
+      focusDate,
+      state.filter,
+      state.items,
+      state.model,
+      state.selection,
+      state.setSelection,
+      state.visibility,
+    ]);
 
     useEffect(() => {
       if (state.selection.focusItemId) setActiveItemId(state.selection.focusItemId);
@@ -485,6 +557,9 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
 
     const content = (
       <>
+        <p className="yp-sr-only" role="status" aria-live="polite" data-yp-part="focus-status">
+          {focusAnnouncement}
+        </p>
         <div
           className="yp-viewport"
           data-yp-part="viewport"

@@ -57,3 +57,23 @@ Error: Failed to resolve import "./builders.js" from "src/interaction/pointer.sp
 
 The project's red-phase convention is an unresolved-import failure; the
 corrective run is recorded in `99-execution-plan.md` task 3.3.2.
+
+## Phase 4 — Keyboard, focus, touch and undo
+
+Command:
+
+```bash
+cd packages/react && pnpm exec vitest run src/interaction/keyboard.spec.test.tsx
+```
+
+State: keyboard and touch basics worked, but Delete ignored the focused item,
+hidden selected items were not pruned, the focus fallback/live region was
+absent, and the undo test could not reach a delete.
+
+```text
+Tests  3 failed | 11 passed (14)
+```
+
+The red failures were: focused-item delete, hidden-item pruning plus focus
+announcement, and undo/redo after the missing delete. All pass after the focus
+lifecycle work; the corrective run is task 4.3.2.

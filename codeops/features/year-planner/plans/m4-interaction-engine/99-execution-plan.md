@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-10 21:15
-> **Progress**: 20/33 tasks (61%)
+> **Last Updated**: 2026-11-10 22:11
+> **Progress**: 26/33 tasks (79%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -145,7 +145,7 @@ bounded by the task-size criteria).
 ---
 ## Phase 4: Keyboard, focus, touch and undo
 
-> **Phase baseline tree**: recorded by the executor at phase start.
+> **Phase baseline tree**: 6bfac0db70f4e4da7025d026996fc9e534480f21
 > **Reasoning**: high — focus restoration, disabled dates and read-only safety
 > are user-visible correctness and accessibility contracts.
 
@@ -155,28 +155,27 @@ undo/redo evidence.
 
 ### Step 4.1: Specification tests
 
-- [ ] 4.1.1 [spec-author] Write keyboard/focus/touch/undo spec tests for ST-71–ST-90 — `packages/react/src/interaction/keyboard.spec.test.tsx`
-- [ ] 4.1.2 Run the keyboard spec tests and record the expected red failures — `docs/m4-red-phase.md`
+- [x] 4.1.1 [spec-author] Write keyboard/focus/touch/undo spec tests for ST-71–ST-90 — `packages/react/src/interaction/keyboard.spec.test.tsx` ✅ (completed: 2026-11-10 22:11)
+- [x] 4.1.2 Run the keyboard spec tests and record the expected red failures — `docs/m4-red-phase.md` ✅ (completed: 2026-11-10 22:11)
 
 ### Step 4.2: Implementation
 
-- [ ] 4.2.1 Implement modifier-aware cell/proxy keys, grid-root Ctrl/Cmd+A/Escape/Delete ownership, host-control key guards, double-click focus semantics and refresh the stale touch/marquee comments — `packages/react/src/render/CellLayer.tsx`, `packages/react/src/render/ItemLayer.tsx`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/types.ts`
-- [ ] 4.2.2 Implement focus restoration/pruning, selection sync, polite live-region fallback, touch gating and `touch-action`; update the stale interaction comments — `packages/react/src/YearPlanner.tsx`, `packages/react/src/interaction/useInteraction.ts`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/styles.css`, `packages/react/src/commands.ts`
+- [x] 4.2.1 Implement modifier-aware cell/proxy keys, grid-root Ctrl/Cmd+A/Escape/Delete ownership, host-control key guards, double-click focus semantics and refresh the stale touch/marquee comments — `packages/react/src/render/CellLayer.tsx`, `packages/react/src/render/ItemLayer.tsx`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/types.ts` ✅ (completed: 2026-11-10 22:11)
+- [x] 4.2.2 Implement focus restoration/pruning, selection sync, polite live-region fallback, touch gating and `touch-action`; update the stale interaction comments — `packages/react/src/YearPlanner.tsx`, `packages/react/src/interaction/useInteraction.ts`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/styles.css`, `packages/react/src/commands.ts` ✅ (completed: 2026-11-10 22:11)
 
 ### Step 4.3: Implementation tests and verify
 
-- [ ] 4.3.1 Write keyboard/focus edge tests and controlled/uncontrolled composition tests — `packages/react/src/interaction/keyboard.impl.test.tsx`, `packages/react/src/interaction.integration.spec.test.tsx`
-- [ ] 4.3.2 Run `pnpm api-report` then `pnpm verify` so the React report includes `doubleClick`
+- [x] 4.3.1 Write keyboard/focus edge tests and controlled/uncontrolled composition tests — `packages/react/src/interaction/keyboard.impl.test.tsx`, `packages/react/src/interaction.integration.spec.test.tsx` ✅ (completed: 2026-11-10 22:11)
+- [x] 4.3.2 Run `pnpm api-report` then `pnpm verify` so the React report includes `doubleClick` ✅ (completed: 2026-11-10 22:11)
 
 **Deliverables**:
-- [ ] ST-71–ST-90 pass
-- [ ] Focus never falls to the document after commit/hide/repack; fallback is announced
-- [ ] Undo/redo covered for every command type; controlled mode has no local history
+- [x] ST-71–ST-90 pass ✅ (completed: 2026-11-10 22:11)
+- [x] Focus never falls to the document after commit/hide/repack; fallback is announced ✅ (completed: 2026-11-10 22:11)
+- [x] Undo/redo covered for every command type; controlled mode has no local history ✅ (completed: 2026-11-10 22:11)
 
 **Verify**: `pnpm verify:full`
 
 ---
-
 ## Phase 5: Integration, Storybook, E2E and closeout
 
 > **Phase baseline tree**: recorded by the executor at phase start.

@@ -586,6 +586,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
         event.preventDefault();
         const itemId =
           input.state.selection.focusItemId ??
+          input.focusedItemId ??
           (input.state.selection.items.length === 1 ? input.state.selection.items[0] : undefined);
         const item = itemId ? input.state.items.find((entry) => entry.id === itemId) : undefined;
         if (!item) {

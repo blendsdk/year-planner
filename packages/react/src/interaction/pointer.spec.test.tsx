@@ -215,6 +215,7 @@ describe("RD-07 pointer wiring", () => {
     expect(harness.onChangeRequest.mock.calls[0]?.[0]).toMatchObject({
       type: "move",
       itemId: "a",
+      expectedVersion: 1,
       proposedPeriod: { startDate: "2027-02-02", endDateExclusive: "2027-02-12" },
     });
   });
@@ -277,12 +278,15 @@ describe("RD-07 pointer wiring", () => {
     expect(harness.onChangeRequest).not.toHaveBeenCalled();
   });
 
-  it("cancels a move on Escape without a command", async () => {
+  it("cancels an active move on Escape without a command", async () => {
     const harness = setup({}, { items: [item("a", "bookings", "2027-01-28", "2027-02-07")] });
-    pointer(cellElement(harness, "2027-01-28"), "pointerdown", cellPoint("2027-01-28"));
+    const proxy = harness.container.querySelector(
+      '[data-yp-part="item-proxy"][data-item-id="a"]',
+    ) as Element;
+    pointer(proxy, "pointerdown", cellPoint("2027-01-28"));
     pointer(harness.grid, "pointermove", cellPoint("2027-02-02"));
-    pointer(harness.grid, "pointerup", cellPoint("2027-02-02"));
     fireEvent.keyDown(harness.grid, { key: "Escape" });
+    pointer(harness.grid, "pointerup", cellPoint("2027-02-02"));
     expect(harness.onChangeRequest).not.toHaveBeenCalled();
   });
 
@@ -445,6 +449,99 @@ describe("RD-07 pointer wiring", () => {
       ),
     );
   });
+
+  it("adds intersecting items to an existing selection on Shift marquee", async () => {
+    const harness = setup(
+      { defaultSelection: { dates: [], items: ["a"] } },
+      {
+        items: [
+          item("a", "bookings", "2027-01-28", "2027-02-03"),
+          item("b", "bookings", "2027-01-30", "2027-02-04"),
+        ],
+      },
+    );
+    pointer(cellElement(harness, "2027-01-28"), "pointerdown", cellPoint("2027-01-28"));
+    pointer(harness.grid, "pointermove", cellPoint("2027-02-02"));
+    pointer(harness.grid, "pointerup", cellPoint("2027-02-02"));
+    await waitFor(() => expect(harness.onSelectionChange).toHaveBeenCalled());
+    expect(harness.onSelectionChange.mock.calls.at(-1)?.[0].items).toEqual(["a", "b"]);
+  });
+
+  it("shows an invalid-preview affordance for a disabled paint range", async () => {
+    const harness = setup({
+      interaction: { mode: "paint" },
+      getDateMeta: (date) => (date === "2027-02-02" ? { disabled: true } : undefined),
+    });
+    pointer(cellElement(harness, "2027-02-01"), "pointerdown", cellPoint("2027-02-01"));
+    pointer(harness.grid, "pointermove", cellPoint("2027-02-03"));
+    await waitFor(() =>
+      expect(
+        harness.container.querySelector(
+          '[data-yp-part="gesture-preview"][data-preview-valid="false"]',
+        ),
+      ).not.toBeNull(),
+    );
+    pointer(harness.grid, "pointerup", cellPoint("2027-02-03"));
+    await waitFor(() =>
+      expect(harness.onDiagnostic).toHaveBeenCalledWith(
+        expect.objectContaining({ code: "INVALID_COMMAND" }),
+      ),
+    );
+  });
+
+  it("cancels when the item content changes mid-drag", async () => {
+    const harness = setup({}, { items: [item("a", "bookings", "2027-01-28", "2027-02-07")] });
+    const proxy = harness.container.querySelector(
+      '[data-yp-part="item-proxy"][data-item-id="a"]',
+    ) as Element;
+    pointer(proxy, "pointerdown", cellPoint("2027-01-28"));
+    pointer(harness.grid, "pointermove", cellPoint("2027-02-02"));
+    harness.rerender(
+      <YearPlanner
+        year={2027}
+        layers={[layer("bookings"), layer("highlight", { channel: "highlight" })]}
+        items={[item("a", "bookings", "2027-01-28", "2027-02-08")]}
+        activeLayerId="highlight"
+        onSelectionChange={harness.onSelectionChange}
+        onDiagnostic={harness.onDiagnostic}
+        onChangeRequest={harness.onChangeRequest}
+      />,
+    );
+    pointer(harness.grid, "pointerup", cellPoint("2027-02-02"));
+    expect(harness.onChangeRequest).not.toHaveBeenCalled();
+  });
+
+  it("renders two proposed fragments for a cross-month move", async () => {
+    const harness = setup({}, { items: [item("a", "bookings", "2027-01-28", "2027-02-07")] });
+    const proxy = harness.container.querySelector(
+      '[data-yp-part="item-proxy"][data-item-id="a"]',
+    ) as Element;
+    pointer(proxy, "pointerdown", cellPoint("2027-01-28"));
+    pointer(harness.grid, "pointermove", cellPoint("2027-02-20"));
+    await waitFor(() =>
+      expect(harness.container.querySelectorAll('[data-yp-part="gesture-preview"]')).toHaveLength(
+        2,
+      ),
+    );
+  });
+
+  it("allows delete when confirmation succeeds", async () => {
+    const harness = setup(
+      { interaction: { confirmChange: () => true } },
+      { items: [item("a", "bookings", "2027-01-28", "2027-02-07")] },
+    );
+    const proxy = harness.container.querySelector(
+      '[data-yp-part="item-proxy"][data-item-id="a"]',
+    ) as Element;
+    fireEvent.click(proxy);
+    fireEvent.keyDown(harness.grid, { key: "Delete" });
+    await waitFor(() => expect(harness.onChangeRequest).toHaveBeenCalled());
+    expect(harness.onChangeRequest.mock.calls[0]?.[0]).toMatchObject({
+      type: "delete",
+      itemId: "a",
+      expectedVersion: 1,
+    });
+  });
 });
 
 describe("RD-07 command builders and preview projection", () => {
@@ -553,6 +650,12 @@ describe("RD-07 command builders and preview projection", () => {
     expect(fragments[1]?.rowId).toBe("2027-02");
     expect(fragments[0]?.startDate).toBe("2027-01-28");
     expect(fragments[1]?.endDateExclusive).toBe("2027-02-07");
+    const lastDay = projectPreviewRanges(
+      [{ startDate: "2026-12-31", endDateExclusive: "2027-01-01" }],
+      layout,
+      1,
+    );
+    expect(lastDay[0]?.width).toBe(55);
   });
 
   it("maps completion intents to previews", () => {
@@ -572,7 +675,11 @@ describe("RD-07 command builders and preview projection", () => {
     });
     expect(
       previewFromCompletion(
-        { kind: "marquee", rect: { left: 0, top: 0, width: 10, height: 20 } },
+        {
+          kind: "marquee",
+          rect: { left: 0, top: 0, width: 10, height: 20 },
+          modifiers: { shift: false, mod: false },
+        },
         undefined,
       ),
     ).toMatchObject({ kind: "marquee" });

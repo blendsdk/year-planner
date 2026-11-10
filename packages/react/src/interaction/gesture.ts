@@ -7,6 +7,7 @@ import {
   type PlannerItem,
   type PlannerPeriod,
   type RibbonLayout,
+  type SelectionDateRange,
 } from "@blendsdk/year-planner-core";
 import type { ViewGeometry } from "../geometry.js";
 import { rangeBetween, type SelectionModifiers } from "./selection.js";
@@ -132,7 +133,7 @@ export type GestureCompletion =
       focus: DateKey;
       modifiers: SelectionModifiers;
     }
-  | { kind: "marquee"; rect: DesignRect }
+  | { kind: "marquee"; rect: DesignRect; modifiers: SelectionModifiers }
   | {
       kind: "move";
       itemId: string;
@@ -163,6 +164,12 @@ export type GestureCompletion =
       code: "INVALID_COMMAND" | "TIMED_EDITING_UNSUPPORTED";
       message: string;
       fallbackDate: DateKey;
+      detail?: {
+        itemId?: string;
+        variant?: "move" | "resize" | "paint" | "erase" | "create";
+        proposedPeriod?: PlannerPeriod;
+        proposedRange?: SelectionDateRange;
+      };
     };
 
 /** Returns true when a pointer moved at least the threshold distance. */
@@ -255,8 +262,9 @@ function invalid(
   code: "INVALID_COMMAND" | "TIMED_EDITING_UNSUPPORTED",
   message: string,
   fallbackDate: DateKey,
+  detail?: Extract<GestureCompletion, { kind: "invalid" }>["detail"],
 ): GestureCompletion {
-  return { kind: "invalid", code, message, fallbackDate };
+  return { kind: "invalid", code, message, fallbackDate, ...(detail ? { detail } : {}) };
 }
 
 function blocked(
@@ -446,7 +454,10 @@ function buildRange(
   const endDateExclusive = addDays(anchor >= focus ? anchor : focus, 1);
   const fallbackDate = anchor;
   if (rangeHasDisabled(startDate, endDateExclusive, context.isDisabled)) {
-    return invalid("INVALID_COMMAND", "The range contains a disabled date", fallbackDate);
+    return invalid("INVALID_COMMAND", "The range contains a disabled date", fallbackDate, {
+      variant: kind === "paint" ? (operation === "subtract" ? "erase" : "paint") : "create",
+      proposedRange: { startDate, endDateExclusive },
+    });
   }
   if (kind === "paint") {
     return {
@@ -481,6 +492,11 @@ function finishMove(
       "INVALID_COMMAND",
       "The range contains a disabled date",
       source.period.startDate,
+      {
+        itemId: gesture.itemId,
+        variant: "move",
+        proposedPeriod: { kind: "all-day", startDate, endDateExclusive },
+      },
     );
   }
   return {
@@ -519,6 +535,11 @@ function finishResize(
       "INVALID_COMMAND",
       "The range contains a disabled date",
       source.period.startDate,
+      {
+        itemId: gesture.itemId,
+        variant: "resize",
+        proposedPeriod: { kind: "all-day", startDate, endDateExclusive },
+      },
     );
   }
   return {
@@ -564,7 +585,11 @@ export function endGesture(input: {
         modifiers: state.modifiers,
       };
     case "marquee":
-      return { kind: "marquee", rect: designRectBetween(gesture.anchor, input.design) };
+      return {
+        kind: "marquee",
+        rect: designRectBetween(gesture.anchor, input.design),
+        modifiers: state.modifiers,
+      };
     case "move":
       return finishMove(gesture, input.context);
     case "resize":

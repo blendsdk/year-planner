@@ -59,6 +59,7 @@ export function SelectionPreview({
           key={fragment.key}
           className={`yp-preview-fragment yp-preview-${variant}`}
           data-yp-part={variant}
+          data-preview-kind={variant}
           data-preview-start={fragment.startDate}
           data-preview-end={fragment.endDateExclusive}
           data-preview-valid={valid === false ? "false" : undefined}

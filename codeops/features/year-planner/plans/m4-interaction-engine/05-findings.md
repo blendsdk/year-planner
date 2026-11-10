@@ -59,3 +59,29 @@
 | RV-002-20 | 2 | MINOR | gesture/fabricated-fragment-id | fixed |
 | RV-002-21 | 2 | MINOR | render/annotation-handle-test | fixed |
 | RV-002-22 | 2 | MINOR | pointer/aria-host-roles | fixed |
+
+## Phase 3 — Pointer wiring, commands and previews
+
+| Finding | Phase | Severity | Area | Ruling |
+|---|---|---|---|---|
+| RV-003-1 | 3 | CRITICAL | preview/trailing-blank-width | fixed |
+| RV-003-2 | 3 | MAJOR | preview/double-band-offset | fixed |
+| RV-003-3 | 3 | MAJOR | inspector/builder-migration | fixed |
+| RV-003-4 | 3 | MAJOR | marquee/modifiers | fixed |
+| RV-003-5 | 3 | MAJOR | preview/invalid-affordance | fixed |
+| RV-003-6 | 3 | MAJOR | tests/overstated-st-coverage | fixed |
+| RV-003-7 | 3 | MINOR | pointer/pointer-id-and-release | fixed |
+| RV-003-8 | 3 | MINOR | pointer/suppress-click-leak | accepted |
+| RV-003-9 | 3 | MINOR | types/unsafe-casts | fixed |
+| RV-003-10 | 3 | MINOR | preview/css-color | fixed |
+| RV-003-11 | 3 | MINOR | preview/data-kind | fixed |
+| RV-003-12 | 3 | MINOR | types/stale-inert-comments | fixed in phase 4 task |
+| RV-003-13 | 3 | MINOR | useInteraction/file-size | fixed |
+| RV-003-14 | 3 | MINOR | types/shared-click-event | fixed |
+| RV-003-15 | 3 | MINOR | tests/touch-and-capture | fixed |
+| RV-003-16 | 3 | MINOR | double-click/duplicate-selection | fixed |
+| RV-003-17 | 3 | OBS | preview/dead-helpers | accepted |
+| RV-003-18 | 3 | OBS | commit/expected-version-fallback | fixed |
+| RV-003-19 | 3 | OBS | create/focus | fixed |
+| RV-003-20 | 3 | OBS | rejection/focus | fixed |
+| RV-003-21 | 3 | OBS | builder/title-localization | accepted |

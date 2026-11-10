@@ -45,10 +45,18 @@ export function projectPreviewRangesForRow(
       if (startDate >= endDateExclusive) continue;
       const startIndex = row.columns.findIndex((column) => column.date === startDate);
       if (startIndex === -1) continue;
+      let lastDefined = -1;
+      for (let index = row.columns.length - 1; index >= 0; index -= 1) {
+        if (row.columns[index]?.date !== undefined) {
+          lastDefined = index;
+          break;
+        }
+      }
+      if (lastDefined === -1) continue;
       const endIndex = row.columns.findIndex(
         (column) => column.date !== undefined && column.date >= endDateExclusive,
       );
-      const end = endIndex === -1 ? row.columns.length : endIndex;
+      const end = endIndex === -1 ? lastDefined + 1 : Math.min(endIndex, lastDefined + 1);
       const x = row.prefixWidths[startIndex];
       const endX = row.prefixWidths[end];
       if (x === undefined || endX === undefined) continue;
@@ -160,6 +168,31 @@ export function previewFromCompletion(
         ],
         valid: true,
       };
+    case "invalid": {
+      const detail = completion.detail;
+      if (!detail) return undefined;
+      if (detail.proposedPeriod) {
+        return {
+          kind: "item",
+          variant: detail.variant === "resize" ? "resize" : "move",
+          itemId: detail.itemId ?? "",
+          layerId,
+          ranges: periodRange(detail.proposedPeriod),
+          valid: false,
+        };
+      }
+      if (detail.proposedRange) {
+        return {
+          kind: "range",
+          variant:
+            detail.variant === "erase" ? "erase" : detail.variant === "create" ? "create" : "paint",
+          layerId,
+          ranges: [detail.proposedRange],
+          valid: false,
+        };
+      }
+      return undefined;
+    }
     default:
       return undefined;
   }

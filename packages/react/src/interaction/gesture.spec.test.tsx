@@ -294,6 +294,7 @@ describe("RD-07 gesture engine", () => {
     expect(completion).toEqual({
       kind: "marquee",
       rect: { left: 0, top: 0, width: 50, height: 40 },
+      modifiers: plain,
     });
   });
 

@@ -1,4 +1,3 @@
-import type { RibbonLayout, YearLayout } from "@blendsdk/year-planner-core";
 import {
   addDays,
   type DateKey,
@@ -9,11 +8,8 @@ import {
 } from "@blendsdk/year-planner-core";
 import type { KeyboardEvent, PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { type CommandPipeline, createPlannerId } from "../commands.js";
 import { pointToDate, pointToDesign, type ViewGeometry } from "../geometry.js";
-import type { PlannerState } from "../state.js";
-import type { DateMeta, DateMetaContext, InteractionConfig } from "../types.js";
-import { buildCreateItem, buildPaintCommand, defaultPaintDefaults } from "./builders.js";
+import { commitGesture } from "./commit.js";
 import {
   autoScrollDelta,
   beginGesture,
@@ -25,75 +21,20 @@ import {
   type GesturePoint,
   type GestureState,
   gestureContextChanged,
-  intersectMarquee,
   moveGesture,
 } from "./gesture.js";
 import { classifyTarget, isHostInteractive } from "./pointer.js";
-import { type GesturePreview, previewFromCompletion } from "./preview.js";
+import { previewFromCompletion } from "./preview.js";
 import {
   applyDateClick,
   applyDateDrag,
   applyItemClick,
-  applyItemMarquee,
   clearSelection,
   isMod,
   selectAllVisible,
   visualItemOrder,
 } from "./selection.js";
-
-/** Inputs consumed by the interaction controller. */
-export interface UseInteractionInput {
-  state: PlannerState;
-  layout: YearLayout;
-  ribbons: RibbonLayout;
-  pipeline: CommandPipeline;
-  viewportRef: { current: HTMLDivElement | null };
-  zoom: number;
-  readOnly: boolean;
-  activeLayerId?: string | undefined;
-  interaction?: InteractionConfig | undefined;
-  getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
-  itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
-  showAnnotations: boolean;
-  onFocusItem: (itemId: string) => void;
-  onFocusDate: (date: DateKey) => void;
-  openInspector: () => void;
-  onDiagnostic?: ((entry: ReturnType<typeof diagnostic>) => void) | undefined;
-}
-
-/** DOM and state handlers exposed by the interaction controller. */
-export interface InteractionController {
-  preview: GesturePreview | undefined;
-  touchAction: "none" | "pan-x pan-y";
-  onPointerDown: (event: PointerEvent<HTMLElement>) => void;
-  onPointerMove: (event: PointerEvent<HTMLElement>) => void;
-  onPointerUp: (event: PointerEvent<HTMLElement>) => void;
-  onPointerCancel: (event: PointerEvent<HTMLElement>) => void;
-  onLostPointerCapture: (event: PointerEvent<HTMLElement>) => void;
-  onGridKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
-  onCellKeyDown: (date: DateKey, event: KeyboardEvent<HTMLElement>) => void;
-  onItemKeyDown: (itemId: string, event: KeyboardEvent<HTMLElement>) => void;
-  selectDate: (
-    date: DateKey,
-    event: {
-      shiftKey?: boolean;
-      ctrlKey?: boolean;
-      metaKey?: boolean;
-      target?: EventTarget | null;
-    },
-  ) => void;
-  selectItem: (
-    itemId: string,
-    event: {
-      shiftKey?: boolean;
-      ctrlKey?: boolean;
-      metaKey?: boolean;
-      target?: EventTarget | null;
-    },
-  ) => void;
-  doubleClickItem: (itemId: string) => void;
-  shouldIgnoreClick: (event: { target?: EventTarget | null }) => boolean;
-}
+import type { InteractionController, UseInteractionInput } from "./types.js";
 
 function knownDates(layout: UseInteractionInput["layout"]): Set<DateKey> {
   const dates = new Set<DateKey>();
@@ -258,137 +199,38 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
   );
 
   const handleCompletion = useCallback(
-    (completion: GestureCompletion) => {
-      switch (completion.kind) {
-        case "click": {
-          const target = completion.target;
-          if (target.kind === "cell") {
-            const next = applyDateClick(
-              selectionAtStart.current,
-              target.date,
-              completion.modifiers,
-              isDisabled,
-            );
-            emitSelection(next, undefined, target.date);
-          } else if (target.kind === "item") {
-            const next = applyItemClick(
-              selectionAtStart.current,
-              target.itemId,
-              completion.modifiers,
-              visualOrder,
-            );
-            emitSelection(next, target.itemId);
-          }
-          return;
-        }
-        case "select": {
-          const next = applyDateDrag(
-            selectionAtStart.current,
-            completion.anchor,
-            completion.focus,
-            completion.modifiers,
-            isDisabled,
-          );
-          emitSelection(next, undefined, completion.focus);
-          return;
-        }
-        case "marquee": {
-          const hit = intersectMarquee(input.ribbons, completion.rect, {
-            visible: visibleItemIds,
-            showAnnotations: input.showAnnotations,
-            visibleLaneCount: (rowId) =>
-              input.ribbons.rows.find((row) => row.rowId === rowId)?.visibleLaneCount ?? 0,
-          });
-          const next = applyItemMarquee(
-            selectionAtStart.current,
-            hit,
-            { shift: false, mod: false },
-            visualOrder,
-          );
-          emitSelection(next, next.focusItemId);
-          return;
-        }
-        case "move":
-        case "resize": {
-          const command =
-            completion.kind === "move"
-              ? {
-                  type: "move" as const,
-                  itemId: completion.itemId,
-                  proposedPeriod: completion.proposedPeriod,
-                  expectedVersion:
-                    input.state.items.find((entry) => entry.id === completion.itemId)?.version ?? 1,
-                }
-              : {
-                  type: "resize" as const,
-                  itemId: completion.itemId,
-                  proposedPeriod: completion.proposedPeriod,
-                  expectedVersion:
-                    input.state.items.find((entry) => entry.id === completion.itemId)?.version ?? 1,
-                };
-          void input.pipeline.requestCommand(command).then((accepted) => {
-            if (accepted) input.onFocusItem(completion.itemId);
-            else input.onFocusDate(completion.fallbackDate);
-          });
-          return;
-        }
-        case "paint": {
-          const layer = input.state.model.layers.find((entry) => entry.id === input.activeLayerId);
-          if (!layer) {
-            input.onDiagnostic?.(
-              diagnostic("INVALID_PAINT_TARGET", "Paint requires an active highlight layer"),
-            );
-            input.onFocusDate(completion.fallbackDate);
-            return;
-          }
-          const command = buildPaintCommand({
-            model: input.state.model,
-            visibility: input.state.visibility,
-            filter: input.state.filter,
-            layerId: input.activeLayerId as string,
-            startDate: completion.startDate,
-            endDateExclusive: completion.endDateExclusive,
-            operation: completion.operation,
-            defaults: defaultPaintDefaults(input.interaction),
-          });
-          if (!command) {
-            input.onDiagnostic?.(
-              diagnostic("INVALID_PAINT_TARGET", "Paint requires an active highlight layer"),
-            );
-            input.onFocusDate(completion.fallbackDate);
-            return;
-          }
-          void input.pipeline.requestCommand(command).then((accepted) => {
-            if (!accepted) input.onFocusDate(completion.fallbackDate);
-          });
-          return;
-        }
-        case "create": {
-          const created = buildCreateItem({
-            interaction: input.interaction,
-            activeLayerId: input.activeLayerId,
-            startDate: completion.startDate,
-            endDateExclusive: completion.endDateExclusive,
-            createId: () => createPlannerId(input.interaction),
-          });
-          if (!created) {
-            input.onDiagnostic?.(diagnostic("INVALID_COMMAND", "Create requires a layer"));
-            input.onFocusDate(completion.fallbackDate);
-            return;
-          }
-          void input.pipeline.requestCommand({ type: "create", item: created });
-          return;
-        }
-        case "invalid": {
-          input.onDiagnostic?.(diagnostic(completion.code, completion.message));
-          input.onFocusDate(completion.fallbackDate);
-          return;
-        }
-        default:
-          return;
-      }
-    },
-    [emitSelection, input, isDisabled, visibleItemIds, visualOrder],
+    (completion: GestureCompletion) =>
+      commitGesture(completion, {
+        selection: selectionAtStart.current,
+        state: input.state,
+        pipeline: input.pipeline,
+        interaction: input.interaction,
+        activeLayerId: input.activeLayerId,
+        isDisabled,
+        visibleItemIds,
+        visualOrder,
+        ribbons: input.ribbons,
+        showAnnotations: input.showAnnotations,
+        emitSelection,
+        onFocusItem: input.onFocusItem,
+        onFocusDate: input.onFocusDate,
+        onDiagnostic: input.onDiagnostic,
+      }),
+    [
+      emitSelection,
+      input.activeLayerId,
+      input.interaction,
+      input.onDiagnostic,
+      input.onFocusDate,
+      input.onFocusItem,
+      input.pipeline,
+      input.ribbons,
+      input.showAnnotations,
+      input.state,
+      isDisabled,
+      visibleItemIds,
+      visualOrder,
+    ],
   );
 
   const onPointerDown = useCallback(
@@ -420,10 +262,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
       });
       if (next.phase === "idle") return;
       updateGesture(next);
-      const current = event.currentTarget as Element & {
-        setPointerCapture?: (pointerId: number) => void;
-      };
-      current.setPointerCapture?.(event.pointerId);
+      event.currentTarget.setPointerCapture?.(event.pointerId);
       if (touch) event.preventDefault();
     },
     [gestureContext, input, readView, updateGesture],
@@ -462,7 +301,8 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
 
   const onPointerMove = useCallback(
     (event: PointerEvent<HTMLElement>) => {
-      if (gestureRef.current.phase === "idle") return;
+      const current = gestureRef.current;
+      if (current.phase === "idle" || current.pointerId !== event.pointerId) return;
       lastPoint.current = { clientX: event.clientX, clientY: event.clientY };
       if (typeof requestAnimationFrame !== "function") {
         runMove();
@@ -480,7 +320,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
         frame.current = undefined;
       }
       const current = gestureRef.current;
-      if (current.phase === "idle") return;
+      if (current.phase === "idle" || current.pointerId !== event.pointerId) return;
       const view = readView();
       const point = { clientX: event.clientX, clientY: event.clientY };
       const design = view ? pointToDesign(point, view) : lastDesign.current;
@@ -507,31 +347,28 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
 
   const onPointerUp = useCallback(
     (event: PointerEvent<HTMLElement>) => {
-      const current = event.currentTarget as Element & {
-        releasePointerCapture?: (pointerId: number) => void;
-      };
-      current.releasePointerCapture?.(event.pointerId);
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
       finishPointer(event);
     },
     [finishPointer],
   );
 
   const cancelActive = useCallback(
-    (event?: PointerEvent<HTMLElement>) => {
+    (event?: PointerEvent<HTMLElement>, release = true) => {
+      const current = gestureRef.current;
+      if (current.phase === "idle") return;
+      if (event && current.pointerId !== event.pointerId) return;
       if (frame.current !== undefined && typeof cancelAnimationFrame === "function") {
         cancelAnimationFrame(frame.current);
         frame.current = undefined;
       }
-      const cancelled = cancelGesture(gestureRef.current);
+      const cancelled = cancelGesture(current);
       updateGesture(cancelled.state);
       suppressClick.current = true;
       if (cancelled.restore?.itemId) input.onFocusItem(cancelled.restore.itemId);
       else if (cancelled.restore?.date) input.onFocusDate(cancelled.restore.date);
-      if (event) {
-        const current = event.currentTarget as Element & {
-          releasePointerCapture?: (pointerId: number) => void;
-        };
-        current.releasePointerCapture?.(event.pointerId);
+      if (event && release) {
+        event.currentTarget.releasePointerCapture?.(event.pointerId);
       }
     },
     [input, updateGesture],
@@ -542,7 +379,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     [cancelActive],
   );
   const onLostPointerCapture = useCallback(
-    (event: PointerEvent<HTMLElement>) => cancelActive(event),
+    (event: PointerEvent<HTMLElement>) => cancelActive(event, false),
     [cancelActive],
   );
 
@@ -602,7 +439,9 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
   const doubleClickItem = useCallback(
     (itemId: string) => {
       if (input.interaction?.doubleClick === "none") return;
-      selectItem(itemId, {});
+      const alreadySelected =
+        input.state.selection.items.length === 1 && input.state.selection.items[0] === itemId;
+      if (!alreadySelected) selectItem(itemId, {});
       input.openInspector();
     },
     [input, selectItem],
@@ -797,5 +636,3 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     shouldIgnoreClick,
   };
 }
-
-export type { GesturePreview };

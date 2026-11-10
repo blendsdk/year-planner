@@ -19,6 +19,11 @@ import {
 import type { ReactNode, RefObject } from "react";
 import type { CommandFeedback, CommandPipeline } from "../commands.js";
 import { createPlannerId } from "../commands.js";
+import {
+  buildCreateItem,
+  buildPaintCommand,
+  defaultPaintDefaults,
+} from "../interaction/builders.js";
 import type { PlannerFormatters } from "../locale.js";
 import type {
   InspectorActions,
@@ -98,37 +103,25 @@ function commandForPaint(
   operation: "union" | "subtract",
   interaction: InteractionConfig | undefined,
   model: PlannerModel,
+  visibility: VisibilityState,
+  filter: PlannerFilter,
 ): Parameters<CommandPipeline["requestCommand"]>[0] | undefined {
-  const layer = model.layers.find((entry) => entry.id === layerId);
   const range = itemRange(item, selection);
-  if (layer?.channel !== "highlight" || !range) return undefined;
-  const expectedVersions: Record<string, number> = {};
-  for (const entry of model.items) {
-    if (
-      entry.layerId !== layerId ||
-      entry.kind !== "highlight" ||
-      entry.period.kind !== "all-day"
-    ) {
-      continue;
-    }
-    if (
-      entry.period.startDate < range.endDateExclusive &&
-      range.startDate < entry.period.endDateExclusive
-    ) {
-      expectedVersions[entry.id] = entry.version;
-    }
-  }
-  return {
-    type: "paint",
-    layerId,
-    period: { kind: "all-day", ...range },
-    operation,
-    defaults: interaction?.paintDefaults ?? {
-      kind: "highlight",
-      ...(item.title === undefined ? {} : { title: item.title }),
-    },
-    expectedVersions,
+  if (!range) return undefined;
+  const defaults = interaction?.paintDefaults ?? {
+    kind: "highlight" as const,
+    ...(item.title === undefined ? {} : { title: item.title }),
   };
+  return buildPaintCommand({
+    model,
+    visibility,
+    filter,
+    layerId,
+    startDate: range.startDate,
+    endDateExclusive: range.endDateExclusive,
+    operation,
+    defaults: defaultPaintDefaults({ paintDefaults: defaults }),
+  });
 }
 
 function hostOwnedCreateDisabled(
@@ -400,11 +393,29 @@ function DefaultInspectorBody({
         const hostOwned = item.kind === "annotation";
         const paintCommand =
           paintLayer && !timed && paintLayerEditable && paintEditability?.editable
-            ? commandForPaint(item, selection, paintLayer.id, "union", interaction, model)
+            ? commandForPaint(
+                item,
+                selection,
+                paintLayer.id,
+                "union",
+                interaction,
+                model,
+                visibility,
+                filter,
+              )
             : undefined;
         const eraseCommand =
           paintLayer && !timed && paintLayerEditable && paintEditability?.editable
-            ? commandForPaint(item, selection, paintLayer.id, "subtract", interaction, model)
+            ? commandForPaint(
+                item,
+                selection,
+                paintLayer.id,
+                "subtract",
+                interaction,
+                model,
+                visibility,
+                filter,
+              )
             : undefined;
         return (
           <section className="yp-inspector-item" key={item.id} data-item-id={item.id}>
@@ -582,22 +593,14 @@ function DefaultInspectorBody({
           }
           onClick={() => {
             if (!createLayer || !createDate) return;
-            const startDate = createDate;
-            void pipeline.requestCommand({
-              type: "create",
-              item: {
-                id: createPlannerId(interaction),
-                kind: interaction?.createDefaults?.kind ?? "activity",
-                layerId: createLayer,
-                period: {
-                  kind: "all-day",
-                  startDate,
-                  endDateExclusive: addDays(startDate, 1),
-                },
-                version: 1,
-                title: "New item",
-              },
+            const item = buildCreateItem({
+              interaction,
+              activeLayerId: createLayer,
+              startDate: createDate,
+              endDateExclusive: addDays(createDate, 1),
+              createId: () => createPlannerId(interaction),
             });
+            if (item) void pipeline.requestCommand({ type: "create", item });
           }}
         >
           Create item

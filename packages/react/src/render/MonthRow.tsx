@@ -10,6 +10,7 @@ import type { KeyboardEvent, ReactNode } from "react";
 import { rowTemplate, scaledRowHeight } from "../geometry.js";
 import type { GesturePreview } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
+import { safeCssColor } from "../safeStyle.js";
 import type {
   AnnotationRenderContext,
   CellRenderContext,
@@ -220,7 +221,7 @@ export function MonthRow({
             variant="gesture-preview"
             itemId={preview.kind === "item" ? preview.itemId : undefined}
             layerId={preview.layerId}
-            color={preview.layerId ? layers.get(preview.layerId)?.color : undefined}
+            color={preview.layerId ? safeCssColor(layers.get(preview.layerId)?.color) : undefined}
             valid={preview.valid}
           />
         )}

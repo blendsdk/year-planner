@@ -75,3 +75,21 @@ describe("print implementation", () => {
     expect(tree.querySelector('[data-print-item-id="tint"]')).not.toBeNull();
   });
 });
+
+describe("RD-10-AC-06: short-window print pages", () => {
+  it("prints a 12-month window as one page and an 18-month window as two", () => {
+    const twelve = render(
+      <YearPlanner range={{ start: { year: 2027, month: 0 }, monthCount: 12 }} />,
+    );
+    expect(pages(twelve.container)).toHaveLength(1);
+    expect(pages(twelve.container)[0]?.querySelectorAll("[data-print-row-id]")).toHaveLength(12);
+    twelve.unmount();
+
+    const eighteen = render(
+      <YearPlanner range={{ start: { year: 2027, month: 0 }, monthCount: 18 }} />,
+    );
+    expect(pages(eighteen.container)).toHaveLength(2);
+    expect(pages(eighteen.container)[0]?.querySelectorAll("[data-print-row-id]")).toHaveLength(14);
+    expect(pages(eighteen.container)[1]?.querySelectorAll("[data-print-row-id]")).toHaveLength(4);
+  });
+});

@@ -88,6 +88,26 @@ const overflowItems: PlannerItem[] = Array.from({ length: 20 }, (_, index) => ({
   version: 1,
 }));
 
+const prt01Items: PlannerItem[] = [
+  {
+    id: "prt01-booking",
+    kind: "activity",
+    layerId: "bookings",
+    period: { kind: "all-day", startDate: "2017-02-06", endDateExclusive: "2017-02-10" },
+    title: "PRT-01 booking",
+    version: 1,
+  },
+  {
+    id: "prt01-annotation",
+    kind: "annotation",
+    layerId: "notes",
+    period: { kind: "all-day", startDate: "2017-02-01", endDateExclusive: "2017-02-02" },
+    title: "PRT-01 holiday",
+    version: 1,
+    annotation: { label: "OH", background: "#ffd166", priority: 2 },
+  },
+];
+
 const securityItem: PlannerItem = {
   id: "security-probe",
   kind: "activity",
@@ -100,17 +120,22 @@ const securityItem: PlannerItem = {
 };
 
 export function App() {
-  const [year, setYear] = useState(2016);
   const search = typeof window === "undefined" ? "" : window.location.search;
+  const prt01Mode = new URLSearchParams(search).get("print") === "prt01";
+  const [year, setYear] = useState(prt01Mode ? 2017 : 2016);
   const securityMode = new URLSearchParams(search).get("security") === "1";
   const ac3Mode = new URLSearchParams(search).get("ac3") === "1";
   const interactionMode = new URLSearchParams(search).get("interaction") === "1";
   const commandsMode = new URLSearchParams(search).get("commands") === "1";
-  const [theme, setTheme] = useState<YearPlannerThemeName>("classic-blue");
+  const [theme, setTheme] = useState<YearPlannerThemeName>(
+    prt01Mode ? "classic-yellow" : "classic-blue",
+  );
   const [months, setMonths] = useState(14);
   const [density, setDensity] = useState<"compact" | "expanded">("compact");
   const [zoom, setZoom] = useState(1);
-  const items = [...baseItems, ...overflowItems, ...(securityMode ? [securityItem] : [])];
+  const items = prt01Mode
+    ? prt01Items
+    : [...baseItems, ...overflowItems, ...(securityMode ? [securityItem] : [])];
   const layoutProps =
     months === 14 ? { year } : { range: { start: { year, month: 0 }, monthCount: months } };
 
@@ -133,7 +158,11 @@ export function App() {
       >
         <label>
           Year{" "}
-          <select value={year} onChange={(event) => setYear(Number(event.target.value))}>
+          <select
+            data-testid="year"
+            value={year}
+            onChange={(event) => setYear(Number(event.target.value))}
+          >
             <option value={2016}>2016</option>
             <option value={2017}>2017</option>
             <option value={2027}>2027</option>
@@ -142,6 +171,7 @@ export function App() {
         <label>
           Theme{" "}
           <select
+            data-testid="theme"
             value={theme}
             onChange={(event) => setTheme(event.target.value as YearPlannerThemeName)}
           >
@@ -154,8 +184,14 @@ export function App() {
         </label>
         <label>
           Window{" "}
-          <select value={months} onChange={(event) => setMonths(Number(event.target.value))}>
+          <select
+            data-testid="months"
+            value={months}
+            onChange={(event) => setMonths(Number(event.target.value))}
+          >
+            <option value={12}>12 months</option>
             <option value={14}>14 months</option>
+            <option value={18}>18 months</option>
             <option value={24}>24 months</option>
             <option value={36}>36 months</option>
           </select>

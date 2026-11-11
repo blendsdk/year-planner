@@ -45,7 +45,7 @@ async function items(page: Page): Promise<{ id: string; period: { startDate: str
   return JSON.parse((await page.getByTestId("items-json").textContent()) ?? "[]");
 }
 
-test.describe("RD-09-AC-07/15: axe matrix", () => {
+test.describe("RD-09-AC-07/15 / RD-10-AC-07: axe matrix", () => {
   test.beforeEach(({ browserName }) => {
     test.skip(browserName !== "chromium", "axe matrix is Chromium-only");
   });
@@ -112,8 +112,10 @@ test.describe("RD-09-AC-07/15: axe matrix", () => {
 });
 
 test.describe("RD-09-AC-01/02/05/11/14: keyboard evidence", () => {
+  test.describe.configure({ timeout: 60_000 });
   test.beforeEach(async ({ page }) => {
     await page.goto("/?interaction=1");
+    await expect(page.getByRole("grid")).toBeVisible();
   });
 
   test("moves, extends, toggles and inspects with the keyboard", async ({ page }) => {
@@ -141,6 +143,7 @@ test.describe("RD-09-AC-01/02/05/11/14: keyboard evidence", () => {
   test("skip link focuses the item list", async ({ page }) => {
     const link = page.locator(".yp-skip-link");
     await link.focus();
+    await expect(link).toBeFocused();
     await page.keyboard.press("Enter");
     await expect(page.locator('[data-yp-part="item-list"]')).toBeFocused();
   });

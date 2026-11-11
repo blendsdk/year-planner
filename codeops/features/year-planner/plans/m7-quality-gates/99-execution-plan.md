@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-11 16:00
-> **Progress**: 19/92 tasks (21%)
+> **Last Updated**: 2026-11-11 17:50
+> **Progress**: 32/92 tasks (35%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -104,11 +104,11 @@ changing them.
 **Objective**: Write the window, overflow, theme, print, mobile and React 19 tests before adding the
 fixtures and baselines.
 
-- [ ] 2.1.1 [spec-author] Write the 12/18/24/36 window, overflow, high-contrast and print visual tests with `RD-10-AC-04` — `tests/e2e/quality-visual.spec.ts`
-- [ ] 2.1.2 [spec-author] Write the 12/18 month and PRT-01 print tests with `RD-10-AC-06` — `tests/e2e/print-matrix.spec.ts`
-- [ ] 2.1.3 [spec-author] Write the mobile Chromium/WebKit smoke with `RD-10-AC-04` — `tests/e2e/mobile.spec.ts`
-- [ ] 2.1.4 [spec-author] Write the React 19 render smoke with `RD-10-AC-04` — `packages/react/src/react19.spec.test.tsx`
-- [ ] 2.1.5 Run the new tests and record the red result — `pnpm exec playwright test tests/e2e/quality-visual.spec.ts tests/e2e/print-matrix.spec.ts tests/e2e/mobile.spec.ts && pnpm --filter @blendsdk/react-year-planner exec vitest run src/react19.spec.test.tsx`
+- [x] 2.1.1 [spec-author] Write the 12/18/24/36 window, overflow, high-contrast and print visual tests with `RD-10-AC-04` — `tests/e2e/quality-visual.spec.ts` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.1.2 [spec-author] Write the 12/18 month and PRT-01 print tests with `RD-10-AC-06` — `tests/e2e/print-matrix.spec.ts` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.1.3 [spec-author] Write the mobile Chromium/WebKit smoke with `RD-10-AC-04` — `tests/e2e/mobile.spec.ts` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.1.4 [spec-author] Write the React 19 render smoke with `RD-10-AC-04` — `packages/react/src/react19.spec.test.tsx` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.1.5 Run the new tests and record the red result — `pnpm exec playwright test tests/e2e/quality-visual.spec.ts tests/e2e/print-matrix.spec.ts tests/e2e/mobile.spec.ts && pnpm --filter @blendsdk/react-year-planner exec vitest run src/react19.spec.test.tsx` ✅ (completed: 2026-11-11 17:50)
 
 ### Step 2.2: Implementation
 
@@ -116,14 +116,14 @@ fixtures and baselines.
 **Objective**: Add the missing window options, print fixture, mobile projects, shared PDF helper and
 reviewed baselines.
 
-- [ ] 2.2.1 Add 12/18-month options and the PRT-01 print fixture — `apps/demo/src/App.tsx`
-- [ ] 2.2.2 Add the mobile projects, explicit zero retries and `trace: "retain-on-failure"` — `playwright.config.ts`
-- [ ] 2.2.3 Extract the shared PDF reader and page assertions — `tests/e2e/pdf.ts`
-- [ ] 2.2.4 Generate and review the Chromium, Firefox and WebKit baselines — `tests/e2e/*-snapshots/`
-- [ ] 2.2.5 Add `test:a11y`, `test:visual`, `test:print` and `test:mobile` aliases and tag the axe spec with `RD-10-AC-07` — `package.json`, `tests/e2e/accessibility.spec.ts`
-- [ ] 2.3.1 Prove green for ST-11–ST-18 — `pnpm exec playwright test`
-- [ ] 2.3.2 Add print page-count, row-bounds and `pdftotext` cases for 12 and 18 months — `packages/react/src/print.impl.test.tsx`, `tests/e2e/print-matrix.spec.ts`
-- [ ] 2.3.3 Verify the phase — `pnpm verify`
+- [x] 2.2.1 Add 12/18-month options and the PRT-01 print fixture — `apps/demo/src/App.tsx` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.2.2 Add the mobile projects, explicit zero retries and `trace: "retain-on-failure"` — `playwright.config.ts` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.2.3 Extract the shared PDF reader and page assertions — `tests/e2e/pdf.ts` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.2.4 Generate and review the Chromium, Firefox and WebKit baselines — `tests/e2e/*-snapshots/` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.2.5 Add `test:a11y`, `test:visual`, `test:print` and `test:mobile` aliases and tag the axe spec with `RD-10-AC-07` — `package.json`, `tests/e2e/accessibility.spec.ts` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.3.1 Prove green for ST-11–ST-18 — `pnpm exec playwright test` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.3.2 Add print page-count, row-bounds and `pdftotext` cases for 12 and 18 months — `packages/react/src/print.impl.test.tsx`, `tests/e2e/print-matrix.spec.ts` ✅ (completed: 2026-11-11 17:50)
+- [x] 2.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-11 17:50)
 
 **Deliverables**:
 - [ ] 12/14/18/24/36 visual baselines on three desktop engines

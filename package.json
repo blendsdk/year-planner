@@ -31,7 +31,9 @@
     "api-report:ci": "pnpm build && pnpm --filter @blendsdk/year-planner-core api-report:ci && pnpm --filter @blendsdk/react-year-planner api-report:ci",
     "docs": "pnpm api-report && pnpm docs:build",
     "test:coverage": "pnpm test",
-    "docs:build": "typedoc --options typedoc.core.json && typedoc --options typedoc.react.json && cp docs/api-index.html docs/api/index.html"
+    "docs:build": "typedoc --options typedoc.core.json && typedoc --options typedoc.react.json && cp docs/api-index.html docs/api/index.html",
+    "test:a11y": "playwright test tests/e2e/accessibility.spec.ts",
+    "test:mobile": "playwright test tests/e2e/mobile.spec.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",

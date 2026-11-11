@@ -6,7 +6,15 @@ import type {
   PlannerLayer,
   PlannerSelection,
 } from "@blendsdk/year-planner-core";
+import type { CSSProperties } from "react";
 import { useRef, useState } from "react";
+
+/** Keeps diagnostic JSON inside the mobile viewport. */
+const jsonStyle: CSSProperties = {
+  maxWidth: "100%",
+  whiteSpace: "pre-wrap",
+  overflowWrap: "anywhere",
+};
 
 const layers: PlannerLayer[] = [
   { id: "bookings", name: "Bookings", channel: "ribbon", color: "#1d4e89", label: "B" },
@@ -178,9 +186,15 @@ export function InteractionDemo() {
           date === "2027-03-10" ? { disabled: true, label: "Off" } : undefined
         }
       />
-      <pre data-testid="selection-json">{JSON.stringify(selection)}</pre>
-      <pre data-testid="items-json">{itemsJson}</pre>
-      <pre data-testid="diagnostics-json">{JSON.stringify(diagnostics)}</pre>
+      <pre style={jsonStyle} data-testid="selection-json">
+        {JSON.stringify(selection)}
+      </pre>
+      <pre style={jsonStyle} data-testid="items-json">
+        {itemsJson}
+      </pre>
+      <pre style={jsonStyle} data-testid="diagnostics-json">
+        {JSON.stringify(diagnostics)}
+      </pre>
     </main>
   );
 }

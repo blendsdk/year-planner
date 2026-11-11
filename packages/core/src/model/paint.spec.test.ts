@@ -62,7 +62,7 @@ function context(
 const defaults: PaintDefaults = { kind: "highlight", title: "H" };
 
 describe("RD-04 paint and erase", () => {
-  it("erases the middle into two new residual items", () => {
+  it("RD-04-AC-11: erases the middle into two new residual items", () => {
     const ctx = context([
       highlight("h1", "2027-06-10", "2027-06-21", {
         color: "#123456",
@@ -102,7 +102,7 @@ describe("RD-04 paint and erase", () => {
     }
   });
 
-  it("paints a merged interval over a matching highlight", () => {
+  it("RD-04-AC-12: paints a merged interval over a matching highlight", () => {
     const ctx = context([highlight("h1", "2027-06-10", "2027-06-14")]);
     const result = paintItems(
       ctx,
@@ -123,7 +123,7 @@ describe("RD-04 paint and erase", () => {
     expect(result.updatedItems[0]?.title).toBe("H");
   });
 
-  it("does not merge differing metadata or color and keeps originals", () => {
+  it("RD-04-AC-13: does not merge differing metadata or color and keeps originals", () => {
     const ctx = context([
       highlight("h1", "2027-06-10", "2027-06-14", { metadata: { a: 1 } }),
       highlight("h2", "2027-06-12", "2027-06-16", { color: "#ff0000" }),
@@ -160,7 +160,7 @@ describe("RD-04 paint and erase", () => {
     expect(result.updatedItems[0]?.title).toBe("New");
   });
 
-  it("rejects a layer that is not the active paint target", () => {
+  it("RD-04-AC-17: rejects a layer that is not the active paint target", () => {
     const result = paintItems(
       context([highlight("h1", "2027-06-10", "2027-06-14")]),
       "background",
@@ -173,7 +173,7 @@ describe("RD-04 paint and erase", () => {
     expect(result.removedItemIds).toHaveLength(0);
   });
 
-  it("skips a hidden highlight and leaves it unchanged", () => {
+  it("RD-04-AC-15: skips a hidden highlight and leaves it unchanged", () => {
     const ctx = context([highlight("h1", "2027-06-10", "2027-06-21")], {
       visibility: state({ hiddenItemIds: ["h1"] }),
     });
@@ -247,7 +247,7 @@ describe("RD-04 paint and erase", () => {
     expect(stale.removedItemIds).toHaveLength(0);
   });
 
-  it("merges only when the title matches", () => {
+  it("RD-04-AC-16: merges only when the title matches", () => {
     const same = paintItems(
       context([highlight("h1", "2027-06-10", "2027-06-14")]),
       "highlights",

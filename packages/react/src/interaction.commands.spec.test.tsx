@@ -148,7 +148,7 @@ function deferred<T>() {
   return { promise, resolve };
 }
 
-describe("RD-08 pending previews", () => {
+describe("RD-08-AC-02/03/04/05/13/14: pending previews", () => {
   it("keeps the move preview until the host accepts", async () => {
     const response = deferred<CommandOutcome>();
     const harness = setup({ onChangeRequest: () => response.promise });

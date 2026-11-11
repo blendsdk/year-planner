@@ -56,7 +56,7 @@ function setup() {
   );
 }
 
-describe("RD-09 semantics", () => {
+describe("RD-09-AC-01/02/03: semantics", () => {
   it("labels the root region and the grid as a nested pair", () => {
     const { container } = setup();
     const root = container.querySelector('[data-yp-part="root"]') as HTMLElement;
@@ -119,7 +119,7 @@ describe("RD-09 semantics", () => {
   });
 });
 
-describe("RD-09 item list", () => {
+describe("RD-09-AC-04/11/12: item list", () => {
   it("lists every visible item and excludes hidden items", () => {
     const { container } = render(
       <YearPlanner
@@ -204,7 +204,7 @@ describe("RD-09 item list", () => {
   });
 });
 
-describe("RD-09 focus model", () => {
+describe("RD-09-AC-02/05: focus model", () => {
   it("keeps exactly one date cell, one proxy and one overflow button in the tab order", () => {
     const crowded: PlannerItem[] = ["a", "b", "c"].map((id) => ({
       ...bookingFixture,
@@ -326,7 +326,7 @@ describe("RD-09 focus model", () => {
   });
 });
 
-describe("RD-09 announcements", () => {
+describe("RD-09-AC-05/06: announcements", () => {
   const moveButton = (container: HTMLElement) =>
     Array.from(container.querySelectorAll("button")).find((button) =>
       button.textContent?.includes("Move later"),

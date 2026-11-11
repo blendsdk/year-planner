@@ -98,7 +98,7 @@ function malformedOutcome(value: unknown): CommandOutcome {
   return value;
 }
 
-describe("RD-08 request context and validation", () => {
+describe("RD-08-AC-03/04/11/12/13: request context and validation", () => {
   it("uses the request ID factory", async () => {
     let context: CommandContext | undefined;
     const harness = renderPlanner({
@@ -443,7 +443,7 @@ describe("RD-08 request context and validation", () => {
   });
 });
 
-describe("RD-08 malformed outcomes and concurrency", () => {
+describe("RD-08-AC-12: malformed outcomes and concurrency", () => {
   it("rejects a null outcome without mutation", async () => {
     const onDiagnostic = vi.fn();
     const onItemsChange = vi.fn();
@@ -556,7 +556,7 @@ describe("RD-08 malformed outcomes and concurrency", () => {
   });
 });
 
-describe("RD-08 delete confirmation", () => {
+describe("RD-08-AC-10: delete confirmation", () => {
   it("treats a denied confirmation as a no-op", async () => {
     const onChangeRequest = vi.fn();
     const onRejected = vi.fn();

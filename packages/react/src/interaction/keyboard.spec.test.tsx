@@ -121,7 +121,7 @@ function pointer(
   else fireEvent.pointerUp(element, payload);
 }
 
-describe("RD-07 keyboard, focus and touch", () => {
+describe("RD-07-AC-11/13/15/18: keyboard, focus and touch", () => {
   it("moves focus with arrows and skips disabled dates", () => {
     const harness = setup({
       getDateMeta: (date) => (date === "2027-02-02" ? { disabled: true } : undefined),

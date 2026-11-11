@@ -110,3 +110,49 @@ describe("RD-03-AC-07/08/09/10/14: dynamic windows", () => {
     expect(paginatePrintRows(result.layout, 14)).toHaveLength(3);
   });
 });
+
+describe("RD-03-AC-11: blank slots", () => {
+  it("carries no date on blank slots and keeps every dated slot inside the month", () => {
+    const result = buildClassicYearLayout({ year: 2016 });
+    if (!result.ok) throw new Error("expected layout");
+    for (const row of result.layout.rows) {
+      for (const column of row.columns) {
+        if (column.date) {
+          expect(column.date.startsWith(row.rowId)).toBe(true);
+          expect(column.width).toBeGreaterThan(0);
+        } else {
+          expect(column.width).toBeGreaterThan(0);
+        }
+      }
+      expect(row.columns.filter((column) => column.date).length).toBe(row.daysInMonth);
+    }
+  });
+});
+
+describe("RD-03-AC-12: weekend geometry", () => {
+  it("makes weekend columns narrower and keeps prefix sums monotonic", () => {
+    const result = buildClassicYearLayout({ year: 2016 });
+    if (!result.ok) throw new Error("expected layout");
+    for (const row of result.layout.rows) {
+      const weekend = row.columns.filter((column) => column.isWeekend);
+      const weekday = row.columns.filter((column) => !column.isWeekend);
+      expect(Math.max(...weekend.map((column) => column.width))).toBeLessThan(
+        Math.min(...weekday.map((column) => column.width)),
+      );
+      for (let index = 1; index < row.prefixWidths.length; index += 1) {
+        expect(row.prefixWidths[index]).toBeGreaterThan(row.prefixWidths[index - 1] ?? 0);
+      }
+    }
+  });
+});
+
+describe("RD-03-AC-13: deterministic layout", () => {
+  it("produces identical rows, prefixes and signature for identical inputs", () => {
+    const first = buildClassicYearLayout({ year: 2016 });
+    const second = buildClassicYearLayout({ year: 2016 });
+    if (!first.ok || !second.ok) throw new Error("expected layouts");
+    expect(first.layout.signature).toBe(second.layout.signature);
+    expect(first.layout.rows).toEqual(second.layout.rows);
+    expect(first.layout.totalDayWidth).toBe(second.layout.totalDayWidth);
+  });
+});

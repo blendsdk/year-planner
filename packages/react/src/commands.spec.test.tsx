@@ -60,7 +60,7 @@ function harness(overrides: Partial<YearPlannerProps> = {}) {
 }
 
 describe("RD-06 command pipeline: local mode", () => {
-  it("deletes an uncontrolled item and emits the next array", async () => {
+  it("RD-06-AC-14: deletes an uncontrolled item and emits the next array", async () => {
     const { ref, onItemsChange, container } = harness({
       interaction: { confirmChange: () => true },
     });
@@ -137,7 +137,7 @@ describe("RD-06 command pipeline: local mode", () => {
     expect(commands[3]).toMatchObject({ type: "paint", layerId: "highlight" });
   });
 
-  it("rejects read-only, stale and invalid commands with typed codes", async () => {
+  it("RD-07-AC-10: rejects read-only, stale and invalid commands with typed codes", async () => {
     const { ref, onDiagnostic } = harness({ readOnly: true });
     act(() => {
       ref.current?.requestCommand({
@@ -208,7 +208,7 @@ describe("RD-06 command pipeline: local mode", () => {
     );
   });
 
-  it("redacts hidden item details in command diagnostics", async () => {
+  it("RD-08-AC-17: redacts hidden item details in command diagnostics", async () => {
     const { ref, onDiagnostic } = harness({
       layers: [layer("ribbon", { defaultVisible: false })],
       defaultItems: [

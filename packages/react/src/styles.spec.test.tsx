@@ -9,7 +9,7 @@ const selectors = css
   .filter((selector): selector is string => Boolean(selector && !selector.startsWith("@")));
 
 describe("RD-06 CSS contract", () => {
-  it("scopes selectors and avoids !important", () => {
+  it("RD-06-AC-06: scopes selectors and avoids !important", () => {
     expect(css).not.toContain("!important");
     for (const selector of selectors) {
       if (!selector.startsWith(".")) continue;
@@ -48,7 +48,7 @@ describe("RD-09 CSS contract", () => {
     expect(css).toContain("height: 24px");
   });
 
-  it("declares non-colour cues", () => {
+  it("RD-09-AC-09: declares non-colour cues", () => {
     expect(css).toContain('.yp-cell[aria-selected="true"]');
     expect(css).toContain(".yp-cell.yp-holiday .yp-day-number");
     expect(css).toContain('.yp-proxy[aria-pressed="true"]');

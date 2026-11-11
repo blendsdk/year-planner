@@ -31,7 +31,11 @@ pnpm test:e2e
 pnpm lint
 pnpm build
 pnpm verify
+pnpm verify:full
 ```
+
+`pnpm verify` is the fast gate. `pnpm verify:full` is the release gate: it adds the
+browser, print and accessibility suites and the packed-tarball consumer proof.
 
 The project uses strict TypeScript, Vitest, Playwright, Storybook and Biome.
 All public APIs require TSDoc documentation.

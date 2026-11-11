@@ -46,7 +46,7 @@ describe("RD-06 framework adapters", () => {
     expect(vars["--yp-highlight"]).toBeUndefined();
   });
 
-  it("renders host buttons in cells and the inspector without nesting in a proxy", () => {
+  it("RD-06-AC-03: renders host buttons in cells and the inspector without nesting in a proxy", () => {
     const { container } = render(
       <YearPlanner
         year={2016}

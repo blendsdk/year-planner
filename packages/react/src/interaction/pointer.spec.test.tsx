@@ -158,7 +158,7 @@ describe("RD-07 pointer wiring", () => {
     expect(harness.capture).toHaveBeenCalledWith(1);
   });
 
-  it("selects a cross-month date range with two preview fragments", async () => {
+  it("RD-07-AC-01: selects a cross-month date range with two preview fragments", async () => {
     const harness = setup({ interaction: { mode: "select" } });
     const from = cellPoint("2027-01-28");
     const to = cellPoint("2027-02-06");
@@ -244,7 +244,7 @@ describe("RD-07 pointer wiring", () => {
     });
   });
 
-  it("creates an item with create defaults", async () => {
+  it("RD-07-AC-13: creates an item with create defaults", async () => {
     const harness = setup({
       interaction: {
         mode: "create",
@@ -280,7 +280,7 @@ describe("RD-07 pointer wiring", () => {
     expect(harness.onChangeRequest).not.toHaveBeenCalled();
   });
 
-  it("cancels an active move on Escape without a command", async () => {
+  it("RD-07-AC-09: cancels an active move on Escape without a command", async () => {
     const harness = setup({}, { items: [item("a", "bookings", "2027-01-28", "2027-02-07")] });
     const proxy = harness.container.querySelector(
       '[data-yp-part="item-proxy"][data-item-id="a"]',

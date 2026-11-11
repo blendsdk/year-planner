@@ -3,7 +3,7 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { YearPlanner } from "./YearPlanner";
 
-describe("RD-06 SSR", () => {
+describe("RD-06-AC-10: SSR", () => {
   it("renders the grid and labels without browser globals", () => {
     const html = renderToString(<YearPlanner year={2016} />);
     expect(html).toContain('role="grid"');

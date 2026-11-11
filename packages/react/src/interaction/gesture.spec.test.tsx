@@ -231,7 +231,7 @@ describe("RD-07 gesture engine", () => {
     ).toBe("2027-01-01");
   });
 
-  it("does not start a gesture on a blank target", () => {
+  it("RD-07-AC-19: does not start a gesture on a blank target", () => {
     expect(begin({ kind: "none" }, "2027-02-01").phase).toBe("idle");
   });
 
@@ -269,7 +269,7 @@ describe("RD-07 gesture engine", () => {
     expect(result).toEqual(["a", "b"]);
   });
 
-  it("excludes hidden, overflow and backdrop fragments from a marquee", () => {
+  it("RD-07-AC-19: excludes hidden, overflow and backdrop fragments from a marquee", () => {
     const result = intersectMarquee(
       ribbonLayout([
         fragment("hidden", 0, 0),
@@ -298,7 +298,7 @@ describe("RD-07 gesture engine", () => {
     });
   });
 
-  it("moves a 10-day item and preserves its duration", () => {
+  it("RD-07-AC-07: moves a 10-day item and preserves its duration", () => {
     const state = begin(proxy("2027-01-28"), "2027-01-28");
     const active = move(state, 140, "2027-02-02");
     const completion = end(active, "2027-02-02");
@@ -346,7 +346,7 @@ describe("RD-07 gesture engine", () => {
     });
   });
 
-  it("rejects a resize whose end is before its start", () => {
+  it("RD-07-AC-08: rejects a resize whose end is before its start", () => {
     const ctx = context({ items: new Map([["a", item("a", "2027-02-01", "2027-02-06")]]) });
     const state = begin(handle("end", "2027-01-31"), "2027-01-31", ctx);
     const active = move(state, 140, "2027-01-31", ctx);
@@ -366,7 +366,7 @@ describe("RD-07 gesture engine", () => {
     });
   });
 
-  it("cancels on a real context change but not an equal-content rerender", () => {
+  it("RD-07-AC-14: cancels on a real context change but not an equal-content rerender", () => {
     expect(
       gestureContextChanged(
         { signature: "same", mode: "auto" },

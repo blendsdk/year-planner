@@ -324,10 +324,10 @@ export interface YearPlannerProps {
     };
     readOnly?: boolean;
     renderAnnotation?: (context: AnnotationRenderContext) => ReactNode;
-    renderCell?: (context: CellRenderContext) => ReactNode;
+    renderCell?: ((context: CellRenderContext) => ReactNode) | undefined;
     renderEmpty?: () => ReactNode;
-    renderInspector?: (context: InspectorRenderContext) => ReactNode;
-    renderItem?: (context: ItemRenderContext) => ReactNode;
+    renderInspector?: ((context: InspectorRenderContext) => ReactNode) | undefined;
+    renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
     renderOverflow?: (context: OverflowRenderContext) => ReactNode;
     renderTooltip?: (context: TooltipRenderContext) => ReactNode;
     resources?: Resource[];

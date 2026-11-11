@@ -300,9 +300,9 @@ export interface YearPlannerProps {
   /** Host date presentation. */
   getDateMeta?: (date: DateKey, context: DateMetaContext) => DateMeta | undefined;
   /** Additive cell content. */
-  renderCell?: (context: CellRenderContext) => ReactNode;
+  renderCell?: ((context: CellRenderContext) => ReactNode) | undefined;
   /** Additive item content. */
-  renderItem?: (context: ItemRenderContext) => ReactNode;
+  renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
   /** Annotation content. */
   renderAnnotation?: (context: AnnotationRenderContext) => ReactNode;
   /** Overflow content. */
@@ -310,7 +310,7 @@ export interface YearPlannerProps {
   /** Empty state content. */
   renderEmpty?: () => ReactNode;
   /** Inspector content. */
-  renderInspector?: (context: InspectorRenderContext) => ReactNode;
+  renderInspector?: ((context: InspectorRenderContext) => ReactNode) | undefined;
   /** Tooltip content. */
   renderTooltip?: (context: TooltipRenderContext) => ReactNode;
   /** Structural slot overrides. */

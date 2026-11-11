@@ -66,7 +66,7 @@ describe("RD-04 validation: canonical model", () => {
   });
 });
 
-describe("RD-04 validation: groups", () => {
+describe("RD-04-AC-06: validation of groups and cycles", () => {
   it("rejects a group cycle and every dependent entity while keeping valid data", () => {
     const result = validatePlannerData({
       groups: [group("a", "b"), group("b", "a"), group("ok")],
@@ -97,7 +97,7 @@ describe("RD-04 validation: groups", () => {
   });
 });
 
-describe("RD-04 validation: items and references", () => {
+describe("RD-04-AC-07: validation of item references", () => {
   it("drops an item whose assignment references an unknown resource", () => {
     const result = validatePlannerData({
       layers: [layer("ribbon")],
@@ -143,7 +143,7 @@ describe("RD-04 validation: items and references", () => {
     expect(result.model.items[0]?.period).toEqual(annotation.period);
   });
 
-  it("preserves custom annotation styling and invents no holiday data", () => {
+  it("RD-04-AC-10: preserves custom annotation styling and invents no holiday data", () => {
     const annotation: PlannerItem = {
       ...item("holiday", "notes"),
       kind: "annotation",

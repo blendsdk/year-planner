@@ -2,8 +2,20 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 
-const BUDGET_KB = 65;
+/**
+ * Bundle size gate.
+ *
+ * Two measurements answer two different questions:
+ *
+ * - the React package entry plus its stylesheet is what a consumer adds on
+ *   top of the core package, and it must stay under 60 kB gzip;
+ * - the complete installed set (core, React, both adapters and CSS) must stay
+ *   under the accepted 65 kB ceiling.
+ */
+const REACT_BUDGET_KB = 60;
+const TOTAL_BUDGET_KB = 65;
 
+/** Recursively lists the emitted JavaScript files under one directory. */
 function coreJavaScriptFiles(directory) {
   const entries = readdirSync(directory, { withFileTypes: true });
   const files = [];
@@ -15,7 +27,13 @@ function coreJavaScriptFiles(directory) {
   return files;
 }
 
-const files = [
+/** Returns the gzip size of one file in bytes. */
+function gzipBytes(file) {
+  return gzipSync(readFileSync(file)).byteLength;
+}
+
+const reactFiles = ["packages/react/dist/index.js", "packages/react/dist/styles.css"];
+const totalFiles = [
   ...coreJavaScriptFiles("packages/core/dist"),
   "packages/react/dist/index.js",
   "packages/react/dist/adapters/fluent.js",
@@ -23,9 +41,16 @@ const files = [
   "packages/react/dist/styles.css",
 ];
 
+let reactTotal = 0;
+for (const file of reactFiles) {
+  const size = gzipBytes(file);
+  reactTotal += size;
+  console.log(`${file}: ${(size / 1024).toFixed(2)} kB gzip`);
+}
+
 let total = 0;
-for (const file of files) {
-  const size = gzipSync(readFileSync(file)).byteLength;
+for (const file of totalFiles) {
+  const size = gzipBytes(file);
   total += size;
   console.log(`${file}: ${(size / 1024).toFixed(2)} kB gzip`);
 }
@@ -40,12 +65,22 @@ if (entrySource.includes("process.env")) {
   process.exit(1);
 }
 
+const reactKb = reactTotal / 1024;
 const totalKb = total / 1024;
 console.log(
-  `Core + React package (JS + CSS): ${totalKb.toFixed(2)} kB gzip / ${BUDGET_KB} kB budget`,
+  `React entry + CSS (ESM + styles): ${reactKb.toFixed(2)} kB gzip / ${REACT_BUDGET_KB} kB budget`,
+);
+console.log(
+  `Total installed (core + React + adapters + CSS): ${totalKb.toFixed(2)} kB gzip / ${TOTAL_BUDGET_KB} kB budget`,
 );
 
-if (totalKb > BUDGET_KB) {
-  console.error(`Bundle budget exceeded: ${totalKb.toFixed(2)} kB > ${BUDGET_KB} kB`);
-  process.exit(1);
+let failed = false;
+if (reactKb > REACT_BUDGET_KB) {
+  console.error(`React package budget exceeded: ${reactKb.toFixed(2)} kB > ${REACT_BUDGET_KB} kB`);
+  failed = true;
 }
+if (totalKb > TOTAL_BUDGET_KB) {
+  console.error(`Total bundle budget exceeded: ${totalKb.toFixed(2)} kB > ${TOTAL_BUDGET_KB} kB`);
+  failed = true;
+}
+if (failed) process.exit(1);

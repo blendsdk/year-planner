@@ -56,7 +56,7 @@ const fragmentsOf = (ribbons: RibbonLayout, itemId: string) =>
   ribbons.fragments.filter((fragment) => fragment.itemId === itemId);
 
 describe("RD-05 fragment projection", () => {
-  it("splits a cross-month item into clipped row fragments with one identity", () => {
+  it("RD-05-AC-01: splits a cross-month item into clipped row fragments with one identity", () => {
     const ribbons = build([item("hl-cross-month", "ribbon", "2027-01-28", "2027-02-07")]);
     const fragments = fragmentsOf(ribbons, "hl-cross-month");
     expect(fragments).toHaveLength(2);
@@ -77,14 +77,14 @@ describe("RD-05 fragment projection", () => {
     expect(fragments[1]?.width).toBe(315);
   });
 
-  it("measures one-day and eight-day widths from the actual slots", () => {
+  it("RD-05-AC-02: measures one-day and eight-day widths from the actual slots", () => {
     const oneDay = build([item("one", "ribbon", "2027-02-01", "2027-02-02")]);
     expect(fragmentsOf(oneDay, "one")[0]?.width).toBe(55);
     const eightDays = build([item("eight", "ribbon", "2027-02-01", "2027-02-09")]);
     expect(fragmentsOf(eightDays, "eight")[0]?.width).toBe(410);
   });
 
-  it("places three overlapping items in three lanes", () => {
+  it("RD-05-AC-03: places three overlapping items in three lanes", () => {
     const ribbons = build([
       item("a", "ribbon", "2027-02-01", "2027-02-03"),
       item("b", "ribbon", "2027-02-01", "2027-02-03"),
@@ -95,7 +95,7 @@ describe("RD-05 fragment projection", () => {
     expect(fragmentsOf(ribbons, "c")[0]?.lane).toBe(2);
   });
 
-  it("splits a cross-year item across December and January", () => {
+  it("RD-05-AC-04: splits a cross-year item across December and January", () => {
     const ribbons = build([item("hl-cross-year", "ribbon", "2026-12-28", "2027-01-04")]);
     const fragments = fragmentsOf(ribbons, "hl-cross-year");
     expect(fragments.map((fragment) => fragment.rowId)).toEqual(["2026-12", "2027-01"]);
@@ -142,7 +142,7 @@ describe("RD-05 fragment projection", () => {
 });
 
 describe("RD-05 lanes and overflow", () => {
-  it("repacks lanes after hiding one of three layers", () => {
+  it("RD-05-AC-05: repacks lanes after hiding one of three layers", () => {
     const layers = [layer("l1"), layer("l2"), layer("l3")];
     const items = [
       item("a", "l1", "2027-02-01", "2027-02-03"),
@@ -159,7 +159,7 @@ describe("RD-05 lanes and overflow", () => {
     expect(after.fragments.find((fragment) => fragment.itemId === "b")).toBeUndefined();
   });
 
-  it("shows three lanes and seventeen overflow items in compact mode", () => {
+  it("RD-05-AC-06: shows three lanes and seventeen overflow items in compact mode", () => {
     const items = Array.from({ length: 20 }, (_, index) =>
       item(`item-${String(index).padStart(2, "0")}`, "ribbon", "2027-02-01", "2027-02-04"),
     );
@@ -173,7 +173,7 @@ describe("RD-05 lanes and overflow", () => {
     expect(february?.height).toBe(90);
   });
 
-  it("renders every lane and grows the row in expanded mode", () => {
+  it("RD-05-AC-07: renders every lane and grows the row in expanded mode", () => {
     const items = Array.from({ length: 20 }, (_, index) =>
       item(`item-${String(index).padStart(2, "0")}`, "ribbon", "2027-02-01", "2027-02-04"),
     );
@@ -184,7 +184,7 @@ describe("RD-05 lanes and overflow", () => {
     expect(february?.height).toBe(378);
   });
 
-  it("never lists a hidden item in overflow", () => {
+  it("RD-05-AC-08: never lists a hidden item in overflow", () => {
     const items = Array.from({ length: 20 }, (_, index) =>
       item(`item-${String(index).padStart(2, "0")}`, "ribbon", "2027-02-01", "2027-02-04"),
     );
@@ -316,7 +316,7 @@ describe("RD-05 lanes and overflow", () => {
 });
 
 describe("RD-05 signature and connector surface", () => {
-  it("is stable for identical inputs and changes with version, visibility and window", () => {
+  it("RD-05-AC-10: is stable for identical inputs and changes with version, visibility and window", () => {
     const items = [item("a", "ribbon", "2027-02-01", "2027-02-03")];
     const first = build(items);
     const second = build(items);

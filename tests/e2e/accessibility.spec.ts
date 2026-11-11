@@ -45,7 +45,7 @@ async function items(page: Page): Promise<{ id: string; period: { startDate: str
   return JSON.parse((await page.getByTestId("items-json").textContent()) ?? "[]");
 }
 
-test.describe("RD-09 axe matrix", () => {
+test.describe("RD-09-AC-07/15: axe matrix", () => {
   test.beforeEach(({ browserName }) => {
     test.skip(browserName !== "chromium", "axe matrix is Chromium-only");
   });
@@ -111,7 +111,7 @@ test.describe("RD-09 axe matrix", () => {
   });
 });
 
-test.describe("RD-09 keyboard evidence", () => {
+test.describe("RD-09-AC-01/02/05/11/14: keyboard evidence", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/?interaction=1");
   });

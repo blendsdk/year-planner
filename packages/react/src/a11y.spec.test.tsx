@@ -130,7 +130,7 @@ describe("selection helpers", () => {
   });
 });
 
-describe("contrast helpers", () => {
+describe("RD-09-AC-08: contrast helpers", () => {
   const presets = Object.entries(yearPlannerPresets);
 
   it("gives every preset a 4.5:1 ribbon text colour", () => {

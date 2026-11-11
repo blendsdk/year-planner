@@ -43,7 +43,7 @@ async function touchDragPoints(
   await client.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
 }
 
-test.describe("RD-07 touch interaction", () => {
+test.describe("RD-07-AC-12: touch interaction", () => {
   test("touch editing is scroll-first until explicitly enabled", async ({ page, browserName }) => {
     test.skip(browserName !== "chromium", "CDP touch input is Chromium-only");
     test.skip(!test.info().project.name.startsWith("touch"), "touch project only");

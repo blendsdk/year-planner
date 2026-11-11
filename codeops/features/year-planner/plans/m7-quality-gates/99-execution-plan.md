@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-11 14:51
-> **Progress**: 0/92 tasks (0%)
+> **Last Updated**: 2026-11-11 16:00
+> **Progress**: 19/92 tasks (21%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -52,34 +52,34 @@ red, implement, prove green, add implementation tests, verify.
 **Objective**: Prove the current matrix, title IDs and public-export contract are incomplete before
 changing them.
 
-- [ ] 1.1.1 [spec-author] Write ST-1–ST-5 checker tests with `RD-10-AC-02` and `through: 9` until the RD-10 tests exist — `tests/quality/traceability.spec.test.ts`
-- [ ] 1.1.2 [spec-author] Write the public runtime export smoke test with `RD-10-AC-03` — `tests/quality/public-api.spec.test.ts`
-- [ ] 1.1.3 [spec-author] Write the coverage, API-report and size contract test with `RD-10-AC-03` and `RD-10-AC-12` — `tests/quality/coverage-contract.spec.test.ts`
-- [ ] 1.1.4 [spec-author] Write the RD-01 repository/process contract tests — `tests/quality/repo-contract.spec.test.ts`
-- [ ] 1.1.5 Add the root quality Vitest project and `test:quality` script (test infrastructure) — `vitest.quality.config.ts`, `package.json`
-- [ ] 1.1.6 Run the new tests and record the red result — `pnpm test:quality`
+- [x] 1.1.1 [spec-author] Write ST-1–ST-5 checker tests with `RD-10-AC-02` and `through: 9` until the RD-10 tests exist — `tests/quality/traceability.spec.test.ts` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.1.2 [spec-author] Write the public runtime export smoke test with `RD-10-AC-03` — `tests/quality/public-api.spec.test.ts` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.1.3 [spec-author] Write the coverage, API-report and size contract test with `RD-10-AC-03` and `RD-10-AC-12` — `tests/quality/coverage-contract.spec.test.ts` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.1.4 [spec-author] Write the RD-01 repository/process contract tests — `tests/quality/repo-contract.spec.test.ts` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.1.5 Add the root quality Vitest project and `test:quality` script (test infrastructure) — `vitest.quality.config.ts`, `package.json` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.1.6 Run the new tests and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-11 16:00)
 
 ### Step 1.2: Implementation
 
 **Reference**: [03-01](03-01-traceability-api.md) · AR-3, AR-4
 **Objective**: Add the checker, full matrix and title IDs; restore green.
 
-- [ ] 1.2.1 Implement the parser/checker/CLI with status, file and title validation — `scripts/lib/traceability.mjs`, `scripts/check-traceability.mjs`
-- [ ] 1.2.2 Expand the canonical AC matrix for RD-01..RD-09 — `codeops/features/year-planner/requirements/00-traceability.md`
-- [ ] 1.2.3 Add `RD-02/RD-03` AC IDs to spec-test titles
-- [ ] 1.2.4 Add `RD-04/RD-05` AC IDs to spec-test titles
-- [ ] 1.2.5 Add `RD-06/RD-07` AC IDs to spec-test titles
-- [ ] 1.2.6 Add `RD-08/RD-09` AC IDs to spec-test titles
-- [ ] 1.2.7 Add the public API golden list and runtime smoke implementation — `tests/quality/public-api.golden.json`
-- [ ] 1.2.8 Split the size check into React entry+CSS (60 kB) and total (65 kB) and add the `RD-10-AC-12` title — `scripts/check-size.mjs`, `tests/quality/coverage-contract.spec.test.ts`
-- [ ] 1.2.9 Add the root tools typecheck and demo typecheck — `tsconfig.tools.json`, `apps/demo/tsconfig.json`, `package.json`
-- [ ] 1.2.10 Wire `test:quality` and `typecheck:tools` into `verify` and CI — `package.json`, `.github/workflows/ci.yml`
+- [x] 1.2.1 Implement the parser/checker/CLI with status, file and title validation — `scripts/lib/traceability.mjs`, `scripts/check-traceability.mjs` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.2.2 Expand the canonical AC matrix for RD-01..RD-09 — `codeops/features/year-planner/requirements/00-traceability.md` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.2.3 Add `RD-02/RD-03` AC IDs to spec-test titles ✅ (completed: 2026-11-11 16:00)
+- [x] 1.2.4 Add `RD-04/RD-05` AC IDs to spec-test titles ✅ (completed: 2026-11-11 16:00)
+- [x] 1.2.5 Add `RD-06/RD-07` AC IDs to spec-test titles ✅ (completed: 2026-11-11 16:00)
+- [x] 1.2.6 Add `RD-08/RD-09` AC IDs to spec-test titles ✅ (completed: 2026-11-11 16:00)
+- [x] 1.2.7 Add the public API golden list and runtime smoke implementation — `tests/quality/public-api.golden.json` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.2.8 Split the size check into React entry+CSS (60 kB) and total (65 kB) and add the `RD-10-AC-12` title — `scripts/check-size.mjs`, `tests/quality/coverage-contract.spec.test.ts` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.2.9 Add the root tools typecheck and demo typecheck — `tsconfig.tools.json`, `apps/demo/tsconfig.json`, `package.json` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.2.10 Wire `test:quality` and `typecheck:tools` into `verify` and CI — `package.json`, `.github/workflows/ci.yml` ✅ (completed: 2026-11-11 16:00)
 
 ### Step 1.3: Green, implementation tests and verify
 
-- [ ] 1.3.1 Prove green for ST-1–ST-8 — `pnpm test:quality`
-- [ ] 1.3.2 Write checker implementation tests for malformed RDs, duplicates and slash expansion — `tests/quality/traceability.impl.test.ts`
-- [ ] 1.3.3 Verify the phase — `pnpm verify`
+- [x] 1.3.1 Prove green for ST-1–ST-8 — `pnpm test:quality` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.3.2 Write checker implementation tests for malformed RDs, duplicates and slash expansion — `tests/quality/traceability.impl.test.ts` ✅ (completed: 2026-11-11 16:00)
+- [x] 1.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-11 16:00)
 
 **Deliverables**:
 - [ ] Deterministic traceability checker with precise failure output

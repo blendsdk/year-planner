@@ -147,7 +147,7 @@ test.describe("RD-06 items, inspector and print", () => {
     expect(dimensions.scrollWidth).toBeGreaterThan(dimensions.clientWidth);
   });
 
-  test("renders under the documented CSP attribute allowance", async ({ page }) => {
+  test("RD-06-AC-11: renders under the documented CSP attribute allowance", async ({ page }) => {
     const requests: string[] = [];
     page.on("request", (request) => {
       if (request.url().includes("attacker.example")) requests.push(request.url());

@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals"],
+    "paths": {
+      "@blendsdk/year-planner-core": ["./packages/core/src/index.ts"],
+      "@blendsdk/react-year-planner": ["./packages/react/src/index.ts"]
+    }
+  },
+  "include": [
+    "tests/quality/**/*.ts",
+    "tests/perf/**/*.ts",
+    "vitest.quality.config.ts",
+    "playwright.config.ts",
+    "playwright.bench.config.ts"
+  ]
+}

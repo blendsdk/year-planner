@@ -52,7 +52,7 @@ function openInspectorSetup(overrides: Partial<YearPlannerProps> = {}, itemId = 
 }
 
 describe("RD-06 inspector", () => {
-  it("renders the aside, close button and empty hint", () => {
+  it("RD-06-AC-15: renders the aside, close button and empty hint", () => {
     render(<YearPlanner {...base} />);
     const aside = screen.getByRole("complementary", { name: "Planner inspector" });
     expect(aside).toHaveAttribute("tabindex", "-1");
@@ -99,7 +99,7 @@ describe("RD-06 inspector", () => {
     expect(container.querySelector('[data-item-id="item-2"]')).not.toBeNull();
   });
 
-  it("emits move, resize, delete and paint commands", async () => {
+  it("RD-06-AC-17: emits move, resize, delete and paint commands", async () => {
     const commands: PlannerCommand[] = [];
     const onChangeRequest = (command: PlannerCommand): CommandOutcome => {
       commands.push(command);
@@ -137,7 +137,7 @@ describe("RD-06 inspector", () => {
     void ref;
   });
 
-  it("shows retry/dismiss for a timed-out command", async () => {
+  it("RD-06-AC-16: shows retry/dismiss for a timed-out command", async () => {
     let calls = 0;
     const onChangeRequest = (): Promise<CommandOutcome> => {
       calls += 1;
@@ -172,7 +172,7 @@ describe("RD-06 inspector", () => {
     expect(screen.getByRole("button", { name: "Close inspector" })).toBeInTheDocument();
   });
 
-  it("omits hidden selected items from the inspector context", () => {
+  it("RD-09-AC-12: omits hidden selected items from the inspector context", () => {
     render(
       <YearPlanner
         year={2016}

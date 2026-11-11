@@ -26,7 +26,7 @@ const items = async (page: Page) =>
 const diagnostics = async (page: Page) =>
   JSON.parse((await page.getByTestId("commands-diagnostics").textContent()) ?? "[]") as string[];
 
-test.describe("RD-08 controlled command fixture", () => {
+test.describe("RD-08-AC-01/02/03/04/05/06/11/14: controlled command fixture", () => {
   test.use({ viewport: { width: 2400, height: 1400 } });
 
   test.beforeEach(async ({ page }) => {

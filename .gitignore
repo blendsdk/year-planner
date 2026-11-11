@@ -6,6 +6,8 @@ node_modules/
 dist/
 build/
 lib/
+!scripts/lib/
+!scripts/lib/**
 storybook-static/
 *.tsbuildinfo
 

@@ -185,7 +185,7 @@ describe("RD-06 fragment rendering", () => {
     expect(proxy(container, "a")).toHaveAttribute("aria-pressed", "true");
   });
 
-  it("omits hidden items from fragments and proxies", () => {
+  it("RD-04-AC-04: omits hidden items from fragments and proxies", () => {
     const { container } = render(
       <YearPlanner
         year={2027}
@@ -237,7 +237,7 @@ describe("RD-06 fragment rendering", () => {
     expect(container.querySelector('[data-item-id="holiday"]')).toBeNull();
   });
 
-  it("renders backdrop opacity, patterns and layer labels", () => {
+  it("RD-09-AC-13: renders backdrop opacity, patterns and layer labels", () => {
     const { container } = render(
       <YearPlanner
         year={2027}
@@ -331,7 +331,7 @@ describe("RD-06 fragment rendering", () => {
 });
 
 describe("RD-06 cells and slots", () => {
-  it("applies getDateMeta background, text, label, aria and disabled state", () => {
+  it("RD-06-AC-04: applies getDateMeta background, text, label, aria and disabled state", () => {
     const { container } = render(
       <YearPlanner
         year={2016}
@@ -386,7 +386,7 @@ describe("RD-06 cells and slots", () => {
     expect(container.querySelector('[data-item-id="holiday"]')).toHaveTextContent("OH");
   });
 
-  it("keeps cell and proxy surfaces when render slots add content", () => {
+  it("RD-06-AC-08/09: keeps cell and proxy surfaces when render slots add content", () => {
     const { container } = render(
       <YearPlanner
         year={2027}

@@ -33,7 +33,7 @@ function ribbonFor(monthCount: number, items: PlannerItem[] = []) {
 
 const options = (overrides: PrintOptions): PrintOptions => overrides;
 
-describe("RD-05 print pagination", () => {
+describe("RD-05-AC-09/13: print pagination", () => {
   it("uses the 14-row page boundaries", () => {
     const cases: Array<[number, number]> = [
       [12, 1],
@@ -75,7 +75,7 @@ describe("RD-05 print pagination", () => {
   });
 });
 
-describe("RD-05 print fit", () => {
+describe("RD-05-AC-12: print fit", () => {
   it("returns one page and a warning for 18 months", () => {
     const result = planRibbonPrint(ribbonFor(18), options({ mode: "fit" }));
     expect(result.ok).toBe(true);

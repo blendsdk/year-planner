@@ -90,7 +90,7 @@ const shift = { shift: true, mod: false };
 const mod = { shift: false, mod: true };
 const reserved = { shift: true, mod: true };
 
-describe("RD-07 selection policy", () => {
+describe("RD-07-AC-02/03/04/17: selection policy", () => {
   it("replaces dates and clears items on a plain date click", () => {
     const next = applyDateClick(
       selection({ dates: [day("2027-01-05")], items: ["a"] }),

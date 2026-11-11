@@ -24,7 +24,7 @@ const diagnostics = async (page: Page) =>
 const selectionText = async (page: Page) =>
   page.evaluate(() => window.getSelection()?.toString() ?? "");
 
-test.describe("RD-07 interaction demo", () => {
+test.describe("RD-07-AC-01/05/06/07/08/11: interaction demo", () => {
   test.use({ viewport: { width: 2400, height: 1400 } });
 
   test.beforeEach(async ({ page }) => {

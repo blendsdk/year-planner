@@ -126,7 +126,7 @@ function renderControlled(initialItems: PlannerItem[], overrides: Partial<YearPl
   };
 }
 
-describe("RD-08 versions and local history", () => {
+describe("RD-08-AC-01/07/15/16: versions and local history", () => {
   it("rejects a stale move without calling the host", async () => {
     const onChangeRequest = vi.fn();
     const { ref, onDiagnostic } = renderPlanner({
@@ -235,7 +235,7 @@ describe("RD-08 versions and local history", () => {
     expect(onChangeRequest).not.toHaveBeenCalled();
   });
 
-  it("undoes and redoes uncontrolled versions and rejects a stale second update", async () => {
+  it("RD-07-AC-16 / RD-08-AC-16: undoes and redoes uncontrolled versions and rejects a stale second update", async () => {
     const { ref, onItemsChange } = renderPlanner();
     act(() =>
       ref.current?.requestCommand({
@@ -398,7 +398,7 @@ describe("RD-08 versions and local history", () => {
   });
 });
 
-describe("RD-08 controlled acceptance", () => {
+describe("RD-08-AC-05/08: controlled acceptance", () => {
   it("waits for controlled props before declaring a move applied", async () => {
     const updated = item("a", {
       period: { kind: "all-day", startDate: "2016-01-11", endDateExclusive: "2016-01-15" },
@@ -406,7 +406,10 @@ describe("RD-08 controlled acceptance", () => {
     });
     const onCommitted = vi.fn();
     const controlled = renderControlled([item("a")], {
-      interaction: { commandTimeoutMs: 500 },
+      // This case proves that host props win over the accepted-not-applied
+      // timeout. A generous deadline keeps scheduler jitter from firing the
+      // timeout before the explicit prop update below.
+      interaction: { commandTimeoutMs: 5000 },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -691,7 +694,7 @@ describe("RD-08 controlled acceptance", () => {
   });
 });
 
-describe("RD-08 paint and retry", () => {
+describe("RD-08-AC-06/09/11: paint and retry", () => {
   it("creates a highlight when paint intersects no visible highlight", async () => {
     const { ref, onItemsChange } = renderPlanner({
       activeLayerId: "highlight",

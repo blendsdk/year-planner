@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { parseDateKey } from "./date";
 import {
   type AllDayPeriod,
   durationDays,
@@ -101,5 +102,27 @@ describe("RD-02-AC-05/06/11: period validation and timed projection", () => {
         "Mars/Olympus",
       ),
     ).toThrow(/Unknown time zone/);
+  });
+});
+
+describe("RD-02-AC-09: invalid input codes", () => {
+  it("returns INVALID_RANGE for zero-length and reverse ranges", () => {
+    expect(validateAllDayPeriod(allDay("2027-06-10", "2027-06-10"))).toMatchObject([
+      { code: "INVALID_RANGE" },
+    ]);
+    expect(validateAllDayPeriod(allDay("2027-06-21", "2027-06-10"))).toMatchObject([
+      { code: "INVALID_RANGE" },
+    ]);
+  });
+
+  it("returns INVALID_DATE and UNSUPPORTED_YEAR from the date parser", () => {
+    expect(parseDateKey("2027-02-29")).toMatchObject({
+      ok: false,
+      diagnostic: { code: "INVALID_DATE" },
+    });
+    expect(parseDateKey("1500-01-01")).toMatchObject({
+      ok: false,
+      diagnostic: { code: "UNSUPPORTED_YEAR" },
+    });
   });
 });

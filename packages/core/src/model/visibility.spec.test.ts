@@ -77,7 +77,7 @@ const opsModel: PlannerModel = {
 
 const filter = (overrides: Partial<PlannerFilter>): PlannerFilter => overrides;
 
-describe("RD-04 visibility precedence", () => {
+describe("RD-04-AC-01/02/03: visibility precedence", () => {
   it("hides descendants of a hidden group without changing canonical items", () => {
     const state = visibility({ hiddenGroupIds: ["ops"] });
     const context = { model: opsModel, visibility: state };
@@ -182,7 +182,7 @@ describe("RD-04 visibility precedence", () => {
     expect(mixed.hiddenItemIds).toEqual(["i2"]);
   });
 
-  it("filters by status, layer, resource and trimmed search without mutating input", () => {
+  it("RD-04-AC-08: filters by status, layer, resource and trimmed search without mutating input", () => {
     const model: PlannerModel = {
       ...opsModel,
       items: [
@@ -261,7 +261,7 @@ describe("RD-04 visibility precedence", () => {
   });
 });
 
-describe("RD-04 tri-state and reducer matrix", () => {
+describe("RD-04-AC-05: tri-state and reducer matrix", () => {
   it("returns visible/hidden for empty groups and hidden ancestors", () => {
     const model: PlannerModel = {
       groups: [group("empty"), group("empty-hidden"), group("child", "empty-hidden")],
@@ -324,7 +324,7 @@ describe("RD-04 tri-state and reducer matrix", () => {
   });
 });
 
-describe("RD-04 editability precedence", () => {
+describe("RD-04-AC-14: editability precedence", () => {
   const editContext = (overrides: Partial<Parameters<typeof getItemEditability>[2]> = {}) => ({
     model: opsModel,
     visibility: visibility(),

@@ -58,7 +58,7 @@ describe("RD-03/RD-06 classic grid", () => {
     expect(container.querySelector('[data-row-id="2015-12"]')).toBeInTheDocument();
   });
 
-  it("applies theme classes without changing geometry", () => {
+  it("RD-06-AC-01: applies theme classes without changing geometry", () => {
     const { container, rerender } = render(
       <YearPlanner year={2016} display={{ theme: "classic-blue" }} />,
     );
@@ -114,7 +114,7 @@ describe("RD-06 theming and geometry", () => {
     expect(row.style.gridTemplateColumns).toMatch(/^80px /);
   });
 
-  it("lets an explicit preset win over the provider and cssVars win over both", () => {
+  it("RD-06-AC-02: lets an explicit preset win over the provider and cssVars win over both", () => {
     const { container } = render(
       <YearPlannerProvider theme={{ ribbon: "#111111" }}>
         <YearPlanner
@@ -129,7 +129,7 @@ describe("RD-06 theming and geometry", () => {
     expect(root.style.getPropertyValue("--yp-ribbon")).toBe("#123456");
   });
 
-  it("keeps structure and focus in unstyled mode", () => {
+  it("RD-06-AC-05: keeps structure and focus in unstyled mode", () => {
     const { container } = render(<YearPlanner year={2016} unstyled />);
     expect(container.querySelector(".yp-root")).toHaveClass("yp-unstyled");
     expect(container.querySelectorAll('[role="gridcell"]')).toHaveLength(14 * 37);
@@ -178,7 +178,7 @@ describe("RD-06 theming and geometry", () => {
     );
   });
 
-  it("isolates two instances and renders ISO weeks with dir=ltr", () => {
+  it("RD-03-AC-06 / RD-06-AC-07: isolates two instances and renders ISO weeks with dir=ltr", () => {
     const { container } = render(
       <div>
         <YearPlanner year={2016} display={{ theme: "classic-blue" }} />
@@ -223,7 +223,7 @@ describe("RD-06 theming and geometry", () => {
     vi.unstubAllGlobals();
   });
 
-  it("maps pointer coordinates to dates and fragments at every zoom", () => {
+  it("RD-06-AC-13: maps pointer coordinates to dates and fragments at every zoom", () => {
     const layoutResult = buildClassicYearLayout({ year: 2016 });
     if (!layoutResult.ok) throw new Error("layout");
     const layout = layoutResult.layout;
@@ -332,6 +332,41 @@ describe("RD-06 visibility, selection and filter", () => {
     expect(fragments(container)).toHaveLength(0);
     act(() => ref.current?.showLayer("ribbon"));
     expect(fragments(container)).toHaveLength(1);
+  });
+
+  it("RD-04-AC-09: emits onVisibilityChange for controlled and imperative changes", () => {
+    const onVisibilityChange = vi.fn();
+    const ref = createRef<YearPlannerHandle>();
+    const controlled = hidden({ hiddenGroupIds: ["g"] });
+    render(
+      <YearPlanner
+        ref={ref}
+        year={2016}
+        groups={[{ id: "g", name: "G" }]}
+        layers={[layer("ribbon", { groupId: "g" })]}
+        items={[item("hidden", "ribbon")]}
+        visibility={controlled}
+        onVisibilityChange={onVisibilityChange}
+      />,
+    );
+    act(() => ref.current?.showGroup("g"));
+    expect(onVisibilityChange).toHaveBeenCalledTimes(1);
+    expect(onVisibilityChange.mock.calls[0]?.[0]).toMatchObject({ hiddenGroupIds: [] });
+
+    const uncontrolled = vi.fn();
+    const second = createRef<YearPlannerHandle>();
+    render(
+      <YearPlanner
+        ref={second}
+        year={2016}
+        layers={[layer("ribbon")]}
+        items={[item("hidden", "ribbon")]}
+        defaultVisibility={hidden({ hiddenLayerIds: ["ribbon"] })}
+        onVisibilityChange={uncontrolled}
+      />,
+    );
+    act(() => second.current?.showLayer("ribbon"));
+    expect(uncontrolled).toHaveBeenCalledTimes(1);
   });
 
   it("keeps channels hidden when showAll clears item/group flags", () => {

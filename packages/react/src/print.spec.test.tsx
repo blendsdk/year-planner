@@ -43,7 +43,7 @@ describe("RD-06 print output", () => {
     expect(fragment.style.color).toBe("rgb(255, 255, 255)");
   });
 
-  it("renders labels, weekends, ISO weeks and fragments in print", () => {
+  it("RD-06-AC-12: renders labels, weekends, ISO weeks and fragments in print", () => {
     const { container } = render(<YearPlanner year={2027} layers={[layer]} items={[item]} />);
     const tree = container.querySelector('[data-yp-part="print-pages"]') as HTMLElement;
     expect(tree.textContent).toContain("Feb");

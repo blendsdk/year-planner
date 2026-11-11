@@ -286,6 +286,7 @@ export interface YearPlannerProps {
     annotations?: PlannerItem[];
     ariaDescribedBy?: string;
     ariaLabel?: string;
+    baseRevision?: string;
     className?: string;
     components?: Partial<YearPlannerComponents>;
     contextMonths?: {
@@ -307,7 +308,7 @@ export interface YearPlannerProps {
     layers?: PlannerLayer[];
     onChangeCommitted?: (outcome: CommandOutcome) => void;
     onChangeRejected?: (outcome: CommandOutcome) => void;
-    onChangeRequest?: (command: PlannerCommand, context: CommandContext) => CommandOutcome | Promise<CommandOutcome>;
+    onChangeRequest?: (command: PlannerCommand, context: CommandContext, signal?: AbortSignal) => CommandOutcome | Promise<CommandOutcome>;
     onDiagnostic?: (diagnostic: Diagnostic) => void;
     onFilterChange?: (next: PlannerFilter) => void;
     onItemsChange?: (items: PlannerItem[]) => void;
@@ -335,7 +336,7 @@ export interface YearPlannerProps {
     style?: CSSProperties;
     units?: Partial<ClassicYearUnits>;
     unstyled?: boolean;
-    validateChange?: (command: PlannerCommand, context: CommandContext) => ValidationResult | Promise<ValidationResult>;
+    validateChange?: (command: PlannerCommand, context: CommandContext, signal?: AbortSignal) => ValidationResult | Promise<ValidationResult>;
     visibility?: VisibilityState;
     year?: number;
 }

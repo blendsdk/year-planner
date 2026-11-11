@@ -269,6 +269,8 @@ export interface YearPlannerProps {
   onFilterChange?: (next: PlannerFilter) => void;
   /** Global read-only guardrail. */
   readOnly?: boolean;
+  /** Optional host-wide revision token passed through with every command. */
+  baseRevision?: string;
   /** Layer that accepts paint/create commands. */
   activeLayerId?: string;
   /** Interaction configuration. */
@@ -281,11 +283,13 @@ export interface YearPlannerProps {
   validateChange?: (
     command: PlannerCommand,
     context: CommandContext,
+    signal?: AbortSignal,
   ) => ValidationResult | Promise<ValidationResult>;
   /** Host command request. */
   onChangeRequest?: (
     command: PlannerCommand,
     context: CommandContext,
+    signal?: AbortSignal,
   ) => CommandOutcome | Promise<CommandOutcome>;
   /** Called with an accepted outcome. */
   onChangeCommitted?: (outcome: CommandOutcome) => void;

@@ -309,6 +309,7 @@ describe("RD-06 command pipeline: host mode", () => {
     expect(validateChange).toHaveBeenCalledWith(
       expect.objectContaining({ type: "move" }),
       expect.objectContaining({ requestId: expect.any(String) }),
+      expect.any(AbortSignal),
     );
     act(() => {
       ref.current?.requestCommand({

@@ -121,9 +121,31 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       ...props,
       displayTimeZone: resolvedDisplay.options.displayTimeZone,
     });
+    const contextKey = useMemo(
+      () =>
+        JSON.stringify({
+          layout: layout?.signature ?? "",
+          mode: state.interactionMode,
+          visibility: {
+            groups: [...state.visibility.hiddenGroupIds].sort(),
+            layers: [...state.visibility.hiddenLayerIds].sort(),
+            items: [...state.visibility.hiddenItemIds].sort(),
+            channels: [...(state.visibility.hiddenChannels ?? [])].sort(),
+          },
+          filter: {
+            layers: [...(state.filter.layerIds ?? [])].sort(),
+            resources: [...(state.filter.resourceIds ?? [])].sort(),
+            statuses: [...(state.filter.statuses ?? [])].sort(),
+            search: state.filter.search ?? "",
+          },
+        }),
+      [layout?.signature, state.filter, state.interactionMode, state.visibility],
+    );
     const pipeline = useCommandPipeline({
       state,
+      contextKey,
       ...(props.readOnly ? { readOnly: true } : {}),
+      ...(props.baseRevision !== undefined ? { baseRevision: props.baseRevision } : {}),
       ...(props.activeLayerId ? { activeLayerId: props.activeLayerId } : {}),
       ...(props.interaction?.createId ? { createId: props.interaction.createId } : {}),
       ...(props.interaction?.requestId ? { requestId: props.interaction.requestId } : {}),

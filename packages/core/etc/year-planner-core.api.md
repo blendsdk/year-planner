@@ -172,7 +172,7 @@ export function dayOfWeek(date: DateKey): 0 | 1 | 2 | 3 | 4 | 5 | 6;
 // @public
 export function daysInMonth(year: number, month: number): number;
 
-// @public (undocumented)
+// @public
 export interface Diagnostic {
     // (undocumented)
     code: DiagnosticCode;
@@ -188,11 +188,13 @@ export interface Diagnostic {
     resourceIds?: string[];
 }
 
-// @public (undocumented)
+// @public
 export function diagnostic(code: DiagnosticCode, message: string, level?: DiagnosticLevel): Diagnostic;
 
-// @public (undocumented)
-export type DiagnosticCode = "INVALID_DATE" | "UNSUPPORTED_YEAR" | "INVALID_RANGE" | "INVALID_INSTANT" | "INVALID_TIMEZONE" | "TIMED_PROJECTION_FAILED" | "INVALID_MONTH" | "INVALID_MONTH_COUNT" | "INVALID_CONTEXT_MONTHS" | "UNSUPPORTED_VIEW_YEAR" | "MISSING_RANGE" | "DUPLICATE_ID" | "UNKNOWN_REFERENCE" | "GROUP_CYCLE" | "INVALID_GROUP" | "INVALID_ITEM" | "INVALID_VERSION" | "INVALID_ANNOTATION" | "INVALID_STYLE" | "INVALID_LAYER" | "INVALID_RESOURCE" | "NOT_EDITABLE" | "INVALID_PAINT_TARGET" | "INVALID_PAINT_CHANNEL" | "STALE_VERSION" | "INVALID_PRINT_OPTIONS" | "PRINT_FIT_TOO_SMALL" | "READ_ONLY" | "CONFIRMATION_UNAVAILABLE" | "COMMAND_TIMEOUT" | "HOST_REJECTED" | "VALIDATION_ERROR" | "STALE_REVISION" | "UNDO_UNAVAILABLE" | "INVALID_COMMAND" | "INVALID_LOCALE" | "TIMED_EDITING_UNSUPPORTED" | "INVALID_RENDERER_OPTION";
+// Warning: (ae-forgotten-export) The symbol "DIAGNOSTIC_CODES" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type DiagnosticCode = (typeof DIAGNOSTIC_CODES)[number];
 
 // @public
 export type DiagnosticLevel = "error" | "warning" | "info";
@@ -281,6 +283,9 @@ export function isDateInterval(value: unknown): value is AllDayPeriod;
 
 // @public
 export function isDateKey(value: string): value is DateKey;
+
+// @public
+export function isDiagnosticCode(value: unknown): value is DiagnosticCode;
 
 // @public
 export function isLayerEffectivelyHidden(layerId: string, context: VisibilityContext): boolean;

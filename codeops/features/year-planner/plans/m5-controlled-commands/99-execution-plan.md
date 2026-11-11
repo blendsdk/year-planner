@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-11 01:36
-> **Progress**: 0/34 tasks (0%)
+> **Last Updated**: 2026-11-11 02:14
+> **Progress**: 9/34 tasks (26%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -62,21 +62,21 @@ rule that cannot be applied twice.
 
 ### Step 1.1: Specification tests
 
-- [ ] 1.1.1 [spec-author] Write lifecycle spec tests for ST-1–ST-26 and ST-93–ST-94 — `packages/react/src/commands.lifecycle.spec.test.tsx`
-- [ ] 1.1.2 Run the lifecycle spec tests and record the expected red failures — `docs/m5-red-phase.md`
+- [x] 1.1.1 [spec-author] Write lifecycle spec tests for ST-1–ST-26 and ST-93–ST-94 — `packages/react/src/commands.lifecycle.spec.test.tsx` ✅ (completed: 2026-11-11 01:58)
+- [x] 1.1.2 Run the lifecycle spec tests and record the expected red failures — `docs/m5-red-phase.md` ✅ (completed: 2026-11-11 01:58)
 
 ### Step 1.2: Implementation
 
-- [ ] 1.2.1 Split `commands.ts` into `commands/types.ts`, `commands/local.ts`, `commands/validate.ts` and `commands/pipeline.ts`, keeping `commands.ts` as the stable entry — `packages/react/src/commands.ts`, `packages/react/src/commands/**`
-- [ ] 1.2.2 Add `CAPACITY_EXCEEDED`, `COMMAND_ABORTED`, `ACCEPTED_NOT_APPLIED` and the runtime `isDiagnosticCode` guard — `packages/core/src/diagnostics.ts`, `packages/core/src/index.ts`
-- [ ] 1.2.3 Add `baseRevision` to the public props and pipeline input; pass it into `CommandContext` only when defined; add optional `AbortSignal` callback arguments and update the existing exact-arity callback assertions — `packages/react/src/types.ts`, `packages/react/src/YearPlanner.tsx`, `packages/react/src/commands/types.ts`, `packages/react/src/commands/pipeline.ts`, `packages/react/src/commands.impl.test.tsx`, `packages/react/src/commands.spec.test.tsx`
-- [ ] 1.2.4 Implement the active/settled/obsolete request record, one deadline for validation plus request, abort, ignored late responses and one-command-per-item — `packages/react/src/commands/pipeline.ts`
-- [ ] 1.2.5 Invalidate on context-key changes and affected-item version changes, and add the uncontrolled apply-time version re-check — `packages/react/src/commands/pipeline.ts`, `packages/react/src/YearPlanner.tsx`
+- [x] 1.2.1 Split `commands.ts` into `commands/types.ts`, `commands/local.ts`, `commands/validate.ts` and `commands/pipeline.ts`, keeping `commands.ts` as the stable entry — `packages/react/src/commands.ts`, `packages/react/src/commands/**` ✅ (completed: 2026-11-11 02:14)
+- [x] 1.2.2 Add `CAPACITY_EXCEEDED`, `COMMAND_ABORTED`, `ACCEPTED_NOT_APPLIED` and the runtime `isDiagnosticCode` guard — `packages/core/src/diagnostics.ts`, `packages/core/src/index.ts` ✅ (completed: 2026-11-11 02:14)
+- [x] 1.2.3 Add `baseRevision` to the public props and pipeline input; pass it into `CommandContext` only when defined; add optional `AbortSignal` callback arguments and update the existing exact-arity callback assertions — `packages/react/src/types.ts`, `packages/react/src/YearPlanner.tsx`, `packages/react/src/commands/types.ts`, `packages/react/src/commands/pipeline.ts`, `packages/react/src/commands.impl.test.tsx`, `packages/react/src/commands.spec.test.tsx` ✅ (completed: 2026-11-11 02:14)
+- [x] 1.2.4 Implement the active/settled/obsolete request record, one deadline for validation plus request, abort, ignored late responses and one-command-per-item — `packages/react/src/commands/pipeline.ts` ✅ (completed: 2026-11-11 02:14)
+- [x] 1.2.5 Invalidate on context-key changes and affected-item version changes, and add the uncontrolled apply-time version re-check — `packages/react/src/commands/pipeline.ts`, `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-11 02:14)
 
 ### Step 1.3: Implementation tests and verify
 
-- [ ] 1.3.1 Write lifecycle edge tests for same-tick settlement, duplicate IDs, abort-ignoring hosts and concurrent items — `packages/react/src/commands.lifecycle.impl.test.tsx`
-- [ ] 1.3.2 Run `pnpm api-report` then `pnpm verify`; keep the existing RD-06/RD-07 suites green
+- [x] 1.3.1 Write lifecycle edge tests for same-tick settlement, duplicate IDs, abort-ignoring hosts and concurrent items — `packages/react/src/commands.lifecycle.impl.test.tsx` ✅ (completed: 2026-11-11 02:14)
+- [x] 1.3.2 Run `pnpm api-report` then `pnpm verify`; keep the existing RD-06/RD-07 suites green ✅ (completed: 2026-11-11 02:14)
 
 **Deliverables**:
 - [ ] ST-1–ST-26 and ST-93–ST-94 pass

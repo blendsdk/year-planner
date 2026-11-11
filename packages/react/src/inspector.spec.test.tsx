@@ -37,7 +37,7 @@ const item = (
 const base = {
   year: 2016,
   layers: [layer("ribbon")],
-  items: [item("selected", "ribbon")],
+  defaultItems: [item("selected", "ribbon")],
 };
 
 function openInspectorSetup(overrides: Partial<YearPlannerProps> = {}, itemId = "selected") {
@@ -110,7 +110,7 @@ describe("RD-06 inspector", () => {
       layers: [layer("ribbon"), layer("highlight", { channel: "highlight" })],
       onChangeRequest,
       interaction: { confirmChange: () => true },
-      items: [item("selected", "ribbon")],
+      defaultItems: [item("selected", "ribbon")],
     });
     fireEvent.click(screen.getByRole("button", { name: "Move later" }));
     await waitFor(() => expect(commands).toHaveLength(1));
@@ -123,7 +123,7 @@ describe("RD-06 inspector", () => {
     await waitFor(() => expect(commands).toHaveLength(2));
     expect(commands[1]).toMatchObject({
       type: "resize",
-      proposedPeriod: { endDateExclusive: "2016-01-09" },
+      proposedPeriod: { endDateExclusive: "2016-01-16" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Paint range" }));
     await waitFor(() => expect(commands).toHaveLength(3));
@@ -153,6 +153,9 @@ describe("RD-06 inspector", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
     await waitFor(() => expect(calls).toBe(2), { timeout: 5000 });
+    await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument(), {
+      timeout: 5000,
+    });
     fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
     expect(screen.queryByText("COMMAND_TIMEOUT")).toBeNull();
   });

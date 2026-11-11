@@ -41,7 +41,11 @@ describe("command pipeline internals", () => {
     );
     act(() => ref.current?.requestCommand(move()));
     await waitFor(() => expect(onChangeRequest).toHaveBeenCalled());
-    expect(onChangeRequest).toHaveBeenCalledWith(expect.anything(), { requestId: "request-7" });
+    expect(onChangeRequest).toHaveBeenCalledWith(
+      expect.anything(),
+      { requestId: "request-7" },
+      expect.any(AbortSignal),
+    );
   });
 
   it("blocks a second command for a pending item", async () => {

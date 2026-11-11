@@ -120,7 +120,7 @@ describe("checkTraceability edge cases", () => {
       ),
     });
     expect(result.ok).toBe(false);
-    expect(result.errors.join(" ")).toContain("without an evidence note");
+    expect(result.errors.join(" ")).toContain("has no evidence note");
   });
 
   it("accepts a partial row with evidence and no title", () => {

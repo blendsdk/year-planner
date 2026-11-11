@@ -102,18 +102,163 @@ export function parseMatrixIds(source) {
 /**
  * Returns every acceptance-criterion ID named in a real test title.
  *
- * Comments, ordinary strings and skipped or todo tests never count. A grouped
- * title such as `RD-03-AC-07/08/09` expands to all three identifiers.
+ * The scanner walks the source instead of matching raw text, so a test call
+ * that only appears inside a string literal or a comment never counts.
+ * `describe.skip`, `it.skip`, `test.todo` and every test nested inside a
+ * skipped suite are ignored. `it.each([...])("title", ...)` is supported.
  */
 export function parseTitleIds(source) {
   const ids = new Set();
-  const stripped = stripComments(source);
-  const pattern =
-    /\b(?:describe|it|test)(?:\.(?:only|concurrent))?\s*\(\s*(["'`])((?:\\.|(?!\1).)*)\1/g;
-  for (const match of stripped.matchAll(pattern)) {
-    collectIds(match[2], ids);
+  let index = 0;
+  while (index < source.length) {
+    const char = source[index];
+    const next = source[index + 1];
+    if (char === "/" && next === "/") {
+      while (index < source.length && source[index] !== "\n") index += 1;
+      continue;
+    }
+    if (char === "/" && next === "*") {
+      index += 2;
+      while (index < source.length && !(source[index] === "*" && source[index + 1] === "/")) {
+        index += 1;
+      }
+      index += 2;
+      continue;
+    }
+    if (char === '"' || char === "'" || char === "`") {
+      index = readString(source, index).end;
+      continue;
+    }
+    if (isIdentifierStart(char)) {
+      const start = index;
+      const word = readIdentifier(source, start);
+      index = start + word.length;
+      const previous = source[start - 1];
+      if (
+        (word === "describe" || word === "it" || word === "test") &&
+        !(previous && /[A-Za-z0-9_$.]/.test(previous))
+      ) {
+        const call = readTestCall(source, index);
+        if (call) {
+          if (!call.skipped) collectIds(call.title, ids);
+          index = call.skipped && word === "describe" ? call.bodyEnd : call.end;
+          continue;
+        }
+      }
+      continue;
+    }
+    index += 1;
   }
   return ids;
+}
+
+/** Returns true for a JavaScript identifier start character. */
+function isIdentifierStart(char) {
+  return /[A-Za-z_$]/.test(char ?? "");
+}
+
+/** Reads one identifier starting at `start`. */
+function readIdentifier(source, start) {
+  let index = start;
+  while (index < source.length && /[A-Za-z0-9_$]/.test(source[index])) index += 1;
+  return source.slice(start, index);
+}
+
+/** Reads a quoted string and returns its raw value and end offset. */
+function readString(source, start) {
+  const quote = source[start];
+  let index = start + 1;
+  let value = "";
+  while (index < source.length) {
+    const char = source[index];
+    if (char === "\\") {
+      value += source[index + 1] ?? "";
+      index += 2;
+      continue;
+    }
+    if (char === quote) return { value, end: index + 1 };
+    value += char;
+    index += 1;
+  }
+  return { value, end: index };
+}
+
+/** Skips whitespace and returns the next offset. */
+function skipWhitespace(source, start) {
+  let index = start;
+  while (index < source.length && /\s/.test(source[index])) index += 1;
+  return index;
+}
+
+/**
+ * Returns the offset after the balanced parentheses that start at `start`.
+ * Strings and comments inside the call are skipped so a `)` in a title does
+ * not end the call early.
+ */
+function skipBalanced(source, start) {
+  let index = start;
+  let depth = 0;
+  while (index < source.length) {
+    const char = source[index];
+    const next = source[index + 1];
+    if (char === "/" && next === "/") {
+      while (index < source.length && source[index] !== "\n") index += 1;
+      continue;
+    }
+    if (char === "/" && next === "*") {
+      index += 2;
+      while (index < source.length && !(source[index] === "*" && source[index + 1] === "/")) {
+        index += 1;
+      }
+      index += 2;
+      continue;
+    }
+    if (char === '"' || char === "'" || char === "`") {
+      index = readString(source, index).end;
+      continue;
+    }
+    if (char === "(") depth += 1;
+    if (char === ")") {
+      depth -= 1;
+      if (depth === 0) return index + 1;
+    }
+    index += 1;
+  }
+  return index;
+}
+
+/**
+ * Reads a test or suite call starting after its name.
+ *
+ * Returns the literal title, whether the call is skipped, the offset after the
+ * call head, and the offset after the whole call body (used to ignore the
+ * contents of a skipped suite).
+ */
+function readTestCall(source, start) {
+  let index = start;
+  let skipped = false;
+  while (true) {
+    index = skipWhitespace(source, index);
+    if (source[index] !== ".") break;
+    index += 1;
+    const modifier = readIdentifier(source, index);
+    index += modifier.length;
+    if (modifier === "skip" || modifier === "todo") skipped = true;
+    if (modifier === "each") {
+      index = skipWhitespace(source, index);
+      if (source[index] === "(") index = skipBalanced(source, index);
+    }
+  }
+  index = skipWhitespace(source, index);
+  if (source[index] !== "(") return undefined;
+  const bodyEnd = skipBalanced(source, index);
+  index = skipWhitespace(source, index + 1);
+  const quote = source[index];
+  if (quote !== '"' && quote !== "'" && quote !== "`") {
+    return skipped ? { skipped, title: "", end: bodyEnd, bodyEnd } : undefined;
+  }
+  const title = readString(source, index);
+  return { skipped, title: title.value, end: title.end, bodyEnd };
 }
 
 /** Adds a title's IDs, expanding slash-separated acceptance numbers. */
@@ -125,55 +270,6 @@ function collectIds(title, target) {
       target.add(`RD-${match[1]}-AC-${extra}`);
     }
   }
-}
-
-/**
- * Removes line and block comments without touching string contents.
- *
- * A small scanner is used instead of a regular expression because a URL or a
- * title may legitimately contain `//`.
- */
-function stripComments(source) {
-  let output = "";
-  let index = 0;
-  let quote;
-  while (index < source.length) {
-    const char = source[index];
-    const next = source[index + 1];
-    if (quote) {
-      output += char;
-      if (char === "\\") {
-        output += next ?? "";
-        index += 2;
-        continue;
-      }
-      if (char === quote) quote = undefined;
-      index += 1;
-      continue;
-    }
-    if (char === '"' || char === "'" || char === "`") {
-      quote = char;
-      output += char;
-      index += 1;
-      continue;
-    }
-    if (char === "/" && next === "/") {
-      while (index < source.length && source[index] !== "\n") index += 1;
-      continue;
-    }
-    if (char === "/" && next === "*") {
-      index += 2;
-      while (index < source.length && !(source[index] === "*" && source[index + 1] === "/")) {
-        if (source[index] === "\n") output += "\n";
-        index += 1;
-      }
-      index += 2;
-      continue;
-    }
-    output += char;
-    index += 1;
-  }
-  return output;
 }
 
 /**
@@ -233,8 +329,17 @@ export function checkTraceability(root, options = {}) {
     if (!row.id.startsWith("RD-")) continue;
 
     const partial = row.status === "partial" || row.status === "deviation";
-    if (partial && !row.evidence) {
-      errors.push(`matrix: ${row.id} is ${row.status} without an evidence note`);
+    if (!row.evidence) {
+      errors.push(`matrix: ${row.id} has no evidence note`);
+    }
+    if (!row.title) {
+      if (!partial) errors.push(`matrix: ${row.id} has no proving title`);
+    } else {
+      const declared = new Set();
+      collectIds(row.title, declared);
+      if (!declared.has(row.id)) {
+        errors.push(`matrix: ${row.id} declares a proving title without that ID`);
+      }
     }
     if (!row.file) {
       if (!partial) errors.push(`matrix: ${row.id} has no proving test file`);

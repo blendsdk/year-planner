@@ -25,6 +25,36 @@ function productionSources(directory: string): string[] {
     .filter((path) => !/\.(test|spec|impl)\./.test(path));
 }
 
+const SKIPPED_DIRECTORIES = new Set([
+  "node_modules",
+  ".git",
+  "dist",
+  "coverage",
+  "test-results",
+  "playwright-report",
+  "storybook-static",
+  ".vite-temp",
+]);
+
+/**
+ * Lists repository text sources without walking dependency or build output
+ * directories, so the scan stays fast and never loads generated bundles.
+ */
+function repositorySources(root: URL, relative = ""): string[] {
+  const directory = relative ? new URL(`${relative}/`, root) : root;
+  const found: string[] = [];
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      if (SKIPPED_DIRECTORIES.has(entry.name)) continue;
+      found.push(...repositorySources(root, relative ? `${relative}/${entry.name}` : entry.name));
+      continue;
+    }
+    if (!/\.(ts|tsx|js|mjs|cjs|json|ya?ml|sh|md)$/.test(entry.name)) continue;
+    found.push(join(directory.pathname, entry.name));
+  }
+  return found;
+}
+
 interface PackageManifest {
   type?: string;
   license?: string;
@@ -134,20 +164,22 @@ describe("RD-01-AC-09: documented release gate", () => {
 });
 
 describe("RD-01-AC-10: no committed secrets", () => {
-  it("contains no private key or token material", () => {
-    const scanned = [
-      ".github/workflows/ci.yml",
-      "package.json",
-      "packages/core/package.json",
-      "packages/react/package.json",
-      "scripts/clean-consumer.sh",
-      "scripts/toolchain-check.sh",
-    ].map((path) => [path, read(path)] as const);
-    for (const [path, source] of scanned) {
-      expect(source, path).not.toMatch(/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/);
-      expect(source, path).not.toMatch(/\bghp_[A-Za-z0-9]{20,}/);
-      expect(source, path).not.toMatch(/\bnpm_[A-Za-z0-9]{30,}/);
-      expect(source, path).not.toMatch(/\bAKIA[0-9A-Z]{16}\b/);
+  it("contains no private key or token material in repository sources", () => {
+    const secrets = [
+      /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
+      /\bghp_[A-Za-z0-9]{20,}/,
+      /\bgithub_pat_[A-Za-z0-9_]{20,}/,
+      /\bglpat-[A-Za-z0-9_-]{20,}/,
+      /\bnpm_[A-Za-z0-9]{30,}/,
+      /\bAKIA[0-9A-Z]{16}\b/,
+    ];
+    const files = repositorySources(new URL("../../", import.meta.url));
+    expect(files.length).toBeGreaterThan(80);
+    for (const path of files) {
+      const source = readFileSync(path, "utf8");
+      for (const pattern of secrets) {
+        expect(source, path).not.toMatch(pattern);
+      }
     }
   });
 });

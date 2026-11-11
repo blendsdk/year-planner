@@ -81,8 +81,8 @@
 | RD-02-AC-02 | RD-02 | 2 | proven | `packages/core/src/date.spec.test.ts` | `RD-02-AC-01/02: Gregorian date keys and Saturday-first weekday` | Core date test |
 | RD-02-AC-03 | RD-02 | 3 | proven | `packages/core/src/date.spec.test.ts` | `RD-02-AC-03: month lengths` | Core date test |
 | RD-02-AC-04 | RD-02 | 4 | proven | `packages/core/src/date.spec.test.ts` | `RD-02-AC-04: ISO week-year` | Core date test |
-| RD-02-AC-05 | RD-02 | 5 | proven | `packages/core/src/period.spec.test.ts` | `RD-02-AC-05/06/11: period validation and timed projection` | Core period test |
-| RD-02-AC-06 | RD-02 | 6 | proven | `packages/core/src/period.spec.test.ts` | `RD-02-AC-05/06/11: period validation and timed projection` | Core period test |
+| RD-02-AC-05 | RD-02 | 5 | proven | `packages/core/src/interval.spec.test.ts` | `RD-02-AC-05/06: period intersections across boundaries` | Core interval test |
+| RD-02-AC-06 | RD-02 | 6 | proven | `packages/core/src/interval.spec.test.ts` | `RD-02-AC-05/06: period intersections across boundaries` | Core interval test |
 | RD-02-AC-11 | RD-02 | 11 | proven | `packages/core/src/period.spec.test.ts` | `RD-02-AC-05/06/11: period validation and timed projection` | Core period test |
 | RD-02-AC-07 | RD-02 | 7 | proven | `packages/core/src/interval.spec.test.ts` | `RD-02-AC-07/08: half-open interval algebra` | Core interval test |
 | RD-02-AC-08 | RD-02 | 8 | proven | `packages/core/src/interval.spec.test.ts` | `RD-02-AC-07/08: half-open interval algebra` | Core interval test |
@@ -95,15 +95,15 @@
 | RD-03-AC-04 | RD-03 | 4 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-03/04/05: date-to-column mapping` | Core layout test |
 | RD-03-AC-05 | RD-03 | 5 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-03/04/05: date-to-column mapping` | Core layout test |
 | RD-03-AC-06 | RD-03 | 6 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-03-AC-06 / RD-06-AC-07: isolates two instances and renders ISO weeks with dir=ltr` | React render test |
-| RD-03-AC-07 | RD-03 | 7 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14: dynamic windows` | Core layout test |
-| RD-03-AC-08 | RD-03 | 8 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14: dynamic windows` | Core layout test |
+| RD-03-AC-07 | RD-03 | 7 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08: exact dynamic windows` | Core layout test |
+| RD-03-AC-08 | RD-03 | 8 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08: exact dynamic windows` | Core layout test |
 | RD-03-AC-09 | RD-03 | 9 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14: dynamic windows` | Core layout test |
 | RD-03-AC-10 | RD-03 | 10 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14: dynamic windows` | Core layout test |
 | RD-03-AC-14 | RD-03 | 14 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14: dynamic windows` | Core layout test |
-| RD-03-AC-11 | RD-03 | 11 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-11: blank slots` | Core layout test |
+| RD-03-AC-11 | RD-03 | 11 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-11/15: blank slots and input safety` | Core layout test |
 | RD-03-AC-12 | RD-03 | 12 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-12: weekend geometry` | Core layout test |
 | RD-03-AC-13 | RD-03 | 13 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-13: deterministic layout` | Core layout test |
-| RD-03-AC-15 | RD-03 | 15 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-03-AC-15: layout input safety` | Source scan |
+| RD-03-AC-15 | RD-03 | 15 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-11/15: blank slots and input safety` | Core blank-slot and input test; source scan adds no-HTML evidence |
 | RD-04-AC-01 | RD-04 | 1 | proven | `packages/core/src/model/visibility.spec.test.ts` | `RD-04-AC-01/02/03: visibility precedence` | Core visibility test |
 | RD-04-AC-02 | RD-04 | 2 | proven | `packages/core/src/model/visibility.spec.test.ts` | `RD-04-AC-01/02/03: visibility precedence` | Core visibility test |
 | RD-04-AC-03 | RD-04 | 3 | proven | `packages/core/src/model/visibility.spec.test.ts` | `RD-04-AC-01/02/03: visibility precedence` | Core visibility test |
@@ -121,7 +121,7 @@
 | RD-04-AC-16 | RD-04 | 16 | proven | `packages/core/src/model/paint.spec.test.ts` | `RD-04-AC-16: merges only when the title matches` | Core paint test |
 | RD-04-AC-17 | RD-04 | 17 | proven | `packages/core/src/model/paint.spec.test.ts` | `RD-04-AC-17: rejects a layer that is not the active paint target` | Core paint test |
 | RD-04-AC-14 | RD-04 | 14 | proven | `packages/core/src/model/visibility.spec.test.ts` | `RD-04-AC-14: editability precedence` | Core visibility test |
-| RD-04-AC-18 | RD-04 | 18 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-04-AC-18: visibility and model safety` | Source scan |
+| RD-04-AC-18 | RD-04 | 18 | partial |  |  | Hidden-data and ARIA proof lands with the security suite; model and source scans pass |
 | RD-05-AC-01 | RD-05 | 1 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-01: splits a cross-month item into clipped row fragments with one identity` | Core ribbon test |
 | RD-05-AC-02 | RD-05 | 2 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-02: measures one-day and eight-day widths from the actual slots` | Core ribbon test |
 | RD-05-AC-03 | RD-05 | 3 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-03: places three overlapping items in three lanes` | Core ribbon test |
@@ -136,7 +136,7 @@
 | RD-05-AC-12 | RD-05 | 12 | proven | `packages/core/src/ribbon/print.spec.test.ts` | `RD-05-AC-12: print fit` | Core print fit test |
 | RD-05-AC-13 | RD-05 | 13 | partial | `packages/core/src/ribbon/print.spec.test.ts` | `RD-05-AC-09/13: print pagination` | 36-month 14/14/8 pages covered; 15/28/29 boundary windows land with the print matrix |
 | RD-05-AC-14 | RD-05 | 14 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-05-AC-14: renderer decision record` | Documentation and public-surface check |
-| RD-05-AC-15 | RD-05 | 15 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-05-AC-15: ribbon output safety` | Source scan |
+| RD-05-AC-15 | RD-05 | 15 | partial |  |  | Hidden overflow is covered; escaped labels and raw-HTML proof land with the security suite |
 | RD-06-AC-01 | RD-06 | 1 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-01: applies theme classes without changing geometry` | React component test |
 | RD-06-AC-02 | RD-06 | 2 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-02: lets an explicit preset win over the provider and cssVars win over both` | React component test |
 | RD-06-AC-03 | RD-06 | 3 | proven | `packages/react/src/adapters.spec.test.tsx` | `RD-06-AC-03: renders host buttons in cells and the inspector without nesting in a proxy` | Adapter test |
@@ -146,7 +146,7 @@
 | RD-06-AC-07 | RD-06 | 7 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-03-AC-06 / RD-06-AC-07: isolates two instances and renders ISO weeks with dir=ltr` | React component test |
 | RD-06-AC-08 | RD-06 | 8 | proven | `packages/react/src/items.spec.test.tsx` | `RD-06-AC-08/09: keeps cell and proxy surfaces when render slots add content` | React item test |
 | RD-06-AC-09 | RD-06 | 9 | proven | `packages/react/src/items.spec.test.tsx` | `RD-06-AC-08/09: keeps cell and proxy surfaces when render slots add content` | React item test |
-| RD-06-AC-10 | RD-06 | 10 | proven | `packages/react/src/YearPlanner.ssr.spec.test.tsx` | `RD-06-AC-10: SSR` | SSR test |
+| RD-06-AC-10 | RD-06 | 10 | proven | `packages/react/src/YearPlanner.hydration.spec.test.tsx` | `RD-06-AC-10: hydration` | Hydration test |
 | RD-06-AC-11 | RD-06 | 11 | proven | `tests/e2e/classic-year.spec.ts` | `RD-06-AC-11: renders under the documented CSP attribute allowance` | Playwright CSP test |
 | RD-06-AC-12 | RD-06 | 12 | proven | `packages/react/src/print.spec.test.tsx` | `RD-06-AC-12: renders labels, weekends, ISO weeks and fragments in print` | Print test |
 | RD-06-AC-13 | RD-06 | 13 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-13: maps pointer coordinates to dates and fragments at every zoom` | React component test |
@@ -154,7 +154,7 @@
 | RD-06-AC-15 | RD-06 | 15 | proven | `packages/react/src/inspector.spec.test.tsx` | `RD-06-AC-15: renders the aside, close button and empty hint` | Inspector test |
 | RD-06-AC-16 | RD-06 | 16 | proven | `packages/react/src/inspector.spec.test.tsx` | `RD-06-AC-16: shows retry/dismiss for a timed-out command` | Inspector test |
 | RD-06-AC-17 | RD-06 | 17 | proven | `packages/react/src/inspector.spec.test.tsx` | `RD-06-AC-17: emits move, resize, delete and paint commands` | Inspector test |
-| RD-06-AC-18 | RD-06 | 18 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-06-AC-18: rendered output safety` | Source scan |
+| RD-06-AC-18 | RD-06 | 18 | proven | `packages/react/src/items.spec.test.tsx` | `RD-06-AC-18: never renders metadata as HTML and filters unsafe item styles` | React item test plus source scan |
 | RD-07-AC-01 | RD-07 | 1 | proven | `packages/react/src/interaction/pointer.spec.test.tsx` | `RD-07-AC-01: selects a cross-month date range with two preview fragments` | Pointer test |
 | RD-07-AC-02 | RD-07 | 2 | proven | `packages/react/src/interaction/selection.spec.test.tsx` | `RD-07-AC-02/03/04/17: selection policy` | Selection policy test |
 | RD-07-AC-03 | RD-07 | 3 | proven | `packages/react/src/interaction/selection.spec.test.tsx` | `RD-07-AC-02/03/04/17: selection policy` | Selection policy test |
@@ -206,4 +206,4 @@
 | RD-09-AC-13 | RD-09 | 13 | proven | `packages/react/src/items.spec.test.tsx` | `RD-09-AC-13: renders backdrop opacity, patterns and layer labels` | React item test |
 | RD-09-AC-14 | RD-09 | 14 | proven | `tests/e2e/accessibility.spec.ts` | `RD-09-AC-01/02/05/11/14: keyboard evidence` | Playwright keyboard evidence |
 | RD-09-AC-15 | RD-09 | 15 | proven | `tests/e2e/accessibility.spec.ts` | `RD-09-AC-07/15: axe matrix` | Playwright axe matrix |
-| RD-09-AC-16 | RD-09 | 16 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-09-AC-16: accessible output safety` | Source scan |
+| RD-09-AC-16 | RD-09 | 16 | partial |  |  | ARIA hidden-data and escaped-label proof lands with the security suite; source scan passes |

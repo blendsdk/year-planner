@@ -111,7 +111,7 @@ describe("RD-03-AC-07/08/09/10/14: dynamic windows", () => {
   });
 });
 
-describe("RD-03-AC-11: blank slots", () => {
+describe("RD-03-AC-11/15: blank slots and input safety", () => {
   it("carries no date on blank slots and keeps every dated slot inside the month", () => {
     const result = buildClassicYearLayout({ year: 2016 });
     if (!result.ok) throw new Error("expected layout");
@@ -154,5 +154,43 @@ describe("RD-03-AC-13: deterministic layout", () => {
     expect(first.layout.signature).toBe(second.layout.signature);
     expect(first.layout.rows).toEqual(second.layout.rows);
     expect(first.layout.totalDayWidth).toBe(second.layout.totalDayWidth);
+  });
+});
+
+describe("RD-03-AC-07/08: exact dynamic windows", () => {
+  it("renders January through December 2027 only for a 12-month window", () => {
+    const result = buildClassicYearLayout({
+      range: { start: { year: 2027, month: 0 }, monthCount: 12 },
+    });
+    if (!result.ok) throw new Error("expected layout");
+    expect(result.layout.rows.map((row) => row.rowId)).toEqual([
+      "2027-01",
+      "2027-02",
+      "2027-03",
+      "2027-04",
+      "2027-05",
+      "2027-06",
+      "2027-07",
+      "2027-08",
+      "2027-09",
+      "2027-10",
+      "2027-11",
+      "2027-12",
+    ]);
+    expect(result.layout.rows.every((row) => row.kind === "current")).toBe(true);
+    expect(result.layout.highlightYear).toBe(2027);
+  });
+
+  it("renders July 2027 through December 2028 with context tint for an 18-month window", () => {
+    const result = buildClassicYearLayout({
+      range: { start: { year: 2027, month: 6 }, monthCount: 18 },
+    });
+    if (!result.ok) throw new Error("expected layout");
+    expect(result.layout.rows).toHaveLength(18);
+    expect(result.layout.rows[0]?.rowId).toBe("2027-07");
+    expect(result.layout.rows[17]?.rowId).toBe("2028-12");
+    expect(result.layout.rows[0]?.kind).toBe("current");
+    expect(result.layout.rows[17]?.kind).toBe("context");
+    expect(result.layout.rows.filter((row) => row.year === 2028)).toHaveLength(12);
   });
 });

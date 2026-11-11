@@ -484,7 +484,7 @@ describe("RD-06 cells and slots", () => {
     expect(screen.queryByRole("tooltip")).toBeNull();
   });
 
-  it("never renders metadata as HTML and filters unsafe item styles", () => {
+  it("RD-06-AC-18: never renders metadata as HTML and filters unsafe item styles", () => {
     const { container } = render(
       <YearPlanner
         year={2027}

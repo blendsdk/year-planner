@@ -323,13 +323,13 @@ export interface YearPlannerProps {
         monthCount: number;
     };
     readOnly?: boolean;
-    renderAnnotation?: (context: AnnotationRenderContext) => ReactNode;
+    renderAnnotation?: ((context: AnnotationRenderContext) => ReactNode) | undefined;
     renderCell?: ((context: CellRenderContext) => ReactNode) | undefined;
-    renderEmpty?: () => ReactNode;
+    renderEmpty?: (() => ReactNode) | undefined;
     renderInspector?: ((context: InspectorRenderContext) => ReactNode) | undefined;
     renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
-    renderOverflow?: (context: OverflowRenderContext) => ReactNode;
-    renderTooltip?: (context: TooltipRenderContext) => ReactNode;
+    renderOverflow?: ((context: OverflowRenderContext) => ReactNode) | undefined;
+    renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
     resources?: Resource[];
     selection?: PlannerSelection;
     showInspector?: boolean;

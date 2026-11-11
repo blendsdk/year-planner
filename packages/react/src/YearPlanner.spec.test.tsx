@@ -190,11 +190,12 @@ describe("RD-06 theming and geometry", () => {
     expect(roots[0]).toHaveAttribute("data-yp-theme", "classic-blue");
     expect(roots[1]).toHaveAttribute("data-yp-theme", "classic-yellow");
     expect(roots[0]).toHaveAttribute("dir", "ltr");
-    expect(
-      Array.from(container.querySelectorAll(".yp-week-number")).some(
-        (node) => node.textContent === "53",
-      ),
-    ).toBe(true);
+    const week = (root: Element, date: string): string | null | undefined =>
+      root.querySelector(`[data-date="${date}"] .yp-week-number`)?.textContent;
+    expect(week(roots[0] as Element, "2016-01-01")).toBe("53");
+    expect(week(roots[0] as Element, "2016-01-04")).toBe("1");
+    expect(week(roots[1] as Element, "2017-01-01")).toBe("52");
+    expect(week(roots[1] as Element, "2017-01-02")).toBe("1");
   });
 
   it("scrolls to a date and invalidates geometry on resize", () => {

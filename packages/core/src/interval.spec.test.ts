@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { diffDays } from "./date";
 import type { DateInterval } from "./interval";
 import {
   contains,
@@ -97,5 +98,29 @@ describe("interval algebra edge cases", () => {
     expect(splitAtDateBoundary(source, "2027-01-10")).toEqual([source]);
     expect(splitAtDateBoundary(source, "2027-01-20")).toEqual([source]);
     expect(splitAtDateBoundary(source, "2027-02-01")).toEqual([source]);
+  });
+});
+
+describe("RD-02-AC-05/06: period intersections across boundaries", () => {
+  it("splits a January-February period into two month fragments totalling ten days", () => {
+    const source = interval("2027-01-28", "2027-02-07");
+    expect(intersect(source, interval("2027-01-01", "2027-02-01"))).toEqual(
+      interval("2027-01-28", "2027-02-01"),
+    );
+    expect(intersect(source, interval("2027-02-01", "2027-03-01"))).toEqual(
+      interval("2027-02-01", "2027-02-07"),
+    );
+    expect(diffDays("2027-01-28", "2027-02-07")).toBe(10);
+  });
+
+  it("touches December and January while the source stays one interval", () => {
+    const source = interval("2026-12-28", "2027-01-04");
+    expect(intersect(source, interval("2026-12-01", "2027-01-01"))).toEqual(
+      interval("2026-12-28", "2027-01-01"),
+    );
+    expect(intersect(source, interval("2027-01-01", "2027-02-01"))).toEqual(
+      interval("2027-01-01", "2027-01-04"),
+    );
+    expect(source).toEqual(interval("2026-12-28", "2027-01-04"));
   });
 });

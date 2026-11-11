@@ -304,15 +304,15 @@ export interface YearPlannerProps {
   /** Additive item content. */
   renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
   /** Annotation content. */
-  renderAnnotation?: (context: AnnotationRenderContext) => ReactNode;
+  renderAnnotation?: ((context: AnnotationRenderContext) => ReactNode) | undefined;
   /** Overflow content. */
-  renderOverflow?: (context: OverflowRenderContext) => ReactNode;
+  renderOverflow?: ((context: OverflowRenderContext) => ReactNode) | undefined;
   /** Empty state content. */
-  renderEmpty?: () => ReactNode;
+  renderEmpty?: (() => ReactNode) | undefined;
   /** Inspector content. */
   renderInspector?: ((context: InspectorRenderContext) => ReactNode) | undefined;
   /** Tooltip content. */
-  renderTooltip?: (context: TooltipRenderContext) => ReactNode;
+  renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
   /** Structural slot overrides. */
   components?: Partial<YearPlannerComponents>;
   /** CSS variable overrides. */

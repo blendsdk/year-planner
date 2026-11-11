@@ -110,9 +110,11 @@ scans the planner root with the WCAG 2.0/2.1/2.2 A+AA tags in Chromium:
 | command error feedback | no serious or critical violations |
 | AC3 Fluent UI/MUI buttons | no serious or critical violations |
 | 36-month window | no serious or critical violations |
+| forced colours | focus ring remains visible |
 
 The browser file also checks keyboard selection, exactly one tab stop per composite, the skip link,
-move-by-week, hidden-item removal and nested-control absence.
+move-by-week, hidden-item removal, an unclipped proxy focus ring, a distinct selected-cell focus,
+forced-colours focus visibility and nested-control absence.
 
 ## Manual screen-reader protocol
 

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-11 02:33
-> **Progress**: 26/34 tasks (76%)
+> **Last Updated**: 2026-11-11 02:57
+> **Progress**: 33/34 tasks (97%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -176,19 +176,19 @@ milestone with current API and docs evidence.
 
 ### Step 4.1: Integration tests
 
-- [ ] 4.1.1 [spec-author] Write the controlled-host Playwright suite for ST-78–ST-84, the capacity regression ST-77 and the security/local-parity cases ST-87–ST-89 — `tests/e2e/commands.spec.ts`, `packages/react/src/commands.spec.test.tsx`
-- [ ] 4.1.2 Run the new browser tests and record the expected red failures — `docs/m5-red-phase.md`
+- [x] 4.1.1 [spec-author] Write the controlled-host Playwright suite for ST-78–ST-84, the capacity regression ST-77 and the security/local-parity cases ST-87–ST-89 — `tests/e2e/commands.spec.ts`, `packages/react/src/commands.spec.test.tsx` ✅ (completed: 2026-11-11 02:57)
+- [x] 4.1.2 Run the new browser tests and record the expected red failures — `docs/m5-red-phase.md` ✅ (completed: 2026-11-11 02:57)
 
 ### Step 4.2: Integration implementation and documentation
 
-- [ ] 4.2.1 Build the controlled `?commands=1` demo with host modes and the capacity-2 mock — `apps/demo/src/CommandsDemo.tsx`, `apps/demo/src/App.tsx`
-- [ ] 4.2.2 Add the `CommandLifecycle` Storybook stories for every pending and terminal state — `apps/storybook/stories/CommandLifecycle.stories.tsx`
-- [ ] 4.2.3 Write the host contract guide and update the existing docs set — `docs/commands.md`, `docs/interaction.md`, `docs/react-view.md`, `docs/security.md`, `README.md`
-- [ ] 4.2.4 Add the changeset and regenerate the API reports — `.changeset/rd08-command-lifecycle.md`, `packages/core/etc/year-planner-core.api.md`, `packages/react/etc/react-year-planner.api.md`
+- [x] 4.2.1 Build the controlled `?commands=1` demo with host modes and the capacity-2 mock — `apps/demo/src/CommandsDemo.tsx`, `apps/demo/src/App.tsx` ✅ (completed: 2026-11-11 02:57)
+- [x] 4.2.2 Add the `CommandLifecycle` Storybook stories for every pending and terminal state — `apps/storybook/stories/CommandLifecycle.stories.tsx` ✅ (completed: 2026-11-11 02:57)
+- [x] 4.2.3 Write the host contract guide and update the existing docs set — `docs/commands.md`, `docs/interaction.md`, `docs/react-view.md`, `docs/security.md`, `README.md` ✅ (completed: 2026-11-11 02:57)
+- [x] 4.2.4 Add the changeset and regenerate the API reports — `.changeset/rd08-command-lifecycle.md`, `packages/core/etc/year-planner-core.api.md`, `packages/react/etc/react-year-planner.api.md` ✅ (completed: 2026-11-11 02:57)
 
 ### Step 4.3: Green phase and closeout
 
-- [ ] 4.3.1 Run the command Playwright suite green in Chromium, Firefox and WebKit — `tests/e2e/commands.spec.ts`
+- [x] 4.3.1 Run the command Playwright suite green in Chromium, Firefox and WebKit — `tests/e2e/commands.spec.ts` ✅ (completed: 2026-11-11 02:57)
 - [ ] 4.3.2 Run `pnpm verify:full`, update `docs/test-report.md`, watch CI, update the roadmap and close the plan
 
 **Deliverables**:

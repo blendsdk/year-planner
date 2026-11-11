@@ -118,10 +118,16 @@ hosts own durable history, and local undo reports `UNDO_UNAVAILABLE`.
     createDefaults: { kind: "activity", layerId: "bookings" },
     confirmChange: async () => true,
   }}
-  onChangeRequest={(command) => host.apply(command)}
+  onChangeRequest={(command, context, signal) => host.apply(command, context, signal)}
+  onChangeCommitted={(outcome) => host.commit(outcome)}
+  onChangeRejected={(outcome) => host.reject(outcome)}
   onSelectionChange={(selection) => host.setSelection(selection)}
 />
 ```
+
+The full controlled-command contract — request IDs, `baseRevision`, validation
+severity, versions, accepted-not-applied detection, rollback and retry — is in
+[commands.md](commands.md).
 
 ## Known limits
 

@@ -109,3 +109,22 @@ Failing cases:
 
 The three passing cases were existing timeout, accepted-not-applied and pending
 delete behavior. After the implementation the same suite is 10/10 green.
+
+## Phase 4 — Controlled browser fixture and Storybook
+
+Command:
+
+```bash
+pnpm exec playwright test tests/e2e/commands.spec.ts --project=chromium
+```
+
+State: the `?commands=1` route, the controlled host modes, the capacity mock and
+the command fixture test IDs did not exist.
+
+```text
+8 failed
+```
+
+All eight scenarios failed waiting for `commands-mode`, `commands-items` or
+`commands-add-dock`. After the fixture is added the suite is expected to run in
+Chromium, Firefox and WebKit.

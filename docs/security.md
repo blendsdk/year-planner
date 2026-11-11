@@ -1,6 +1,7 @@
 # Security Notes — Year Planner for React
 
-> **Scope**: RD-06 rendering/styles/slots and RD-07 pointer/selection input
+> **Scope**: RD-06 rendering/styles/slots, RD-07 pointer/selection input and
+> RD-08 command diagnostics
 > **Status**: Implemented controls; a full security gate suite is RD-10
 
 ## Trust boundary
@@ -23,6 +24,11 @@
 - Hidden items are excluded before fragments, slots, overflow and tooltip data.
 - Diagnostics carry entity IDs and generic messages; item titles, periods,
   instants and resource names are not included.
+- Command diagnostics render as text. Local diagnostics for hidden items keep the
+  item ID but omit titles, dates and layer names. Host-supplied diagnostic prose
+  is host-owned; redact sensitive text in the host before returning it.
+- A read-only or editable UI state is never proof of authorization. The host
+  remains authoritative for every command.
 - Layer identity uses label, pattern and `data-yp-layer` attributes so color is
   not the only signal.
 - Hidden or filtered items are not hit-testable and are pruned from selection.

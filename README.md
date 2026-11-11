@@ -14,8 +14,8 @@ and January of the next year — with:
 
 > **Status: pre-alpha.** No package has been published yet. APIs, styles and
 > package names may change before the first release. The repository now contains
-> the **M1 + M2 core + RD-06 rendered view + RD-07 interaction** slices; the full
-> command lifecycle is still in progress.
+> the **M1 + M2 core + RD-06 rendered view + RD-07 interaction + RD-08 command
+> lifecycle** slices.
 
 ## Current milestones
 
@@ -24,7 +24,7 @@ and January of the next year — with:
 | Temporal core (dates, ISO weeks, half-open intervals) | Done — M1 |
 | Classic 12–36 month layout, 37 day slots | Done — M1 |
 | Minimal React grid, classic themes, ISO weeks, print | Done — M1 |
-| Storybook site, demo, clean-consumer check, CI | Done — M1; 144-story suite across RD-06 and RD-07 |
+| Storybook site, demo, clean-consumer check, CI | Done — M1; 157-story suite across RD-06, RD-07 and RD-08 |
 | API Extractor reports and generated TypeDoc API | Done — M1 |
 | Renderer evidence gate and ADR | Done — HTML renderer, optional SVG shape plane |
 | Entity model, validation, layers, visibility, editability | Done — M2 core |
@@ -34,7 +34,7 @@ and January of the next year — with:
 | Theming, presets, provider, slots, inspector | Done — RD-06 |
 | A3 multi-page print output and Fluent/MUI token adapters | Done — RD-06 |
 | Pointer, keyboard and touch interaction, marquee, drag/resize/paint/create | Done — RD-07 |
-| Full rollback, stale responses, controlled-host history | Not implemented — RD-08 |
+| Controlled commands, request IDs, versions, rollback and accepted-not-applied | Done — RD-08 |
 
 The renderer decision is recorded in
 [ADR 0001](docs/adr/0001-renderer-strategy.md), with measurements in
@@ -52,8 +52,9 @@ import "@blendsdk/react-year-planner/styles.css";
 <YearPlanner year={2027} items={items} layers={layers} activeLayerId="bookings" />;
 ```
 
-Interaction is documented in [docs/interaction.md](docs/interaction.md). The
-package is **ESM-only**: `"type": "module"`, an `import`-only export map and
+Interaction is documented in [docs/interaction.md](docs/interaction.md) and the
+controlled command contract in [docs/commands.md](docs/commands.md). The package
+is **ESM-only**: `"type": "module"`, an `import`-only export map and
 an ES Vite build. Fluent UI v9 and MUI token adapters are available at
 `@blendsdk/react-year-planner/adapters/fluent` and
 `@blendsdk/react-year-planner/adapters/mui` without adding either design system

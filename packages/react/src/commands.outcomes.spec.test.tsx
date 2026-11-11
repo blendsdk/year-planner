@@ -698,4 +698,113 @@ describe("RD-08 paint and retry", () => {
     await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument());
     expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
   });
+
+  it("rejects a third capacity booking even when the dock layer is hidden", async () => {
+    const dockA: PlannerItem = {
+      ...item("dock-a", {
+        kind: "reservation",
+        layerId: "dock",
+        period: {
+          kind: "all-day",
+          startDate: "2027-01-10",
+          endDateExclusive: "2027-01-20",
+        },
+      }),
+    };
+    const dockB: PlannerItem = {
+      ...item("dock-b", {
+        kind: "reservation",
+        layerId: "dock",
+        period: {
+          kind: "all-day",
+          startDate: "2027-01-12",
+          endDateExclusive: "2027-01-18",
+        },
+      }),
+    };
+    const dockC: PlannerItem = {
+      ...item("dock-c", {
+        kind: "reservation",
+        layerId: "ribbon",
+        period: {
+          kind: "all-day",
+          startDate: "2027-01-14",
+          endDateExclusive: "2027-01-16",
+        },
+      }),
+    };
+    const onDiagnostic = vi.fn();
+    const { ref, onItemsChange } = renderPlanner({
+      year: 2027,
+      layers: [...layers, { id: "dock", name: "Dock", channel: "ribbon", color: "#2a9d8f" }],
+      defaultItems: [dockA, dockB],
+      defaultVisibility: {
+        hiddenGroupIds: [],
+        hiddenLayerIds: ["dock"],
+        hiddenItemIds: [],
+      },
+      activeLayerId: "ribbon",
+      onDiagnostic,
+      onChangeRequest: (command): CommandOutcome => {
+        if (command.type !== "create") return accepted;
+        const overlaps = [dockA, dockB].filter(
+          (entry) =>
+            entry.period.kind === "all-day" &&
+            command.item.period.kind === "all-day" &&
+            entry.period.startDate < command.item.period.endDateExclusive &&
+            command.item.period.startDate < entry.period.endDateExclusive,
+        );
+        return overlaps.length >= 2
+          ? {
+              accepted: false,
+              diagnostics: [{ code: "CAPACITY_EXCEEDED", level: "error", message: "Dock is full" }],
+            }
+          : accepted;
+      },
+    });
+    act(() => ref.current?.requestCommand({ type: "create", item: dockC }));
+    await waitFor(() =>
+      expect(onDiagnostic).toHaveBeenCalledWith(
+        expect.objectContaining({ code: "CAPACITY_EXCEEDED" }),
+      ),
+    );
+    expect(onItemsChange).not.toHaveBeenCalled();
+  });
+
+  it("renders a host diagnostic message as text, not HTML", async () => {
+    const { ref, container } = renderPlanner({
+      onChangeRequest: (): CommandOutcome => ({
+        accepted: false,
+        diagnostics: [{ code: "HOST_REJECTED", level: "error", message: "<b>blocked</b>" }],
+      }),
+    });
+    act(() => ref.current?.requestCommand(move()));
+    await waitFor(() => expect(container.textContent).toContain("<b>blocked</b>"));
+    expect(container.querySelector("b")).toBeNull();
+  });
+
+  it("passes a synthesized uncontrolled paint payload to the committed callback", async () => {
+    const onCommitted = vi.fn();
+    const harness = renderPlanner({
+      activeLayerId: "highlight",
+      defaultItems: [highlight("h")],
+      onChangeRequest: () => accepted,
+      onChangeCommitted: onCommitted,
+    });
+    act(() =>
+      harness.ref.current?.requestCommand({
+        type: "paint",
+        layerId: "highlight",
+        period: { kind: "all-day", startDate: "2016-01-05", endDateExclusive: "2016-01-08" },
+        operation: "subtract",
+        defaults: { kind: "highlight" },
+        expectedVersions: { h: 1 },
+      }),
+    );
+    await waitFor(() => expect(onCommitted).toHaveBeenCalledTimes(1));
+    const outcome = onCommitted.mock.calls[0]?.[0] as CommandOutcome;
+    if (!outcome.accepted) throw new Error("expected acceptance");
+    expect(outcome.updatedItems?.length).toBeGreaterThan(0);
+    expect(outcome.removedItemIds).toEqual(["h"]);
+  });
 });

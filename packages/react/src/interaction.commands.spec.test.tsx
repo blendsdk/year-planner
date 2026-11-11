@@ -194,7 +194,9 @@ describe("RD-08 pending previews", () => {
     dragItem(harness, "booking", "2027-01-28", "2027-02-02");
     await waitFor(() => expect(previews(harness.container)).toHaveLength(0));
     await waitFor(() => expect(harness.container.textContent).toContain("COMMAND_TIMEOUT"));
-    expect(document.activeElement?.getAttribute("data-item-id")).toBe("booking");
+    await waitFor(() =>
+      expect(document.activeElement?.getAttribute("data-item-id")).toBe("booking"),
+    );
   });
 
   it("clears the preview when the host accepts but props never apply", async () => {
@@ -232,7 +234,9 @@ describe("RD-08 pending previews", () => {
       diagnostics: [{ code: "CAPACITY_EXCEEDED", level: "error", message: "No" }],
     });
     await waitFor(() => expect(previews(harness.container)).toHaveLength(0));
-    expect(document.activeElement?.getAttribute("data-date")).toBe("2027-06-12");
+    await waitFor(() =>
+      expect(document.activeElement?.getAttribute("data-date")).toBe("2027-06-12"),
+    );
   });
 
   it("holds a create preview until the host rejects", async () => {
@@ -249,7 +253,9 @@ describe("RD-08 pending previews", () => {
       diagnostics: [{ code: "READ_ONLY", level: "error", message: "No" }],
     });
     await waitFor(() => expect(previews(harness.container)).toHaveLength(0));
-    expect(document.activeElement?.getAttribute("data-date")).toBe("2027-03-01");
+    await waitFor(() =>
+      expect(document.activeElement?.getAttribute("data-date")).toBe("2027-03-01"),
+    );
   });
 
   it("marks a pending delete item without a preview", async () => {

@@ -1,14 +1,16 @@
-# Test Report — Year Planner for React (M1 + M2 + RD-06 + RD-07)
+# Test Report — Year Planner for React (M1 + M2 + RD-06 + RD-07 + RD-08)
 
 > **Date**: 2026-11-11
 > **Scope**: M1 foundation/temporal core/classic grid; M2 layers, visibility,
 > paint/erase, ribbons, hit index and print planning; RD-06 rendered view,
 > theming, slots, inspector, adapters and A3 print output; RD-07 pointer,
-> keyboard and touch interaction, selection matrix, previews and focus
+> keyboard and touch interaction, selection matrix, previews and focus;
+> RD-08 controlled commands, validation, versions, rollback and
+> accepted-not-applied handling
 > **Workflow**: CodeOps (`exec-plan`), plans `m1-foundation-core`,
-> `m2-layers-ribbons`, `m3-react-view` and `m4-interaction-engine`
-> **Verdict**: **PASS** for the M1 + M2 + RD-06 + RD-07 slices. RD-08 lifecycle
-> work is not claimed.
+> `m2-layers-ribbons`, `m3-react-view`, `m4-interaction-engine` and
+> `m5-controlled-commands`
+> **Verdict**: **PASS** for the M1 + M2 + RD-06 + RD-07 + RD-08 slices.
 
 ---
 
@@ -38,19 +40,19 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | Check | Result |
 |---|---|
 | Core tests | **207 passed** |
-| React tests | **309 passed** (29 files) |
-| Core coverage | **99.43% lines, 96.08% branches, 100% functions** |
-| React coverage | **94.22% lines, 93.26% branches, 98.36% functions** |
-| Playwright | **51 passed, 7 skipped** (PDF is Chromium-only; touch is Chromium-only) |
+| React tests | **394 passed** (34 files) |
+| Core coverage | **99.34% lines, 96.08% branches, 99.23% functions** |
+| React coverage | **93.94% lines, 92.52% branches, 98.08% functions** |
+| Playwright | **75 passed, 7 skipped** (PDF is Chromium-only; touch is Chromium-only) |
 | Browsers | Chromium, Firefox, WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
 | Clean consumer | **PASS** — packed core + React installed and built |
-| Storybook | **PASS** — static build succeeds; **144 stories across 10 files** |
+| Storybook | **PASS** — static build succeeds; **157 stories across 11 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **54.10 kB gzip** including core, React, adapters and CSS; 60 kB budget |
+| Bundle size | **58.30 kB gzip** including core, React, adapters and CSS; 60 kB budget |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | **Green** — [CI workflow](https://github.com/blendsdk/year-planner/actions/workflows/ci.yml), `verify` + `browsers` jobs |
 
@@ -145,11 +147,28 @@ API Extractor reports are committed at:
 TypeDoc generates `docs/api/core/index.html`, `docs/api/react/index.html` and a
 landing page at `docs/api/index.html`. Generated HTML is not committed.
 
+## RD-08 evidence
+
+| Area | Evidence |
+|---|---|
+| Request identity | One ID per request; active/settled/obsolete state; collision suffix; late and obsolete responses ignored |
+| Context | Optional `baseRevision`; optional `AbortSignal` third argument on validation and request callbacks |
+| Validation | Local checks first; error diagnostics block even when permitted; warnings/info display as inspector notices |
+| Versions | Positive-integer item versions; `expectedVersion` on update/move/resize/delete; `expectedVersions` on paint; `STALE_REVISION` |
+| Outcomes | Runtime normalization; malformed outcomes map to `HOST_REJECTED`; accepted paint coverage is proved |
+| Pending | Pending item outline and `aria-busy`; gesture preview retained until settlement; one command per item |
+| Rollback | Preview clears; focus returns to the source item; paint/create fall back to the gesture date; selection is preserved |
+| Accepted-not-applied | Controlled props are checked immediately and on change; timeout produces `ACCEPTED_NOT_APPLIED` and reverts |
+| Retry | Explicit host rejection, thrown call and timeout matrix; no delete, timed-out create/paint or stale replay |
+| Uncontrolled parity | Same reducer, version increments, paint residuals and undo/redo; controlled mode reports `UNDO_UNAVAILABLE` |
+| Browser evidence | `tests/e2e/commands.spec.ts` in Chromium, Firefox and WebKit: accept, reject, stale, timeout, never-apply, warning, pending preview and capacity mock |
+| Security | Diagnostics render as text; local hidden-item diagnostics omit titles/dates; host prose is host-owned; no authorization inferred |
+
 ## Known gaps and honest limitations
 
 | Gap | Status |
 |---|---|
-| Full command lifecycle: rollback, stale responses, accepted-not-applied | Not implemented — RD-08 |
+| Full command lifecycle: rollback, stale responses, accepted-not-applied | Implemented — RD-08 |
 | Batch multi-move, alt+drag subtraction, drag between layers/resources | Deferred from R1 |
 | Native touch-scroll E2E | Touch gating and `touch-action` are tested; full scroll physics is RD-10 |
 | Controlled-host undo history | Not implemented; rejected with `UNDO_UNAVAILABLE` |

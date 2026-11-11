@@ -145,12 +145,16 @@ announced in a polite live region.
 The component-owned inspector lists selected item details, visibility,
 editability, overflow items and command feedback. Actions use the same request
 pipeline as imperative calls: local read-only/version checks → optional
-`validateChange` → optional `onChangeRequest` with a timeout → local apply in
-uncontrolled mode. Default actions move ±7 days, resize by one day, delete with
+`validateChange` → optional `onChangeRequest` with one shared deadline → a
+tracked request settlement. Controlled items are authoritative; uncontrolled
+mode applies through the local reducer. Pending items are marked with
+`data-yp-pending` and `aria-busy`; warnings appear as inspector notices; accepted,
+rejected and accepted-not-applied outcomes are announced in a polite live
+region. Default actions move ±7 days, resize by one day, delete with
 confirmation, paint/erase the selected range, and create one day on the active
 layer. Annotation items render but are host-owned for edits in this slice; their
 inspector actions are disabled. `renderInspector` replaces the body; the aside
-and close button remain.
+and close button remain. See [commands.md](commands.md) for the host contract.
 
 ## Print
 

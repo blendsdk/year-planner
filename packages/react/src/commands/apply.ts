@@ -62,6 +62,12 @@ function stringArray(value: unknown): string[] | undefined {
   return value.filter((entry): entry is string => typeof entry === "string");
 }
 
+function strictStringArray(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  if (!value.every((entry): entry is string => typeof entry === "string")) return undefined;
+  return value;
+}
+
 function periodArray(value: unknown): PlannerPeriod[] | undefined {
   if (!Array.isArray(value)) return undefined;
   return value.filter(isPlannerPeriod);
@@ -171,9 +177,18 @@ export function normalizeOutcome(
     }
     let removedItemIds: string[] | undefined;
     if (value.removedItemIds !== undefined) {
-      removedItemIds = stringArray(value.removedItemIds);
+      removedItemIds = strictStringArray(value.removedItemIds);
       if (!removedItemIds) {
         return { ok: false, diagnostic: hostRejected("The host returned invalid removed IDs") };
+      }
+    }
+    if (updatedItems && removedItemIds) {
+      const updatedIds = new Set(updatedItems.map((item) => item.id));
+      if (removedItemIds.some((id) => updatedIds.has(id))) {
+        return {
+          ok: false,
+          diagnostic: hostRejected("The host returned an item as both updated and removed"),
+        };
       }
     }
     if (controlled && command.type === "paint") {

@@ -57,6 +57,17 @@ const move = (itemId = "a", version = 1): PlannerCommand => ({
 
 const accepted: CommandOutcome = { accepted: true, revision: "1" };
 
+function deferred<T>(): {
+  promise: Promise<T>;
+  resolve: (value: T) => void;
+} {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((resolvePromise) => {
+    resolve = resolvePromise;
+  });
+  return { promise, resolve };
+}
+
 function applyPayload(items: PlannerItem[], outcome: CommandOutcome): PlannerItem[] {
   if (!outcome.accepted) return items;
   const updated = new Map((outcome.updatedItems ?? []).map((entry) => [entry.id, entry]));
@@ -283,6 +294,108 @@ describe("RD-08 versions and local history", () => {
       ),
     );
   });
+
+  it("rejects a stale uncontrolled apply when undo changes the source during the request", async () => {
+    const response = deferred<CommandOutcome>();
+    const { ref, onItemsChange, onCommitted, onRejected, onDiagnostic } = renderPlanner({
+      onChangeRequest: (command) => (command.type === "move" ? response.promise : accepted),
+    });
+    act(() =>
+      ref.current?.requestCommand({
+        type: "update",
+        itemId: "a",
+        patch: { title: "Two" },
+        expectedVersion: 1,
+      }),
+    );
+    await waitFor(() => expect(onItemsChange).toHaveBeenCalledTimes(1));
+    onCommitted.mockClear();
+    onRejected.mockClear();
+    onDiagnostic.mockClear();
+
+    act(() => ref.current?.requestCommand(move("a", 2)));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    act(() => ref.current?.requestUndo());
+    await waitFor(() => expect(onItemsChange).toHaveBeenCalledTimes(2));
+
+    response.resolve({
+      accepted: true,
+      revision: "3",
+      updatedItems: [
+        item("a", {
+          version: 3,
+          period: {
+            kind: "all-day",
+            startDate: "2016-01-11",
+            endDateExclusive: "2016-01-15",
+          },
+        }),
+      ],
+    });
+    await waitFor(() =>
+      expect(onDiagnostic).toHaveBeenCalledWith(
+        expect.objectContaining({ code: "STALE_REVISION" }),
+      ),
+    );
+    expect(onCommitted).not.toHaveBeenCalled();
+    expect(onRejected).toHaveBeenCalled();
+    const latest = onItemsChange.mock.calls.at(-1)?.[0] as PlannerItem[];
+    expect(latest[0]?.period).toEqual({
+      kind: "all-day",
+      startDate: "2016-01-04",
+      endDateExclusive: "2016-01-08",
+    });
+  });
+
+  it("undoes and redoes uncontrolled move and resize", async () => {
+    const { ref, onItemsChange } = renderPlanner();
+    act(() => ref.current?.requestCommand(move("a", 1)));
+    await waitFor(() => expect(onItemsChange).toHaveBeenCalledTimes(1));
+    const moved = onItemsChange.mock.calls[0]?.[0] as PlannerItem[] | undefined;
+    expect(moved?.[0]?.period).toEqual({
+      kind: "all-day",
+      startDate: "2016-01-11",
+      endDateExclusive: "2016-01-15",
+    });
+    act(() => ref.current?.requestUndo());
+    await waitFor(() => expect(onItemsChange).toHaveBeenCalledTimes(2));
+    const restored = onItemsChange.mock.calls[1]?.[0] as PlannerItem[] | undefined;
+    expect(restored?.[0]?.period).toEqual({
+      kind: "all-day",
+      startDate: "2016-01-04",
+      endDateExclusive: "2016-01-08",
+    });
+    act(() => ref.current?.requestRedo());
+    await waitFor(() => expect(onItemsChange).toHaveBeenCalledTimes(3));
+
+    act(() =>
+      ref.current?.requestCommand({
+        type: "resize",
+        itemId: "a",
+        proposedPeriod: {
+          kind: "all-day",
+          startDate: "2016-01-11",
+          endDateExclusive: "2016-01-16",
+        },
+        expectedVersion: 2,
+      }),
+    );
+    await waitFor(() => expect(onItemsChange).toHaveBeenCalledTimes(4));
+    const resized = onItemsChange.mock.calls[3]?.[0] as PlannerItem[] | undefined;
+    expect(resized?.[0]?.period).toEqual({
+      kind: "all-day",
+      startDate: "2016-01-11",
+      endDateExclusive: "2016-01-16",
+    });
+    act(() => ref.current?.requestUndo());
+    await waitFor(() => expect(onItemsChange).toHaveBeenCalledTimes(5));
+    const resizeUndone = onItemsChange.mock.calls[4]?.[0] as PlannerItem[] | undefined;
+    expect(resizeUndone?.[0]?.period).toEqual({
+      kind: "all-day",
+      startDate: "2016-01-11",
+      endDateExclusive: "2016-01-15",
+    });
+  });
 });
 
 describe("RD-08 controlled acceptance", () => {
@@ -303,8 +416,18 @@ describe("RD-08 controlled acceptance", () => {
     });
     act(() => controlled.ref.current?.requestCommand(move()));
     await waitFor(() => expect(onCommitted).toHaveBeenCalledTimes(1));
+    expect(
+      controlled.container.querySelector('[data-item-id="a"][data-yp-pending="true"]'),
+    ).not.toBeNull();
     controlled.update([updated]);
-    await waitFor(() => expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull());
+    await waitFor(() => expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull(), {
+      timeout: 2000,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull();
+    expect(
+      controlled.container.querySelector('[data-item-id="a"][data-yp-pending="true"]'),
+    ).toBeNull();
   });
 
   it("shows ACCEPTED_NOT_APPLIED when controlled props never update", async () => {
@@ -341,7 +464,7 @@ describe("RD-08 controlled acceptance", () => {
     act(() => controlled.ref.current?.requestCommand(move()));
     await new Promise((resolve) => setTimeout(resolve, 10));
     controlled.update([updated]);
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    await new Promise((resolve) => setTimeout(resolve, 150));
     expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull();
   });
 
@@ -353,8 +476,56 @@ describe("RD-08 controlled acceptance", () => {
     });
     act(() => controlled.ref.current?.requestCommand(move()));
     controlled.update([updated]);
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    await new Promise((resolve) => setTimeout(resolve, 150));
     expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull();
+  });
+
+  it("applies a controlled create after props show the item", async () => {
+    const created = item("new", { title: "New" });
+    const controlled = renderControlled([], {
+      interaction: { commandTimeoutMs: 100 },
+      onChangeRequest: (): CommandOutcome => ({
+        accepted: true,
+        revision: "2",
+        updatedItems: [created],
+      }),
+    });
+    act(() => controlled.ref.current?.requestCommand({ type: "create", item: created }));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(controlled.container.querySelector('[data-item-id="new"]')).toBeNull();
+    controlled.update([created]);
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull();
+    expect(controlled.container.querySelector('[data-item-id="new"]')).not.toBeNull();
+  });
+
+  it("applies a controlled paint union after props show the merged item", async () => {
+    const source = highlight("h");
+    const merged = highlight("merged", { title: "Highlight" });
+    const controlled = renderControlled([source], {
+      activeLayerId: "highlight",
+      interaction: { commandTimeoutMs: 100 },
+      onChangeRequest: (): CommandOutcome => ({
+        accepted: true,
+        revision: "2",
+        updatedItems: [merged],
+        removedItemIds: ["h"],
+      }),
+    });
+    act(() =>
+      controlled.ref.current?.requestCommand({
+        type: "paint",
+        layerId: "highlight",
+        period: { kind: "all-day", startDate: "2016-01-05", endDateExclusive: "2016-01-06" },
+        operation: "union",
+        defaults: { kind: "highlight", title: "Highlight" },
+        expectedVersions: { h: 1 },
+      }),
+    );
+    controlled.update([merged]);
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull();
+    expect(controlled.container.querySelector('[data-item-id="merged"]')).not.toBeNull();
   });
 
   it("accepts a controlled delete when props remove the item", async () => {
@@ -374,7 +545,7 @@ describe("RD-08 controlled acceptance", () => {
       }),
     );
     controlled.update([]);
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    await new Promise((resolve) => setTimeout(resolve, 150));
     expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull();
     expect(controlled.container.querySelector('[data-item-id="a"]')).toBeNull();
   });
@@ -404,7 +575,7 @@ describe("RD-08 controlled acceptance", () => {
       }),
     );
     controlled.update([]);
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    await new Promise((resolve) => setTimeout(resolve, 150));
     expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull();
     expect(controlled.container.querySelector('[data-item-id="h"]')).toBeNull();
   });
@@ -515,7 +686,7 @@ describe("RD-08 controlled acceptance", () => {
         removedItemIds: ["h"],
       }),
     );
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    await new Promise((resolve) => setTimeout(resolve, 150));
     expect(screen.queryByText("ACCEPTED_NOT_APPLIED")).toBeNull();
   });
 });
@@ -559,9 +730,7 @@ describe("RD-08 paint and retry", () => {
       }),
     );
     await waitFor(() =>
-      expect(onDiagnostic).toHaveBeenCalledWith(
-        expect.objectContaining({ code: "INVALID_COMMAND" }),
-      ),
+      expect(onDiagnostic).toHaveBeenCalledWith(expect.objectContaining({ code: "INVALID_RANGE" })),
     );
     expect(onChangeRequest).not.toHaveBeenCalled();
   });
@@ -806,5 +975,83 @@ describe("RD-08 paint and retry", () => {
     if (!outcome.accepted) throw new Error("expected acceptance");
     expect(outcome.updatedItems?.length).toBeGreaterThan(0);
     expect(outcome.removedItemIds).toEqual(["h"]);
+  });
+
+  it("keeps an uncontrolled command accepted when onItemsChange throws", async () => {
+    const onCommitted = vi.fn();
+    const onRejected = vi.fn();
+    const harness = renderPlanner({
+      onItemsChange: () => {
+        throw new Error("host callback failed");
+      },
+      onChangeCommitted: onCommitted,
+      onChangeRejected: onRejected,
+    });
+    act(() => harness.ref.current?.requestCommand(move()));
+    await waitFor(() => expect(onCommitted).toHaveBeenCalledTimes(1));
+    expect(onRejected).not.toHaveBeenCalled();
+    expect(
+      harness.container.querySelector('[data-item-id="a"]')?.getAttribute("data-yp-pending"),
+    ).toBe("false");
+  });
+
+  it("synthesizes VALIDATION_ERROR when denied with warning-only diagnostics", async () => {
+    const onRejected = vi.fn();
+    const harness = renderPlanner({
+      validateChange: () => ({
+        permitted: false,
+        diagnostics: [{ code: "INVALID_RANGE", level: "warning", message: "Warning only" }],
+      }),
+      onChangeRejected: onRejected,
+    });
+    act(() => harness.ref.current?.requestCommand(move()));
+    await waitFor(() => expect(onRejected).toHaveBeenCalledTimes(1));
+    const outcome = onRejected.mock.calls[0]?.[0] as CommandOutcome | undefined;
+    const diagnostics = outcome && !outcome.accepted ? outcome.diagnostics : [];
+    expect(diagnostics.some((entry) => entry.code === "VALIDATION_ERROR")).toBe(true);
+    expect(diagnostics.some((entry) => entry.code === "INVALID_RANGE")).toBe(true);
+  });
+
+  it("maps a malformed host sentinel string to HOST_REJECTED", async () => {
+    const { ref, onDiagnostic } = renderPlanner({
+      onChangeRequest: () => "timeout" as never,
+    });
+    act(() => ref.current?.requestCommand(move()));
+    await waitFor(() =>
+      expect(onDiagnostic).toHaveBeenCalledWith(expect.objectContaining({ code: "HOST_REJECTED" })),
+    );
+    expect(onDiagnostic).not.toHaveBeenCalledWith(
+      expect.objectContaining({ code: "COMMAND_TIMEOUT" }),
+    );
+  });
+
+  it("maps a host AbortError to COMMAND_ABORTED", async () => {
+    const { ref, onDiagnostic } = renderPlanner({
+      onChangeRequest: () => {
+        throw new DOMException("Aborted", "AbortError");
+      },
+    });
+    act(() => ref.current?.requestCommand(move()));
+    await waitFor(() =>
+      expect(onDiagnostic).toHaveBeenCalledWith(
+        expect.objectContaining({ code: "COMMAND_ABORTED" }),
+      ),
+    );
+  });
+
+  it("reports INVALID_COMMAND for a malformed command shape", async () => {
+    const { ref, onDiagnostic } = renderPlanner();
+    act(() =>
+      ref.current?.requestCommand({
+        type: "update",
+        itemId: "a",
+        expectedVersion: 1,
+      } as never),
+    );
+    await waitFor(() =>
+      expect(onDiagnostic).toHaveBeenCalledWith(
+        expect.objectContaining({ code: "INVALID_COMMAND" }),
+      ),
+    );
   });
 });

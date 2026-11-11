@@ -149,9 +149,15 @@ export function checkLocal(
         "Paint target is not an active highlight layer",
       );
     }
-    if (!isAllDay(command.period) || !isValidPeriod(command.period)) {
-      return failure(command, "INVALID_COMMAND", "Paint requires a valid all-day range", {
+    if (!isAllDay(command.period)) {
+      return failure(command, "INVALID_COMMAND", "Paint requires an all-day range", {
         periods: [command.period],
+      });
+    }
+    if (!isValidPeriod(command.period)) {
+      return failure(command, "INVALID_RANGE", "Paint range must contain at least one day", {
+        periods: [command.period],
+        itemIds: [layer.id],
       });
     }
     if (!layerAllowsPaint(layer, state)) {

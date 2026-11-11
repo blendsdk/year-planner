@@ -223,6 +223,45 @@ describe("RD-08 outcome helpers", () => {
     expect(normalizeValidation({ permitted: "yes", diagnostics: [] })).toBeUndefined();
   });
 
+  it("rejects malformed removed IDs and overlapping payload IDs", () => {
+    const command = {
+      type: "paint" as const,
+      layerId: "highlight",
+      period: {
+        kind: "all-day" as const,
+        startDate: "2016-01-04",
+        endDateExclusive: "2016-01-06",
+      },
+      operation: "union" as const,
+      defaults: { kind: "highlight" as const },
+      expectedVersions: { h: 1 },
+    };
+    expect(
+      normalizeOutcome(
+        {
+          accepted: true,
+          revision: "2",
+          updatedItems: [item("h", 2)],
+          removedItemIds: [1],
+        },
+        command,
+        true,
+      ).ok,
+    ).toBe(false);
+    expect(
+      normalizeOutcome(
+        {
+          accepted: true,
+          revision: "2",
+          updatedItems: [item("h", 2)],
+          removedItemIds: ["h"],
+        },
+        command,
+        true,
+      ).ok,
+    ).toBe(false);
+  });
+
   it("applies the retry matrix", () => {
     expect(isRetryable(move(), "COMMAND_TIMEOUT", "timeout")).toBe(true);
     expect(isRetryable({ type: "create", item: item("new") }, "COMMAND_TIMEOUT", "timeout")).toBe(

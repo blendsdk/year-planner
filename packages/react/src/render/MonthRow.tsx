@@ -8,7 +8,7 @@ import type {
 } from "@blendsdk/year-planner-core";
 import type { KeyboardEvent, ReactNode } from "react";
 import { rowTemplate, scaledRowHeight } from "../geometry.js";
-import { type GesturePreview, previewKey } from "../interaction/preview.js";
+import type { PreviewLayer } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor } from "../safeStyle.js";
 import type {
@@ -42,7 +42,7 @@ export interface MonthRowProps {
   selectedItemIds: ReadonlySet<string>;
   pendingItemIds: ReadonlySet<string>;
   selection: PlannerSelection;
-  previews: readonly GesturePreview[];
+  previews: readonly PreviewLayer[];
   showISOWeekNumbers: boolean;
   showAnnotations: boolean;
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
@@ -157,10 +157,10 @@ export function MonthRow({
         variant="selection"
       />
       {previews.map((entry) =>
-        entry.kind === "selection" ? (
+        entry.preview.kind === "selection" ? (
           <SelectionPreview
-            key={previewKey(entry)}
-            ranges={entry.ranges}
+            key={entry.key}
+            ranges={entry.preview.ranges}
             row={row}
             zoom={zoom}
             bandWidth={bandWidth}
@@ -214,21 +214,25 @@ export function MonthRow({
           onDoubleClickItem={onDoubleClickItem}
         />
         {previews.map((entry) =>
-          entry.kind !== "selection" && entry.kind !== "marquee" ? (
+          entry.preview.kind !== "selection" && entry.preview.kind !== "marquee" ? (
             <SelectionPreview
-              key={previewKey(entry)}
-              ranges={entry.ranges}
+              key={entry.key}
+              ranges={entry.preview.ranges}
               row={row}
               zoom={zoom}
               bandWidth={0}
               totalDayWidth={totalDayWidth}
               height={scaledRowHeight(ribbonRow.height, zoom)}
               variant="gesture-preview"
-              previewKind={entry.variant}
-              itemId={entry.kind === "item" ? entry.itemId : undefined}
-              layerId={entry.layerId}
-              color={entry.layerId ? safeCssColor(layers.get(entry.layerId)?.color) : undefined}
-              valid={entry.valid}
+              previewKind={entry.preview.variant}
+              itemId={entry.preview.kind === "item" ? entry.preview.itemId : undefined}
+              layerId={entry.preview.layerId}
+              color={
+                entry.preview.layerId
+                  ? safeCssColor(layers.get(entry.preview.layerId)?.color)
+                  : undefined
+              }
+              valid={entry.preview.valid}
             />
           ) : null,
         )}

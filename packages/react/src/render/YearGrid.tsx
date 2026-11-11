@@ -9,7 +9,7 @@ import type {
 } from "@blendsdk/year-planner-core";
 import type { KeyboardEvent, PointerEvent, ReactNode } from "react";
 import { rowTemplate } from "../geometry.js";
-import { type GesturePreview, previewKey } from "../interaction/preview.js";
+import type { PreviewLayer } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
 import type {
   AnnotationRenderContext,
@@ -38,7 +38,7 @@ export interface YearGridProps {
   activeFragmentId: string | undefined;
   selectedItemIds: ReadonlySet<string>;
   selection: PlannerSelection;
-  previews: readonly GesturePreview[];
+  previews: readonly PreviewLayer[];
   touchAction: "none" | "auto";
   pendingItemIds: ReadonlySet<string>;
   showISOWeekNumbers: boolean;
@@ -227,10 +227,10 @@ export function YearGrid({
         );
       })}
       {previews.map((entry) =>
-        entry.kind === "marquee" ? (
+        entry.preview.kind === "marquee" ? (
           <Marquee
-            key={previewKey(entry)}
-            rect={entry.rect}
+            key={entry.key}
+            rect={entry.preview.rect}
             zoom={zoom}
             bandWidth={bandWidth}
             headerHeight={layout.headerHeight}

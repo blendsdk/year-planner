@@ -24,7 +24,7 @@ import {
   moveGesture,
 } from "./gesture.js";
 import { classifyTarget, isHostInteractive } from "./pointer.js";
-import { type GesturePreview, previewFromCompletion } from "./preview.js";
+import { type PreviewLayer, previewFromCompletion, previewKey } from "./preview.js";
 import {
   applyDateClick,
   applyDateDrag,
@@ -36,10 +36,7 @@ import {
 } from "./selection.js";
 import type { InteractionController, UseInteractionInput } from "./types.js";
 
-interface PendingGesturePreview {
-  key: string;
-  preview: GesturePreview;
-}
+type PendingGesturePreview = PreviewLayer;
 
 function knownDates(layout: UseInteractionInput["layout"]): Set<DateKey> {
   const dates = new Set<DateKey>();
@@ -145,6 +142,16 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     );
   }, [input.state.filter, input.state.items, input.state.model, input.state.visibility]);
 
+  const stateRef = useRef(input.state);
+  stateRef.current = input.state;
+  const visibleRef = useRef(visibleItemIds);
+  visibleRef.current = visibleItemIds;
+  const isItemVisibleNow = useCallback(
+    (itemId: string): boolean =>
+      visibleRef.current.has(itemId) && stateRef.current.items.some((entry) => entry.id === itemId),
+    [],
+  );
+
   const visualOrder = useMemo(
     () => visualItemOrder(input.state.items, input.ribbons, visibleItemIds),
     [input.ribbons, input.state.items, visibleItemIds],
@@ -223,6 +230,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
         activeLayerId: input.activeLayerId,
         isDisabled,
         visibleItemIds,
+        isItemVisible: isItemVisibleNow,
         visualOrder,
         ribbons: input.ribbons,
         showAnnotations: input.showAnnotations,
@@ -237,11 +245,13 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
       pendingKey.current += 1;
       const key = `pending-${pendingKey.current}`;
       setPendingPreviews((previous) => [...previous, { key, preview }]);
-      void promise.finally(() => {
-        if (mounted.current) {
-          setPendingPreviews((previous) => previous.filter((entry) => entry.key !== key));
-        }
-      });
+      void promise
+        .finally(() => {
+          if (mounted.current) {
+            setPendingPreviews((previous) => previous.filter((entry) => entry.key !== key));
+          }
+        })
+        .catch(() => undefined);
     },
     [
       emitSelection,
@@ -251,6 +261,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
       input.onFocusDate,
       input.onFocusItem,
       input.pipeline,
+      isItemVisibleNow,
       input.ribbons,
       input.showAnnotations,
       input.state,
@@ -648,8 +659,8 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
   }, [gesture, gestureContext, input.activeLayerId, input.state.items, isDisabled]);
 
   const previews = useMemo(() => {
-    const pending = pendingPreviews.map((entry) => entry.preview);
-    return activePreview ? [...pending, activePreview] : pending;
+    if (!activePreview) return pendingPreviews;
+    return [...pendingPreviews, { key: previewKey(activePreview), preview: activePreview }];
   }, [activePreview, pendingPreviews]);
 
   return {

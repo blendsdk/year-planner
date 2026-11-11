@@ -49,6 +49,15 @@ interface ActiveRequest {
 
 const MAX_NOTICES = 5;
 
+function isAbortError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "name" in error &&
+    (error as { name?: unknown }).name === "AbortError"
+  );
+}
+
 function noticeKey(entry: Diagnostic): string {
   return `${entry.code}:${entry.message}`;
 }
@@ -320,7 +329,14 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
             }
           : outcome;
       const previous = itemsRef.current;
-      const applied = state.applyLocalItems((items) => applyHostOutcome(items, effective));
+      let applied = false;
+      try {
+        applied = state.applyLocalItems((items) => applyHostOutcome(items, effective));
+      } catch {
+        // The local array was replaced before onItemsChange threw. Treat the
+        // apply as successful so a host callback error cannot become a rejection.
+        applied = true;
+      }
       if (!applied) return false;
       undoStack.current = [...undoStack.current.slice(-49), previous];
       redoStack.current = [];
@@ -332,13 +348,29 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
 
   const run = useCallback(
     async (command: PlannerCommand): Promise<CommandRequestResult> => {
-      const local = checkLocal(state, command, {
-        ...(input.readOnly ? { readOnly: true } : {}),
-        ...(input.activeLayerId ? { activeLayerId: input.activeLayerId } : {}),
-      });
+      let local: ReturnType<typeof checkLocal>;
+      try {
+        local = checkLocal(state, command, {
+          ...(input.readOnly ? { readOnly: true } : {}),
+          ...(input.activeLayerId ? { activeLayerId: input.activeLayerId } : {}),
+        });
+      } catch {
+        return rejectLocal(
+          command,
+          failure(command, "INVALID_COMMAND", "The command is malformed"),
+        );
+      }
       if (!local.ok) return rejectLocal(command, local);
 
-      const itemIds = commandItemIds(command);
+      let itemIds: string[];
+      try {
+        itemIds = commandItemIds(command);
+      } catch {
+        return rejectLocal(
+          command,
+          failure(command, "INVALID_COMMAND", "The command is malformed"),
+        );
+      }
       for (const pending of activeRequests.current.values()) {
         if (pending.itemIds.some((id) => itemIds.includes(id))) {
           return rejectLocal(
@@ -408,8 +440,12 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
         }
       }
 
+      let deadlineFired = false;
       const deadline = new Promise<"timeout">((resolve) => {
-        request.deadline = setTimeout(() => resolve("timeout"), timeoutMs);
+        request.deadline = setTimeout(() => {
+          deadlineFired = true;
+          resolve("timeout");
+        }, timeoutMs);
       });
 
       try {
@@ -421,14 +457,20 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
               deadline,
               cancelled,
             ]);
-          } catch {
+          } catch (error) {
             if (request.status !== "active") return "ignored";
+            if (isAbortError(error)) {
+              return rejectDiagnostics(
+                request,
+                [diagnostic("COMMAND_ABORTED", "The host aborted validation")],
+                "other",
+              );
+            }
             const entry = diagnostic("VALIDATION_ERROR", "Host validation failed");
             return rejectDiagnostics(request, [entry], "other");
           }
           if (request.status !== "active") return "ignored";
-          if (validation === "timeout") return rejectTimeout(request);
-          if (validation === "ignored") return "ignored";
+          if (validation === "timeout" && deadlineFired) return rejectTimeout(request);
           const normalized = normalizeValidation(validation);
           if (!normalized) {
             const entry = diagnostic(
@@ -437,11 +479,16 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
             );
             return rejectDiagnostics(request, [entry], "other");
           }
-          if (!normalized.permitted || normalized.hasError) {
-            const diagnostics =
-              normalized.diagnostics.length > 0
-                ? normalized.diagnostics
-                : [diagnostic("VALIDATION_ERROR", "Host validation rejected the command")];
+          if (normalized.hasError) {
+            return rejectDiagnostics(request, normalized.diagnostics, "other");
+          }
+          if (!normalized.permitted) {
+            const diagnostics = [...normalized.diagnostics];
+            if (!diagnostics.some((entry) => entry.level === "error")) {
+              diagnostics.push(
+                diagnostic("VALIDATION_ERROR", "Host validation rejected the command"),
+              );
+            }
             return rejectDiagnostics(request, diagnostics, "other");
           }
           addNotices(normalized.diagnostics);
@@ -489,13 +536,19 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
             deadline,
             cancelled,
           ]);
-        } catch {
+        } catch (error) {
           if (request.status !== "active") return "ignored";
+          if (isAbortError(error)) {
+            return rejectDiagnostics(
+              request,
+              [diagnostic("COMMAND_ABORTED", "The host aborted the command")],
+              "other",
+            );
+          }
           return rejectThrown(request);
         }
         if (request.status !== "active") return "ignored";
-        if (response === "timeout") return rejectTimeout(request);
-        if (response === "ignored") return "ignored";
+        if (response === "timeout" && deadlineFired) return rejectTimeout(request);
 
         const normalized = normalizeOutcome(response, command, state.itemsControlled);
         if (!normalized.ok) return rejectDiagnostics(request, [normalized.diagnostic], "thrown");

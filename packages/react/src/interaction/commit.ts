@@ -22,6 +22,7 @@ export interface CommitContext {
   activeLayerId: string | undefined;
   isDisabled: (date: DateKey) => boolean;
   visibleItemIds: ReadonlySet<string>;
+  isItemVisible: (itemId: string) => boolean;
   visualOrder: readonly string[];
   ribbons: RibbonLayout;
   showAnnotations: boolean;
@@ -40,9 +41,7 @@ export interface GestureCommit {
 }
 
 function visibleSource(context: CommitContext, itemId: string): boolean {
-  return (
-    context.visibleItemIds.has(itemId) && context.state.items.some((entry) => entry.id === itemId)
-  );
+  return context.isItemVisible(itemId);
 }
 
 function focusFailure(
@@ -136,13 +135,15 @@ export function commitGesture(
           ? { type: "move" as const, ...shared }
           : { type: "resize" as const, ...shared };
       const promise = context.pipeline.requestCommand(command);
-      void promise.then((result) => {
-        if (result === "accepted" || result === "accepted-not-applied") {
-          focusFailure(context, completion.itemId, completion.fallbackDate);
-        } else if (result === "rejected") {
-          focusFailure(context, completion.itemId, completion.fallbackDate);
-        }
-      });
+      void promise
+        .then((result) => {
+          if (result === "accepted" || result === "accepted-not-applied") {
+            focusFailure(context, completion.itemId, completion.fallbackDate);
+          } else if (result === "rejected") {
+            focusFailure(context, completion.itemId, completion.fallbackDate);
+          }
+        })
+        .catch(() => undefined);
       const preview = previewFromCompletion(completion, source.layerId, context.isDisabled);
       return {
         ...(preview ? { preview } : {}),
@@ -176,9 +177,11 @@ export function commitGesture(
         return {};
       }
       const promise = context.pipeline.requestCommand(command);
-      void promise.then((result) => {
-        if (result === "rejected") context.onFocusDate(completion.fallbackDate);
-      });
+      void promise
+        .then((result) => {
+          if (result === "rejected") context.onFocusDate(completion.fallbackDate);
+        })
+        .catch(() => undefined);
       const preview = previewFromCompletion(completion, layerId, context.isDisabled);
       return {
         ...(preview ? { preview } : {}),
@@ -199,12 +202,14 @@ export function commitGesture(
         return {};
       }
       const promise = context.pipeline.requestCommand({ type: "create", item: created });
-      void promise.then((result) => {
-        if (result === "accepted") context.onFocusItem(created.id);
-        else if (result === "rejected" || result === "accepted-not-applied") {
-          context.onFocusDate(completion.fallbackDate);
-        }
-      });
+      void promise
+        .then((result) => {
+          if (result === "accepted") context.onFocusItem(created.id);
+          else if (result === "rejected" || result === "accepted-not-applied") {
+            context.onFocusDate(completion.fallbackDate);
+          }
+        })
+        .catch(() => undefined);
       const preview = previewFromCompletion(completion, context.activeLayerId, context.isDisabled);
       return {
         ...(preview ? { preview } : {}),

@@ -315,6 +315,23 @@ describe("RD-08 pending previews", () => {
     expect(harness.container.textContent).not.toContain("COMMAND_TIMEOUT");
   });
 
+  it("clears pending when the source layer is hidden", async () => {
+    const harness = setup({
+      onChangeRequest: () => new Promise<CommandOutcome>(() => {}),
+    });
+    dragItem(harness, "booking", "2027-01-28", "2027-02-02");
+    await waitFor(() => expect(previews(harness.container).length).toBeGreaterThan(0));
+    harness.rerenderWith({
+      visibility: {
+        hiddenGroupIds: [],
+        hiddenLayerIds: ["bookings"],
+        hiddenItemIds: [],
+      },
+    });
+    await waitFor(() => expect(previews(harness.container)).toHaveLength(0));
+    expect(harness.container.textContent).not.toContain("COMMAND_TIMEOUT");
+  });
+
   it("preserves a newer selection when a command is rejected", async () => {
     const onSelectionChange = vi.fn();
     const harness = setup({

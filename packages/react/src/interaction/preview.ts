@@ -124,6 +124,14 @@ export function previewKey(preview: GesturePreview): string {
   return `range:${preview.variant}:${preview.layerId ?? ""}:${rangeKey(preview.ranges)}`;
 }
 
+/** A preview plus its stable render identity. */
+export interface PreviewLayer {
+  /** Unique key for the preview layer. */
+  key: string;
+  /** Preview content. */
+  preview: GesturePreview;
+}
+
 function periodRange(period: PlannerPeriod): SelectionDateRange[] {
   return period.kind === "all-day"
     ? [{ startDate: period.startDate, endDateExclusive: period.endDateExclusive }]

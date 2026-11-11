@@ -20,6 +20,8 @@
 | RV-010 | 1 | MINOR | commands/sentinel-collision | fixed |
 | RV-011 | 1 | MINOR | commands/abort-mapping | fixed |
 | RV-012 | 1 | OBSERVATION | api/forgotten-export | fixed |
+| RV-013 | 2 | MINOR | paint/diagnostic-specificity | fixed |
+| RV-014 | 1 | MINOR | commands/runtime-discriminator | fixed |
 
 ### Notes
 
@@ -53,3 +55,8 @@
   obsolete paths keep their existing results.
 - `RV-012`: `DiagnosticCode` is an explicit exported union backed by a private
   code list, so API Extractor no longer reports a forgotten export.
+- `RV-013`: a paint period now uses the core all-day diagnostics, preserving
+  `INVALID_DATE`, `UNSUPPORTED_YEAR` and `INVALID_RANGE` instead of collapsing
+  them into one code.
+- `RV-014`: an unknown runtime command discriminator or an array/non-object
+  update patch is rejected with `INVALID_COMMAND` before host dispatch.

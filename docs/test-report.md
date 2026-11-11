@@ -42,7 +42,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | Core tests | **207 passed** |
 | React tests | **405 passed** (34 files) |
 | Core coverage | **99.34% lines, 96.08% branches, 99.23% functions** |
-| React coverage | **94.15% lines, 92.67% branches, 98.10% functions** |
+| React coverage | **94.03% lines, 92.59% branches, 98.10% functions** |
 | Playwright | **75 passed, 7 skipped** (PDF is Chromium-only; touch is Chromium-only) |
 | Browsers | Chromium, Firefox, WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
@@ -52,7 +52,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | Storybook | **PASS** — static build succeeds; **157 stories across 11 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **58.64 kB gzip** including core, React, adapters and CSS; 60 kB budget |
+| Bundle size | **58.74 kB gzip** including core, React, adapters and CSS; 60 kB budget |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | **Green** — [CI workflow](https://github.com/blendsdk/year-planner/actions/workflows/ci.yml), `verify` + `browsers` jobs |
 

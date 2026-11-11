@@ -11,10 +11,13 @@ import {
   isLayerEffectivelyHidden,
   type PlannerCommand,
   type PlannerLayer,
+  validateAllDayPeriod,
 } from "@blendsdk/year-planner-core";
 import type { PlannerState } from "../state.js";
 import { ITEM_KINDS, isAllDay, isValidPeriod, layerFor } from "./local.js";
 import type { CommandFeedback } from "./types.js";
+
+const COMMAND_TYPES = new Set(["create", "update", "move", "resize", "delete", "paint"]);
 
 /** Options used by local command checks. */
 export interface LocalCheckOptions {
@@ -100,6 +103,9 @@ export function checkLocal(
   if (options.readOnly) {
     return failure(command, "READ_ONLY", "The planner is read-only");
   }
+  if (!COMMAND_TYPES.has(command.type)) {
+    return failure(command, "INVALID_COMMAND", "Unknown command type");
+  }
   const context = {
     model: state.model,
     visibility: state.visibility,
@@ -154,8 +160,12 @@ export function checkLocal(
         periods: [command.period],
       });
     }
-    if (!isValidPeriod(command.period)) {
-      return failure(command, "INVALID_RANGE", "Paint range must contain at least one day", {
+    const periodDiagnostics = validateAllDayPeriod(command.period);
+    if (periodDiagnostics.length > 0) {
+      const primary =
+        periodDiagnostics[0] ??
+        diagnostic("INVALID_RANGE", "Paint range must contain at least one day");
+      return failure(command, primary.code, primary.message, {
         periods: [command.period],
         itemIds: [layer.id],
       });
@@ -210,7 +220,11 @@ export function checkLocal(
   }
   if (
     command.type === "update" &&
-    (Object.hasOwn(command.patch, "id") || Object.hasOwn(command.patch, "version"))
+    (typeof command.patch !== "object" ||
+      command.patch === null ||
+      Array.isArray(command.patch) ||
+      Object.hasOwn(command.patch, "id") ||
+      Object.hasOwn(command.patch, "version"))
   ) {
     return failure(command, "INVALID_COMMAND", "Update cannot change identity or version", {
       itemIds: [command.itemId],

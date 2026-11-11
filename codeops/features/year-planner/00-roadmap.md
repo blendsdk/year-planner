@@ -3,7 +3,7 @@
 > **Feature-Set**: Year Planner for React
 > **Status**: In Progress
 > **Created**: 2026-11-10
-> **Last Updated**: 2026-11-11 13:55
+> **Last Updated**: 2026-11-11 15:20
 > **Progress**: 9 / 12 (75%)
 > **CodeOps Artifact Schema**: 1
 
@@ -24,7 +24,7 @@
 | RD-07 | Interaction engine, selection and keyboard | [RD-07](requirements/RD-07-interaction-selection.md) | [m4-interaction-engine](plans/m4-interaction-engine/00-index.md) | Done | ✅ | 2026-11-11 00:19 | depends on RD-03, RD-04, RD-05, RD-06 |
 | RD-08 | Controlled commands, validation and rollback | [RD-08](requirements/RD-08-controlled-commands.md) | [m5-controlled-commands](plans/m5-controlled-commands/00-index.md) | Done | ✅ | 2026-11-11 04:00 | depends on RD-04, RD-05, RD-06, RD-07 |
 | RD-09 | Accessibility and keyboard experience | [RD-09](requirements/RD-09-accessibility.md) | [m6-accessibility](plans/m6-accessibility/00-index.md) | Done | ✅ | 2026-11-11 13:55 | depends on RD-06, RD-07 |
-| RD-10 | Quality gates, performance, security and browsers | [RD-10](requirements/RD-10-quality-gates.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-09 |
+| RD-10 | Quality gates, performance, security and browsers | [RD-10](requirements/RD-10-quality-gates.md) | [m7-quality-gates](plans/m7-quality-gates/00-index.md) | Plan Preflighted | 🔬 | 2026-11-11 15:20 | depends on RD-01–RD-09 |
 | RD-11 | Documentation, Storybook and API reference | [RD-11](requirements/RD-11-documentation.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-10 |
 | RD-12 | Release, versioning and maintenance | [RD-12](requirements/RD-12-release-maintenance.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-11 |
 

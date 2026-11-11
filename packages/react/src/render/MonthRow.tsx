@@ -8,7 +8,7 @@ import type {
 } from "@blendsdk/year-planner-core";
 import type { KeyboardEvent, ReactNode } from "react";
 import { rowTemplate, scaledRowHeight } from "../geometry.js";
-import type { GesturePreview } from "../interaction/preview.js";
+import { type GesturePreview, previewKey } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor } from "../safeStyle.js";
 import type {
@@ -42,7 +42,7 @@ export interface MonthRowProps {
   selectedItemIds: ReadonlySet<string>;
   pendingItemIds: ReadonlySet<string>;
   selection: PlannerSelection;
-  preview: GesturePreview | undefined;
+  previews: readonly GesturePreview[];
   showISOWeekNumbers: boolean;
   showAnnotations: boolean;
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
@@ -98,7 +98,7 @@ export function MonthRow({
   selectedItemIds,
   pendingItemIds,
   selection,
-  preview,
+  previews,
   showISOWeekNumbers,
   showAnnotations,
   getDateMeta,
@@ -156,16 +156,19 @@ export function MonthRow({
         height={scaledRowHeight(ribbonRow.height, zoom)}
         variant="selection"
       />
-      {preview?.kind === "selection" && (
-        <SelectionPreview
-          ranges={preview.ranges}
-          row={row}
-          zoom={zoom}
-          bandWidth={bandWidth}
-          totalDayWidth={totalDayWidth}
-          height={scaledRowHeight(ribbonRow.height, zoom)}
-          variant="selection-preview"
-        />
+      {previews.map((entry) =>
+        entry.kind === "selection" ? (
+          <SelectionPreview
+            key={previewKey(entry)}
+            ranges={entry.ranges}
+            row={row}
+            zoom={zoom}
+            bandWidth={bandWidth}
+            totalDayWidth={totalDayWidth}
+            height={scaledRowHeight(ribbonRow.height, zoom)}
+            variant="selection-preview"
+          />
+        ) : null,
       )}
       <CellLayer
         row={row}
@@ -210,21 +213,24 @@ export function MonthRow({
           onItemKeyDown={onItemKeyDown}
           onDoubleClickItem={onDoubleClickItem}
         />
-        {preview && preview.kind !== "selection" && preview.kind !== "marquee" && (
-          <SelectionPreview
-            ranges={preview.ranges}
-            row={row}
-            zoom={zoom}
-            bandWidth={0}
-            totalDayWidth={totalDayWidth}
-            height={scaledRowHeight(ribbonRow.height, zoom)}
-            variant="gesture-preview"
-            previewKind={preview.variant}
-            itemId={preview.kind === "item" ? preview.itemId : undefined}
-            layerId={preview.layerId}
-            color={preview.layerId ? safeCssColor(layers.get(preview.layerId)?.color) : undefined}
-            valid={preview.valid}
-          />
+        {previews.map((entry) =>
+          entry.kind !== "selection" && entry.kind !== "marquee" ? (
+            <SelectionPreview
+              key={previewKey(entry)}
+              ranges={entry.ranges}
+              row={row}
+              zoom={zoom}
+              bandWidth={0}
+              totalDayWidth={totalDayWidth}
+              height={scaledRowHeight(ribbonRow.height, zoom)}
+              variant="gesture-preview"
+              previewKind={entry.variant}
+              itemId={entry.kind === "item" ? entry.itemId : undefined}
+              layerId={entry.layerId}
+              color={entry.layerId ? safeCssColor(layers.get(entry.layerId)?.color) : undefined}
+              valid={entry.valid}
+            />
+          ) : null,
         )}
         <Overflow
           row={row}

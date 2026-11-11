@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-11 02:19
-> **Progress**: 18/34 tasks (53%)
+> **Last Updated**: 2026-11-11 02:33
+> **Progress**: 26/34 tasks (76%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -139,20 +139,20 @@ user’s place without clobbering newer intent.
 
 ### Step 3.1: Specification tests
 
-- [ ] 3.1.1 [spec-author] Write pending/rollback/status spec tests for ST-58–ST-76 — `packages/react/src/interaction.integration.spec.test.tsx`
-- [ ] 3.1.2 Run the new spec tests and record the expected red failures — `docs/m5-red-phase.md`
+- [x] 3.1.1 [spec-author] Write pending/rollback/status spec tests for ST-58–ST-76 — `packages/react/src/interaction.commands.spec.test.tsx` ✅ (completed: 2026-11-11 02:33)
+- [x] 3.1.2 Run the new spec tests and record the expected red failures — `docs/m5-red-phase.md` ✅ (completed: 2026-11-11 02:33)
 
 ### Step 3.2: Implementation
 
-- [ ] 3.2.1 Return `CommandRequestResult` from the pipeline and a `GestureCommit` descriptor from `commitGesture`; add result-driven focus restoration — `packages/react/src/interaction/commit.ts`, `packages/react/src/commands/types.ts`, `packages/react/src/commands/pipeline.ts`
-- [ ] 3.2.2 Hold pending previews in `useInteraction` until each request promise settles — `packages/react/src/interaction/useInteraction.ts`, `packages/react/src/interaction/types.ts`
-- [ ] 3.2.3 Render a list of active plus pending previews in the grid and month rows — `packages/react/src/YearPlanner.tsx`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/render/MonthRow.tsx`
-- [ ] 3.2.4 Add the pending outline, command-status live region and root command-state attribute — `packages/react/src/styles.css`, `packages/react/src/YearPlanner.tsx`
+- [x] 3.2.1 Return `CommandRequestResult` from the pipeline and a `GestureCommit` descriptor from `commitGesture`; add result-driven focus restoration — `packages/react/src/interaction/commit.ts`, `packages/react/src/commands/types.ts`, `packages/react/src/commands/pipeline.ts` ✅ (completed: 2026-11-11 02:33)
+- [x] 3.2.2 Hold pending previews in `useInteraction` until each request promise settles — `packages/react/src/interaction/useInteraction.ts`, `packages/react/src/interaction/types.ts` ✅ (completed: 2026-11-11 02:33)
+- [x] 3.2.3 Render a list of active plus pending previews in the grid and month rows — `packages/react/src/YearPlanner.tsx`, `packages/react/src/render/YearGrid.tsx`, `packages/react/src/render/MonthRow.tsx` ✅ (completed: 2026-11-11 02:33)
+- [x] 3.2.4 Add the pending outline, command-status live region and root command-state attribute — `packages/react/src/styles.css`, `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-11 02:33)
 
 ### Step 3.3: Implementation tests and verify
 
-- [ ] 3.3.1 Write edge tests for preview removal, multiple pending commands, selection preservation and fallback focus — `packages/react/src/interaction.integration.spec.test.tsx`, `packages/react/src/interaction/*.impl.test.tsx`
-- [ ] 3.3.2 Run `pnpm verify`
+- [x] 3.3.1 Write edge tests for preview removal, multiple pending commands, selection preservation and fallback focus — `packages/react/src/interaction.commands.spec.test.tsx`, `packages/react/src/interaction/*.impl.test.tsx` ✅ (completed: 2026-11-11 02:33)
+- [x] 3.3.2 Run `pnpm verify` ✅ (completed: 2026-11-11 02:33)
 
 **Deliverables**:
 - [ ] ST-58–ST-76 pass

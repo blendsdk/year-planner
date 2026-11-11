@@ -9,7 +9,7 @@ import type {
 } from "@blendsdk/year-planner-core";
 import type { KeyboardEvent, PointerEvent, ReactNode } from "react";
 import { rowTemplate } from "../geometry.js";
-import type { GesturePreview } from "../interaction/preview.js";
+import { type GesturePreview, previewKey } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
 import type {
   AnnotationRenderContext,
@@ -38,7 +38,7 @@ export interface YearGridProps {
   activeFragmentId: string | undefined;
   selectedItemIds: ReadonlySet<string>;
   selection: PlannerSelection;
-  preview: GesturePreview | undefined;
+  previews: readonly GesturePreview[];
   touchAction: "none" | "auto";
   pendingItemIds: ReadonlySet<string>;
   showISOWeekNumbers: boolean;
@@ -114,7 +114,7 @@ export function YearGrid({
   activeFragmentId,
   selectedItemIds,
   selection,
-  preview,
+  previews,
   touchAction,
   pendingItemIds,
   showISOWeekNumbers,
@@ -204,7 +204,7 @@ export function YearGrid({
             selectedItemIds={selectedItemIds}
             pendingItemIds={pendingItemIds}
             selection={selection}
-            preview={preview}
+            previews={previews}
             showISOWeekNumbers={showISOWeekNumbers}
             showAnnotations={showAnnotations}
             getDateMeta={getDateMeta}
@@ -226,13 +226,16 @@ export function YearGrid({
           />
         );
       })}
-      {preview?.kind === "marquee" && (
-        <Marquee
-          rect={preview.rect}
-          zoom={zoom}
-          bandWidth={bandWidth}
-          headerHeight={layout.headerHeight}
-        />
+      {previews.map((entry) =>
+        entry.kind === "marquee" ? (
+          <Marquee
+            key={previewKey(entry)}
+            rect={entry.rect}
+            zoom={zoom}
+            bandWidth={bandWidth}
+            headerHeight={layout.headerHeight}
+          />
+        ) : null,
       )}
       {/* biome-ignore lint/a11y/useSemanticElements: CSS grid rows implement the ARIA grid pattern */}
       <div

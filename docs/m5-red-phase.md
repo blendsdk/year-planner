@@ -79,3 +79,33 @@ the test file. Final Phase 2 run: 28/28 passed.
 This is recorded as a process deviation: the Phase 2 behavior was implemented
 with the Phase 1 foundation rather than after a separate red run. The
 specification suite remains the independent oracle and all cases pass.
+
+## Phase 3 — Pending preview, rollback and status
+
+Command:
+
+```bash
+cd packages/react && pnpm exec vitest run src/interaction.commands.spec.test.tsx
+```
+
+State: the gesture preview still disappeared when the pointer was released, no
+command-status live region existed, focus fell back to the gesture date instead
+of the source item, and only one preview could render.
+
+```text
+Test Files  1 failed (1)
+Tests  7 failed | 3 passed (10)
+```
+
+Failing cases:
+
+- `keeps the move preview until the host accepts`
+- `clears the preview and restores focus when the host rejects`
+- `holds a paint preview until the host rejects`
+- `holds a create preview until the host rejects`
+- `renders two pending previews for unrelated items`
+- `clears pending on a year change without feedback`
+- `preserves a newer selection when a command is rejected`
+
+The three passing cases were existing timeout, accepted-not-applied and pending
+delete behavior. After the implementation the same suite is 10/10 green.

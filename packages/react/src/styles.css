@@ -245,6 +245,11 @@
     pointer-events: none;
   }
 
+  .yp-fragment[data-yp-pending="true"] {
+    outline: 1px dashed var(--yp-focus-ring);
+    outline-offset: -1px;
+  }
+
   .yp-fragment-background,
   .yp-fragment-highlight {
     z-index: 0;

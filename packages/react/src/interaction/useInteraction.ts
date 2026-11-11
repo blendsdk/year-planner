@@ -24,7 +24,7 @@ import {
   moveGesture,
 } from "./gesture.js";
 import { classifyTarget, isHostInteractive } from "./pointer.js";
-import { previewFromCompletion } from "./preview.js";
+import { type GesturePreview, previewFromCompletion } from "./preview.js";
 import {
   applyDateClick,
   applyDateDrag,
@@ -35,6 +35,11 @@ import {
   visualItemOrder,
 } from "./selection.js";
 import type { InteractionController, UseInteractionInput } from "./types.js";
+
+interface PendingGesturePreview {
+  key: string;
+  preview: GesturePreview;
+}
 
 function knownDates(layout: UseInteractionInput["layout"]): Set<DateKey> {
   const dates = new Set<DateKey>();
@@ -54,11 +59,14 @@ function knownDates(layout: UseInteractionInput["layout"]): Set<DateKey> {
  */
 export function useInteraction(input: UseInteractionInput): InteractionController {
   const [gesture, setGesture] = useState<GestureState>({ phase: "idle" });
+  const [pendingPreviews, setPendingPreviews] = useState<PendingGesturePreview[]>([]);
   const gestureRef = useRef<GestureState>({ phase: "idle" });
   const selectionAtStart = useRef<PlannerSelection>(input.state.selection);
   const lastPoint = useRef<GesturePoint>({ clientX: 0, clientY: 0 });
   const lastDesign = useRef<DesignPoint>({ x: 0, y: 0 });
   const suppressClick = useRef(false);
+  const pendingKey = useRef(0);
+  const mounted = useRef(true);
   const frame = useRef<number | undefined>(undefined);
   const dates = useMemo(() => knownDates(input.layout), [input.layout]);
 
@@ -180,6 +188,13 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     previousContext.current = contextKey;
   }, [contextKey, input, updateGesture]);
 
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
   useEffect(
     () => () => {
       if (frame.current !== undefined && typeof cancelAnimationFrame === "function") {
@@ -199,8 +214,8 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
   );
 
   const handleCompletion = useCallback(
-    (completion: GestureCompletion) =>
-      commitGesture(completion, {
+    (completion: GestureCompletion) => {
+      const commit = commitGesture(completion, {
         selection: selectionAtStart.current,
         state: input.state,
         pipeline: input.pipeline,
@@ -215,7 +230,19 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
         onFocusItem: input.onFocusItem,
         onFocusDate: input.onFocusDate,
         onDiagnostic: input.onDiagnostic,
-      }),
+      });
+      const preview = commit.preview;
+      const promise = commit.promise;
+      if (!preview || !promise) return;
+      pendingKey.current += 1;
+      const key = `pending-${pendingKey.current}`;
+      setPendingPreviews((previous) => [...previous, { key, preview }]);
+      void promise.finally(() => {
+        if (mounted.current) {
+          setPendingPreviews((previous) => previous.filter((entry) => entry.key !== key));
+        }
+      });
+    },
     [
       emitSelection,
       input.activeLayerId,
@@ -603,7 +630,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     [cancelActive, emitSelection, input, visualOrder],
   );
 
-  const preview = useMemo(() => {
+  const activePreview = useMemo(() => {
     if (gesture.phase !== "active") return undefined;
     const design =
       gesture.gesture.kind === "marquee" ? gesture.gesture.current : gesture.startDesign;
@@ -620,8 +647,13 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     return previewFromCompletion(completion, layerId, isDisabled);
   }, [gesture, gestureContext, input.activeLayerId, input.state.items, isDisabled]);
 
+  const previews = useMemo(() => {
+    const pending = pendingPreviews.map((entry) => entry.preview);
+    return activePreview ? [...pending, activePreview] : pending;
+  }, [activePreview, pendingPreviews]);
+
   return {
-    preview,
+    previews,
     touchAction: input.interaction?.touchEditing === "on" ? "none" : "auto",
     onPointerDown,
     onPointerMove,

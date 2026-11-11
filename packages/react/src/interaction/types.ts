@@ -53,7 +53,7 @@ export interface UseInteractionInput {
 
 /** DOM and state handlers exposed by the interaction controller. */
 export interface InteractionController {
-  preview: import("./preview.js").GesturePreview | undefined;
+  previews: readonly import("./preview.js").GesturePreview[];
   touchAction: "none" | "auto";
   onPointerDown: (event: PointerEvent<HTMLElement>) => void;
   onPointerMove: (event: PointerEvent<HTMLElement>) => void;

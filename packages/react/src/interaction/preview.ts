@@ -107,6 +107,23 @@ export type GesturePreview =
       valid: boolean;
     };
 
+function rangeKey(ranges: readonly SelectionDateRange[]): string {
+  return ranges.map((range) => `${range.startDate}>${range.endDateExclusive}`).join("|");
+}
+
+/** Returns a stable key for a preview layer. */
+export function previewKey(preview: GesturePreview): string {
+  if (preview.kind === "selection") return `selection:${rangeKey(preview.ranges)}`;
+  if (preview.kind === "marquee") {
+    const { left, top, width, height } = preview.rect;
+    return `marquee:${left}:${top}:${width}:${height}`;
+  }
+  if (preview.kind === "item") {
+    return `item:${preview.variant}:${preview.itemId}:${rangeKey(preview.ranges)}`;
+  }
+  return `range:${preview.variant}:${preview.layerId ?? ""}:${rangeKey(preview.ranges)}`;
+}
+
 function periodRange(period: PlannerPeriod): SelectionDateRange[] {
   return period.kind === "all-day"
     ? [{ startDate: period.startDate, endDateExclusive: period.endDateExclusive }]

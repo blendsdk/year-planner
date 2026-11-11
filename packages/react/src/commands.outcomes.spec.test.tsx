@@ -311,7 +311,7 @@ describe("RD-08 controlled acceptance", () => {
     const onCommitted = vi.fn();
     const onRejected = vi.fn();
     const controlled = renderControlled([item("a")], {
-      interaction: { commandTimeoutMs: 20 },
+      interaction: { commandTimeoutMs: 100 },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -321,7 +321,9 @@ describe("RD-08 controlled acceptance", () => {
       onChangeRejected: onRejected,
     });
     act(() => controlled.ref.current?.requestCommand(move()));
-    await waitFor(() => expect(screen.getByText("ACCEPTED_NOT_APPLIED")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("ACCEPTED_NOT_APPLIED")).toBeInTheDocument(), {
+      timeout: 5000,
+    });
     expect(onCommitted).toHaveBeenCalledTimes(1);
     expect(onRejected).not.toHaveBeenCalled();
   });

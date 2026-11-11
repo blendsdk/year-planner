@@ -298,6 +298,26 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       }
     }, []);
 
+    useEffect(() => {
+      const settled = pipeline.lastSettled;
+      if (!settled) return;
+      let message: string | undefined;
+      if (settled.result === "accepted") {
+        message = "Change accepted";
+      } else if (settled.result === "rejected") {
+        message = `Change rejected: ${settled.diagnostics[0]?.message ?? "The host rejected the change"}`;
+      } else if (settled.result === "accepted-not-applied") {
+        message = "Change accepted by the host but not applied";
+      }
+      if (!message) return;
+      setCommandAnnouncement(undefined);
+      if (typeof queueMicrotask === "function") {
+        queueMicrotask(() => setCommandAnnouncement(message));
+      } else {
+        setCommandAnnouncement(message);
+      }
+    }, [pipeline.lastSettled]);
+
     const layoutDiagnostics = layoutResult.ok ? [] : layoutResult.diagnostics;
     const printDiagnostics = printResult?.diagnostics ?? [];
     const diagnostics = useMemo(
@@ -335,6 +355,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const inspectorRef = useRef<HTMLElement>(null);
     const [focusInspector, setFocusInspector] = useState(false);
     const [focusAnnouncement, setFocusAnnouncement] = useState<string | undefined>(undefined);
+    const [commandAnnouncement, setCommandAnnouncement] = useState<string | undefined>(undefined);
     const viewportRef = useRef<HTMLDivElement>(null);
     const warnedInteractiveSlot = useRef(false);
     const [pendingFocus, setPendingFocus] = useState<
@@ -679,6 +700,9 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         <p className="yp-sr-only" role="status" aria-live="polite" data-yp-part="focus-status">
           {focusAnnouncement}
         </p>
+        <p className="yp-sr-only" role="status" aria-live="polite" data-yp-part="command-status">
+          {commandAnnouncement}
+        </p>
         <div
           className="yp-viewport"
           data-yp-part="viewport"
@@ -700,7 +724,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             selectedItemIds={selectedItemIds}
             pendingItemIds={pipeline.pendingItemIds}
             selection={state.selection}
-            preview={interaction.preview}
+            previews={interaction.previews}
             touchAction={interaction.touchAction}
             showISOWeekNumbers={resolvedDisplay.options.showISOWeekNumbers}
             showAnnotations={resolvedDisplay.options.showAnnotations}
@@ -775,6 +799,9 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         data-yp-part="root"
         data-yp-theme={resolvedTheme.themeName}
         data-yp-density={resolvedDisplay.options.density}
+        data-yp-command-state={
+          pipeline.pendingItemIds.size > 0 ? "pending" : (pipeline.lastSettled?.result ?? "idle")
+        }
         dir="ltr"
         style={{ ...cssVars, ...props.style }}
       >

@@ -5,11 +5,12 @@ import {
   type PlannerSelection,
   type RibbonLayout,
 } from "@blendsdk/year-planner-core";
-import { type CommandPipeline, createPlannerId } from "../commands.js";
+import { type CommandPipeline, type CommandRequestResult, createPlannerId } from "../commands.js";
 import type { PlannerState } from "../state.js";
 import type { InteractionConfig } from "../types.js";
 import { buildCreateItem, buildPaintCommand, defaultPaintDefaults } from "./builders.js";
 import { type GestureCompletion, intersectMarquee } from "./gesture.js";
+import { type GesturePreview, previewFromCompletion } from "./preview.js";
 import { applyDateClick, applyDateDrag, applyItemClick, applyItemMarquee } from "./selection.js";
 
 /** Inputs needed to turn a completed gesture into selection or a command. */
@@ -30,13 +31,41 @@ export interface CommitContext {
   onDiagnostic?: ((entry: Diagnostic) => void) | undefined;
 }
 
+/** A command started by a completed gesture. */
+export interface GestureCommit {
+  /** Preview to keep visible until the request settles. */
+  preview?: GesturePreview;
+  /** Settlement promise, when a command was dispatched. */
+  promise?: Promise<CommandRequestResult>;
+}
+
+function visibleSource(context: CommitContext, itemId: string): boolean {
+  return (
+    context.visibleItemIds.has(itemId) && context.state.items.some((entry) => entry.id === itemId)
+  );
+}
+
+function focusFailure(
+  context: CommitContext,
+  itemId: string | undefined,
+  fallbackDate: DateKey,
+): void {
+  if (itemId && visibleSource(context, itemId)) context.onFocusItem(itemId);
+  else context.onFocusDate(fallbackDate);
+}
+
 /**
  * Applies a completed gesture intent.
  *
  * All mutations go through the existing command pipeline; selection changes use
- * the pure policy module. Invalid intents emit a diagnostic and restore focus.
+ * the pure policy module. Command completions return a preview and a settlement
+ * promise so the interaction layer can keep the proposal visible until the host
+ * answers.
  */
-export function commitGesture(completion: GestureCompletion, context: CommitContext): void {
+export function commitGesture(
+  completion: GestureCompletion,
+  context: CommitContext,
+): GestureCommit {
   switch (completion.kind) {
     case "click": {
       const target = completion.target;
@@ -57,7 +86,7 @@ export function commitGesture(completion: GestureCompletion, context: CommitCont
           target.itemId,
         );
       }
-      return;
+      return {};
     }
     case "select": {
       context.emitSelection(
@@ -71,7 +100,7 @@ export function commitGesture(completion: GestureCompletion, context: CommitCont
         undefined,
         completion.focus,
       );
-      return;
+      return {};
     }
     case "marquee": {
       const hit = intersectMarquee(context.ribbons, completion.rect, {
@@ -87,7 +116,7 @@ export function commitGesture(completion: GestureCompletion, context: CommitCont
         context.visualOrder,
       );
       context.emitSelection(next, next.focusItemId);
-      return;
+      return {};
     }
     case "move":
     case "resize": {
@@ -95,7 +124,7 @@ export function commitGesture(completion: GestureCompletion, context: CommitCont
       if (!source) {
         context.onDiagnostic?.(diagnostic("INVALID_COMMAND", "The item no longer exists"));
         context.onFocusDate(completion.fallbackDate);
-        return;
+        return {};
       }
       const shared = {
         itemId: completion.itemId,
@@ -106,11 +135,19 @@ export function commitGesture(completion: GestureCompletion, context: CommitCont
         completion.kind === "move"
           ? { type: "move" as const, ...shared }
           : { type: "resize" as const, ...shared };
-      void context.pipeline.requestCommand(command).then((accepted) => {
-        if (accepted) context.onFocusItem(completion.itemId);
-        else context.onFocusDate(completion.fallbackDate);
+      const promise = context.pipeline.requestCommand(command);
+      void promise.then((result) => {
+        if (result === "accepted" || result === "accepted-not-applied") {
+          focusFailure(context, completion.itemId, completion.fallbackDate);
+        } else if (result === "rejected") {
+          focusFailure(context, completion.itemId, completion.fallbackDate);
+        }
       });
-      return;
+      const preview = previewFromCompletion(completion, source.layerId, context.isDisabled);
+      return {
+        ...(preview ? { preview } : {}),
+        promise,
+      };
     }
     case "paint": {
       const layerId = context.activeLayerId;
@@ -119,7 +156,7 @@ export function commitGesture(completion: GestureCompletion, context: CommitCont
           diagnostic("INVALID_PAINT_TARGET", "Paint requires an active highlight layer"),
         );
         context.onFocusDate(completion.fallbackDate);
-        return;
+        return {};
       }
       const command = buildPaintCommand({
         model: context.state.model,
@@ -136,12 +173,17 @@ export function commitGesture(completion: GestureCompletion, context: CommitCont
           diagnostic("INVALID_PAINT_TARGET", "Paint requires an active highlight layer"),
         );
         context.onFocusDate(completion.fallbackDate);
-        return;
+        return {};
       }
-      void context.pipeline.requestCommand(command).then((accepted) => {
-        if (!accepted) context.onFocusDate(completion.fallbackDate);
+      const promise = context.pipeline.requestCommand(command);
+      void promise.then((result) => {
+        if (result === "rejected") context.onFocusDate(completion.fallbackDate);
       });
-      return;
+      const preview = previewFromCompletion(completion, layerId, context.isDisabled);
+      return {
+        ...(preview ? { preview } : {}),
+        promise,
+      };
     }
     case "create": {
       const created = buildCreateItem({
@@ -154,19 +196,27 @@ export function commitGesture(completion: GestureCompletion, context: CommitCont
       if (!created) {
         context.onDiagnostic?.(diagnostic("INVALID_COMMAND", "Create requires a layer"));
         context.onFocusDate(completion.fallbackDate);
-        return;
+        return {};
       }
-      void context.pipeline.requestCommand({ type: "create", item: created }).then((accepted) => {
-        if (accepted) context.onFocusItem(created.id);
+      const promise = context.pipeline.requestCommand({ type: "create", item: created });
+      void promise.then((result) => {
+        if (result === "accepted") context.onFocusItem(created.id);
+        else if (result === "rejected" || result === "accepted-not-applied") {
+          context.onFocusDate(completion.fallbackDate);
+        }
       });
-      return;
+      const preview = previewFromCompletion(completion, context.activeLayerId, context.isDisabled);
+      return {
+        ...(preview ? { preview } : {}),
+        promise,
+      };
     }
     case "invalid": {
       context.onDiagnostic?.(diagnostic(completion.code, completion.message));
       context.onFocusDate(completion.fallbackDate);
-      return;
+      return {};
     }
     default:
-      return;
+      return {};
   }
 }

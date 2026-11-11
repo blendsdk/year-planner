@@ -150,7 +150,7 @@
 | --------- | ---------------- | --------- |
 | `packages/react/src/commands.lifecycle.spec.test.tsx` | ST-1–ST-26, ST-93–ST-94 | Lifecycle and context |
 | `packages/react/src/commands.outcomes.spec.test.tsx` | ST-27–ST-57, ST-90–ST-97 | Versions, outcomes and paint |
-| `packages/react/src/interaction.integration.spec.test.tsx` | ST-58–ST-76 | Pending preview, rollback, status |
+| `packages/react/src/interaction.commands.spec.test.tsx` | ST-58–ST-76 | Pending preview, rollback, status |
 | `tests/e2e/commands.spec.ts` | ST-78–ST-84 | Browser integration |
 | `packages/react/src/commands.spec.test.tsx` | Existing RD-06 cases plus ST-77 and ST-87–ST-89 | Command regressions, security, local parity |
 

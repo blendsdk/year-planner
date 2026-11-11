@@ -32,11 +32,11 @@ export const CEILING_FACTOR = 2;
  * @param {number} budget - Budget for the scenario.
  * @returns {"pass" | "miss" | "fail"}
  */
-export function statusFor(value, budget) {
-  // Frame deltas carry scheduling jitter: a 16.8 ms sample is one 60 Hz frame
-  // at 59.5 Hz, not a dropped frame. A 5% tolerance keeps the gate meaningful
-  // without failing on measurement noise.
-  const tolerance = budget * 0.05;
+export function statusFor(value, budget, frameJitter = false) {
+  // Only frame deltas carry scheduling jitter: a 16.8 ms sample is one 60 Hz
+  // frame at 59.5 Hz, not a dropped frame. Layout, render and overflow times
+  // are compared against the budget exactly.
+  const tolerance = frameJitter ? budget * 0.05 : 0;
   if (value <= budget + tolerance) return "pass";
   if (value <= budget * CEILING_FACTOR + tolerance) return "miss";
   return "fail";

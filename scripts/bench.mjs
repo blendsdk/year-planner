@@ -120,10 +120,11 @@ function renderMarkdown(report) {
     "",
     "`pass` is at or below budget. `miss` is above budget but within the 2× ceiling and is a recorded",
     "deviation. `fail` is above the ceiling and fails the enforcing gate. `n` is the sample count;",
-    "with fewer than five samples the nearest-rank p95 equals the maximum.",
+    "with fewer than five samples the nearest-rank p95 equals the maximum. Frame scenarios allow a 5%",
+    "scheduling tolerance; layout, render and overflow comparisons are exact.",
     "",
-    "| Scenario | Parameters | n | p50 | p95 | Max | Budget | Status |",
-    "|---|---|---:|---:|---:|---:|---:|---|",
+    "| Scenario | Parameters | n | p50 | p95 | Max | Long max | Budget | Status |",
+    "|---|---|---:|---:|---:|---:|---:|---:|---|",
   ];
   for (const entry of report.results) {
     const parameters = Object.entries(entry.parameters ?? {})
@@ -133,9 +134,9 @@ function renderMarkdown(report) {
     lines.push(
       `| ${entry.scenario} | ${parameters} | ${samples.n ?? "—"} | ${fixed(
         samples.p50,
-      )} | ${fixed(samples.p95)} | ${fixed(samples.max)} | ${fixed(entry.budget)} | ${
-        entry.status
-      } |`,
+      )} | ${fixed(samples.p95)} | ${fixed(samples.max)} | ${fixed(
+        entry.longTaskMax,
+      )} | ${fixed(entry.budget)} | ${entry.status} |`,
     );
   }
   lines.push("");

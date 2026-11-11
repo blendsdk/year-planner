@@ -49,3 +49,17 @@ with fewer than five samples the nearest-rank p95 equals the maximum.
 Raw profiles live under `test-results/bench/profiles`, named with the run id, and are uploaded
 as CI artifacts.
 
+## Longest long task
+
+| Scenario | Items | Longest task | Count |
+|---|---:|---:|---:|
+| drag | 10000 | 19275 ms | 9 |
+| drag | 2000 | 726 ms | 2 |
+| drag-36-months | 500 | 142 ms | 4 |
+| drag | 500 | 155 ms | 2 |
+| drag-expanded | 500 | 97 ms | 2 |
+| issue3-dev | 500 | 610 ms | 2 |
+| issue3-production | 500 | 112 ms | 4 |
+
+The 50 ms long-task criterion is not met on the 4-core reference host; the strict gate asserts
+no regression against the recorded baseline count and maximum. The p95 frame budget is met.

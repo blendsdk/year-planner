@@ -250,16 +250,64 @@ async function stopCollectors(page: Page, dragWindow: { start: number; end: numb
 }
 
 /** Enforces the 2x ceiling only in strict mode. */
-function expectWithinCeiling(value: number, budget: number, label: string): void {
+function expectWithinCeiling(
+  value: number,
+  budget: number,
+  label: string,
+  frameJitter = false,
+): void {
   if (process.env.PERF_STRICT !== "1") return;
   expect(value, `${label} above the 2x ceiling`).toBeLessThanOrEqual(
-    budget * CEILING_FACTOR + budget * 0.05,
+    budget * CEILING_FACTOR + (frameJitter ? budget * 0.05 : 0),
   );
+}
+
+/** Returns the checked-in baseline p95 for a scenario and parameter set. */
+function baselineP95(
+  scenario: string,
+  parameters: Record<string, number | string>,
+): number | undefined {
+  try {
+    const baseline = JSON.parse(readFileSync("docs/benchmarks/rd10-baseline.json", "utf8")) as {
+      results?: {
+        scenario?: string;
+        parameters?: Record<string, number | string>;
+        frames?: { p95?: number };
+        p95?: number;
+      }[];
+    };
+    const entry = baseline.results?.find(
+      (candidate) =>
+        candidate.scenario === scenario &&
+        Object.entries(parameters).every(([key, value]) => candidate.parameters?.[key] === value),
+    );
+    return entry?.frames?.p95 ?? entry?.p95;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Gates a scenario against its recorded baseline without hiding the budget miss. */
+function expectWithinBaseline(
+  value: number,
+  scenario: string,
+  parameters: Record<string, number | string>,
+  factor = 1.5,
+): void {
+  if (process.env.PERF_STRICT !== "1") return;
+  const baseline = baselineP95(scenario, parameters);
+  if (baseline === undefined) return;
+  expect(value, `${scenario} above ${factor}x baseline`).toBeLessThanOrEqual(baseline * factor);
 }
 
 /** Returns the checked-in issue-3 baseline entry, if it exists. */
 function baselineIssue3():
-  | { frames?: { p95?: number }; inputDelayP95?: number; longTasks?: number }
+  | {
+      frames?: { p95?: number };
+      inputDelayP95?: number;
+      longTasks?: number;
+      longTaskMax?: number;
+    }
   | undefined {
   try {
     const baseline = JSON.parse(readFileSync("docs/benchmarks/rd10-baseline.json", "utf8")) as {
@@ -290,8 +338,9 @@ test.describe("RD-10-AC-11: production budgets", () => {
         budget: BUDGETS.initialRenderP95Ms,
         status: statusFor(result.p95, BUDGETS.initialRenderP95Ms),
       });
-      // The initial-render budget is a recorded absolute miss on the reference
-      // host; strict mode reserves its ceiling for the interaction scenarios.
+      // The absolute 150 ms budget is a documented miss on this host, but a
+      // regression beyond 1.5x the recorded baseline still fails strict mode.
+      expectWithinBaseline(result.p95, "initial-render", { items, months: 14 });
     }
   });
 
@@ -307,8 +356,7 @@ test.describe("RD-10-AC-11: production budgets", () => {
         budget: BUDGETS.initialRenderP95Ms,
         status: statusFor(result.p95, BUDGETS.initialRenderP95Ms),
       });
-      // See the note in the item-count scenario: initial render is reported,
-      // not gated, until it has its own optimization.
+      expectWithinBaseline(result.p95, "initial-render-window", { items: 500, months });
     }
   });
 
@@ -332,12 +380,14 @@ test.describe("RD-10-AC-11: production budgets", () => {
         parameters: { items, months: 14, density: "compact" },
         ...result,
         budget: BUDGETS.dragP95Ms,
-        status: statusFor(result.frames.p95, BUDGETS.dragP95Ms),
+        status: statusFor(result.frames.p95, BUDGETS.dragP95Ms, true),
       });
       if (!large) {
-        // The 10k drag is a stress case on the 4-core reference host; it is
-        // measured and reported, but its ceiling is not a stable gate.
-        expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, `${items} item drag`);
+        expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, `${items} item drag`, true);
+      } else {
+        // The 10k drag is a stress case on the 4-core reference host: it is
+        // gated by a 500 ms stress ceiling instead of the 60 Hz budget.
+        expectWithinCeiling(result.frames.p95, 250, `${items} item stress drag`);
       }
     }
   });
@@ -351,7 +401,7 @@ test.describe("RD-10-AC-11: production budgets", () => {
       parameters: { items: 500, months: 14, density: "expanded" },
       ...result,
       budget: BUDGETS.dragP95Ms,
-      status: statusFor(result.frames.p95, BUDGETS.dragP95Ms),
+      status: statusFor(result.frames.p95, BUDGETS.dragP95Ms, true),
     });
     expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, "expanded drag");
   });
@@ -424,11 +474,11 @@ test.describe("RD-10-AC-11: production budgets", () => {
       longTasks: repeats.reduce((total, entry) => total + entry.longTasks, 0),
       longTaskMax: Math.max(...repeats.map((entry) => entry.longTaskMax)),
       budget: BUDGETS.dragP95Ms,
-      status: statusFor(percentile(p95s, 50), BUDGETS.dragP95Ms),
+      status: statusFor(percentile(p95s, 50), BUDGETS.dragP95Ms, true),
       profilePath: repeats[0]?.profilePath,
     };
     writeResult("issue3-production", result);
-    expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, "issue-3 production drag");
+    expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, "issue-3 production drag", true);
 
     if (process.env.PERF_STRICT === "1") {
       const baseline = baselineIssue3();
@@ -444,8 +494,11 @@ test.describe("RD-10-AC-11: production budgets", () => {
         result.inputDelayP95,
         `input delay ${result.inputDelayP95.toFixed(2)} ms against baseline ${String(baselineInput)}`,
       ).toBeLessThanOrEqual(baselineInput * 1.5 + 0.01);
-      expect(result.longTasks, "no long-task regression").toBeLessThanOrEqual(
+      expect(result.longTasks, "no long-task count regression").toBeLessThanOrEqual(
         (baseline?.longTasks ?? 0) + 1,
+      );
+      expect(result.longTaskMax, "no long-task duration regression").toBeLessThanOrEqual(
+        (baseline?.longTaskMax ?? 0) + 50,
       );
     }
   });
@@ -459,9 +512,9 @@ test.describe("RD-10-AC-11: production budgets", () => {
       parameters: { items: 500, months: 36 },
       ...result,
       budget: BUDGETS.dragP95Ms,
-      status: statusFor(result.frames.p95, BUDGETS.dragP95Ms),
+      status: statusFor(result.frames.p95, BUDGETS.dragP95Ms, true),
     });
-    expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, "36-month drag");
+    expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, "36-month drag", true);
   });
 });
 
@@ -475,7 +528,7 @@ test.describe("issue-3: development overhead", () => {
       parameters: { items: 500, months: 14 },
       ...result,
       budget: BUDGETS.dragP95Ms,
-      status: statusFor(result.frames.p95, BUDGETS.dragP95Ms),
+      status: statusFor(result.frames.p95, BUDGETS.dragP95Ms, true),
     });
   });
 });

@@ -225,7 +225,9 @@ export function YearGrid({
               activeDate={rowActiveDate}
               selectedDates={selectedDates}
               selection={selection}
-              previews={previewsForRow(previews, row)}
+              previews={previewsForRow(previews, row).filter(
+                (entry) => entry.preview.kind === "selection",
+              )}
               showISOWeekNumbers={showISOWeekNumbers}
               getDateMeta={getDateMeta}
               renderCell={renderCell}
@@ -285,7 +287,9 @@ export function YearGrid({
           pendingItemIds={pendingItemIds}
           activeFragmentId={activeFragmentId}
           activeRowId={activeRowId}
-          previews={previews}
+          previews={previews.filter(
+            (entry) => entry.preview.kind !== "selection" && entry.preview.kind !== "marquee",
+          )}
           showAnnotations={showAnnotations}
           components={components}
           displayTimeZone={displayTimeZone}

@@ -67,7 +67,8 @@ describe("RD-10-AC-11: benchmark budgets", () => {
     expect(statusFor(10, 20)).toBe("pass");
     expect(statusFor(30, 20)).toBe("miss");
     expect(statusFor(42, 20)).toBe("fail");
-    expect(statusFor(16.8, 16.7)).toBe("pass");
-    expect(statusFor(33.400000000001, 16.7)).toBe("miss");
+    expect(statusFor(16.8, 16.7, true)).toBe("pass");
+    expect(statusFor(33.4, 16.7, true)).toBe("miss");
+    expect(statusFor(17.6, 16.7)).toBe("miss");
   });
 });

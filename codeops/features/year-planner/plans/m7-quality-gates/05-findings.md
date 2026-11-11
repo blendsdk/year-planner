@@ -48,3 +48,13 @@
 | RV-414 | 4 | MINOR | viewport-claim | fixed |
 | RV-415 | 4 | MINOR | budget-source | fixed |
 | RV-416 | 4 | MINOR | benchmark-window | fixed |
+| RV-501 | 5 | MAJOR | webkit-quarantine-evidence | fixed |
+| RV-502 | 5 | MAJOR | initial-render-gate | fixed |
+| RV-503 | 5 | MAJOR | 10k-stress-gate | fixed |
+| RV-504 | 5 | MAJOR | long-task-reporting | fixed |
+| RV-505 | 5 | MAJOR | ci-performance-gate | fixed |
+| RV-506 | 5 | MINOR | after-run-identity | accepted |
+| RV-507 | 5 | MINOR | jitter-scope | fixed |
+| RV-508 | 5 | MINOR | report-counts | fixed |
+| RV-509 | 5 | MINOR | drag-setup-retry | fixed |
+| RV-510 | 5 | MINOR | preview-kind-memo | fixed |

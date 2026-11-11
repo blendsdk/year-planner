@@ -13,4 +13,8 @@ export const BUDGETS: Readonly<{
 export const CEILING_FACTOR: number;
 
 /** Classifies one measurement against a budget. */
-export function statusFor(value: number, budget: number): "pass" | "miss" | "fail";
+export function statusFor(
+  value: number,
+  budget: number,
+  frameJitter?: boolean,
+): "pass" | "miss" | "fail";

@@ -611,17 +611,29 @@ function DefaultInspectorBody({
   );
 }
 
-/** Renders command feedback with optional retry and dismiss actions. */
+/** Renders command feedback and non-blocking notices with retry/dismiss actions. */
 export function InspectorFeedback({ pipeline }: { pipeline: CommandPipeline }): ReactNode {
   const feedback: CommandFeedback | undefined = pipeline.feedback;
-  if (!feedback) return null;
+  const notices = pipeline.notices;
+  if (!feedback && notices.length === 0) return null;
   return (
     <section className="yp-inspector-feedback" data-yp-part="inspector-feedback" role="status">
-      <p>
-        <code>{feedback.code}</code> {feedback.message}
-      </p>
+      {feedback && (
+        <p data-yp-level={feedback.level}>
+          <code>{feedback.code}</code> {feedback.message}
+        </p>
+      )}
+      {notices.length > 0 && (
+        <ul className="yp-inspector-notices" data-yp-part="inspector-notices">
+          {notices.map((entry) => (
+            <li key={`${entry.code}:${entry.message}`} data-yp-level={entry.level}>
+              <code>{entry.code}</code> {entry.message}
+            </li>
+          ))}
+        </ul>
+      )}
       <div className="yp-inspector-actions">
-        {feedback.retryable && (
+        {feedback?.retryable && (
           <button type="button" onClick={() => void pipeline.retry()}>
             Retry
           </button>

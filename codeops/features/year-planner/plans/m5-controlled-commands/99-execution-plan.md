@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-11 02:14
-> **Progress**: 9/34 tasks (26%)
+> **Last Updated**: 2026-11-11 02:19
+> **Progress**: 18/34 tasks (53%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -100,21 +100,21 @@ versions and validation severity consistent in both modes.
 
 ### Step 2.1: Specification tests
 
-- [ ] 2.1.1 [spec-author] Write version/outcome spec tests for ST-27–ST-57 and ST-90–ST-92, ST-95–ST-97 — `packages/react/src/commands.lifecycle.spec.test.tsx`
-- [ ] 2.1.2 Run the new spec tests and record the expected red failures — `docs/m5-red-phase.md`
+- [x] 2.1.1 [spec-author] Write version/outcome spec tests for ST-27–ST-57 and ST-90–ST-92, ST-95–ST-97 — `packages/react/src/commands.outcomes.spec.test.tsx` ✅ (completed: 2026-11-11 02:19)
+- [x] 2.1.2 Run the new spec tests and record the expected red failures — `docs/m5-red-phase.md` ✅ (completed: 2026-11-11 02:19)
 
 ### Step 2.2: Implementation
 
-- [ ] 2.2.1 Normalize validation severity, synthesize missing errors, and collect warning/info notices — `packages/react/src/commands/validate.ts`, `packages/react/src/commands/pipeline.ts`
-- [ ] 2.2.2 Runtime-normalize outcomes, diagnostics and paint payloads; map malformed or partial accepted results to `HOST_REJECTED` — `packages/react/src/commands/apply.ts`, `packages/react/src/commands/pipeline.ts`
-- [ ] 2.2.3 Implement the controlled application waiter and `ACCEPTED_NOT_APPLIED` terminal state — `packages/react/src/commands/apply.ts`, `packages/react/src/commands/pipeline.ts`, `packages/react/src/YearPlanner.tsx`
-- [ ] 2.2.4 Implement the retry matrix, feedback level, notices, dismiss and accepted-not-applied inspector message — `packages/react/src/commands/pipeline.ts`, `packages/react/src/render/Inspector.tsx`
-- [ ] 2.2.5 Harden the local reducer: runtime expected versions, `Object.hasOwn` patch checks, version increments and paint residual parity — `packages/react/src/commands/local.ts`, `packages/react/src/commands/validate.ts`
+- [x] 2.2.1 Normalize validation severity, synthesize missing errors, and collect warning/info notices — `packages/react/src/commands/validate.ts`, `packages/react/src/commands/pipeline.ts` ✅ (completed: 2026-11-11 02:19)
+- [x] 2.2.2 Runtime-normalize outcomes, diagnostics and paint payloads; map malformed or partial accepted results to `HOST_REJECTED` — `packages/react/src/commands/apply.ts`, `packages/react/src/commands/pipeline.ts` ✅ (completed: 2026-11-11 02:19)
+- [x] 2.2.3 Implement the controlled application waiter and `ACCEPTED_NOT_APPLIED` terminal state — `packages/react/src/commands/apply.ts`, `packages/react/src/commands/pipeline.ts`, `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-11 02:19)
+- [x] 2.2.4 Implement the retry matrix, feedback level, notices, dismiss and accepted-not-applied inspector message — `packages/react/src/commands/pipeline.ts`, `packages/react/src/render/Inspector.tsx` ✅ (completed: 2026-11-11 02:19)
+- [x] 2.2.5 Harden the local reducer: runtime expected versions, `Object.hasOwn` patch checks, version increments and paint residual parity — `packages/react/src/commands/local.ts`, `packages/react/src/commands/validate.ts` ✅ (completed: 2026-11-11 02:19)
 
 ### Step 2.3: Implementation tests and verify
 
-- [ ] 2.3.1 Write implementation tests for application predicates, malformed payloads, retry and undo versions — `packages/react/src/commands.lifecycle.impl.test.tsx`, `packages/react/src/commands.impl.test.tsx`
-- [ ] 2.3.2 Run `pnpm verify`
+- [x] 2.3.1 Write implementation tests for application predicates, malformed payloads, retry and undo versions — `packages/react/src/commands.lifecycle.impl.test.tsx`, `packages/react/src/commands.impl.test.tsx` ✅ (completed: 2026-11-11 02:19)
+- [x] 2.3.2 Run `pnpm verify` ✅ (completed: 2026-11-11 02:19)
 
 **Deliverables**:
 - [ ] ST-27–ST-57 and ST-90–ST-92, ST-95–ST-97 pass

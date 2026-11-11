@@ -7,6 +7,7 @@ import type {
 import { render, waitFor } from "@testing-library/react";
 import { act, createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
+import { isApplied, isRetryable, normalizeOutcome, normalizeValidation } from "./commands/apply.js";
 import type { YearPlannerHandle, YearPlannerProps } from "./types";
 import { YearPlanner } from "./YearPlanner";
 
@@ -156,5 +157,85 @@ describe("RD-08 lifecycle internals", () => {
     act(() => ref.current?.requestCommand(move("b")));
     await waitFor(() => expect(onCommitted).toHaveBeenCalledTimes(2));
     expect(contexts).toHaveLength(2);
+  });
+});
+
+describe("RD-08 outcome helpers", () => {
+  it("proves a move application from an advanced version", () => {
+    const command = move();
+    expect(isApplied([item("a")], command, { accepted: true, revision: "1" })).toBe(false);
+    expect(isApplied([item("a", 2)], command, { accepted: true, revision: "1" })).toBe(true);
+  });
+
+  it("proves a delete application from absence", () => {
+    const command = { type: "delete" as const, itemId: "a", expectedVersion: 1 };
+    expect(isApplied([item("a")], command, { accepted: true, revision: "1" })).toBe(false);
+    expect(isApplied([], command, { accepted: true, revision: "1" })).toBe(true);
+  });
+
+  it("requires a complete controlled paint payload", () => {
+    const command = {
+      type: "paint" as const,
+      layerId: "highlight",
+      period: {
+        kind: "all-day" as const,
+        startDate: "2016-01-04",
+        endDateExclusive: "2016-01-06",
+      },
+      operation: "union" as const,
+      defaults: { kind: "highlight" as const },
+      expectedVersions: { h: 1 },
+    };
+    expect(
+      normalizeOutcome(
+        { accepted: true, revision: "2", updatedItems: [], removedItemIds: [] },
+        command,
+        true,
+      ).ok,
+    ).toBe(false);
+    expect(
+      normalizeOutcome(
+        {
+          accepted: true,
+          revision: "2",
+          updatedItems: [item("h", 2)],
+          removedItemIds: [],
+        },
+        command,
+        true,
+      ).ok,
+    ).toBe(false);
+  });
+
+  it("normalizes validation severity", () => {
+    expect(
+      normalizeValidation({
+        permitted: true,
+        diagnostics: [{ code: "INVALID_RANGE", level: "warning", message: "Check" }],
+      }),
+    ).toMatchObject({ permitted: true, hasError: false });
+    expect(
+      normalizeValidation({
+        permitted: true,
+        diagnostics: [{ code: "CAPACITY_EXCEEDED", level: "error", message: "Full" }],
+      }),
+    ).toMatchObject({ permitted: true, hasError: true });
+    expect(normalizeValidation({ permitted: "yes", diagnostics: [] })).toBeUndefined();
+  });
+
+  it("applies the retry matrix", () => {
+    expect(isRetryable(move(), "COMMAND_TIMEOUT", "timeout")).toBe(true);
+    expect(isRetryable({ type: "create", item: item("new") }, "COMMAND_TIMEOUT", "timeout")).toBe(
+      false,
+    );
+    expect(
+      isRetryable({ type: "delete", itemId: "a", expectedVersion: 1 }, "HOST_REJECTED", "explicit"),
+    ).toBe(false);
+    expect(isRetryable({ type: "create", item: item("new") }, "HOST_REJECTED", "explicit")).toBe(
+      true,
+    );
+    expect(isRetryable({ type: "create", item: item("new") }, "HOST_REJECTED", "thrown")).toBe(
+      false,
+    );
   });
 });

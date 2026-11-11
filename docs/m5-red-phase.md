@@ -58,3 +58,24 @@ Error: Failed to resolve import "./commands/apply.js" from "src/commands.apply.s
 The project's red-phase convention permits the unresolved-import failure for a
 new pure module; the corrective run is recorded in `99-execution-plan.md` task
 1.3.2.
+
+## Phase 2 — Versions, validation and outcomes
+
+Command:
+
+```bash
+cd packages/react && pnpm exec vitest run src/commands.outcomes.spec.test.tsx
+```
+
+State: the Phase 1 lifecycle foundation already included outcome
+normalization, the controlled application waiter and the version guards,
+because the request state machine cannot settle accepted/rejected outcomes
+without them. The Phase 2 suite therefore ran green for those cases on its first
+execution. The first run found one real gap — warning notices were not rendered
+in the inspector (ST-54/ST-71) — plus six test-harness spy wiring mistakes. The
+inspector gap was fixed in `InspectorFeedback`; the spy wiring was corrected in
+the test file. Final Phase 2 run: 28/28 passed.
+
+This is recorded as a process deviation: the Phase 2 behavior was implemented
+with the Phase 1 foundation rather than after a separate red run. The
+specification suite remains the independent oracle and all cases pass.

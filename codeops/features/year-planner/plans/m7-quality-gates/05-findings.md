@@ -28,3 +28,7 @@
 | RV-205 | 2 | MINOR | pdf-helper-reuse | fixed |
 | RV-206 | 2 | MINOR | visual-preconditions | fixed |
 | RV-207 | 2 | MINOR | plan-deliverables | fixed |
+| RV-301 | 3 | MINOR | ssr-fallback-proof | fixed |
+| RV-302 | 3 | MINOR | hydration-fallback-proof | fixed |
+| RV-303 | 3 | MINOR | project-retry-contract | fixed |
+| RV-304 | 3 | MINOR | plan-deliverables | fixed |

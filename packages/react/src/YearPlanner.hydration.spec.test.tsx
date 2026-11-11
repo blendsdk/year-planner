@@ -58,15 +58,27 @@ it("hydrates invalid display options deterministically", async () => {
   const container = document.createElement("div");
   container.innerHTML = html;
   document.body.appendChild(container);
+  const serverText = container.textContent;
+  const onDiagnostic = vi.fn();
   const errors = vi.spyOn(console, "error").mockImplementation(() => {});
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   try {
     await act(async () => {
-      hydrateRoot(container, element);
+      hydrateRoot(
+        container,
+        <YearPlanner
+          year={2016}
+          display={{ locale: "not-a-locale", displayTimeZone: "Mars/Olympus" }}
+          onDiagnostic={onDiagnostic}
+        />,
+      );
     });
     const messages = errors.mock.calls.map((call) => String(call[0]));
     expect(messages.filter((message) => /hydrat|mismatch/i.test(message))).toEqual([]);
-    expect(container.querySelector('[role="grid"]')).not.toBeNull();
+    expect(container.textContent).toBe(serverText);
+    const codes = onDiagnostic.mock.calls.map((call) => call[0]?.code);
+    expect(codes).toContain("INVALID_LOCALE");
+    expect(codes).toContain("INVALID_TIMEZONE");
   } finally {
     errors.mockRestore();
     container.remove();

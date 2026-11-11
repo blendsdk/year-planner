@@ -12,9 +12,13 @@ const REQUIRED_PROJECTS = [
 ];
 
 describe("RD-10-AC-04: Playwright project contract", () => {
-  it("runs zero retries and keeps failure traces", () => {
+  it("runs zero retries and keeps failure traces in every project", () => {
     expect(config.retries).toBe(0);
     expect(config.use?.trace).toBe("retain-on-failure");
+    for (const project of config.projects ?? []) {
+      expect(project.retries ?? config.retries, project.name).toBe(0);
+      expect(project.use?.trace ?? config.use?.trace, project.name).toBe("retain-on-failure");
+    }
   });
 
   it("declares every desktop and mobile project", () => {

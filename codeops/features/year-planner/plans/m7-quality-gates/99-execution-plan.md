@@ -164,10 +164,10 @@ reviewed baselines.
 - [x] 3.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-11 18:32)
 
 **Deliverables**:
-- [ ] `pnpm test:timezones` passes under all three zones
-- [ ] Locale-differing hydration has no warning
-- [ ] Zero-retry policy is explicit and documented
-- [ ] All phase verification passing
+- [x] `pnpm test:timezones` passes under all three zones ✅ (completed: 2026-11-11 19:20)
+- [x] Locale-differing hydration has no warning ✅ (completed: 2026-11-11 19:20)
+- [x] Zero-retry policy is explicit and documented ✅ (completed: 2026-11-11 19:20)
+- [x] All phase verification passing ✅ (completed: 2026-11-11 19:20)
 
 **Verify**: `pnpm verify`
 

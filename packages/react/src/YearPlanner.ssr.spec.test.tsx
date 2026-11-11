@@ -19,3 +19,15 @@ describe("RD-06-AC-10: SSR", () => {
     expect(first).toBe(second);
   });
 });
+
+it("RD-10-AC-15: falls back from invalid locale and time zone values during SSR", () => {
+  const html = renderToString(
+    <YearPlanner
+      year={2016}
+      display={{ locale: "not-a-locale", displayTimeZone: "Mars/Olympus" }}
+    />,
+  );
+  expect(html).toContain('role="grid"');
+  expect(html).toContain("2016-01");
+  expect(html).not.toContain("Mars/Olympus");
+});

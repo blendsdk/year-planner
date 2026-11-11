@@ -146,7 +146,7 @@
 | RD-06-AC-07 | RD-06 | 7 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-03-AC-06 / RD-06-AC-07: isolates two instances and renders ISO weeks with dir=ltr` | React component test |
 | RD-06-AC-08 | RD-06 | 8 | proven | `packages/react/src/items.spec.test.tsx` | `RD-06-AC-08/09: keeps cell and proxy surfaces when render slots add content` | React item test |
 | RD-06-AC-09 | RD-06 | 9 | proven | `packages/react/src/items.spec.test.tsx` | `RD-06-AC-08/09: keeps cell and proxy surfaces when render slots add content` | React item test |
-| RD-06-AC-10 | RD-06 | 10 | proven | `packages/react/src/YearPlanner.hydration.spec.test.tsx` | `RD-06-AC-10: hydration` | Hydration test; node-environment SSR is also proven in packages/react/src/YearPlanner.ssr.spec.test.tsx |
+| RD-06-AC-10 | RD-06 | 10 | proven | `packages/react/src/YearPlanner.hydration.spec.test.tsx` | `RD-06-AC-10 / RD-10-AC-15: hydration` | Hydration test; node-environment SSR is also proven in packages/react/src/YearPlanner.ssr.spec.test.tsx |
 | RD-06-AC-11 | RD-06 | 11 | proven | `tests/e2e/classic-year.spec.ts` | `RD-06-AC-11: renders under the documented CSP attribute allowance` | Playwright CSP test |
 | RD-06-AC-12 | RD-06 | 12 | proven | `packages/react/src/print.spec.test.tsx` | `RD-06-AC-12: renders labels, weekends, ISO weeks and fragments in print` | Print test |
 | RD-06-AC-13 | RD-06 | 13 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-13: maps pointer coordinates to dates and fragments at every zoom` | React component test |

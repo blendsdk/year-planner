@@ -33,7 +33,9 @@
     "test:coverage": "pnpm test",
     "docs:build": "typedoc --options typedoc.core.json && typedoc --options typedoc.react.json && cp docs/api-index.html docs/api/index.html",
     "test:a11y": "playwright test tests/e2e/accessibility.spec.ts",
-    "test:mobile": "playwright test tests/e2e/mobile.spec.ts"
+    "test:mobile": "playwright test tests/e2e/mobile.spec.ts",
+    "test:timezones": "bash scripts/test-timezones.sh",
+    "test:flaky": "playwright test --repeat-each=3 --project=chromium"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",

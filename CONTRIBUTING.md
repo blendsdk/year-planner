@@ -40,6 +40,13 @@ browser, print and accessibility suites and the packed-tarball consumer proof.
 The project uses strict TypeScript, Vitest, Playwright, Storybook and Biome.
 All public APIs require TSDoc documentation.
 
+## Flaky tests
+
+Retries are disabled by default. A flaky test is fixed at the root cause or
+quarantined with a linked issue. Use `pnpm test:flaky` (Chromium,
+`--repeat-each=3`) to reproduce a suspected flake. Never add a retry to hide a
+failure.
+
 ## Pull requests
 
 A good pull request:

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-11 17:50
-> **Progress**: 32/92 tasks (35%)
+> **Last Updated**: 2026-11-11 18:32
+> **Progress**: 51/92 tasks (55%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -147,21 +147,21 @@ reviewed baselines.
 **Reference**: [03-02](03-02-test-matrix.md), [03-05](03-05-ci-evidence.md) · ST-9, ST-41, ST-42, ST-45 · AR-5, AR-20, AR-22
 **Objective**: Prove the locale-sensitive hydration and explicit zero-retry policy are enforced.
 
-- [ ] 3.1.1 [spec-author] Add the differing client-locale hydration case with `RD-10-AC-15` — `packages/react/src/YearPlanner.hydration.spec.test.tsx`
-- [ ] 3.1.2 [spec-author] Add the Playwright config contract test — `tests/quality/playwright-config.spec.test.ts`
-- [ ] 3.1.3 Run the new tests and record red or justify an already-green case — `pnpm test:quality && pnpm --filter @blendsdk/react-year-planner test`
+- [x] 3.1.1 [spec-author] Add the differing client-locale hydration case with `RD-10-AC-15` — `packages/react/src/YearPlanner.hydration.spec.test.tsx` ✅ (completed: 2026-11-11 18:32)
+- [x] 3.1.2 [spec-author] Add the Playwright config contract test — `tests/quality/playwright-config.spec.test.ts` ✅ (completed: 2026-11-11 18:32)
+- [x] 3.1.3 Run the new tests and record red or justify an already-green case — `pnpm test:quality && pnpm --filter @blendsdk/react-year-planner test` ✅ (completed: 2026-11-11 18:32)
 
 ### Step 3.2: Implementation
 
 **Reference**: [03-02](03-02-test-matrix.md) · AR-5, AR-20, AR-22
 **Objective**: Add the timezone script, the locale hydration behavior and the flaky policy.
 
-- [ ] 3.2.1 Add the three-timezone core script and `test:timezones` — `scripts/test-timezones.sh`, `package.json`
-- [ ] 3.2.2 Prove explicit `display.locale` wins and the client locale is ignored; change production code only if the test fails, and record the behavior fix — `packages/react/src/YearPlanner.hydration.spec.test.tsx`
-- [ ] 3.2.3 Set `retries: 0`, add `test:flaky` and document the policy — `playwright.config.ts`, `package.json`, `CONTRIBUTING.md`
-- [ ] 3.3.1 Prove green for ST-9, ST-41, ST-42 and ST-45 — `pnpm test:quality && pnpm test:timezones && pnpm --filter @blendsdk/react-year-planner test`
-- [ ] 3.3.2 Add invalid-locale and invalid-timezone SSR/hydration implementation cases with `RD-10-AC-15` — `packages/react/src/YearPlanner.ssr.spec.test.tsx`
-- [ ] 3.3.3 Verify the phase — `pnpm verify`
+- [x] 3.2.1 Add the three-timezone core script and `test:timezones` — `scripts/test-timezones.sh`, `package.json` ✅ (completed: 2026-11-11 18:32)
+- [x] 3.2.2 Prove explicit `display.locale` wins and the client locale is ignored; change production code only if the test fails, and record the behavior fix — `packages/react/src/YearPlanner.hydration.spec.test.tsx` ✅ (completed: 2026-11-11 18:32)
+- [x] 3.2.3 Set `retries: 0`, add `test:flaky` and document the policy — `playwright.config.ts`, `package.json`, `CONTRIBUTING.md` ✅ (completed: 2026-11-11 18:32)
+- [x] 3.3.1 Prove green for ST-9, ST-41, ST-42 and ST-45 — `pnpm test:quality && pnpm test:timezones && pnpm --filter @blendsdk/react-year-planner test` ✅ (completed: 2026-11-11 18:32)
+- [x] 3.3.2 Add invalid-locale and invalid-timezone SSR/hydration implementation cases with `RD-10-AC-15` — `packages/react/src/YearPlanner.ssr.spec.test.tsx` ✅ (completed: 2026-11-11 18:32)
+- [x] 3.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-11 18:32)
 
 **Deliverables**:
 - [ ] `pnpm test:timezones` passes under all three zones

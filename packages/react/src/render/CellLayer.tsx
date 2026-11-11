@@ -1,5 +1,5 @@
 import { type DateKey, isoWeekOf, type MonthRowLayout } from "@blendsdk/year-planner-core";
-import { type CSSProperties, type KeyboardEvent, type ReactNode, useId } from "react";
+import { type CSSProperties, type KeyboardEvent, memo, type ReactNode, useId } from "react";
 import { dateCellAccessibleName } from "../a11y.js";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor, safeMetaStyle } from "../safeStyle.js";
@@ -38,7 +38,7 @@ export interface CellLayerProps {
  * Renders dated and blank grid cells. The cell element, ARIA and hit surface are
  * planner-owned; `renderCell` and the `DayCell` slot only add inner content.
  */
-export function CellLayer({
+export const CellLayer = memo(function CellLayer({
   row,
   itemsByDate,
   formatters,
@@ -171,4 +171,4 @@ export function CellLayer({
       </div>
     );
   });
-}
+});

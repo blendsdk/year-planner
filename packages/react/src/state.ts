@@ -215,21 +215,41 @@ export function usePlannerState(input: PlannerStateInput): PlannerState {
     [input.onItemsChange, itemsControlled],
   );
 
-  return {
-    items,
-    model,
-    validation,
-    itemsControlled,
-    visibility,
-    setVisibility,
-    dispatchVisibility,
-    showAll,
-    selection,
-    setSelection,
-    filter,
-    setFilter,
-    interactionMode,
-    setInteractionMode,
-    applyLocalItems,
-  };
+  // A stable state object keeps the interaction and command callbacks stable
+  // between gesture frames; every field below is already memoized or state.
+  return useMemo(
+    () => ({
+      items,
+      model,
+      validation,
+      itemsControlled,
+      visibility,
+      setVisibility,
+      dispatchVisibility,
+      showAll,
+      selection,
+      setSelection,
+      filter,
+      setFilter,
+      interactionMode,
+      setInteractionMode,
+      applyLocalItems,
+    }),
+    [
+      items,
+      model,
+      validation,
+      itemsControlled,
+      visibility,
+      setVisibility,
+      dispatchVisibility,
+      showAll,
+      selection,
+      setSelection,
+      filter,
+      setFilter,
+      interactionMode,
+      applyLocalItems,
+    ],
+  );
 }

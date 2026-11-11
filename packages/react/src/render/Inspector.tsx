@@ -16,7 +16,7 @@ import {
   type RibbonRow,
   type VisibilityState,
 } from "@blendsdk/year-planner-core";
-import type { ReactNode, RefObject } from "react";
+import { memo, type ReactNode, type RefObject } from "react";
 import type { CommandFeedback, CommandPipeline } from "../commands.js";
 import { createPlannerId } from "../commands.js";
 import {
@@ -149,13 +149,45 @@ function hostOwnedCreateDisabled(
   return !check.editable;
 }
 
+/** Compares every inspector prop by reference; all are stable during a gesture. */
+function inspectorPropsEqual(previous: InspectorProps, next: InspectorProps): boolean {
+  return (
+    previous.model === next.model &&
+    previous.visibility === next.visibility &&
+    previous.filter === next.filter &&
+    previous.selection === next.selection &&
+    previous.open === next.open &&
+    previous.readOnly === next.readOnly &&
+    previous.interactionMode === next.interactionMode &&
+    previous.activeLayerId === next.activeLayerId &&
+    previous.activeDate === next.activeDate &&
+    previous.formatters === next.formatters &&
+    previous.displayTimeZone === next.displayTimeZone &&
+    previous.overflowRow === next.overflowRow &&
+    previous.pipeline === next.pipeline &&
+    previous.interaction === next.interaction &&
+    previous.components === next.components &&
+    previous.renderInspector === next.renderInspector &&
+    previous.onClose === next.onClose &&
+    previous.onSelectItem === next.onSelectItem &&
+    previous.onFocusItem === next.onFocusItem &&
+    previous.asideId === next.asideId &&
+    previous.asideRef === next.asideRef &&
+    previous.itemListId === next.itemListId &&
+    previous.itemListRef === next.itemListRef &&
+    previous.renderedItemIds === next.renderedItemIds &&
+    previous.feedbackId === next.feedbackId
+  );
+}
+
 /**
  * Component-owned inspector for selected items, overflow and command feedback.
  *
  * The aside, close button and focus target stay planner-owned; `renderInspector`
- * replaces only the body.
+ * replaces only the body. The memo skips the 500-item visibility scan while a
+ * gesture is active.
  */
-export function Inspector({
+export const Inspector = memo(function Inspector({
   model,
   visibility,
   filter,
@@ -302,7 +334,7 @@ export function Inspector({
       />
     </aside>
   );
-}
+}, inspectorPropsEqual);
 
 interface InspectorBodyProps extends BodyProps {
   renderInspector: ((context: InspectorRenderContext) => ReactNode) | undefined;

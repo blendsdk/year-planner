@@ -124,6 +124,55 @@ export function previewKey(preview: GesturePreview): string {
   return `range:${preview.variant}:${preview.layerId ?? ""}:${rangeKey(preview.ranges)}`;
 }
 
+/** Returns the validity flag for preview kinds that carry one. */
+function previewValidity(preview: GesturePreview): boolean | undefined {
+  return preview.kind === "item" || preview.kind === "range" ? preview.valid : undefined;
+}
+
+/**
+ * Returns true when two preview lists render the same content.
+ *
+ * Gesture previews are rebuilt on every pointer frame, so reference equality
+ * would defeat row memoization. The key already encodes the ranges and item
+ * identity; validity and kind complete the render-relevant content.
+ */
+export function samePreviewEntries(
+  previous: readonly PreviewLayer[],
+  next: readonly PreviewLayer[],
+): boolean {
+  if (previous === next) return true;
+  if (previous.length !== next.length) return false;
+  return previous.every((entry, index) => {
+    const other = next[index];
+    if (!other || entry.key !== other.key) return false;
+    if (entry.preview.kind !== other.preview.kind) return false;
+    if (previewKey(entry.preview) !== previewKey(other.preview)) return false;
+    return previewValidity(entry.preview) === previewValidity(other.preview);
+  });
+}
+
+/**
+ * Returns true when a preview can paint on the given month row.
+ *
+ * Marquee previews are viewport rectangles and are rendered once by the grid,
+ * so they never belong to a row. Selection, item and range previews intersect
+ * a row when any of their ranges overlaps the row's date span.
+ */
+export function previewIntersectsRow(preview: GesturePreview, row: MonthRowLayout): boolean {
+  if (preview.kind === "marquee") return false;
+  return preview.ranges.some(
+    (range) => range.startDate < row.endDateExclusive && range.endDateExclusive > row.firstDate,
+  );
+}
+
+/** Narrows a preview list to the entries that can paint on one row. */
+export function previewsForRow(
+  previews: readonly PreviewLayer[],
+  row: MonthRowLayout,
+): readonly PreviewLayer[] {
+  return previews.filter((entry) => previewIntersectsRow(entry.preview, row));
+}
+
 /** A preview plus its stable render identity. */
 export interface PreviewLayer {
   /** Unique key for the preview layer. */

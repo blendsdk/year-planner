@@ -288,7 +288,8 @@ export function CommandsDemo() {
     const capacity = mode === "capacity" ? capacityRejected(command) : undefined;
     if (capacity) return capacity;
     if (mode === "delay") {
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // Long enough for the pending preview to be observable in a slow browser.
+      await new Promise((resolve) => setTimeout(resolve, 3000));
     }
     const result = buildResult(command);
     if (mode === "never-apply") {

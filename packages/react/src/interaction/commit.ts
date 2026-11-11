@@ -13,10 +13,13 @@ import { type GestureCompletion, intersectMarquee } from "./gesture.js";
 import { type GesturePreview, previewFromCompletion } from "./preview.js";
 import { applyDateClick, applyDateDrag, applyItemClick, applyItemMarquee } from "./selection.js";
 
+/** The planner state fields a completed gesture may read. */
+export type CommitState = Pick<PlannerState, "model" | "visibility" | "filter" | "items">;
+
 /** Inputs needed to turn a completed gesture into selection or a command. */
 export interface CommitContext {
   selection: PlannerSelection;
-  state: PlannerState;
+  state: CommitState;
   pipeline: CommandPipeline;
   interaction: InteractionConfig | undefined;
   activeLayerId: string | undefined;

@@ -8,6 +8,7 @@ import {
   type CSSProperties,
   type KeyboardEvent,
   type MouseEvent,
+  memo,
   type ReactNode,
   useEffect,
   useId,
@@ -71,7 +72,7 @@ function itemLabel(item: PlannerItem): string {
  * foreground fragments expose a focusable proxy; ribbon and foreground
  * fragments also expose sibling resize handles.
  */
-export function ItemLayer({
+export const ItemLayer = memo(function ItemLayer({
   row,
   layers,
   items,
@@ -318,7 +319,7 @@ export function ItemLayer({
       )}
     </>
   );
-}
+});
 
 function annotationLabel(
   item: PlannerItem,

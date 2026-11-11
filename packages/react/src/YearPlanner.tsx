@@ -37,7 +37,7 @@ import { StatusBar } from "./render/StatusBar.js";
 import { YearGrid } from "./render/YearGrid.js";
 import { usePlannerState } from "./state.js";
 import { resolveTheme, themeToCssVars } from "./theme.js";
-import type { YearPlannerHandle, YearPlannerProps } from "./types.js";
+import type { YearPlannerComponents, YearPlannerHandle, YearPlannerProps } from "./types.js";
 import { useAnnouncements } from "./useAnnouncements.js";
 
 const EMPTY_LAYOUT: YearLayout = {
@@ -51,6 +51,8 @@ const EMPTY_LAYOUT: YearLayout = {
   highlightYear: 0,
   signature: "",
 };
+
+const EMPTY_COMPONENTS: YearPlannerComponents = Object.freeze({});
 
 const EMPTY_RIBBONS: RibbonLayout = {
   rows: [],
@@ -154,26 +156,43 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         }),
       [layout?.signature, state.filter, state.interactionMode, state.visibility],
     );
-    const pipeline = useCommandPipeline({
-      state,
-      contextKey,
-      ...(props.readOnly ? { readOnly: true } : {}),
-      ...(props.baseRevision !== undefined ? { baseRevision: props.baseRevision } : {}),
-      ...(props.activeLayerId ? { activeLayerId: props.activeLayerId } : {}),
-      ...(props.interaction?.createId ? { createId: props.interaction.createId } : {}),
-      ...(props.interaction?.requestId ? { requestId: props.interaction.requestId } : {}),
-      ...(props.interaction?.commandTimeoutMs
-        ? { commandTimeoutMs: props.interaction.commandTimeoutMs }
-        : {}),
-      ...(props.interaction?.confirmChange
-        ? { confirmChange: props.interaction.confirmChange }
-        : {}),
-      ...(props.validateChange ? { validateChange: props.validateChange } : {}),
-      ...(props.onChangeRequest ? { onChangeRequest: props.onChangeRequest } : {}),
-      ...(props.onChangeCommitted ? { onChangeCommitted: props.onChangeCommitted } : {}),
-      ...(props.onChangeRejected ? { onChangeRejected: props.onChangeRejected } : {}),
-      ...(props.onDiagnostic ? { onDiagnostic: props.onDiagnostic } : {}),
-    });
+    // Stable input keeps the command pipeline object stable during gestures.
+    const pipelineInput = useMemo(
+      () => ({
+        state,
+        contextKey,
+        ...(props.readOnly ? { readOnly: true } : {}),
+        ...(props.baseRevision !== undefined ? { baseRevision: props.baseRevision } : {}),
+        ...(props.activeLayerId ? { activeLayerId: props.activeLayerId } : {}),
+        ...(props.interaction?.createId ? { createId: props.interaction.createId } : {}),
+        ...(props.interaction?.requestId ? { requestId: props.interaction.requestId } : {}),
+        ...(props.interaction?.commandTimeoutMs
+          ? { commandTimeoutMs: props.interaction.commandTimeoutMs }
+          : {}),
+        ...(props.interaction?.confirmChange
+          ? { confirmChange: props.interaction.confirmChange }
+          : {}),
+        ...(props.validateChange ? { validateChange: props.validateChange } : {}),
+        ...(props.onChangeRequest ? { onChangeRequest: props.onChangeRequest } : {}),
+        ...(props.onChangeCommitted ? { onChangeCommitted: props.onChangeCommitted } : {}),
+        ...(props.onChangeRejected ? { onChangeRejected: props.onChangeRejected } : {}),
+        ...(props.onDiagnostic ? { onDiagnostic: props.onDiagnostic } : {}),
+      }),
+      [
+        state,
+        contextKey,
+        props.readOnly,
+        props.baseRevision,
+        props.activeLayerId,
+        props.interaction,
+        props.validateChange,
+        props.onChangeRequest,
+        props.onChangeCommitted,
+        props.onChangeRejected,
+        props.onDiagnostic,
+      ],
+    );
+    const pipeline = useCommandPipeline(pipelineInput);
 
     const ribbons = useMemo(() => {
       if (!layout) return undefined;
@@ -222,6 +241,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       () => createFormatters(resolvedDisplay.options.locale),
       [resolvedDisplay.options.locale],
     );
+    const components = useMemo(() => props.components ?? EMPTY_COMPONENTS, [props.components]);
+    const weekdayNames = useMemo(() => formatters.weekdayNames(), [formatters]);
     const layers = useMemo(
       () => new Map(state.model.layers.map((layer) => [layer.id, layer])),
       [state.model.layers],
@@ -574,26 +595,87 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       setFocusItemList(true);
     }, []);
 
-    const interaction = useInteraction({
-      state,
-      layout: layout ?? EMPTY_LAYOUT,
-      ribbons: ribbons ?? EMPTY_RIBBONS,
-      pipeline,
-      viewportRef,
-      zoom: resolvedDisplay.options.zoom,
-      readOnly: props.readOnly === true,
-      activeLayerId: props.activeLayerId,
-      interaction: props.interaction,
-      getDateMeta: props.getDateMeta,
-      itemsByDate,
-      showAnnotations: resolvedDisplay.options.showAnnotations,
-      focusedItemId: activeItemId,
-      onFocusItem: focusItem,
-      onFocusDate: focusDate,
-      openInspector,
-      onDiagnostic: props.onDiagnostic,
-    });
+    // Only the fields the interaction controller reads are passed through, so
+    // its callbacks stay stable while unrelated planner state changes.
+    const interactionState = useMemo(
+      () => ({
+        model: state.model,
+        visibility: state.visibility,
+        filter: state.filter,
+        items: state.items,
+        selection: state.selection,
+        setSelection: state.setSelection,
+        interactionMode: state.interactionMode,
+      }),
+      [
+        state.model,
+        state.visibility,
+        state.filter,
+        state.items,
+        state.selection,
+        state.setSelection,
+        state.interactionMode,
+      ],
+    );
 
+    // A stable input object keeps every interaction callback stable between
+    // gesture frames. The gesture preview itself lives in the hook, so nothing
+    // in this input changes while a drag is active.
+    const interactionInput = useMemo(
+      () => ({
+        state: interactionState,
+        layout: layout ?? EMPTY_LAYOUT,
+        ribbons: ribbons ?? EMPTY_RIBBONS,
+        pipeline,
+        viewportRef,
+        zoom: resolvedDisplay.options.zoom,
+        readOnly: props.readOnly === true,
+        activeLayerId: props.activeLayerId,
+        interaction: props.interaction,
+        getDateMeta: props.getDateMeta,
+        itemsByDate,
+        showAnnotations: resolvedDisplay.options.showAnnotations,
+        focusedItemId: activeItemId,
+        onFocusItem: focusItem,
+        onFocusDate: focusDate,
+        openInspector,
+        onDiagnostic: props.onDiagnostic,
+      }),
+      [
+        interactionState,
+        layout,
+        ribbons,
+        pipeline,
+        resolvedDisplay.options.zoom,
+        props.readOnly,
+        props.activeLayerId,
+        props.interaction,
+        props.getDateMeta,
+        itemsByDate,
+        resolvedDisplay.options.showAnnotations,
+        activeItemId,
+        focusItem,
+        focusDate,
+        openInspector,
+        props.onDiagnostic,
+      ],
+    );
+    const interaction = useInteraction(interactionInput);
+
+    const selectInspectorItem = useCallback(
+      (itemId: string) => interaction.selectItem(itemId, {}),
+      [interaction.selectItem],
+    );
+
+    const closeInspector = useCallback((): void => {
+      setInspectorOpen(false);
+      const focusTarget = activeItemId ?? state.selection.items[0];
+      if (focusTarget) {
+        setPendingFocus({ type: "item", id: focusTarget });
+      } else if (effectiveActiveDate) {
+        setPendingFocus({ type: "date", id: effectiveActiveDate });
+      }
+    }, [activeItemId, state.selection.items, effectiveActiveDate]);
     useEffect(() => {
       const visible = new Set(
         state.items
@@ -754,15 +836,6 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const overflowRow = activeRowId
       ? ribbons.rows.find((row) => row.rowId === activeRowId)
       : ribbons.rows[0];
-    const closeInspector = (): void => {
-      setInspectorOpen(false);
-      const focusTarget = activeItemId ?? state.selection.items[0];
-      if (focusTarget) {
-        setPendingFocus({ type: "item", id: focusTarget });
-      } else if (effectiveActiveDate) {
-        setPendingFocus({ type: "date", id: effectiveActiveDate });
-      }
-    };
 
     const selectedVisibleItem = state.selection.items.find((id) => proxyItemIds.has(id));
     const activeVisibleItem =
@@ -857,7 +930,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             renderAnnotation={props.renderAnnotation}
             renderOverflow={props.renderOverflow}
             renderTooltip={props.renderTooltip}
-            components={props.components ?? {}}
+            components={components}
             displayTimeZone={resolvedDisplay.options.displayTimeZone}
             textPrimary={String(theme.textPrimary)}
             textInverse={String(theme.textInverse)}
@@ -894,10 +967,10 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           overflowRow={overflowRow}
           pipeline={pipeline}
           interaction={props.interaction}
-          components={props.components ?? {}}
+          components={components}
           renderInspector={props.renderInspector}
           onClose={closeInspector}
-          onSelectItem={(itemId) => interaction.selectItem(itemId, {})}
+          onSelectItem={selectInspectorItem}
           onFocusItem={focusItem}
           asideId={inspectorId}
           asideRef={inspectorRef}
@@ -917,14 +990,14 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             bandWidth={layout.monthBandWidth}
             showISOWeekNumbers={resolvedDisplay.options.showISOWeekNumbers}
             showAnnotations={resolvedDisplay.options.showAnnotations}
-            weekdayNames={formatters.weekdayNames()}
+            weekdayNames={weekdayNames}
             textPrimary={String(theme.textPrimary)}
             textInverse={String(theme.textInverse)}
           />
         )}
       </>
     );
-    const Root = props.components?.Root;
+    const Root = components.Root;
     return (
       <div
         className={className}

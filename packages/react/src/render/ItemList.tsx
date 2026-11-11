@@ -6,7 +6,7 @@ import {
   type PlannerSelection,
   type VisibilityState,
 } from "@blendsdk/year-planner-core";
-import type { ReactNode, RefObject } from "react";
+import { memo, type ReactNode, type RefObject } from "react";
 import type { PlannerFormatters } from "../locale.js";
 
 /** Props for the planner-owned item list. */
@@ -68,7 +68,7 @@ function titleOf(item: PlannerItem): string {
  * />
  * ```
  */
-export function ItemList({
+export const ItemList = memo(function ItemList({
   model,
   visibility,
   filter,
@@ -149,4 +149,4 @@ export function ItemList({
       )}
     </section>
   );
-}
+});

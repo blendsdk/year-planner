@@ -4,9 +4,9 @@ import type {
   PlannerSelection,
   RibbonRow,
 } from "@blendsdk/year-planner-core";
-import type { KeyboardEvent, ReactNode } from "react";
+import { type KeyboardEvent, memo, type ReactNode } from "react";
 import { rowTemplate, scaledRowHeight } from "../geometry.js";
-import type { PreviewLayer } from "../interaction/preview.js";
+import { type PreviewLayer, samePreviewEntries } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
 import type {
   CellRenderContext,
@@ -47,11 +47,38 @@ export interface MonthRowProps {
   ) => void;
 }
 
+/** Compares every row prop, treating previews as equal by render content. */
+function monthRowPropsEqual(previous: MonthRowProps, next: MonthRowProps): boolean {
+  if (
+    previous.row !== next.row ||
+    previous.ribbonRow !== next.ribbonRow ||
+    previous.formatters !== next.formatters ||
+    previous.zoom !== next.zoom ||
+    previous.bandWidth !== next.bandWidth ||
+    previous.totalDayWidth !== next.totalDayWidth ||
+    previous.itemsByDate !== next.itemsByDate ||
+    previous.activeDate !== next.activeDate ||
+    previous.selectedDates !== next.selectedDates ||
+    previous.selection !== next.selection ||
+    previous.showISOWeekNumbers !== next.showISOWeekNumbers ||
+    previous.getDateMeta !== next.getDateMeta ||
+    previous.renderCell !== next.renderCell ||
+    previous.components !== next.components ||
+    previous.onFocusDate !== next.onFocusDate ||
+    previous.onCellKeyDown !== next.onCellKeyDown ||
+    previous.onSelectDate !== next.onSelectDate
+  ) {
+    return false;
+  }
+  return samePreviewEntries(previous.previews, next.previews);
+}
+
 /**
  * Renders one month row with bands, date cells and selection previews. Item
  * fragments live in the overlay sibling so the ARIA row owns only grid cells.
+ * Rows whose previews did not change skip rendering during a gesture.
  */
-export function MonthRow({
+export const MonthRow = memo(function MonthRow({
   row,
   ribbonRow,
   formatters,
@@ -136,4 +163,4 @@ export function MonthRow({
       </div>
     </div>
   );
-}
+}, monthRowPropsEqual);

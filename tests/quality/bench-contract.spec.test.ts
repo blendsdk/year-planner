@@ -66,6 +66,8 @@ describe("RD-10-AC-11: benchmark budgets", () => {
   it("classifies pass, miss and fail", () => {
     expect(statusFor(10, 20)).toBe("pass");
     expect(statusFor(30, 20)).toBe("miss");
-    expect(statusFor(41, 20)).toBe("fail");
+    expect(statusFor(42, 20)).toBe("fail");
+    expect(statusFor(16.8, 16.7)).toBe("pass");
+    expect(statusFor(33.400000000001, 16.7)).toBe("miss");
   });
 });

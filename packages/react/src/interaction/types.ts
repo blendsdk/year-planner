@@ -30,9 +30,15 @@ export interface SelectionClickEvent {
   target?: EventTarget | null;
 }
 
+/** The subset of planner state the interaction controller reads. */
+export type InteractionState = Pick<
+  PlannerState,
+  "model" | "visibility" | "filter" | "items" | "selection" | "setSelection" | "interactionMode"
+>;
+
 /** Inputs consumed by the interaction controller. */
 export interface UseInteractionInput {
-  state: PlannerState;
+  state: InteractionState;
   layout: YearLayout;
   ribbons: RibbonLayout;
   pipeline: import("../commands.js").CommandPipeline;

@@ -222,6 +222,38 @@ oracle after the optimization. The 10,000-item drag records 10 steps because the
 host cannot complete 60 steps without exhausting memory; the sample count is printed beside every
 p95.
 
+## Post-optimization results (issue #3)
+
+> **Command**: `pnpm bench --out docs/benchmarks/rd10-after` (same chunked reference-host method)
+> **Run**: `2026-11-11T21:30:00.000Z`
+> **Change**: row/cell/item/print/inspector memoization, stable interaction and command inputs,
+> per-row preview isolation and a preview-content comparator. No virtualization or external store.
+
+| Scenario | Before p95 | After p95 | Long tasks before → after |
+|---|---:|---:|---:|
+| Drag 500 items, compact | 33.40 ms | **16.70 ms** | 27 → 2 |
+| Drag 2,000 items, compact | 300.00 ms | **16.80 ms** | 62 → 2 |
+| Drag 10,000 items, compact (10 steps) | 8,916.40 ms | **66.60 ms** | 20 → 9 |
+| Drag 500 items, expanded | 33.40 ms | **16.80 ms** | 45 → 2 |
+| Drag 500 items, 36 months | 100.00 ms | **16.70 ms** | 62 → 4 |
+| Issue #3 production drag, 500 items | 33.40 ms | **16.70 ms** | 64 → 4 |
+| Issue #3 development drag, 500 items | 416.60 ms | **16.70 ms** | 62 → 2 |
+| Overflow open/close, 10,000 items | 115.30 ms | 118.30 ms | — |
+| Initial render 500 items | 565.40 ms | 666.20 ms | — |
+| Initial render 10,000 items | 50,457.90 ms | 43,436.20 ms | — |
+
+The production 500-item drag now meets the 16.7 ms frame budget. The issue #3 oracle
+(`after p95 ≤ 0.9× baseline or ≤ 16.7 ms`, three repeats, no long-task or input-delay regression)
+passes under `PERF_STRICT=1 pnpm test:perf`.
+
+Two results remain documented misses rather than claims:
+
+- **Overflow with 10,000 items** stays around 118 ms against the 100 ms budget; the overflow list
+  itself is unchanged by this optimization.
+- **Initial render** (500/2k/10k) is still far above the 150 ms budget. It is measured and recorded
+  but not claimed; the issue #3 scope was interaction responsiveness. The 10,000-item drag remains a
+  stress case with 10 steps and a recorded ceiling exemption.
+
 ## Known gaps and honest limitations
 
 | Gap | Status |
@@ -235,7 +267,7 @@ p95.
 | Geometry via arbitrary `cssVars` | CSS variables change visually; use theme tokens or `units` for layout geometry |
 | Full axe audit | Automated axe matrix green in Chromium; no serious/critical violations |
 | Manual NVDA/VoiceOver audit | **Parked by user decision 2026-11-11** — low priority, not an R1 blocker, no Linux path; WCAG conformance is not claimed |
-| Performance benchmarks (500/2k/10k items) | Baseline recorded in `docs/benchmarks/rd10-baseline.md`; issue #3 optimization follows |
+| Performance benchmarks (500/2k/10k items) | Before/after evidence in `docs/benchmarks/rd10-baseline.md` and `rd10-after.md`; drag now 16.7 ms p95. Initial render and 10k overflow remain documented misses |
 | Mobile touch and RTL | Touch editing and marquee are implemented; RTL-specific pointer behavior is not |
 | SVG shape plane and `edge-path` connectors | Deferred; `edge-path` emits `INVALID_RENDERER_OPTION` |
 | Published packages | Not published; pre-alpha |

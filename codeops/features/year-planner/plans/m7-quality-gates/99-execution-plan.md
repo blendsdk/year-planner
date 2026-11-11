@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-11 19:29
-> **Progress**: 54/92 tasks (59%)
+> **Last Updated**: 2026-11-12 00:01
+> **Progress**: 65/92 tasks (71%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -227,29 +227,29 @@ harness and baseline artifacts.
 **Objective**: Lock the drag budget and the preview-intersection contract before changing render
 behavior.
 
-- [ ] 5.1.1 [spec-author] Add the preview-intersection cases and the issue #3 oracle (≤0.9× baseline or ≤16.7 ms, three repeats) — `packages/react/src/interaction/preview.spec.test.tsx`, `tests/perf/bench.spec.ts`
-- [ ] 5.1.2 Run the strict issue #3 oracle against the baseline and record the red result — `PERF_STRICT=1 pnpm test:perf && pnpm --filter @blendsdk/react-year-planner exec vitest run src/interaction/preview.spec.test.tsx`
+- [x] 5.1.1 [spec-author] Add the preview-intersection cases and the issue #3 oracle (≤0.9× baseline or ≤16.7 ms, three repeats) — `packages/react/src/interaction/preview.spec.test.tsx`, `tests/perf/bench.spec.ts` ✅ (completed: 2026-11-11 21:59)
+- [x] 5.1.2 Run the strict issue #3 oracle against the baseline and record the red result — `PERF_STRICT=1 pnpm test:perf && pnpm --filter @blendsdk/react-year-planner exec vitest run src/interaction/preview.spec.test.tsx` ✅ (completed: 2026-11-11 21:59)
 
 ### Step 5.2: Implementation
 
 **Reference**: [03-03](03-03-performance.md) · AR-14, AR-28
 **Objective**: Apply the profile-supported memoization and preview isolation, then re-measure.
 
-- [ ] 5.2.1 Stabilize the `components` object and item-selection callback — `packages/react/src/YearPlanner.tsx`
-- [ ] 5.2.2 Memoize `MonthRow` and `CellLayer`; pass `activeDate` only to its row — `packages/react/src/render/MonthRow.tsx`, `CellLayer.tsx`
-- [ ] 5.2.3 Memoize `ItemOverlay`, `ItemLayer`, `PrintPages` and `ItemList`; compare previews by key, validity and ranges and reuse unchanged objects — `packages/react/src/render/ItemOverlay.tsx`, `ItemLayer.tsx`, `PrintPages.tsx`, `ItemList.tsx`
-- [ ] 5.2.4 Add `previewIntersectsRow`, filter previews per row before memoized children and reuse the existing clipping helper — `packages/react/src/interaction/preview.ts`, `packages/react/src/render/YearGrid.tsx`
-- [ ] 5.2.5 Re-run the same benchmark with `pnpm bench --out docs/benchmarks/rd10-after` — `docs/benchmarks/rd10-after.json`, `docs/benchmarks/rd10-after.md`
-- [ ] 5.2.6 Record the before/after delta, remaining hotspot and any budget miss — `docs/test-report.md`
-- [ ] 5.3.1 Prove the strict issue #3 oracle and the preview cases, recording any budget miss — `PERF_STRICT=1 pnpm test:perf && pnpm --filter @blendsdk/react-year-planner exec vitest run src/interaction/preview.spec.test.tsx`
-- [ ] 5.3.2 Add boundary and empty-preview implementation tests — `packages/react/src/interaction/preview.impl.test.tsx`
-- [ ] 5.3.3 Verify the phase with the behavioral suites — `pnpm verify:full`
+- [x] 5.2.1 Stabilize the `components` object and item-selection callback — `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-11 21:59)
+- [x] 5.2.2 Memoize `MonthRow` and `CellLayer`; pass `activeDate` only to its row — `packages/react/src/render/MonthRow.tsx`, `CellLayer.tsx` ✅ (completed: 2026-11-11 21:59)
+- [x] 5.2.3 Memoize `ItemOverlay`, `ItemLayer`, `PrintPages` and `ItemList`; compare previews by key, validity and ranges and reuse unchanged objects — `packages/react/src/render/ItemOverlay.tsx`, `ItemLayer.tsx`, `PrintPages.tsx`, `ItemList.tsx` ✅ (completed: 2026-11-11 21:59)
+- [x] 5.2.4 Add `previewIntersectsRow`, filter previews per row before memoized children and reuse the existing clipping helper — `packages/react/src/interaction/preview.ts`, `packages/react/src/render/YearGrid.tsx` ✅ (completed: 2026-11-11 21:59)
+- [x] 5.2.5 Re-run the same benchmark with `pnpm bench --out docs/benchmarks/rd10-after` — `docs/benchmarks/rd10-after.json`, `docs/benchmarks/rd10-after.md` ✅ (completed: 2026-11-11 21:59)
+- [x] 5.2.6 Record the before/after delta, remaining hotspot and any budget miss — `docs/test-report.md` ✅ (completed: 2026-11-11 21:59)
+- [x] 5.3.1 Prove the strict issue #3 oracle and the preview cases, recording any budget miss — `PERF_STRICT=1 pnpm test:perf && pnpm --filter @blendsdk/react-year-planner exec vitest run src/interaction/preview.spec.test.tsx` ✅ (completed: 2026-11-11 21:59)
+- [x] 5.3.2 Add boundary and empty-preview implementation tests — `packages/react/src/interaction/preview.impl.test.tsx` ✅ (completed: 2026-11-11 21:59)
+- [x] 5.3.3 Verify the phase with the behavioral suites — `pnpm verify:full` ✅ (completed: 2026-11-12 00:01)
 
 **Deliverables**:
-- [ ] Measurable production drag improvement against the baseline
-- [ ] 36-month/500-item profile recorded
-- [ ] No DOM, focus, selection, preview or command regression
-- [ ] All phase verification passing
+- [x] Measurable production drag improvement against the baseline ✅ (completed: 2026-11-12 06:10)
+- [x] 36-month/500-item profile recorded ✅ (completed: 2026-11-12 06:10)
+- [x] No DOM, focus, selection, preview or command regression ✅ (completed: 2026-11-12 06:10)
+- [x] All phase verification passing ✅ (completed: 2026-11-12 06:10)
 
 **Verify**: `pnpm verify:full`
 

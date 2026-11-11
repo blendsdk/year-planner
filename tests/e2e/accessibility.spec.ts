@@ -46,6 +46,9 @@ async function items(page: Page): Promise<{ id: string; period: { startDate: str
 }
 
 test.describe("RD-09-AC-07/15 / RD-10-AC-07: axe matrix", () => {
+  // Axe injects a large script and walks the full grid; nine sequential scans
+  // need more headroom than a single interaction test on a loaded host.
+  test.describe.configure({ timeout: 90_000 });
   test.beforeEach(({ browserName }) => {
     test.skip(browserName !== "chromium", "axe matrix is Chromium-only");
   });

@@ -7,7 +7,7 @@ import type {
   YearLayout,
 } from "@blendsdk/year-planner-core";
 import { isoWeekOf } from "@blendsdk/year-planner-core";
-import type { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, memo, type ReactNode } from "react";
 import { readableTextColor } from "../a11y.js";
 import { rowTemplate } from "../geometry.js";
 import type { PlannerFormatters } from "../locale.js";
@@ -154,7 +154,7 @@ function printRow(
  * Renders the hidden A3 print tree. Each planned page gets its own uniform scale
  * and a forced page break; the screen view is unaffected.
  */
-export function PrintPages({
+export const PrintPages = memo(function PrintPages({
   layout,
   ribbons,
   pages,
@@ -247,4 +247,4 @@ export function PrintPages({
       })}
     </div>
   );
-}
+});

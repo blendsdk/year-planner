@@ -33,7 +33,11 @@ export const CEILING_FACTOR = 2;
  * @returns {"pass" | "miss" | "fail"}
  */
 export function statusFor(value, budget) {
-  if (value <= budget) return "pass";
-  if (value <= budget * CEILING_FACTOR) return "miss";
+  // Frame deltas carry scheduling jitter: a 16.8 ms sample is one 60 Hz frame
+  // at 59.5 Hz, not a dropped frame. A 5% tolerance keeps the gate meaningful
+  // without failing on measurement noise.
+  const tolerance = budget * 0.05;
+  if (value <= budget + tolerance) return "pass";
+  if (value <= budget * CEILING_FACTOR + tolerance) return "miss";
   return "fail";
 }

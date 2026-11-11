@@ -9,7 +9,7 @@ import type {
 } from "@blendsdk/year-planner-core";
 import type { KeyboardEvent, PointerEvent, ReactNode } from "react";
 import { rowTemplate } from "../geometry.js";
-import type { PreviewLayer } from "../interaction/preview.js";
+import { type PreviewLayer, previewsForRow } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
 import type {
   AnnotationRenderContext,
@@ -206,6 +206,12 @@ export function YearGrid({
         {layout.rows.map((row, index) => {
           const ribbonRow = ribbons.rows[index];
           if (!ribbonRow) return null;
+          // Only the row that owns the active date receives it, so a focus
+          // change never re-renders every month row.
+          const rowActiveDate =
+            activeDate && activeDate >= row.firstDate && activeDate < row.endDateExclusive
+              ? activeDate
+              : undefined;
           return (
             <MonthRow
               key={row.rowId}
@@ -216,10 +222,10 @@ export function YearGrid({
               bandWidth={bandWidth}
               totalDayWidth={layout.totalDayWidth}
               itemsByDate={itemsByDate}
-              activeDate={activeDate}
+              activeDate={rowActiveDate}
               selectedDates={selectedDates}
               selection={selection}
-              previews={previews}
+              previews={previewsForRow(previews, row)}
               showISOWeekNumbers={showISOWeekNumbers}
               getDateMeta={getDateMeta}
               renderCell={renderCell}

@@ -4,9 +4,9 @@ import type {
   PlannerLayer,
   RibbonLayout,
 } from "@blendsdk/year-planner-core";
-import type { KeyboardEvent, ReactNode } from "react";
+import { type KeyboardEvent, memo, type ReactNode } from "react";
 import { scaledRowHeight } from "../geometry.js";
-import type { PreviewLayer } from "../interaction/preview.js";
+import { type PreviewLayer, previewsForRow, samePreviewEntries } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor } from "../safeStyle.js";
 import type {
@@ -60,13 +60,51 @@ export interface ItemOverlayProps {
   onDoubleClickItem: (itemId: string) => void;
 }
 
+/** Compares every overlay prop, treating previews as equal by render content. */
+function itemOverlayPropsEqual(previous: ItemOverlayProps, next: ItemOverlayProps): boolean {
+  if (
+    previous.layout !== next.layout ||
+    previous.ribbons !== next.ribbons ||
+    previous.layers !== next.layers ||
+    previous.items !== next.items ||
+    previous.formatters !== next.formatters ||
+    previous.zoom !== next.zoom ||
+    previous.bandWidth !== next.bandWidth ||
+    previous.selectedItemIds !== next.selectedItemIds ||
+    previous.pendingItemIds !== next.pendingItemIds ||
+    previous.activeFragmentId !== next.activeFragmentId ||
+    previous.activeRowId !== next.activeRowId ||
+    previous.showAnnotations !== next.showAnnotations ||
+    previous.components !== next.components ||
+    previous.displayTimeZone !== next.displayTimeZone ||
+    previous.textPrimary !== next.textPrimary ||
+    previous.textInverse !== next.textInverse ||
+    previous.globalReadOnly !== next.globalReadOnly ||
+    previous.errorDescriptionId !== next.errorDescriptionId ||
+    previous.errorItemId !== next.errorItemId ||
+    previous.renderItem !== next.renderItem ||
+    previous.renderAnnotation !== next.renderAnnotation ||
+    previous.renderOverflow !== next.renderOverflow ||
+    previous.renderTooltip !== next.renderTooltip ||
+    previous.onSelectItem !== next.onSelectItem ||
+    previous.onFocusItem !== next.onFocusItem ||
+    previous.onItemKeyDown !== next.onItemKeyDown ||
+    previous.onDoubleClickItem !== next.onDoubleClickItem
+  ) {
+    return false;
+  }
+  return samePreviewEntries(previous.previews, next.previews);
+}
+
 /**
  * Renders item fragments, gesture previews and overflow above the ARIA grid.
  *
  * The overlay is a sibling of `role="grid"`, not a child. This keeps the grid
- * row contract valid while item proxies stay focusable buttons.
+ * row contract valid while item proxies stay focusable buttons. Each row only
+ * receives the previews that intersect it, and unchanged item layers skip
+ * rendering during a gesture.
  */
-export function ItemOverlay({
+export const ItemOverlay = memo(function ItemOverlay({
   layout,
   ribbons,
   layers,
@@ -106,6 +144,7 @@ export function ItemOverlay({
         const height = scaledRowHeight(ribbonRow.height, zoom);
         const rowTop = top;
         top += height;
+        const rowPreviews = previewsForRow(previews, row);
         return (
           <div
             key={row.rowId}
@@ -144,7 +183,7 @@ export function ItemOverlay({
               onItemKeyDown={onItemKeyDown}
               onDoubleClickItem={onDoubleClickItem}
             />
-            {previews.map((entry) =>
+            {rowPreviews.map((entry) =>
               entry.preview.kind !== "selection" && entry.preview.kind !== "marquee" ? (
                 <SelectionPreview
                   key={entry.key}
@@ -183,4 +222,4 @@ export function ItemOverlay({
       })}
     </>
   );
-}
+}, itemOverlayPropsEqual);

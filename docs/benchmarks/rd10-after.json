@@ -1,0 +1,490 @@
+{
+  "runId": "2026-11-11T21:30:00.000Z",
+  "generatedAt": "2026-11-11T20:52:01.380Z",
+  "environment": {
+    "cpu": "Intel(R) Core(TM) i5-3470S CPU @ 2.90GHz",
+    "cores": 4,
+    "memoryGb": 15,
+    "platform": "linux 7.0.0-42-generic",
+    "node": "v24.21.0",
+    "playwright": "1.65.0"
+  },
+  "results": [
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "layout",
+      "parameters": {
+        "items": 500,
+        "months": 14,
+        "density": "compact"
+      },
+      "iterations": 30,
+      "p50": 4.51991799999999,
+      "p95": 8.530225000000002,
+      "max": 9.634456999999998,
+      "fragments": 570,
+      "overflow": 123,
+      "budget": 250,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "layout",
+      "parameters": {
+        "items": 500,
+        "months": 14,
+        "density": "expanded"
+      },
+      "iterations": 30,
+      "p50": 3.6979450000000043,
+      "p95": 4.830405999999982,
+      "max": 5.686450999999977,
+      "fragments": 570,
+      "overflow": 0,
+      "budget": 250,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "layout",
+      "parameters": {
+        "items": 500,
+        "months": 14,
+        "density": "overflow"
+      },
+      "iterations": 30,
+      "p50": 3.8083780000000615,
+      "p95": 4.337889000000018,
+      "max": 4.389077999999984,
+      "fragments": 570,
+      "overflow": 252,
+      "budget": 250,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "layout",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "density": "compact"
+      },
+      "iterations": 30,
+      "p50": 16.13168399999995,
+      "p95": 25.087234999999964,
+      "max": 27.226448000000005,
+      "fragments": 2264,
+      "overflow": 1074,
+      "budget": 250,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "layout",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "density": "expanded"
+      },
+      "iterations": 30,
+      "p50": 14.605676999999787,
+      "p95": 26.610850000000028,
+      "max": 31.75797200000011,
+      "fragments": 2264,
+      "overflow": 0,
+      "budget": 250,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "layout",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "density": "overflow"
+      },
+      "iterations": 30,
+      "p50": 14.12242399999991,
+      "p95": 22.363448999999946,
+      "max": 22.784437000000025,
+      "fragments": 2264,
+      "overflow": 1244,
+      "budget": 250,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "layout",
+      "parameters": {
+        "items": 10000,
+        "months": 14,
+        "density": "compact"
+      },
+      "iterations": 10,
+      "p50": 80.34140399999978,
+      "p95": 104.26954099999966,
+      "max": 104.26954099999966,
+      "fragments": 11401,
+      "overflow": 6473,
+      "budget": 250,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "layout",
+      "parameters": {
+        "items": 10000,
+        "months": 14,
+        "density": "expanded"
+      },
+      "iterations": 10,
+      "p50": 81.7298310000001,
+      "p95": 98.8979119999999,
+      "max": 98.8979119999999,
+      "fragments": 11401,
+      "overflow": 0,
+      "budget": 250,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "layout",
+      "parameters": {
+        "items": 10000,
+        "months": 14,
+        "density": "overflow"
+      },
+      "iterations": 10,
+      "p50": 76.67481300000054,
+      "p95": 85.17790299999979,
+      "max": 85.17790299999979,
+      "fragments": 11401,
+      "overflow": 6597,
+      "budget": 250,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "drag",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 10000,
+        "months": 14,
+        "density": "compact"
+      },
+      "frames": {
+        "n": 45,
+        "p50": 16.69999999999709,
+        "p95": 66.60000000000582,
+        "max": 7716.4000000000015
+      },
+      "inputDelays": {
+        "n": 11,
+        "p50": 5.699999988079071,
+        "p95": 23.100000023841858,
+        "max": 23.100000023841858
+      },
+      "longTasks": 9,
+      "longTaskMax": 19275,
+      "budget": 16.7,
+      "status": "fail"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "drag",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "density": "compact"
+      },
+      "frames": {
+        "n": 146,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 450
+      },
+      "inputDelays": {
+        "n": 61,
+        "p50": 11.300000011920929,
+        "p95": 15.399999976158142,
+        "max": 26
+      },
+      "longTasks": 2,
+      "longTaskMax": 726,
+      "budget": 16.7,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "drag-36-months",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 36
+      },
+      "frames": {
+        "n": 152,
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000273,
+        "max": 50
+      },
+      "inputDelays": {
+        "n": 61,
+        "p50": 10.5,
+        "p95": 15.399999976158142,
+        "max": 16.80000001192093
+      },
+      "longTasks": 4,
+      "longTaskMax": 142,
+      "profilePath": "test-results/bench/profiles/2026-11-11T21:30:00.000Z-36-month-500.cpuprofile",
+      "budget": 16.7,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "drag",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 14,
+        "density": "compact"
+      },
+      "frames": {
+        "n": 147,
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000273,
+        "max": 50
+      },
+      "inputDelays": {
+        "n": 61,
+        "p50": 9.5,
+        "p95": 15.5,
+        "max": 17
+      },
+      "longTasks": 2,
+      "longTaskMax": 155,
+      "budget": 16.7,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "drag-expanded",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 14,
+        "density": "expanded"
+      },
+      "frames": {
+        "n": 134,
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999955,
+        "max": 50
+      },
+      "inputDelays": {
+        "n": 61,
+        "p50": 11.100000023841858,
+        "p95": 15.300000011920929,
+        "max": 16.5
+      },
+      "longTasks": 2,
+      "longTaskMax": 97,
+      "budget": 16.7,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "initial-render",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 10000,
+        "months": 14
+      },
+      "n": 5,
+      "p50": 39419.700000047684,
+      "p95": 43436.19999998808,
+      "max": 43436.19999998808,
+      "domNodes": 70084,
+      "budget": 150,
+      "status": "fail"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "initial-render-window",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 12
+      },
+      "n": 5,
+      "p50": 412.69999998807907,
+      "p95": 565.6999999880791,
+      "max": 565.6999999880791,
+      "domNodes": 7248,
+      "budget": 150,
+      "status": "fail"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "initial-render-window",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 14
+      },
+      "n": 5,
+      "p50": 370.30000001192093,
+      "p95": 461.89999997615814,
+      "max": 461.89999997615814,
+      "domNodes": 7846,
+      "budget": 150,
+      "status": "fail"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "initial-render-window",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 18
+      },
+      "n": 5,
+      "p50": 418,
+      "p95": 514,
+      "max": 514,
+      "domNodes": 8996,
+      "budget": 150,
+      "status": "fail"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "initial-render",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 2000,
+        "months": 14
+      },
+      "n": 5,
+      "p50": 2015.699999988079,
+      "p95": 2394.699999988079,
+      "max": 2394.699999988079,
+      "domNodes": 17842,
+      "budget": 150,
+      "status": "fail"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "initial-render-window",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 24
+      },
+      "n": 5,
+      "p50": 464.9000000357628,
+      "p95": 730.9000000357628,
+      "max": 730.9000000357628,
+      "domNodes": 10524,
+      "budget": 150,
+      "status": "fail"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "initial-render-window",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 36
+      },
+      "n": 5,
+      "p50": 524.0999999642372,
+      "p95": 603.1999999880791,
+      "max": 603.1999999880791,
+      "domNodes": 13595,
+      "budget": 150,
+      "status": "fail"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "initial-render",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 14
+      },
+      "n": 5,
+      "p50": 390.60000002384186,
+      "p95": 666.1999999880791,
+      "max": 666.1999999880791,
+      "domNodes": 7846,
+      "budget": 150,
+      "status": "fail"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "issue3-dev",
+      "project": "bench-dev",
+      "parameters": {
+        "items": 500,
+        "months": 14
+      },
+      "frames": {
+        "n": 158,
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 266.6999999999998
+      },
+      "inputDelays": {
+        "n": 61,
+        "p50": 12,
+        "p95": 14.799999952316284,
+        "max": 20
+      },
+      "longTasks": 2,
+      "longTaskMax": 610,
+      "profilePath": "test-results/bench/profiles/2026-11-11T21:30:00.000Z-issue-3-dev.cpuprofile",
+      "budget": 16.7,
+      "status": "pass"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "issue3-production",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 14
+      },
+      "frames": {
+        "n": 3,
+        "p95": 16.700000000000273,
+        "samples": [
+          16.700000000000273,
+          16.799999999999727,
+          16.700000000000273
+        ]
+      },
+      "inputDelayP95": 15.5,
+      "longTasks": 4,
+      "longTaskMax": 112,
+      "budget": 16.7,
+      "status": "pass",
+      "profilePath": "test-results/bench/profiles/2026-11-11T21:30:00.000Z-issue-3-production.cpuprofile"
+    },
+    {
+      "runId": "2026-11-11T21:30:00.000Z",
+      "scenario": "overflow",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 10000,
+        "months": 14
+      },
+      "n": 5,
+      "p50": 100.5,
+      "p95": 118.29999995231628,
+      "max": 118.29999995231628,
+      "budget": 100,
+      "status": "miss"
+    }
+  ]
+}

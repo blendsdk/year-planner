@@ -10,7 +10,7 @@ const meta = {
     groups,
     layers,
     resources,
-    items: baseItems,
+    defaultItems: baseItems,
     activeLayerId: "highlight",
     display: { theme: "classic-blue", showISOWeekNumbers: true },
   },
@@ -188,7 +188,7 @@ export const MarqueeDatesMode: Story = {
 
 export const OverflowInteraction: Story = {
   args: {
-    items: [...baseItems, ...overflowItems],
+    defaultItems: [...baseItems, ...overflowItems],
     interaction: { mode: "auto" },
   },
 };

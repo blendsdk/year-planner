@@ -91,6 +91,20 @@
     border-right: 0;
     border-bottom: 0;
     background: var(--yp-surface);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /*
+   * Host-rendered form controls inside cells and item proxies stay selectable.
+   * Planner-owned labels are covered by the grid rule above.
+   */
+  .yp-grid input,
+  .yp-grid textarea,
+  .yp-grid select,
+  .yp-grid [contenteditable="true"] {
+    user-select: text;
+    -webkit-user-select: text;
   }
 
   .yp-row {

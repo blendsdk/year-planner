@@ -184,7 +184,7 @@ export function App() {
               { id: "alice", name: "Alice", type: "person" },
               { id: "bob", name: "Bob", type: "person" },
             ]}
-            items={items}
+            defaultItems={items}
             defaultSelection={{ dates: [], items: year === 2027 ? ["booking"] : [] }}
             display={{ theme, zoom, showISOWeekNumbers: true }}
             print={{ mode: "paginate" }}

@@ -21,6 +21,9 @@ const items = async (page: Page) =>
 const diagnostics = async (page: Page) =>
   JSON.parse((await page.getByTestId("diagnostics-json").textContent()) ?? "[]");
 
+const selectionText = async (page: Page) =>
+  page.evaluate(() => window.getSelection()?.toString() ?? "");
+
 test.describe("RD-07 interaction demo", () => {
   test.use({ viewport: { width: 2400, height: 1400 } });
 
@@ -53,6 +56,22 @@ test.describe("RD-07 interaction demo", () => {
     await expect
       .poll(async () => (await selection(page)).dates)
       .toEqual([{ startDate: "2027-01-28", endDateExclusive: "2027-02-07" }]);
+    expect(await selectionText(page)).toBe("");
+  });
+
+  test("does not leave a native text selection after a date drag", async ({ page }) => {
+    await page.getByTestId("interaction-mode").selectOption("select");
+    await cell(page, "2027-01-28").scrollIntoViewIfNeeded();
+    await cell(page, "2027-02-06").scrollIntoViewIfNeeded();
+    await cell(page, "2027-01-28").scrollIntoViewIfNeeded();
+    const start = await cell(page, "2027-01-28").boundingBox();
+    const end = await cell(page, "2027-02-06").boundingBox();
+    if (!start || !end) throw new Error("missing selection drag geometry");
+    await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(end.x + end.width / 2, end.y + end.height / 2, { steps: 8 });
+    await page.mouse.up();
+    expect(await selectionText(page)).toBe("");
   });
 
   test("marquees three intersecting ribbons", async ({ page }) => {
@@ -70,6 +89,7 @@ test.describe("RD-07 interaction demo", () => {
     await expect
       .poll(async () => ((await selection(page)).items ?? []).sort())
       .toEqual(["booking", "maintenance", "training"]);
+    expect(await selectionText(page)).toBe("");
   });
 
   test("moves a ten-day item to a cross-month target", async ({ page }) => {
@@ -90,6 +110,7 @@ test.describe("RD-07 interaction demo", () => {
           (await items(page)).find((entry: { id: string }) => entry.id === "booking")?.period,
       )
       .toEqual({ kind: "all-day", startDate: "2027-02-20", endDateExclusive: "2027-03-02" });
+    expect(await selectionText(page)).toBe("");
   });
 
   test("resizes an item from its end handle", async ({ page }) => {
@@ -112,6 +133,7 @@ test.describe("RD-07 interaction demo", () => {
           (await items(page)).find((entry: { id: string }) => entry.id === "booking")?.period,
       )
       .toEqual({ kind: "all-day", startDate: "2027-01-28", endDateExclusive: "2027-02-05" });
+    expect(await selectionText(page)).toBe("");
   });
 
   test("erases a highlight range and undo restores it", async ({ page }) => {
@@ -133,6 +155,7 @@ test.describe("RD-07 interaction demo", () => {
       { kind: "all-day", startDate: "2027-06-10", endDateExclusive: "2027-06-14" },
       { kind: "all-day", startDate: "2027-06-17", endDateExclusive: "2027-06-21" },
     ]);
+    expect(await selectionText(page)).toBe("");
     await page.getByRole("button", { name: "Undo" }).click();
     await expect
       .poll(highlightPeriods)
@@ -169,6 +192,7 @@ test.describe("RD-07 interaction demo", () => {
         ),
       )
       .toBe(true);
+    expect(await selectionText(page)).toBe("");
   });
 
   test("shows an invalid resize diagnostic and keeps the item", async ({ page }) => {

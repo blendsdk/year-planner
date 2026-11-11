@@ -43,7 +43,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | React tests | **405 passed** (34 files) |
 | Core coverage | **99.34% lines, 96.08% branches, 99.23% functions** |
 | React coverage | **94.03% lines, 92.59% branches, 98.10% functions** |
-| Playwright | **75 passed, 7 skipped** (PDF is Chromium-only; touch is Chromium-only) |
+| Playwright | **78 passed, 7 skipped** (PDF is Chromium-only; touch is Chromium-only) |
 | Browsers | Chromium, Firefox, WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |

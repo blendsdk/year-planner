@@ -1,6 +1,7 @@
 /** Performance budgets from the quality contract. */
 export const BUDGETS: Readonly<{
   layout10kP95Ms: number;
+  layoutP95Ms: number;
   dragP95Ms: number;
   overflowMs: number;
   initialRenderP95Ms: number;

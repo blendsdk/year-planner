@@ -54,6 +54,7 @@ describe("RD-10-AC-11: benchmark command contract", () => {
 describe("RD-10-AC-11: benchmark budgets", () => {
   it("exports every RD budget", () => {
     expect(BUDGETS.layout10kP95Ms).toBe(250);
+    expect(BUDGETS.layoutP95Ms).toBe(250);
     expect(BUDGETS.dragP95Ms).toBe(16.7);
     expect(BUDGETS.overflowMs).toBe(100);
     expect(BUDGETS.initialRenderP95Ms).toBe(150);

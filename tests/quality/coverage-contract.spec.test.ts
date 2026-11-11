@@ -34,14 +34,18 @@ describe("RD-10-AC-03: coverage floor", () => {
 describe("RD-10-AC-12: bundle measurement contract", () => {
   it("measures the React entry plus CSS against 60 kB", () => {
     const source = read("scripts/check-size.mjs");
-    expect(source).toMatch(/REACT_BUDGET_KB\s*=\s*60/);
+    const budgets = read("scripts/bench-budgets.mjs");
+    expect(budgets).toMatch(/reactEntryCssKb:\s*60/);
+    expect(source).toContain("BUDGETS.reactEntryCssKb");
     expect(source).toContain("packages/react/dist/index.js");
     expect(source).toContain("packages/react/dist/styles.css");
   });
 
   it("keeps the installed total against 65 kB", () => {
     const source = read("scripts/check-size.mjs");
-    expect(source).toMatch(/TOTAL_BUDGET_KB\s*=\s*65/);
+    const budgets = read("scripts/bench-budgets.mjs");
+    expect(budgets).toMatch(/totalInstalledKb:\s*65/);
+    expect(source).toContain("BUDGETS.totalInstalledKb");
     expect(source).toContain("packages/core/dist");
   });
 

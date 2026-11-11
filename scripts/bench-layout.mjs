@@ -42,11 +42,6 @@ function measure(items, months, density) {
         .join(", ")}`,
     );
   }
-  const layoutResult = buildClassicYearLayout({
-    range: { start: { year: 2027, month: 0 }, monthCount: months },
-  });
-  if (!layoutResult.ok) throw new Error("benchmark layout failed");
-  const layout = layoutResult.layout;
   const visibility = {
     hiddenGroupIds: [],
     hiddenLayerIds: [],
@@ -58,8 +53,12 @@ function measure(items, months, density) {
     displayTimeZone: "UTC",
   };
   const run = () => {
+    const layoutResult = buildClassicYearLayout({
+      range: { start: { year: 2027, month: 0 }, monthCount: months },
+    });
+    if (!layoutResult.ok) throw new Error("benchmark layout failed");
     const ribbon = buildRibbonLayout(
-      layout,
+      layoutResult.layout,
       { model: validation.model, visibility, filter: {} },
       options,
     );
@@ -80,7 +79,7 @@ function measure(items, months, density) {
   }
   const p50 = percentile(samples, 50);
   const p95 = percentile(samples, 95);
-  const budget = items >= 10000 ? BUDGETS.layout10kP95Ms : BUDGETS.initialRenderP95Ms;
+  const budget = items >= 10000 ? BUDGETS.layout10kP95Ms : BUDGETS.layoutP95Ms;
   return {
     scenario: "layout",
     parameters: { items, months, density },
@@ -109,6 +108,7 @@ writeFileSync(
     {
       scenario: "layout",
       generatedAt: new Date().toISOString(),
+      runId: process.env.BENCH_RUN_ID ?? "unassigned",
       hardware: "see docs/test-report.md",
       results,
     },

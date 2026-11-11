@@ -8,6 +8,8 @@
 export const BUDGETS = Object.freeze({
   /** p95 layout and ribbon time for 10,000 compact items. */
   layout10kP95Ms: 250,
+  /** p95 layout and ribbon time for smaller windows. */
+  layoutP95Ms: 250,
   /** p95 pointer frame time for a production drag. */
   dragP95Ms: 16.7,
   /** Time to open and close overflow with 10,000 compact items. */

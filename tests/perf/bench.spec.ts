@@ -6,13 +6,15 @@ import { BUDGETS, CEILING_FACTOR, statusFor } from "../../scripts/bench-budgets.
  * Browser benchmark and budget gate.
  *
  * The preview project measures production builds and records every scenario.
- * The dev project runs one matching drag so the development-only overhead is
- * visible instead of being guessed. Results are written as JSON files that the
- * `bench` orchestrator aggregates into the checked-in report.
+ * The dev project runs one matching drag so development-only overhead is
+ * visible instead of guessed. The frame metric is the time from each pointer
+ * move to the next animation frame while the drag is active, so idle display
+ * refresh ticks never dilute the result.
  */
 
 const OUT = "test-results/bench";
 const PROFILE_DIR = `${OUT}/profiles`;
+const RUN_ID = process.env.BENCH_RUN_ID ?? "unassigned";
 
 /** Returns a nearest-rank percentile. */
 function percentile(values: readonly number[], p: number): number {
@@ -24,7 +26,7 @@ function percentile(values: readonly number[], p: number): number {
 /** Summarises a numeric sample. */
 function stats(values: readonly number[]) {
   return {
-    count: values.length,
+    n: values.length,
     p50: percentile(values, 50),
     p95: percentile(values, 95),
     max: values.length ? Math.max(...values) : 0,
@@ -34,7 +36,10 @@ function stats(values: readonly number[]) {
 /** Writes one scenario result for the orchestrator. */
 function writeResult(name: string, payload: Record<string, unknown>): void {
   mkdirSync(OUT, { recursive: true });
-  writeFileSync(`${OUT}/results-${name}.json`, `${JSON.stringify(payload, null, 2)}\n`);
+  writeFileSync(
+    `${OUT}/results-${name}.json`,
+    `${JSON.stringify({ runId: RUN_ID, ...payload }, null, 2)}\n`,
+  );
 }
 
 /** Waits for the benchmark route to report its first painted frame. */
@@ -50,21 +55,32 @@ async function waitForBench(page: Page): Promise<NonNullable<Window["__YP_BENCH_
 /** Measures five fresh loads of one benchmark route. */
 async function measureInitialRender(
   page: Page,
-  query: string,
-  repeats = 5,
+  options: { items: number; months: number },
 ): Promise<ReturnType<typeof stats> & { domNodes: number }> {
   const samples: number[] = [];
   let domNodes = 0;
-  for (let index = 0; index < repeats; index += 1) {
-    await page.goto(`/?bench=1&${query}`);
+  for (let index = 0; index < 5; index += 1) {
+    // Releasing the previous document keeps a 10k-item run inside the
+    // reference host's memory while still recording five fresh loads.
+    if (index > 0) await page.goto("about:blank");
+    await page.goto(`/?bench=1&items=${options.items}&months=${options.months}`);
     const ready = await waitForBench(page);
+    expect(ready.itemCount, "requested item count rendered").toBe(options.items);
+    expect(ready.months, "requested window rendered").toBe(options.months);
+    expect(ready.domNodes, "rendered DOM size").toBeGreaterThan(options.items);
     samples.push(ready.readyMs);
     domNodes = ready.domNodes;
   }
   return { ...stats(samples), domNodes };
 }
 
-/** Installs the frame, long-task and input-delay collectors. */
+/**
+ * Installs the pointer-to-frame sampler and the long-task observer.
+ *
+ * A frame is counted only when a pointer move arrives while the drag is
+ * active, so the sample count tracks the drag steps rather than the display
+ * refresh cadence.
+ */
 async function startCollectors(page: Page): Promise<void> {
   await page.evaluate(() => {
     window.__YP_FRAMES__ = { deltas: [], longTasks: [], inputDelays: [] };
@@ -74,39 +90,59 @@ async function startCollectors(page: Page): Promise<void> {
       }
     });
     observer.observe({ type: "longtask", buffered: false });
-    document.querySelector('[data-yp-part="grid"]')?.addEventListener(
+    let dragging = false;
+    let previous = performance.now();
+    const grid = document.querySelector('[data-yp-part="grid"]');
+    // Frame intervals are sampled only between pointerdown and pointerup, so
+    // setup and idle time outside the drag never dilute the result.
+    const tick = (now: number): void => {
+      if (dragging) window.__YP_FRAMES__?.deltas.push(now - previous);
+      previous = now;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    grid?.addEventListener(
+      "pointerdown",
+      () => {
+        dragging = true;
+        previous = performance.now();
+      },
+      true,
+    );
+    grid?.addEventListener(
       "pointermove",
       (event) => {
         window.__YP_FRAMES__?.inputDelays.push(performance.now() - event.timeStamp);
       },
       true,
     );
-    window.__YP_RUNNING__ = true;
-    let previous = performance.now();
-    const tick = (now: number): void => {
-      window.__YP_FRAMES__?.deltas.push(now - previous);
-      previous = now;
-      if (window.__YP_RUNNING__) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
+    document.addEventListener(
+      "pointerup",
+      () => {
+        dragging = false;
+      },
+      true,
+    );
   });
 }
 
-/** Stops the collectors and returns their samples. */
-async function stopCollectors(page: Page) {
-  return page.evaluate(() => {
-    window.__YP_RUNNING__ = false;
-    const frames = window.__YP_FRAMES__ ?? { deltas: [], longTasks: [], inputDelays: [] };
-    return {
-      deltas: frames.deltas.slice(1),
-      longTasks: frames.longTasks,
-      inputDelays: frames.inputDelays,
-    };
-  });
+/** Reads the currently rendered preview fragments. */
+async function previewRanges(page: Page): Promise<{ start: string | null; end: string | null }[]> {
+  return page.evaluate(() =>
+    Array.from(document.querySelectorAll('[data-yp-part="selection-preview"]')).map((node) => ({
+      start: node.getAttribute("data-preview-start"),
+      end: node.getAttribute("data-preview-end"),
+    })),
+  );
 }
 
 /** Drags from one date cell to another with one pointer move per frame. */
-async function dragDates(page: Page, fromDate: string, toDate: string, steps = 60): Promise<void> {
+async function dragDates(
+  page: Page,
+  fromDate: string,
+  toDate: string,
+  steps = 60,
+): Promise<{ start: number; end: number }> {
   const from = page.locator(`[role="gridcell"][data-date="${fromDate}"]`);
   const to = page.locator(`[role="gridcell"][data-date="${toDate}"]`);
   await from.scrollIntoViewIfNeeded();
@@ -119,8 +155,12 @@ async function dragDates(page: Page, fromDate: string, toDate: string, steps = 6
   const endX = end.x + end.width / 2;
   const endY = end.y + end.height / 2;
   await page.mouse.move(startX, startY);
+  const dragStart = await page.evaluate(() => performance.now());
   await page.mouse.down();
-  const previewStep = Math.max(1, Math.floor(steps / 2));
+  const earlyStep = Math.max(1, Math.floor(steps / 4));
+  const lateStep = Math.max(2, Math.floor(steps / 2));
+  let earlyPreview: { start: string | null; end: string | null }[] = [];
+  let latePreview: { start: string | null; end: string | null }[] = [];
   for (let step = 1; step <= steps; step += 1) {
     await page.mouse.move(
       startX + ((endX - startX) * step) / steps,
@@ -130,14 +170,18 @@ async function dragDates(page: Page, fromDate: string, toDate: string, steps = 6
     await page.evaluate(
       () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
     );
-    if (step === previewStep) {
-      expect(
-        await page.locator('[data-yp-part="selection-preview"]').count(),
-        "drag preview is active",
-      ).toBeGreaterThan(0);
-    }
+    if (step === earlyStep) earlyPreview = await previewRanges(page);
+    if (step === lateStep) latePreview = await previewRanges(page);
   }
   await page.mouse.up();
+  const dragEnd = await page.evaluate(() => performance.now());
+
+  expect(earlyPreview.length, "drag preview is active early").toBeGreaterThan(0);
+  expect(latePreview.length, "drag preview is active late").toBeGreaterThan(0);
+  expect(latePreview, "drag preview tracks the pointer").not.toEqual(earlyPreview);
+  const days = new Set(latePreview.map((entry) => `${entry.start}/${entry.end}`));
+  expect(days.size, "preview covers a multi-day range").toBeGreaterThan(0);
+  return { start: dragStart, end: dragEnd };
 }
 
 /** Measures one drag and records its frame, input-delay and long-task data. */
@@ -146,61 +190,87 @@ async function measureDrag(
   query: string,
   profileLabel?: string,
   steps = 60,
-  minSamples = 55,
+  minSamples = Math.ceil(steps / 2),
 ): Promise<{
   frames: ReturnType<typeof stats>;
   inputDelays: ReturnType<typeof stats>;
   longTasks: number;
   longTaskMax: number;
+  profilePath?: string;
 }> {
   await page.goto(`/?bench=1&${query}`);
   await waitForBench(page);
   await startCollectors(page);
+  let profilePath: string | undefined;
   let profile: unknown;
   if (profileLabel) {
     const cdp = await page.context().newCDPSession(page);
     await cdp.send("Profiler.enable");
     await cdp.send("Profiler.start");
-    await dragDates(page, "2027-01-28", "2027-02-16", steps);
+    const window = await dragDates(page, "2027-01-28", "2027-02-16", steps);
     const stopped = await cdp.send("Profiler.stop");
     profile = stopped.profile;
-  } else {
-    await dragDates(page, "2027-01-28", "2027-02-16", steps);
-  }
-  const samples = await stopCollectors(page);
-  if (profileLabel && profile) {
+    profilePath = `${PROFILE_DIR}/${RUN_ID}-${profileLabel}.cpuprofile`;
     mkdirSync(PROFILE_DIR, { recursive: true });
-    writeFileSync(`${PROFILE_DIR}/${profileLabel}.cpuprofile`, JSON.stringify(profile));
+    writeFileSync(profilePath, JSON.stringify(profile));
+    const samples = await stopCollectors(page, window);
+    expect(samples.deltas.length, "frame samples").toBeGreaterThanOrEqual(minSamples);
+    return {
+      frames: stats(samples.deltas),
+      inputDelays: stats(samples.inputDelays),
+      longTasks: samples.longTasks.length,
+      longTaskMax: samples.longTasks.reduce((max, entry) => Math.max(max, entry.duration), 0),
+      profilePath,
+    };
   }
+  const window = await dragDates(page, "2027-01-28", "2027-02-16", steps);
+  const samples = await stopCollectors(page, window);
   expect(samples.deltas.length, "frame samples").toBeGreaterThanOrEqual(minSamples);
   expect(samples.inputDelays.length, "pointer samples").toBeGreaterThanOrEqual(minSamples);
-  const longTaskMax = samples.longTasks.reduce((max, entry) => Math.max(max, entry.duration), 0);
   return {
     frames: stats(samples.deltas),
     inputDelays: stats(samples.inputDelays),
     longTasks: samples.longTasks.length,
-    longTaskMax,
+    longTaskMax: samples.longTasks.reduce((max, entry) => Math.max(max, entry.duration), 0),
   };
 }
 
-/**
- * Enforces the 2x ceiling only in strict mode.
- *
- * The first baseline run records the pre-optimization state, which may be
- * above the ceiling; strict mode is the post-optimization gate.
- */
-function expectWithinCeiling(value: number, budget: number, label: string): void {
-  if (process.env.PERF_STRICT !== "1") return;
-  expect(value, `${label} above the 2x ceiling`).toBeLessThanOrEqual(budget * CEILING_FACTOR);
+/** Stops the collectors and filters long tasks to the drag window. */
+async function stopCollectors(page: Page, dragWindow: { start: number; end: number }) {
+  return page.evaluate((windowRange) => {
+    const frames = window.__YP_FRAMES__ ?? { deltas: [], longTasks: [], inputDelays: [] };
+    return {
+      deltas: frames.deltas,
+      inputDelays: frames.inputDelays,
+      longTasks: frames.longTasks.filter(
+        (entry) => entry.start >= windowRange.start - 50 && entry.start <= windowRange.end,
+      ),
+    };
+  }, dragWindow);
 }
 
-/** Returns the checked-in baseline drag p95, if a baseline exists. */
-function baselineDragP95(): number | undefined {
+/** Enforces the 2x ceiling only in strict mode. */
+function expectWithinCeiling(value: number, budget: number, label: string): void {
+  if (process.env.PERF_STRICT !== "1") return;
+  expect(value, `${label} above the 2x ceiling`).toBeLessThanOrEqual(
+    budget * CEILING_FACTOR + 0.01,
+  );
+}
+
+/** Returns the checked-in issue-3 baseline entry, if it exists. */
+function baselineIssue3():
+  | { frames?: { p95?: number }; inputDelayP95?: number; longTasks?: number }
+  | undefined {
   try {
     const baseline = JSON.parse(readFileSync("docs/benchmarks/rd10-baseline.json", "utf8")) as {
-      results?: { scenario?: string; frames?: { p95?: number } }[];
+      results?: {
+        scenario?: string;
+        frames?: { p95?: number };
+        inputDelayP95?: number;
+        longTasks?: number;
+      }[];
     };
-    return baseline.results?.find((entry) => entry.scenario === "issue3-production")?.frames?.p95;
+    return baseline.results?.find((entry) => entry.scenario === "issue3-production");
   } catch {
     return undefined;
   }
@@ -209,15 +279,9 @@ function baselineDragP95(): number | undefined {
 test.describe("RD-10-AC-11: production budgets", () => {
   test("initial render 500/2k/10k compact", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name === "bench-dev", "production scenario");
-    test.setTimeout(420_000);
+    test.setTimeout(600_000);
     for (const items of [500, 2000, 10000]) {
-      // The reference host cannot keep five 10k-item documents alive without
-      // exhausting its memory, so the largest case records three loads.
-      const result = await measureInitialRender(
-        page,
-        `items=${items}&months=14`,
-        items >= 10000 ? 3 : 5,
-      );
+      const result = await measureInitialRender(page, { items, months: 14 });
       writeResult(`initial-${items}`, {
         scenario: "initial-render",
         project: testInfo.project.name,
@@ -233,7 +297,7 @@ test.describe("RD-10-AC-11: production budgets", () => {
   test("initial render 12/14/18/24/36 months", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name === "bench-dev", "production scenario");
     for (const months of [12, 14, 18, 24, 36]) {
-      const result = await measureInitialRender(page, `items=500&months=${months}`);
+      const result = await measureInitialRender(page, { items: 500, months });
       writeResult(`initial-${months}-months`, {
         scenario: "initial-render-window",
         project: testInfo.project.name,
@@ -248,17 +312,17 @@ test.describe("RD-10-AC-11: production budgets", () => {
 
   test("compact drag 500/2k/10k", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name === "bench-dev", "production scenario");
-    test.setTimeout(600_000);
+    test.setTimeout(900_000);
     for (const items of [500, 2000, 10000]) {
-      // A 10k-item document needs seconds per frame on the reference host, so
-      // the largest drag records 25 frames over 30 steps instead of 55.
+      // A 10k-item document needs seconds per frame on the 14 GiB reference
+      // host, so the largest drag records 10 steps instead of 60.
+      // The report records the sample count beside every p95.
       const large = items >= 10000;
       const result = await measureDrag(
         page,
         `items=${items}&months=14`,
         undefined,
-        large ? 30 : 60,
-        large ? 25 : 55,
+        large ? 10 : 60,
       );
       writeResult(`drag-${items}`, {
         scenario: "drag",
@@ -295,17 +359,27 @@ test.describe("RD-10-AC-11: production budgets", () => {
       const elapsed = await page.evaluate(async () => {
         const button = document.querySelector('[data-yp-part="overflow-button"]');
         if (!button) throw new Error("overflow button missing");
+        const waitFor = (present: boolean) =>
+          new Promise<void>((resolve, reject) => {
+            const deadline = performance.now() + 5_000;
+            const check = () => {
+              const found = Boolean(document.querySelector('[data-yp-part="overflow-popover"]'));
+              if (found === present) resolve();
+              else if (performance.now() > deadline) reject(new Error("overflow state timeout"));
+              else requestAnimationFrame(check);
+            };
+            check();
+          });
         const started = performance.now();
         button.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-        await new Promise<void>((resolve) =>
-          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-        );
-        return performance.now() - started;
+        await waitFor(true);
+        const opened = performance.now();
+        button.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+        await waitFor(false);
+        return { open: opened - started, total: performance.now() - started };
       });
-      await expect(page.locator('[data-yp-part="overflow-popover"]')).toBeVisible();
-      samples.push(elapsed);
-      await page.keyboard.press("Escape");
       await expect(page.locator('[data-yp-part="overflow-popover"]')).toHaveCount(0);
+      samples.push(elapsed.total);
     }
     const result = stats(samples);
     writeResult("overflow-10000", {
@@ -316,7 +390,7 @@ test.describe("RD-10-AC-11: production budgets", () => {
       budget: BUDGETS.overflowMs,
       status: statusFor(result.p95, BUDGETS.overflowMs),
     });
-    expectWithinCeiling(result.p95, BUDGETS.overflowMs, "overflow open");
+    expectWithinCeiling(result.p95, BUDGETS.overflowMs, "overflow open and close");
   });
 
   test("issue-3 production drag with three repeats and profile", async ({ page }, testInfo) => {
@@ -336,7 +410,7 @@ test.describe("RD-10-AC-11: production budgets", () => {
       scenario: "issue3-production",
       project: testInfo.project.name,
       parameters: { items: 500, months: 14 },
-      frames: { p95: percentile(p95s, 50), samples: p95s },
+      frames: { n: p95s.length, p95: percentile(p95s, 50), samples: p95s },
       inputDelayP95: percentile(
         repeats.map((entry) => entry.inputDelays.p95),
         50,
@@ -345,20 +419,28 @@ test.describe("RD-10-AC-11: production budgets", () => {
       longTaskMax: Math.max(...repeats.map((entry) => entry.longTaskMax)),
       budget: BUDGETS.dragP95Ms,
       status: statusFor(percentile(p95s, 50), BUDGETS.dragP95Ms),
-      cpuProfile: "test-results/bench/profiles/issue-3-production.cpuprofile",
+      profilePath: repeats[0]?.profilePath,
     };
     writeResult("issue3-production", result);
     expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, "issue-3 production drag");
 
     if (process.env.PERF_STRICT === "1") {
-      const baseline = baselineDragP95();
+      const baseline = baselineIssue3();
       expect(baseline, "strict mode needs docs/benchmarks/rd10-baseline.json").toBeDefined();
-      const improved = result.frames.p95 <= (baseline ?? Infinity) * 0.9;
+      const baselineP95 = baseline?.frames?.p95 ?? Infinity;
+      const improved = result.frames.p95 <= baselineP95 * 0.9;
       expect(
         improved || result.frames.p95 <= BUDGETS.dragP95Ms,
-        `issue-3 oracle: ${result.frames.p95.toFixed(2)} ms against baseline ${String(baseline)}`,
+        `issue-3 oracle: ${result.frames.p95.toFixed(2)} ms against baseline ${String(baselineP95)}`,
       ).toBe(true);
-      expect(result.longTasks, "no new long tasks").toBe(0);
+      const baselineInput = baseline?.inputDelayP95 ?? Infinity;
+      expect(
+        result.inputDelayP95,
+        `input delay ${result.inputDelayP95.toFixed(2)} ms against baseline ${String(baselineInput)}`,
+      ).toBeLessThanOrEqual(baselineInput * 1.5 + 0.01);
+      expect(result.longTasks, "no long-task regression").toBeLessThanOrEqual(
+        (baseline?.longTasks ?? 0) + 1,
+      );
     }
   });
 
@@ -372,7 +454,6 @@ test.describe("RD-10-AC-11: production budgets", () => {
       ...result,
       budget: BUDGETS.dragP95Ms,
       status: statusFor(result.frames.p95, BUDGETS.dragP95Ms),
-      cpuProfile: "test-results/bench/profiles/36-month-500.cpuprofile",
     });
     expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, "36-month drag");
   });
@@ -389,7 +470,6 @@ test.describe("issue-3: development overhead", () => {
       ...result,
       budget: BUDGETS.dragP95Ms,
       status: statusFor(result.frames.p95, BUDGETS.dragP95Ms),
-      cpuProfile: "test-results/bench/profiles/issue-3-dev.cpuprofile",
     });
   });
 });

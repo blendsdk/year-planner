@@ -12,7 +12,9 @@ describe("benchmark data edge cases", () => {
   it("changes output when the seed changes", () => {
     const first = buildBenchModel({ items: 20, months: 12, seed: 1 });
     const second = buildBenchModel({ items: 20, months: 12, seed: 2 });
-    expect(first.items[0]?.period).not.toEqual(second.items[0]?.period);
+    expect(first.items.map((item) => item.period)).not.toEqual(
+      second.items.map((item) => item.period),
+    );
   });
 
   it("emits ids that are unique and padded", () => {
@@ -33,7 +35,8 @@ describe("benchmark data edge cases", () => {
       expect(days).toBeGreaterThanOrEqual(1);
       expect(days).toBeLessThanOrEqual(10);
       expect(startDate >= "2027-01-01").toBe(true);
-      expect(endDateExclusive <= "2028-03-01").toBe(true);
+      expect(startDate <= "2027-12-31").toBe(true);
+      expect(endDateExclusive <= "2028-01-11").toBe(true);
     }
   });
 

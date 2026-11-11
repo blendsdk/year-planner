@@ -187,33 +187,40 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 
 ## Performance baseline (RD-10, issue #3)
 
-> **Command**: `pnpm bench --out docs/benchmarks/rd10-baseline`
+> **Command**: `pnpm bench --out docs/benchmarks/rd10-baseline` (the 10k cases were run in short
+> chunks under one run id on the 14 GiB reference host; the aggregator writes the same report).
 > **Environment**: Intel Core i5-3470S (4 vCPU), 15 GB, Ubuntu 26.04, Node 24.21.0,
-> Chromium 1.65.0, production preview at 1600×1200.
+> Playwright 1.65.0, production preview at 1600×1200.
+> **Run**: `2026-11-11T20:30:00.000Z`
 > **Status**: pre-optimization baseline. Values above the budget are recorded, not hidden.
 
-| Scenario | p50 | p95 | Budget | Status |
-|---|---:|---:|---:|---|
-| Layout 10,000 items, compact | 80.57 ms | 93.74 ms | 250 ms | pass |
-| Initial render 500 items | 503.40 ms | 654.10 ms | 150 ms | fail |
-| Initial render 2,000 items | 2,299.30 ms | 2,370.00 ms | 150 ms | fail |
-| Initial render 10,000 items | 44,496.30 ms | 45,715.40 ms | 150 ms | fail |
-| Initial render 12/14/18/24/36 months | 486–679 ms | 568–743 ms | 150 ms | fail |
-| Drag 500 items, compact | 16.70 ms | 33.40 ms | 16.7 ms | fail |
-| Drag 2,000 items, compact | 16.70 ms | 366.70 ms | 16.7 ms | fail |
-| Drag 10,000 items, compact (30 frames) | 16.70 ms | 8,499.70 ms | 16.7 ms | fail |
-| Drag 500 items, expanded | 16.70 ms | 50.00 ms | 16.7 ms | fail |
-| Drag 500 items, 36 months | 16.70 ms | 83.30 ms | 16.7 ms | fail |
-| Overflow open/close, 10,000 items | 100.30 ms | 119.40 ms | 100 ms | miss |
-| Issue #3 production drag, 500 items | — | 49.90 ms | 16.7 ms | fail |
-| Issue #3 development drag, 500 items | — | 366.70 ms | 16.7 ms | fail |
+| Scenario | n | p50 | p95 | Budget | Status |
+|---|---:|---:|---:|---:|---|
+| Layout 10,000 items, compact | 10 | 88.16 ms | 108.07 ms | 250 ms | pass |
+| Layout 10,000 items, expanded | 10 | 108.61 ms | 295.20 ms | 250 ms | miss |
+| Initial render 500 items | 5 | 414.40 ms | 565.40 ms | 150 ms | fail |
+| Initial render 2,000 items | 5 | 2,167.90 ms | 2,247.60 ms | 150 ms | fail |
+| Initial render 10,000 items | 5 | 41,920.00 ms | 50,457.90 ms | 150 ms | fail |
+| Initial render 12/14/18/24/36 months | 5 | 401–543 ms | 420–615 ms | 150 ms | fail |
+| Drag 500 items, compact | 263 | 16.70 ms | 33.40 ms | 16.7 ms | fail |
+| Drag 2,000 items, compact | 260 | 16.70 ms | 300.00 ms | 16.7 ms | fail |
+| Drag 10,000 items, compact (10 steps) | 49 | 16.70 ms | 8,916.40 ms | 16.7 ms | fail |
+| Drag 500 items, expanded | 260 | 16.70 ms | 33.40 ms | 16.7 ms | fail |
+| Drag 500 items, 36 months | 269 | 16.70 ms | 100.00 ms | 16.7 ms | fail |
+| Overflow open/close, 10,000 items | 5 | 93.50 ms | 115.30 ms | 100 ms | miss |
+| Issue #3 production drag, 500 items | 3 | — | 33.40 ms | 16.7 ms | miss |
+| Issue #3 development drag, 500 items | 268 | 16.70 ms | 416.60 ms | 16.7 ms | fail |
 
-The production 500-item drag is **49.9 ms p95**; the development drag is **366.7 ms p95**, a
-development-overhead factor of about 7×. CPU profiles are captured under
-`test-results/bench/profiles` (`issue-3-production`, `issue-3-dev`, `36-month-500`).
+The production 500-item drag is **33.4 ms p95**; the development drag is **416.6 ms p95**, a
+development-overhead factor of about 12×. CPU profiles are captured under
+`test-results/bench/profiles`, named with the run id (`issue-3-production`, `issue-3-dev`,
+`36-month-500`).
 
 `pnpm bench` is report-first so this baseline can be recorded honestly.
-`pnpm bench --enforce` and `PERF_STRICT=1 pnpm test:perf` gate the 2× ceiling after the optimization.
+`pnpm bench --enforce` and `PERF_STRICT=1 pnpm test:perf` gate the 2× ceiling and the issue #3
+oracle after the optimization. The 10,000-item drag records 10 steps because the 14 GiB reference
+host cannot complete 60 steps without exhausting memory; the sample count is printed beside every
+p95.
 
 ## Known gaps and honest limitations
 

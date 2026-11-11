@@ -61,7 +61,12 @@ export function buildBenchModel(input) {
   const seed = input.seed ?? 42;
   const random = createRandom(seed);
   const start = "2027-01-01";
-  const totalDays = input.months * 31;
+  // The window ends on the first day after the last month row. Using 31 days
+  // per month would place items outside the rendered range.
+  const windowEnd = new Date(Date.UTC(2027, input.months, 1)).toISOString().slice(0, 10);
+  const totalDays = Math.round(
+    (Date.parse(`${windowEnd}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / 86_400_000,
+  );
   const items = [];
   for (let index = 0; index < input.items; index += 1) {
     const layer = LAYERS[index % LAYERS.length];

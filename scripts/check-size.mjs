@@ -12,8 +12,10 @@ import { gzipSync } from "node:zlib";
  * - the complete installed set (core, React, both adapters and CSS) must stay
  *   under the accepted 65 kB ceiling.
  */
-const REACT_BUDGET_KB = 60;
-const TOTAL_BUDGET_KB = 65;
+import { BUDGETS } from "./bench-budgets.mjs";
+
+const REACT_BUDGET_KB = BUDGETS.reactEntryCssKb;
+const TOTAL_BUDGET_KB = BUDGETS.totalInstalledKb;
 
 /** Recursively lists the emitted JavaScript files under one directory. */
 function coreJavaScriptFiles(directory) {

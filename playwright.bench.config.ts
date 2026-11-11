@@ -22,11 +22,19 @@ export default defineConfig({
   projects: [
     {
       name: "bench-preview",
-      use: { ...devices["Desktop Chrome"], baseURL: "http://127.0.0.1:4174" },
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "http://127.0.0.1:4174",
+        viewport: { width: 1600, height: 1200 },
+      },
     },
     {
       name: "bench-dev",
-      use: { ...devices["Desktop Chrome"], baseURL: "http://127.0.0.1:4175" },
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "http://127.0.0.1:4175",
+        viewport: { width: 1600, height: 1200 },
+      },
     },
   ],
   webServer: [

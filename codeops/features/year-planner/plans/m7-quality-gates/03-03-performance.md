@@ -149,9 +149,9 @@ reported, not used to fail the layout script.
 
 | Test | Scenario | Measurement |
 | ---- | -------- | ----------- |
-| `RD-10-AC-11: initial render 500/2k/10k compact` | 14 months, compact, 5 repeat loads | median and p95 `readyMs`, DOM nodes |
+| `RD-10-AC-11: initial render 500/2k/10k compact` | 14 months, compact, 5 fresh loads | median and p95 `readyMs`, DOM nodes |
 | `RD-10-AC-11: initial render 12/14/18/24/36 months` | 500 items, 5 repeat loads | median and p95 `readyMs` |
-| `RD-10-AC-11: compact drag 500/2k/10k` | 60-step drag across two months | rAF frame deltas, long tasks |
+| `RD-10-AC-11: compact drag 500/2k/10k` | 60-step drag (10 steps at 10k on the reference host) | drag-window frame deltas, input delay, long tasks |
 | `RD-10-AC-11: expanded drag 500 fragments` | expanded density, 500 visible fragments | rAF frame deltas, long tasks |
 | `RD-10-AC-11: overflow open/close 10k` | compact, 10k items, 5 repeats | in-page `performance.mark/measure` around the popover mutation, median and p95 |
 | `RD-10-AC-11: 36-month 500-item production drag` | 36 months, 500 items | frame deltas, long tasks, CPU profile |
@@ -182,11 +182,14 @@ requestAnimationFrame(tick);
 ```
 
 The drag sends exactly one pointer move per animation frame and waits for the next frame before the
-next move, so the sampled deltas represent pointer frames rather than idle compositor time. It
-records `event.timeStamp` versus `performance.now()` in a capture-phase listener as input delay.
-The test fails as `not-measured` when fewer than 55 frame samples or 55 pointer moves are present.
-`longtask` uses `buffered: false` and is filtered to the drag window. It records p50, p95, maximum,
-input-delay p95 and the count of frames over 16.7 ms and 50 ms.
+next move. Frame intervals are sampled only between `pointerdown` and `pointerup`, so setup and
+idle time outside the drag never dilute the result; the two-step preview check proves the gesture
+is active and tracking the pointer. It records `event.timeStamp` versus `performance.now()` in a
+capture-phase listener as input delay. The test fails as `not-measured` when fewer than half of the
+requested steps produce frame samples (5 at 10k, 30 at 60 steps). `longtask` uses `buffered: false`
+and is filtered to the drag window. It records p50, p95, maximum, input-delay p95 and the sample
+count. The report prints `n` beside every p95 because a nearest-rank p95 with fewer than five
+samples is the maximum.
 
 CPU profiles use CDP:
 

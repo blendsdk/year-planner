@@ -53,6 +53,8 @@ test.describe("RD-10-AC-04: quality visual matrix", () => {
     await expect(overflow).toContainText("+17");
     await overflow.click();
     await expect(page.locator('[data-yp-part="overflow-popover"]')).toBeVisible();
+    await expect(page.locator(".yp-overflow-entry")).toHaveCount(17);
+    await expect(page.locator(".yp-overflow-entry").first()).toBeVisible();
     await expect(page.locator(".yp-root")).toHaveScreenshot("quality-overflow-compact.png", {
       maxDiffPixelRatio: 0.02,
       animations: "disabled",
@@ -72,8 +74,23 @@ test.describe("RD-10-AC-04: quality visual matrix", () => {
   test("high-contrast theme @visual", async ({ page }) => {
     await page.getByTestId("year").selectOption("2027");
     await page.getByTestId("theme").selectOption("high-contrast");
-    await expect(page.locator(".yp-root")).toHaveClass(/yp-theme-high-contrast/);
-    await expect(page.locator(".yp-root")).toHaveScreenshot("quality-high-contrast.png", {
+    const root = page.locator(".yp-root");
+    await expect(root).toHaveClass(/yp-theme-high-contrast/);
+    const contrast = await root.evaluate((element) => {
+      const style = getComputedStyle(element);
+      const cell = element.querySelector('[role="gridcell"][data-date="2027-02-01"]');
+      const cellStyle = cell ? getComputedStyle(cell) : undefined;
+      return {
+        focusRing: style.getPropertyValue("--yp-focus-ring").trim(),
+        text: style.getPropertyValue("--yp-text-primary").trim(),
+        cellColor: cellStyle?.color ?? "",
+        cellBackground: cellStyle?.backgroundColor ?? "",
+      };
+    });
+    expect(contrast.focusRing).not.toBe("");
+    expect(contrast.text).not.toBe("");
+    expect(contrast.cellColor).not.toBe(contrast.cellBackground);
+    await expect(root).toHaveScreenshot("quality-high-contrast.png", {
       maxDiffPixelRatio: 0.02,
       animations: "disabled",
     });

@@ -82,11 +82,11 @@ changing them.
 - [x] 1.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-11 16:00)
 
 **Deliverables**:
-- [ ] Deterministic traceability checker with precise failure output
-- [ ] RD-01..RD-09 matrix and title IDs (RD-10 joins in Phase 7)
-- [ ] Both size measurements with the React 60 kB and total 65 kB guards
-- [ ] Public runtime export smoke and coverage floor test
-- [ ] All phase verification passing
+- [x] Deterministic traceability checker with precise failure output ✅ (completed: 2026-11-11 16:05)
+- [x] RD-01..RD-09 matrix and title IDs (RD-10 joins in Phase 7) ✅ (completed: 2026-11-11 16:05)
+- [x] Both size measurements with the React 60 kB and total 65 kB guards ✅ (completed: 2026-11-11 16:05)
+- [x] Public runtime export smoke and coverage floor test ✅ (completed: 2026-11-11 16:05)
+- [x] All phase verification passing ✅ (completed: 2026-11-11 16:05)
 
 **Verify**: `pnpm verify`
 
@@ -126,11 +126,11 @@ reviewed baselines.
 - [x] 2.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-11 17:50)
 
 **Deliverables**:
-- [ ] 12/14/18/24/36 visual baselines on three desktop engines
-- [ ] Compact/expanded overflow and high-contrast baselines
-- [ ] 12/14/18/24/36 and PRT-01 print evidence
-- [ ] Mobile Chromium and WebKit smoke projects
-- [ ] All phase verification passing
+- [x] 12/14/18/24/36 visual baselines on three desktop engines ✅ (completed: 2026-11-11 18:10)
+- [x] Compact/expanded overflow and high-contrast baselines ✅ (completed: 2026-11-11 18:10)
+- [x] 12/14/18/24/36 and PRT-01 print evidence ✅ (completed: 2026-11-11 18:10)
+- [x] Mobile Chromium and WebKit smoke projects ✅ (completed: 2026-11-11 18:10)
+- [x] All phase verification passing ✅ (completed: 2026-11-11 18:10)
 
 **Verify**: `pnpm verify`
 

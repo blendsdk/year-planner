@@ -47,7 +47,12 @@ export async function expectRowsInsidePages(page: import("@playwright/test").Pag
       const pageBox = pageNode.getBoundingClientRect();
       for (const row of Array.from(pageNode.querySelectorAll("[data-print-row-id]"))) {
         const box = row.getBoundingClientRect();
-        if (box.bottom > pageBox.bottom + 1 || box.top < pageBox.top - 1) {
+        if (
+          box.bottom > pageBox.bottom + 1 ||
+          box.top < pageBox.top - 1 ||
+          box.left < pageBox.left - 1 ||
+          box.right > pageBox.right + 1
+        ) {
           problems.push(`${row.getAttribute("data-print-row-id")} on page ${index + 1}`);
         }
       }

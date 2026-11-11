@@ -1,13 +1,5 @@
-import { execFileSync } from "node:child_process";
 import { expect, test } from "@playwright/test";
-
-/** Reads the page count and page size from a generated PDF with `pdfinfo`. */
-function readPdfInfo(path: string): { pages: number; pageSize: string } {
-  const output = execFileSync("pdfinfo", [path], { encoding: "utf8" });
-  const pages = Number(/^Pages:\s+(\d+)$/m.exec(output)?.[1] ?? "0");
-  const pageSize = /^Page size:\s+(.+)$/m.exec(output)?.[1]?.trim() ?? "";
-  return { pages, pageSize };
-}
+import { expectA3Pdf } from "./pdf.js";
 
 test.describe("M1 classic year grid", () => {
   test("renders the 2016 blue 14x37 grid @visual", async ({ page }) => {
@@ -44,9 +36,7 @@ test.describe("M1 classic year grid", () => {
       landscape: true,
       printBackground: true,
     });
-    const pdf = readPdfInfo("test-results/classic-2016-a3.pdf");
-    expect(pdf.pages).toBe(1);
-    expect(pdf.pageSize).toContain("1191.12 x 842.88 pts");
+    expectA3Pdf("test-results/classic-2016-a3.pdf", 1);
     await expect(page.locator(".yp-root")).toHaveScreenshot("classic-2016-print.png", {
       maxDiffPixelRatio: 0.02,
     });
@@ -114,9 +104,7 @@ test.describe("RD-06 items, inspector and print", () => {
       landscape: true,
       printBackground: true,
     });
-    const twoPages = readPdfInfo("test-results/rd06-24-months-a3.pdf");
-    expect(twoPages.pages).toBe(2);
-    expect(twoPages.pageSize).toContain("1191.12 x 842.88 pts");
+    expectA3Pdf("test-results/rd06-24-months-a3.pdf", 2);
 
     await page.emulateMedia({ media: "screen" });
     await page.locator("select").nth(2).selectOption("36");
@@ -128,9 +116,7 @@ test.describe("RD-06 items, inspector and print", () => {
       landscape: true,
       printBackground: true,
     });
-    const threePages = readPdfInfo("test-results/rd06-36-months-a3.pdf");
-    expect(threePages.pages).toBe(3);
-    expect(threePages.pageSize).toContain("1191.12 x 842.88 pts");
+    expectA3Pdf("test-results/rd06-36-months-a3.pdf", 3);
   });
 
   test("keeps zoomed geometry inside a scrollable viewport", async ({ page }) => {

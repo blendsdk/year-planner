@@ -21,3 +21,10 @@
 | RV-106 | 1 | MINOR | secret-scan | fixed |
 | RV-107 | 1 | MINOR | rd-02-tautology | fixed |
 | RV-108 | 1 | MINOR | hydration-cleanup | fixed |
+| RV-201 | 2 | MAJOR | print-per-page-proof | fixed |
+| RV-202 | 2 | MAJOR | print-gate-tag | fixed |
+| RV-203 | 2 | MINOR | print-load-flake | accepted |
+| RV-204 | 2 | MINOR | print-row-bounds | fixed |
+| RV-205 | 2 | MINOR | pdf-helper-reuse | fixed |
+| RV-206 | 2 | MINOR | visual-preconditions | fixed |
+| RV-207 | 2 | MINOR | plan-deliverables | fixed |

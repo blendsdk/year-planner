@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-11 18:32
-> **Progress**: 41/92 tasks (45%)
+> **Last Updated**: 2026-11-11 19:29
+> **Progress**: 54/92 tasks (59%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -184,10 +184,10 @@ reviewed baselines.
 **Reference**: [03-03](03-03-performance.md) · ST-29–ST-38 · AR-10–AR-13, AR-29
 **Objective**: Define every benchmark scenario and budget assertion before building the harness.
 
-- [ ] 4.1.1 [spec-author] Write the initial-render, drag, overflow and profile tests with `RD-10-AC-11` — `tests/perf/bench.spec.ts`
-- [ ] 4.1.2 [spec-author] Write the benchmark contract test for commands, scenarios and result fields — `tests/quality/bench-contract.spec.test.ts`
-- [ ] 4.1.3 Add the benchmark Playwright config, `test:perf` and `bench` scripts (test infrastructure) — `playwright.bench.config.ts`, `package.json`
-- [ ] 4.1.4 Run the new tests and record the red result — `pnpm test:perf && pnpm test:quality`
+- [x] 4.1.1 [spec-author] Write the initial-render, drag, overflow and profile tests with `RD-10-AC-11` — `tests/perf/bench.spec.ts` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.1.2 [spec-author] Write the benchmark contract test for commands, scenarios and result fields — `tests/quality/bench-contract.spec.test.ts` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.1.3 Add the benchmark Playwright config, `test:perf` and `bench` scripts (test infrastructure) — `playwright.bench.config.ts`, `package.json` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.1.4 Run the new tests and record the red result — `pnpm test:perf && pnpm test:quality` ✅ (completed: 2026-11-11 19:29)
 
 ### Step 4.2: Implementation
 
@@ -195,21 +195,21 @@ reviewed baselines.
 **Objective**: Build the deterministic fixture, Node layout harness, production/dev browser
 harness and baseline artifacts.
 
-- [ ] 4.2.1 Add the deterministic ESM benchmark data, its declaration and the demo route — `scripts/bench-data.mjs`, `scripts/bench-data.d.ts`, `apps/demo/src/bench-data.ts`, `apps/demo/src/BenchDemo.tsx`, `apps/demo/src/App.tsx`
-- [ ] 4.2.2 Add the Node layout/ribbon benchmark — `scripts/bench-layout.mjs`
-- [ ] 4.2.3 Add the production/dev orchestrator and wire the scripts — `scripts/bench.mjs`, `package.json`
-- [ ] 4.2.4 Run the baseline with `pnpm bench --out docs/benchmarks/rd10-baseline` and capture the CPU profiles — `docs/benchmarks/rd10-baseline.json`, `docs/benchmarks/rd10-baseline.md`
-- [ ] 4.2.5 Record the baseline commands, environment and values — `docs/test-report.md`
-- [ ] 4.3.1 Prove the harness runs every scenario and records `pass`/`miss` — `pnpm bench`
-- [ ] 4.3.2 Write the ST-38 determinism/validity spec and the impl edge cases — `tests/quality/bench-data.spec.test.ts`, `tests/quality/bench-data.impl.test.ts`
-- [ ] 4.3.3 Run the full benchmark suite and inspect the artifact — `pnpm bench`
-- [ ] 4.3.4 Verify the phase — `pnpm verify`
+- [x] 4.2.1 Add the deterministic ESM benchmark data, its declaration and the demo route — `scripts/bench-data.mjs`, `scripts/bench-data.d.ts`, `apps/demo/src/bench-data.ts`, `apps/demo/src/BenchDemo.tsx`, `apps/demo/src/App.tsx` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.2.2 Add the Node layout/ribbon benchmark — `scripts/bench-layout.mjs` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.2.3 Add the production/dev orchestrator and wire the scripts — `scripts/bench.mjs`, `package.json` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.2.4 Run the baseline with `pnpm bench --out docs/benchmarks/rd10-baseline` and capture the CPU profiles — `docs/benchmarks/rd10-baseline.json`, `docs/benchmarks/rd10-baseline.md` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.2.5 Record the baseline commands, environment and values — `docs/test-report.md` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.3.1 Prove the harness runs every scenario and records `pass`/`miss` — `pnpm bench` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.3.2 Write the ST-38 determinism/validity spec and the impl edge cases — `tests/quality/bench-data.spec.test.ts`, `tests/quality/bench-data.impl.test.ts` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.3.3 Run the full benchmark suite and inspect the artifact — `pnpm bench` ✅ (completed: 2026-11-11 19:29)
+- [x] 4.3.4 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-11 19:29)
 
 **Deliverables**:
-- [ ] One command produces layout, render, drag, overflow and profile evidence
-- [ ] Baseline JSON/Markdown checked in with named hardware/browser
-- [ ] Dev/production split for the 500-item drag
-- [ ] All phase verification passing
+- [x] One command produces layout, render, drag, overflow and profile evidence ✅ (completed: 2026-11-11 19:35)
+- [x] Baseline JSON/Markdown checked in with named hardware/browser ✅ (completed: 2026-11-11 19:35)
+- [x] Dev/production split for the 500-item drag ✅ (completed: 2026-11-11 19:35)
+- [x] All phase verification passing ✅ (completed: 2026-11-11 19:35)
 
 **Verify**: `pnpm verify`
 

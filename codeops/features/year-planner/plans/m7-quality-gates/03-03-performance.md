@@ -206,9 +206,12 @@ The benchmark summary extracts the top self-time functions into the Markdown rep
 `.cpuprofile` files are uploaded as CI artifacts and are not checked in. `--out` changes only the
 JSON/Markdown destination; profiles always stay under `test-results/bench/profiles`.
 
-`scripts/bench.mjs` exits non-zero when any result exceeds the 2× regression ceiling, defined as
-2× the corresponding RD budget (for example 500 ms for the 250 ms layout budget and 33.4 ms for the
-16.7 ms frame budget). A 1×–2× miss is recorded but does not fail. It accepts `--out <directory>`:
+`scripts/bench.mjs` is report-first: it records every result and exits non-zero only on a harness
+error. `pnpm bench --enforce` (or `PERF_STRICT=1`) fails when a result exceeds the 2× regression
+ceiling, defined as 2× the corresponding RD budget (for example 500 ms for the 250 ms layout budget
+and 33.4 ms for the 16.7 ms frame budget). A 1×–2× miss is recorded but does not fail. Report-first
+is required so the pre-optimization baseline can be captured honestly; the enforcing mode is the
+post-optimization and CI gate. It accepts `--out <base>`:
 
 - default `test-results/bench` for `verify:full` and CI, so a verification run never dirties the
   repository;
@@ -228,10 +231,11 @@ JSON/Markdown destination; profiles always stay under `test-results/bench/profil
 
 The harness marks each result `pass`, `miss` or `not-measured`. A `miss` is written to
 `docs/benchmarks/rd10-after.md` and `docs/test-report.md` with the actual value; it is never rounded
-down or hidden. `pnpm test:perf` measures every RD budget on the named reference host and fails only
-on a harness error or a **2×** regression-ceiling breach. `PERF_STRICT=1 pnpm test:perf` adds the
-issue #3 oracle (after p95 ≤0.9× baseline or ≤16.7 ms, three repeats, no long-task or input-delay
-regression) and is the Phase 5 red/green command. CI runs `pnpm bench` as an artifact job
+down or hidden. `pnpm test:perf` measures every RD budget on the named reference host and reports each value; in
+report mode it fails only on a harness error (missing samples or an invalid model).
+`PERF_STRICT=1 pnpm test:perf` enforces the **2×** regression ceiling and adds the issue #3 oracle
+(after p95 ≤0.9× baseline or ≤16.7 ms, three repeats, no long-task or input-delay regression); it is
+the Phase 5 red/green command. CI runs `pnpm bench` as an artifact job
 with the same ceiling. `pnpm test:perf` builds the packages and the demo first so it can run alone:
 
 ```bash

@@ -46,7 +46,7 @@
 | Visual matrix | 12/14/18/24/36, overflow, high contrast, print at 2% tolerance | AR-8 |
 | Print matrix | 12/14/18/24/36 plus PRT-01, `pdfinfo` page size | AR-9 |
 | Performance harness | Node layout + production Playwright browser run, one `pnpm bench` | AR-10, AR-11 |
-| Budget enforcement | Report RD budgets; CI hard-fails a 2× ceiling; `PERF_STRICT=1` asserts the issue #3 oracle | AR-13 |
+| Budget enforcement | Report-first `bench`; `--enforce`/`PERF_STRICT=1` gates the 2× ceiling and issue #3 oracle | AR-13, AR-30 |
 | Optimization | Memoize rows/cells/items, stabilize props, isolate previews | AR-14 |
 | Audit fix | Vitest and coverage 4.1.12; high/critical block; moderate dev-only accepted | AR-15, AR-16 |
 | License report | `pnpm licenses list --prod --json` plus checked-in notices | AR-17 |

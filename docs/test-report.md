@@ -53,7 +53,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | Storybook | **PASS** — static build succeeds; **171 stories across 12 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **63.36 kB gzip** including core, React, adapters and CSS; 65 kB budget (RD-09 accessibility cost) |
+| Bundle size | **React entry + CSS 40.55 kB gzip / 60 kB**; **total 63.36 kB gzip / 65 kB** (core, React, adapters and CSS) |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | **Green** — [run 43024770273](https://github.com/blendsdk/year-planner/actions/runs/43024770273), `verify` + `browsers` jobs |
 
@@ -185,6 +185,36 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 | Keyboard E2E | Arrow/Shift+Arrow/Space/Enter, one tab stop per composite, skip link, move-by-week, hidden-item fallback, no nested proxy controls |
 | Manual AT | **Parked by user decision 2026-11-11**; Orca attempt recorded; no NVDA/VoiceOver run; no WCAG conformance claim |
 
+## Performance baseline (RD-10, issue #3)
+
+> **Command**: `pnpm bench --out docs/benchmarks/rd10-baseline`
+> **Environment**: Intel Core i5-3470S (4 vCPU), 15 GB, Ubuntu 26.04, Node 24.21.0,
+> Chromium 1.65.0, production preview at 1600×1200.
+> **Status**: pre-optimization baseline. Values above the budget are recorded, not hidden.
+
+| Scenario | p50 | p95 | Budget | Status |
+|---|---:|---:|---:|---|
+| Layout 10,000 items, compact | 80.57 ms | 93.74 ms | 250 ms | pass |
+| Initial render 500 items | 503.40 ms | 654.10 ms | 150 ms | fail |
+| Initial render 2,000 items | 2,299.30 ms | 2,370.00 ms | 150 ms | fail |
+| Initial render 10,000 items | 44,496.30 ms | 45,715.40 ms | 150 ms | fail |
+| Initial render 12/14/18/24/36 months | 486–679 ms | 568–743 ms | 150 ms | fail |
+| Drag 500 items, compact | 16.70 ms | 33.40 ms | 16.7 ms | fail |
+| Drag 2,000 items, compact | 16.70 ms | 366.70 ms | 16.7 ms | fail |
+| Drag 10,000 items, compact (30 frames) | 16.70 ms | 8,499.70 ms | 16.7 ms | fail |
+| Drag 500 items, expanded | 16.70 ms | 50.00 ms | 16.7 ms | fail |
+| Drag 500 items, 36 months | 16.70 ms | 83.30 ms | 16.7 ms | fail |
+| Overflow open/close, 10,000 items | 100.30 ms | 119.40 ms | 100 ms | miss |
+| Issue #3 production drag, 500 items | — | 49.90 ms | 16.7 ms | fail |
+| Issue #3 development drag, 500 items | — | 366.70 ms | 16.7 ms | fail |
+
+The production 500-item drag is **49.9 ms p95**; the development drag is **366.7 ms p95**, a
+development-overhead factor of about 7×. CPU profiles are captured under
+`test-results/bench/profiles` (`issue-3-production`, `issue-3-dev`, `36-month-500`).
+
+`pnpm bench` is report-first so this baseline can be recorded honestly.
+`pnpm bench --enforce` and `PERF_STRICT=1 pnpm test:perf` gate the 2× ceiling after the optimization.
+
 ## Known gaps and honest limitations
 
 | Gap | Status |
@@ -198,7 +228,7 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 | Geometry via arbitrary `cssVars` | CSS variables change visually; use theme tokens or `units` for layout geometry |
 | Full axe audit | Automated axe matrix green in Chromium; no serious/critical violations |
 | Manual NVDA/VoiceOver audit | **Parked by user decision 2026-11-11** — low priority, not an R1 blocker, no Linux path; WCAG conformance is not claimed |
-| Performance benchmarks (500/2k/10k items) | Not run |
+| Performance benchmarks (500/2k/10k items) | Baseline recorded in `docs/benchmarks/rd10-baseline.md`; issue #3 optimization follows |
 | Mobile touch and RTL | Touch editing and marquee are implemented; RTL-specific pointer behavior is not |
 | SVG shape plane and `edge-path` connectors | Deferred; `edge-path` emits `INVALID_RENDERER_OPTION` |
 | Published packages | Not published; pre-alpha |

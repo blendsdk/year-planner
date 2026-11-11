@@ -1,0 +1,37 @@
+/**
+ * Performance budgets from the quality contract.
+ *
+ * A measured value below the budget is a pass. A value between the budget and
+ * the 2x ceiling is a recorded miss. A value above the ceiling is a harness
+ * failure that must stop the gate.
+ */
+export const BUDGETS = Object.freeze({
+  /** p95 layout and ribbon time for 10,000 compact items. */
+  layout10kP95Ms: 250,
+  /** p95 pointer frame time for a production drag. */
+  dragP95Ms: 16.7,
+  /** Time to open and close overflow with 10,000 compact items. */
+  overflowMs: 100,
+  /** p95 initial render for 12 to 36 month windows. */
+  initialRenderP95Ms: 150,
+  /** React package entry plus CSS, gzip. */
+  reactEntryCssKb: 60,
+  /** Core plus React plus adapters plus CSS, gzip. */
+  totalInstalledKb: 65,
+});
+
+/** The ceiling above which a result fails the harness. */
+export const CEILING_FACTOR = 2;
+
+/**
+ * Classifies one measurement.
+ *
+ * @param {number} value - Measured value.
+ * @param {number} budget - Budget for the scenario.
+ * @returns {"pass" | "miss" | "fail"}
+ */
+export function statusFor(value, budget) {
+  if (value <= budget) return "pass";
+  if (value <= budget * CEILING_FACTOR) return "miss";
+  return "fail";
+}

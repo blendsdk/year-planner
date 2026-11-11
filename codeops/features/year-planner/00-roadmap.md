@@ -27,3 +27,5 @@
 | RD-10 | Quality gates, performance, security and browsers | [RD-10](requirements/RD-10-quality-gates.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-09 |
 | RD-11 | Documentation, Storybook and API reference | [RD-11](requirements/RD-11-documentation.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-10 |
 | RD-12 | Release, versioning and maintenance | [RD-12](requirements/RD-12-release-maintenance.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-11 |
+
+> **Note**: RD-09 is Done for R1. The manual NVDA/VoiceOver evidence (AC10) is parked by user decision on 2026-11-11 as a low-priority release-gate item; no WCAG conformance claim is made.

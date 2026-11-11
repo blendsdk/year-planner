@@ -183,7 +183,7 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 | Media | Forced-colours borders/outlines, reduced-motion rules, print hides status/skip/live regions |
 | Automated axe | Eight states: blue, yellow, high-contrast, compact, expanded, overflow dialog, command error, AC3 Fluent/MUI and 36 months — all zero serious/critical |
 | Keyboard E2E | Arrow/Shift+Arrow/Space/Enter, one tab stop per composite, skip link, move-by-week, hidden-item fallback, no nested proxy controls |
-| Manual AT | Orca smoke attempt recorded; NVDA/VoiceOver still pending; no WCAG conformance claim |
+| Manual AT | **Parked by user decision 2026-11-11**; Orca attempt recorded; no NVDA/VoiceOver run; no WCAG conformance claim |
 
 ## Known gaps and honest limitations
 
@@ -197,7 +197,7 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 | Annotation editing | Rendered but host-owned in this slice (AR-31) |
 | Geometry via arbitrary `cssVars` | CSS variables change visually; use theme tokens or `units` for layout geometry |
 | Full axe audit | Automated axe matrix green in Chromium; no serious/critical violations |
-| Manual NVDA/VoiceOver audit | Not performed; Orca smoke attempt recorded; WCAG conformance is not claimed |
+| Manual NVDA/VoiceOver audit | **Parked by user decision 2026-11-11** — low priority, not an R1 blocker, no Linux path; WCAG conformance is not claimed |
 | Performance benchmarks (500/2k/10k items) | Not run |
 | Mobile touch and RTL | Touch editing and marquee are implemented; RTL-specific pointer behavior is not |
 | SVG shape plane and `edge-path` connectors | Deferred; `edge-path` emits `INVALID_RENDERER_OPTION` |

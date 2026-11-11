@@ -1,6 +1,6 @@
 # Ambiguity Register: Accessibility and Keyboard Experience
 
-> **Status**: ✅ GATE PASSED — all 22 items resolved
+> **Status**: ✅ GATE PASSED — 21 resolved, 1 named deferral (AR-12)
 > **Last Updated**: 2026-11-11 10:57
 > **Policy**: `--auto-design` active — eligible technical decisions delegated; reserved decisions escalated
 
@@ -17,7 +17,7 @@
 | AR-9 | Behavioral | How many overflow buttons are in the tab order | One per row / one per component using the active row / none | **One per component.** Only the overflow button in the active month row has `tabindex=0`; the rest are `-1` and become reachable when the roving date focus enters their row. | ✅ Resolved |
 | AR-10 | Behavioral | Focus behaviour when the first date is disabled or the active date becomes invalid | Keep no cell in the tab order / fall back to the nearest enabled date | **Fallback to the nearest enabled date.** Exactly one date cell remains in the tab order and its announcement explains the move. | ✅ Resolved |
 | AR-11 | UX & presentation | Non-colour distinction for selected, holiday and overflow states | Colour plus ARIA only / add shape and text cues | **Add cues:** selected proxies use outline, weight and underline; selected cells use inset outline and heavy day number; holidays use a dotted underline and the word “holiday” in the label; overflow already exposes `+N` text. | ✅ Resolved |
-| AR-12 | Non-functional gaps | Manual screen-reader evidence cannot be produced for NVDA or VoiceOver on this Linux host | Claim AA / omit the claim / record an Orca smoke check and a manual NVDA/VoiceOver protocol | **Record an Orca smoke check where the host supports it, document the NVDA/VoiceOver protocol, and publish no conformance claim.** AC10 stays an explicit release-gate evidence item for the user’s AT environment. | ✅ Resolved |
+| AR-12 | Non-functional gaps | Manual screen-reader evidence cannot be produced for NVDA or VoiceOver on this Linux host | Claim AA / omit the claim / record an Orca smoke check and a manual NVDA/VoiceOver protocol | **Park the manual NVDA/VoiceOver audit by user decision (2026-11-11).** Low priority; it is not an R1 blocker on this Linux host. The Orca attempt and the protocol stay recorded. Revisit when a Windows or macOS AT host is available and before any WCAG conformance statement. | ⏸ Deferred |
 | AR-13 | Integration points | How a command error is associated with the affected item or date | Global live region only / `aria-describedby` on the item proxy / both | **Both.** Feedback keeps a stable id and item proxies reference it when the failed command targets them; paint failures keep their date range in the feedback text. | ✅ Resolved |
 | AR-14 | UX & presentation | Optional Home/End and PageUp/PageDown navigation | Implement all / Home+End only / none | **Home and End** move to the first and last enabled date of the focused month row. PageUp/PageDown stay optional and unimplemented; arrow keys already cover week movement. | ✅ Resolved |
 | AR-15 | Technical unknowns | Whether new public props are needed for region labelling | New `regionLabel` prop / reuse `ariaLabel` and `ariaDescribedBy` | **Reuse the existing props.** The root becomes a labelled `region`; the grid keeps its label and gains a generated hidden keyboard-help description. | ✅ Resolved |

@@ -32,4 +32,4 @@
 - React: 474 tests across 42 files.
 - Accessibility Playwright: 16 tests, including eight axe states, focus ring, forced colours, keyboard, skip link, hidden item and nested-control scan.
 - `pnpm verify:full`: green after the review fixes — 207 core, 474 React, 108 Playwright passed, 25 skipped, clean consumer PASS.
-- Manual NVDA/VoiceOver evidence: still open (AR-12); no conformance claim.
+- Manual NVDA/VoiceOver evidence: **parked by user decision 2026-11-11** (AR-12); release gate only, no conformance claim.

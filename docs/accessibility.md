@@ -1,7 +1,7 @@
 # Accessibility Guide
 
 > **Scope**: RD-09 — semantics, focus, keyboard, announcements, contrast and evidence
-> **Status**: Implemented; automated evidence green; manual NVDA/VoiceOver audit pending
+> **Status**: Implemented; automated evidence green; manual NVDA/VoiceOver audit parked
 > **Conformance claim**: none. A WCAG 2.2 AA statement is published only after the manual audit.
 
 ## What is covered
@@ -132,11 +132,13 @@ version and date in [test-report.md](test-report.md).
 
 ### Current evidence status
 
-- Orca 50.2 and `xvfb-run` are present on the Linux development host. Orca attached to Chrome’s
-  AT-SPI tree, but the smoke run reached Chrome’s first-run UI instead of the planner and produced no
-  planner speech output. It is **not** recorded as manual evidence.
-- NVDA and VoiceOver were not available. No conformance statement is published.
-- This gap is owned by the release process before any public AA claim.
+- **Parked by user decision on 2026-11-11.** The manual NVDA/VoiceOver audit is low priority and is
+  not an R1 blocker. This Linux workspace cannot run either named screen reader.
+- Orca 50.2 and `xvfb-run` are present. Orca attached to Chrome’s AT-SPI tree, but the smoke run
+  reached Chrome’s first-run UI instead of the planner and produced no planner speech output. It is
+  **not** recorded as manual evidence.
+- Revisit when a Windows or macOS host with NVDA or VoiceOver is available, and before any WCAG
+  conformance statement. No conformance statement is published today.
 
 ## Known limitations
 

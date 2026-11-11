@@ -171,7 +171,9 @@ Semantics/focus: **L**. Announcements: **M**. Manual audit: **M**.
    classic themes.
 9. [ ] Selected, holiday and overflow states are distinguishable without color.
 10. [ ] Manual screen-reader evidence is recorded for at least one of NVDA or
-    VoiceOver before any conformance statement is published.
+    VoiceOver before any conformance statement is published. **Parked by user
+    decision on 2026-11-11**: low priority, not an R1 blocker, no Linux path;
+    revisit before any conformance statement.
 11. [ ] The inspector is reachable from the item list, lists selected item
     details and overflow items, and returns focus to the grid on close.
 12. [ ] A hidden item is absent from the inspector, overflow list and visible

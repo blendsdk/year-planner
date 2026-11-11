@@ -19,9 +19,10 @@
 
 ### Deferred / out of this plan
 
-- RD-09 acceptance criterion 10: a recorded NVDA or VoiceOver session. It needs a Windows or macOS
-  host with the named AT. The plan records an Orca smoke check where the Linux host supports it,
-  documents the NVDA/VoiceOver protocol, and publishes no conformance claim.
+- RD-09 acceptance criterion 10: a recorded NVDA or VoiceOver session. **Parked by user decision on
+  2026-11-11.** It needs a Windows or macOS host with the named AT, which this Linux workspace does
+  not have. It is low priority and not an R1 blocker. Revisit before any WCAG conformance statement.
+  The Orca attempt and the manual protocol stay recorded; no conformance claim is published.
 - PageUp/PageDown navigation: optional in RD-09; arrow keys already move by week.
 - Full WCAG 2.2 AA certification: explicitly “Won’t Have” before a manual audit.
 - RTL accessibility, voice control and switch-access gestures: out of RD-09 scope.
@@ -42,7 +43,7 @@
 | Overflow tab order | One per component, active row only | AR-9 |
 | Invalid active date | Nearest enabled date fallback | AR-10 |
 | Non-colour cues | Outline, weight, underline, dotted holiday marker, `+N` | AR-11 |
-| Manual AT evidence | Orca smoke check + NVDA/VoiceOver protocol; no conformance claim | AR-12 |
+| Manual AT evidence | Parked release-gate item; Orca attempt + NVDA/VoiceOver protocol recorded; no conformance claim | AR-12 |
 | Error association | Feedback id + proxy `aria-describedby` | AR-13 |
 | Home/End | Implement row bounds; PageUp/PageDown optional and omitted | AR-14 |
 | Region labelling | Reuse `ariaLabel`/`ariaDescribedBy`; generated help text | AR-15 |
@@ -71,7 +72,8 @@
 8. Text, focus indicators and meaningful borders meet 4.5:1 / 3:1 targets in the built-in themes.
 9. Selected, holiday and overflow states are distinguishable without colour.
 10. Manual screen-reader evidence is recorded for at least one of NVDA or VoiceOver before any
-    conformance statement is published. _Not reachable on this host; see Deferred._
+    conformance statement is published. _Parked by user decision 2026-11-11; release gate only, no
+    R1 blocker, not reachable on this Linux host._
 11. The inspector is reachable from the item list, lists selected item details and overflow items,
     and returns focus to the grid on close.
 12. A hidden item is absent from the inspector, item list, overflow list and visible item count;

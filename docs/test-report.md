@@ -54,7 +54,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
 | Bundle size | **58.74 kB gzip** including core, React, adapters and CSS; 60 kB budget |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
-| CI | **Green** — [CI workflow](https://github.com/blendsdk/year-planner/actions/workflows/ci.yml), `verify` + `browsers` jobs |
+| CI | **Green** — [run 42949107179](https://github.com/blendsdk/year-planner/actions/runs/42949107179), `verify` + `browsers` jobs |
 
 The coverage thresholds are enforced by Vitest: core 95% and React 80% for
 lines, branches, functions and statements.

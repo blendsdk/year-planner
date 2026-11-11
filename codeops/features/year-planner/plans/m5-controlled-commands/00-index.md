@@ -1,7 +1,7 @@
 # Controlled Commands Implementation Plan
 
 > **Feature**: Controlled command lifecycle for the year planner: request identity, per-item versions, local and host validation, explicit pending state, accepted/rejected/timeout/abort handling, accepted-but-not-applied detection, rollback of preview/focus and identical uncontrolled behavior.
-> **Status**: Planning Complete
+> **Status**: Execution Complete
 > **Created**: 2026-11-11 01:36
 > **Implements**: year-planner/RD-08
 > **CodeOps Artifact Schema**: 1
@@ -58,6 +58,7 @@ packages and the established demo/Storybook/Playwright surfaces.
 | 03-03 | [Rollback and Pending UI](03-03-rollback-pending-ui.md) | Pending previews, focus restoration, notices, announcements |
 | 03-04 | [Integration and Documentation](03-04-integration-docs.md) | Demo host, Storybook, E2E, docs and release evidence |
 | 07  | [Testing Strategy](07-testing-strategy.md) | Specification test cases and verification |
+| 05  | [Findings](05-findings.md) | Post-execution review findings and rulings |
 | 99  | [Execution Plan](99-execution-plan.md) | Phases, sessions and task checklist |
 
 ## Quick Reference

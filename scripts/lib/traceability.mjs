@@ -140,8 +140,9 @@ export function parseTitleIds(source) {
       ) {
         const call = readTestCall(source, index);
         if (call) {
+          const isSuite = word === "describe" || call.suite;
           if (!call.skipped) collectIds(call.title, ids);
-          index = call.skipped && word === "describe" ? call.bodyEnd : call.end;
+          index = call.skipped && isSuite ? call.bodyEnd : call.end;
           continue;
         }
       }
@@ -237,13 +238,15 @@ function skipBalanced(source, start) {
 function readTestCall(source, start) {
   let index = start;
   let skipped = false;
+  let suite = false;
   while (true) {
     index = skipWhitespace(source, index);
     if (source[index] !== ".") break;
     index += 1;
     const modifier = readIdentifier(source, index);
     index += modifier.length;
-    if (modifier === "skip" || modifier === "todo") skipped = true;
+    if (modifier === "describe") suite = true;
+    if (modifier === "skip" || modifier === "todo" || modifier === "fixme") skipped = true;
     if (modifier === "each") {
       index = skipWhitespace(source, index);
       if (source[index] === "(") index = skipBalanced(source, index);
@@ -255,10 +258,10 @@ function readTestCall(source, start) {
   index = skipWhitespace(source, index + 1);
   const quote = source[index];
   if (quote !== '"' && quote !== "'" && quote !== "`") {
-    return skipped ? { skipped, title: "", end: bodyEnd, bodyEnd } : undefined;
+    return skipped ? { skipped, suite, title: "", end: bodyEnd, bodyEnd } : undefined;
   }
   const title = readString(source, index);
-  return { skipped, title: title.value, end: title.end, bodyEnd };
+  return { skipped, suite, title: title.value, end: title.end, bodyEnd };
 }
 
 /** Adds a title's IDs, expanding slash-separated acceptance numbers. */

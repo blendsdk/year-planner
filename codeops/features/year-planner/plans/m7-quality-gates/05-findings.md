@@ -13,3 +13,11 @@
 | RV-006 | 1 | MAJOR | rd-06-hydration | fixed |
 | RV-007 | 1 | MAJOR | security-traceability | fixed |
 | RV-008 | 1 | MINOR | traceability-parser | fixed |
+| RV-101 | 1 | MAJOR | playwright-skip-parser | fixed |
+| RV-102 | 1 | MAJOR | rd-03-traceability | fixed |
+| RV-103 | 1 | MINOR | rd-06-traceability | fixed |
+| RV-104 | 1 | MINOR | rd-06-ssr-evidence | fixed |
+| RV-105 | 1 | MINOR | parser-regressions | fixed |
+| RV-106 | 1 | MINOR | secret-scan | fixed |
+| RV-107 | 1 | MINOR | rd-02-tautology | fixed |
+| RV-108 | 1 | MINOR | hydration-cleanup | fixed |

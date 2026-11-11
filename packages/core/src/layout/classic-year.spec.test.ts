@@ -53,7 +53,7 @@ describe("RD-03-AC-03/04/05: date-to-column mapping", () => {
   });
 });
 
-describe("RD-03-AC-07/08/09/10/14: dynamic windows", () => {
+describe("RD-03-AC-07/08/09/10/14/15: dynamic windows and input safety", () => {
   it("builds 12, 18, 24 and 36 month windows", () => {
     for (const monthCount of [12, 18, 24, 36]) {
       const result = buildClassicYearLayout({
@@ -92,6 +92,12 @@ describe("RD-03-AC-07/08/09/10/14: dynamic windows", () => {
     expect(
       buildClassicYearLayout({ range: { start: { year: 1600, month: 0 }, monthCount: 12 } }),
     ).toMatchObject({ ok: false, diagnostics: [{ code: "UNSUPPORTED_VIEW_YEAR" }] });
+    expect(
+      buildClassicYearLayout({ range: { start: { year: 2027, month: 12 }, monthCount: 12 } }),
+    ).toMatchObject({ ok: false, diagnostics: [{ code: "INVALID_MONTH" }] });
+    expect(
+      buildClassicYearLayout({ range: { start: { year: 2027, month: 1.5 }, monthCount: 12 } }),
+    ).toMatchObject({ ok: false, diagnostics: [{ code: "INVALID_MONTH" }] });
   });
 
   it("defaults the year preset tint to the requested year", () => {

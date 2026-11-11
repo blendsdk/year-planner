@@ -97,13 +97,13 @@
 | RD-03-AC-06 | RD-03 | 6 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-03-AC-06 / RD-06-AC-07: isolates two instances and renders ISO weeks with dir=ltr` | React render test |
 | RD-03-AC-07 | RD-03 | 7 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08: exact dynamic windows` | Core layout test |
 | RD-03-AC-08 | RD-03 | 8 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08: exact dynamic windows` | Core layout test |
-| RD-03-AC-09 | RD-03 | 9 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14: dynamic windows` | Core layout test |
-| RD-03-AC-10 | RD-03 | 10 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14: dynamic windows` | Core layout test |
-| RD-03-AC-14 | RD-03 | 14 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14: dynamic windows` | Core layout test |
+| RD-03-AC-09 | RD-03 | 9 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14/15: dynamic windows and input safety` | Core layout test |
+| RD-03-AC-10 | RD-03 | 10 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14/15: dynamic windows and input safety` | Core layout test |
+| RD-03-AC-14 | RD-03 | 14 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14/15: dynamic windows and input safety` | Core layout test |
 | RD-03-AC-11 | RD-03 | 11 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-11/15: blank slots and input safety` | Core layout test |
 | RD-03-AC-12 | RD-03 | 12 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-12: weekend geometry` | Core layout test |
 | RD-03-AC-13 | RD-03 | 13 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-13: deterministic layout` | Core layout test |
-| RD-03-AC-15 | RD-03 | 15 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-11/15: blank slots and input safety` | Core blank-slot and input test; source scan adds no-HTML evidence |
+| RD-03-AC-15 | RD-03 | 15 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-07/08/09/10/14/15: dynamic windows and input safety` | Core input-rejection test; source scan adds no-HTML evidence |
 | RD-04-AC-01 | RD-04 | 1 | proven | `packages/core/src/model/visibility.spec.test.ts` | `RD-04-AC-01/02/03: visibility precedence` | Core visibility test |
 | RD-04-AC-02 | RD-04 | 2 | proven | `packages/core/src/model/visibility.spec.test.ts` | `RD-04-AC-01/02/03: visibility precedence` | Core visibility test |
 | RD-04-AC-03 | RD-04 | 3 | proven | `packages/core/src/model/visibility.spec.test.ts` | `RD-04-AC-01/02/03: visibility precedence` | Core visibility test |
@@ -146,7 +146,7 @@
 | RD-06-AC-07 | RD-06 | 7 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-03-AC-06 / RD-06-AC-07: isolates two instances and renders ISO weeks with dir=ltr` | React component test |
 | RD-06-AC-08 | RD-06 | 8 | proven | `packages/react/src/items.spec.test.tsx` | `RD-06-AC-08/09: keeps cell and proxy surfaces when render slots add content` | React item test |
 | RD-06-AC-09 | RD-06 | 9 | proven | `packages/react/src/items.spec.test.tsx` | `RD-06-AC-08/09: keeps cell and proxy surfaces when render slots add content` | React item test |
-| RD-06-AC-10 | RD-06 | 10 | proven | `packages/react/src/YearPlanner.hydration.spec.test.tsx` | `RD-06-AC-10: hydration` | Hydration test |
+| RD-06-AC-10 | RD-06 | 10 | proven | `packages/react/src/YearPlanner.hydration.spec.test.tsx` | `RD-06-AC-10: hydration` | Hydration test; node-environment SSR is also proven in packages/react/src/YearPlanner.ssr.spec.test.tsx |
 | RD-06-AC-11 | RD-06 | 11 | proven | `tests/e2e/classic-year.spec.ts` | `RD-06-AC-11: renders under the documented CSP attribute allowance` | Playwright CSP test |
 | RD-06-AC-12 | RD-06 | 12 | proven | `packages/react/src/print.spec.test.tsx` | `RD-06-AC-12: renders labels, weekends, ISO weeks and fragments in print` | Print test |
 | RD-06-AC-13 | RD-06 | 13 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-13: maps pointer coordinates to dates and fragments at every zoom` | React component test |

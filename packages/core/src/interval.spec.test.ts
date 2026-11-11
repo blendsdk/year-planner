@@ -118,9 +118,10 @@ describe("RD-02-AC-05/06: period intersections across boundaries", () => {
     expect(intersect(source, interval("2026-12-01", "2027-01-01"))).toEqual(
       interval("2026-12-28", "2027-01-01"),
     );
-    expect(intersect(source, interval("2027-01-01", "2027-02-01"))).toEqual(
-      interval("2027-01-01", "2027-01-04"),
-    );
-    expect(source).toEqual(interval("2026-12-28", "2027-01-04"));
+    const december = intersect(source, interval("2026-12-01", "2027-01-01"));
+    const january = intersect(source, interval("2027-01-01", "2027-02-01"));
+    expect(january).toEqual(interval("2027-01-01", "2027-01-04"));
+    if (!december || !january) throw new Error("expected both fragments");
+    expect(mergeAdjacent([december, january], true)).toEqual([source]);
   });
 });

@@ -160,3 +160,64 @@ describe("checkTraceability edge cases", () => {
     expect(result.missingTitle).toEqual(["RD-01-AC-02"]);
   });
 });
+
+describe("parser and row-validation regressions", () => {
+  it("ignores a fake test call inside a string literal", () => {
+    const ids = parseTitleIds("const sample = 'it(\"RD-01-AC-01: fake\", () => {})';");
+    expect([...ids]).toEqual([]);
+  });
+
+  it("reads it.each and test.each titles", () => {
+    expect([...parseTitleIds('it.each([[1]])("RD-01-AC-01: each", () => {});')]).toEqual([
+      "RD-01-AC-01",
+    ]);
+    expect([...parseTitleIds('test.each([1])("RD-01-AC-02: each", () => {});')]).toEqual([
+      "RD-01-AC-02",
+    ]);
+  });
+
+  it("ignores nested tests inside skipped suites", () => {
+    expect([
+      ...parseTitleIds('describe.skip("RD-01-AC-01", () => { it("RD-01-AC-02", () => {}); });'),
+    ]).toEqual([]);
+    expect([
+      ...parseTitleIds(
+        'test.describe.skip("RD-01-AC-03", () => { test("RD-01-AC-04", () => {}); });',
+      ),
+    ]).toEqual([]);
+    expect([...parseTitleIds('test.fixme("RD-01-AC-05", () => {});')]).toEqual([]);
+  });
+
+  it("rejects a declared proving title that does not contain the row ID", () => {
+    const result = checkTraceability("/repo", {
+      through: 1,
+      fixture: {
+        rds: { "RD-01-foundation.md": "## Acceptance Criteria\n\n1. [ ] first\n2. [ ] second\n" },
+        matrix: matrix([
+          `| RD-01-AC-01 | RD-01 | 1 | proven | \`${sample}\` | RD-01-AC-02 | e |`,
+          `| RD-01-AC-02 | RD-01 | 2 | proven | \`${sample}\` | RD-01-AC-02 | e |`,
+        ]),
+        tests: { [sample]: 'describe("RD-01-AC-01/02: group", () => {});' },
+      },
+    });
+    expect(result.ok).toBe(false);
+    expect(result.errors.join(" ")).toContain("declares a proving title without that ID");
+  });
+
+  it("rejects a proven row without evidence", () => {
+    const result = checkTraceability("/repo", {
+      through: 1,
+      fixture: {
+        ...fixture(
+          matrix([
+            `| RD-01-AC-01 | RD-01 | 1 | proven | \`${sample}\` | RD-01-AC-01 |  |`,
+            `| RD-01-AC-02 | RD-01 | 2 | proven | \`${sample}\` | RD-01-AC-02 | e |`,
+          ]),
+        ),
+        tests: { [sample]: 'describe("RD-01-AC-01/02: group", () => {});' },
+      },
+    });
+    expect(result.ok).toBe(false);
+    expect(result.errors.join(" ")).toContain("has no evidence note");
+  });
+});

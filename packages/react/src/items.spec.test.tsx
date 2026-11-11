@@ -497,7 +497,9 @@ describe("RD-06 cells and slots", () => {
               color: "#123456",
             } as never,
           }),
+          item("secret", "ribbon", "2027-02-01", "2027-02-03"),
         ]}
+        visibility={{ hiddenGroupIds: [], hiddenLayerIds: [], hiddenItemIds: ["secret"] }}
       />,
     );
     const fragment = container.querySelector('[data-item-id="safe"]') as HTMLElement;
@@ -505,6 +507,8 @@ describe("RD-06 cells and slots", () => {
     expect(fragment.innerHTML).not.toContain("<img");
     expect(fragment.style.backgroundImage).not.toContain("url");
     expect(fragment.style.color).toBe("rgb(18, 52, 86)");
+    expect(container.innerHTML).not.toContain("secret");
+    expect(container.innerHTML).not.toContain("https://attacker.example/pixel");
   });
 
   it("keeps proxies and focus in unstyled mode", () => {

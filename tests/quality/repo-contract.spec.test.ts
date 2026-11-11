@@ -34,6 +34,7 @@ const SKIPPED_DIRECTORIES = new Set([
   "playwright-report",
   "storybook-static",
   ".vite-temp",
+  "api",
 ]);
 
 /**
@@ -49,7 +50,6 @@ function repositorySources(root: URL, relative = ""): string[] {
       found.push(...repositorySources(root, relative ? `${relative}/${entry.name}` : entry.name));
       continue;
     }
-    if (!/\.(ts|tsx|js|mjs|cjs|json|ya?ml|sh|md)$/.test(entry.name)) continue;
     found.push(join(directory.pathname, entry.name));
   }
   return found;
@@ -168,15 +168,24 @@ describe("RD-01-AC-10: no committed secrets", () => {
     const secrets = [
       /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
       /\bghp_[A-Za-z0-9]{20,}/,
+      /\bgho_[A-Za-z0-9]{20,}/,
+      /\bghu_[A-Za-z0-9]{20,}/,
+      /\bghs_[A-Za-z0-9]{20,}/,
+      /\bghr_[A-Za-z0-9]{20,}/,
       /\bgithub_pat_[A-Za-z0-9_]{20,}/,
       /\bglpat-[A-Za-z0-9_-]{20,}/,
       /\bnpm_[A-Za-z0-9]{30,}/,
+      /\bsk_live_[A-Za-z0-9]{16,}/,
+      /\bxox[baprs]-[A-Za-z0-9-]{10,}/,
       /\bAKIA[0-9A-Z]{16}\b/,
     ];
     const files = repositorySources(new URL("../../", import.meta.url));
     expect(files.length).toBeGreaterThan(80);
     for (const path of files) {
-      const source = readFileSync(path, "utf8");
+      const bytes = readFileSync(path);
+      if (bytes.byteLength > 512 * 1024) continue;
+      if (bytes.subarray(0, 1024).includes(0)) continue;
+      const source = bytes.toString("utf8");
       for (const pattern of secrets) {
         expect(source, path).not.toMatch(pattern);
       }

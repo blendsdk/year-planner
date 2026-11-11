@@ -28,7 +28,6 @@ it("hydrates when the client locale differs from the server default", async () =
   container.innerHTML = html;
   document.body.appendChild(container);
   const serverText = container.textContent;
-  const original = Object.getOwnPropertyDescriptor(window.navigator, "language");
   Object.defineProperty(window.navigator, "language", { configurable: true, value: "de-DE" });
   const errors = vi.spyOn(console, "error").mockImplementation(() => {});
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -42,7 +41,7 @@ it("hydrates when the client locale differs from the server default", async () =
     // the server text even though the client reports de-DE.
     expect(container.textContent).toBe(serverText);
   } finally {
-    if (original) Object.defineProperty(window.navigator, "language", original);
+    Reflect.deleteProperty(window.navigator, "language");
     errors.mockRestore();
     container.remove();
   }

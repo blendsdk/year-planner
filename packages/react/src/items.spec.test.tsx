@@ -72,8 +72,23 @@ describe("RD-06 fragment rendering", () => {
       return parent as HTMLElement;
     };
     expect(wrapper("a").style.top).toBe("18px");
-    expect(wrapper("b").style.top).toBe("36px");
-    expect(wrapper("c").style.top).toBe("54px");
+    expect(wrapper("b").style.top).toBe("42px");
+    expect(wrapper("c").style.top).toBe("66px");
+  });
+
+  it("omits resize handles when a fragment is too short for a safe centre drag zone", () => {
+    const { container } = render(
+      <YearPlanner
+        year={2027}
+        layers={[layer("ribbon")]}
+        items={[item("one", "ribbon", "2027-02-01", "2027-02-02")]}
+      />,
+    );
+    const fragment = container.querySelector(
+      '[data-yp-part="item-fragment"][data-item-id="one"]',
+    ) as HTMLElement;
+    expect(fragment.querySelector('[data-yp-part="resize-start"]')).toBeNull();
+    expect(fragment.querySelector('[data-yp-part="resize-end"]')).toBeNull();
   });
 
   it("uses exact one-day width and lane height", () => {
@@ -88,7 +103,7 @@ describe("RD-06 fragment rendering", () => {
       '[data-yp-part="item-fragment"][data-item-id="one"]',
     ) as HTMLElement;
     expect(fragment.style.width).toBe("55px");
-    expect(fragment.style.height).toBe("18px");
+    expect(fragment.style.height).toBe("24px");
   });
 
   it("renders the layer color and item class when no item color is supplied", () => {
@@ -442,7 +457,7 @@ describe("RD-06 cells and slots", () => {
       '[data-yp-part="item-fragment"][data-item-id="colored"]',
     ) as HTMLElement;
     expect(fragment.style.background).toBe("rgb(29, 78, 137)");
-    expect(fragment.style.color).toBe("");
+    expect(fragment.style.color).toBe("rgb(255, 255, 255)");
     expect(fragment.getAttribute("style")).not.toContain("attacker");
     const cell = container.querySelector('[data-date="2027-02-01"]') as HTMLElement;
     expect(cell.getAttribute("style") ?? "").not.toContain("attacker");

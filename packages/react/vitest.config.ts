@@ -13,6 +13,9 @@ export default defineConfig({
     environment: "jsdom",
     include: ["src/**/*.spec.test.tsx", "src/**/*.impl.test.tsx"],
     testTimeout: 15000,
+    // Two workers keep the timer-sensitive command tests deterministic on the
+    // reference 4-core host; the full suite otherwise starves short deadlines.
+    maxWorkers: 2,
     setupFiles: ["src/test-setup.ts"],
     coverage: {
       provider: "v8",

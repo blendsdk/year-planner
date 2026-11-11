@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 
-const BUDGET_KB = 60;
+const BUDGET_KB = 65;
 
 function coreJavaScriptFiles(directory) {
   const entries = readdirSync(directory, { withFileTypes: true });

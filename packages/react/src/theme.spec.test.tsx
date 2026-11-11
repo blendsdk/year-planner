@@ -18,7 +18,7 @@ const PRESETS: YearPlannerThemeName[] = [
 
 const GEOMETRY = {
   rowHeight: 90,
-  laneHeight: 18,
+  laneHeight: 24,
   monthBandWidth: 70,
   weekendWidth: 40,
   weekdayWidth: 55,

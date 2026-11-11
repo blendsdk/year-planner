@@ -1,5 +1,6 @@
 import { type DateKey, isoWeekOf, type MonthRowLayout } from "@blendsdk/year-planner-core";
-import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
+import { type CSSProperties, type KeyboardEvent, type ReactNode, useId } from "react";
+import { dateCellAccessibleName } from "../a11y.js";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor, safeMetaStyle } from "../safeStyle.js";
 import type {
@@ -15,6 +16,7 @@ export interface CellLayerProps {
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
   formatters: PlannerFormatters;
   activeDate: DateKey | undefined;
+  selectedDates: ReadonlySet<DateKey>;
   showISOWeekNumbers: boolean;
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
   renderCell?: ((context: CellRenderContext) => ReactNode) | undefined;
@@ -41,6 +43,7 @@ export function CellLayer({
   itemsByDate,
   formatters,
   activeDate,
+  selectedDates,
   showISOWeekNumbers,
   getDateMeta,
   renderCell,
@@ -50,6 +53,7 @@ export function CellLayer({
   onSelectDate,
 }: CellLayerProps): ReactNode {
   const DayCell = components.DayCell;
+  const idPrefix = useId();
   return row.columns.map((column) => {
     const date = column.date;
     const itemIds = date ? (itemsByDate.get(date) ?? []) : [];
@@ -67,11 +71,37 @@ export function CellLayer({
         showISOWeekNumbers &&
         (Number(date.slice(8, 10)) === 1 || column.columnIndex % 7 === 2),
     );
+    const weekNumber = showWeek && date ? isoWeekOf(date).week : undefined;
+    const selected = Boolean(date && selectedDates.has(date));
+    const labelId = `${idPrefix}-${column.columnIndex}-label`;
+    const contentId = `${idPrefix}-${column.columnIndex}-content`;
+    const label = date
+      ? dateCellAccessibleName({
+          date,
+          formattedDate: formatters.formatDate(date),
+          itemCount: itemIds.length,
+          weekNumber,
+          meta,
+          selected,
+        })
+      : undefined;
     const content = date ? (
       <>
-        <span className="yp-day-number">{formatters.formatNumber(day as number)}</span>
-        {showWeek && <span className="yp-week-number">{isoWeekOf(date).week}</span>}
-        {meta?.label && <span className="yp-cell-label">{meta.label}</span>}
+        <span className="yp-day-number" aria-hidden={meta?.ariaLabel ? "true" : undefined}>
+          {formatters.formatNumber(day as number)}
+        </span>{" "}
+        {weekNumber !== undefined && (
+          <>
+            <span className="yp-week-number" aria-hidden={meta?.ariaLabel ? "true" : undefined}>
+              {weekNumber}
+            </span>{" "}
+          </>
+        )}
+        {meta?.label && (
+          <span className="yp-cell-label" aria-hidden={meta?.ariaLabel ? "true" : undefined}>
+            {meta.label}
+          </span>
+        )}
         {meta?.content}
         {renderCell?.({
           date,
@@ -110,7 +140,9 @@ export function CellLayer({
         data-date={date}
         data-yp-part="day-cell"
         data-yp-holiday={meta?.holiday ? "true" : undefined}
-        aria-label={date ? (meta?.ariaLabel ?? formatters.formatDate(date)) : undefined}
+        aria-label={meta?.ariaLabel ? label : undefined}
+        aria-labelledby={date && !meta?.ariaLabel ? `${labelId} ${contentId}` : undefined}
+        aria-selected={date ? (selected ? "true" : "false") : undefined}
         aria-disabled={disabled ? "true" : undefined}
         aria-hidden={date ? undefined : true}
         tabIndex={date ? (disabled ? -1 : date === activeDate ? 0 : -1) : undefined}
@@ -122,13 +154,20 @@ export function CellLayer({
           onCellKeyDown(date, event);
         }}
       >
-        {DayCell ? (
-          <DayCell className="yp-day-cell-slot" style={style ?? {}}>
-            {content}
-          </DayCell>
-        ) : (
-          content
+        {date && (
+          <span id={labelId} className="yp-sr-only">
+            {label}
+          </span>
         )}
+        <span id={contentId}>
+          {DayCell ? (
+            <DayCell className="yp-day-cell-slot" style={style ?? {}}>
+              {content}
+            </DayCell>
+          ) : (
+            content
+          )}
+        </span>
       </div>
     );
   });

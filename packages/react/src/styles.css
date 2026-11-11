@@ -15,10 +15,11 @@
     --yp-selection-outline: #0b6bcb;
     --yp-highlight: #ffd166;
     --yp-ribbon: #76bfe5;
+    --yp-ribbon-text: #1b2329;
     --yp-annotation: #f6bd60;
     --yp-foreground: #243b53;
     --yp-row-height: 90px;
-    --yp-lane-height: 18px;
+    --yp-lane-height: 24px;
     --yp-month-band-width: 70px;
     --yp-weekend-width: 40px;
     --yp-weekday-width: 55px;
@@ -27,6 +28,7 @@
     --yp-font-weight: 400;
     --yp-print-scale: 0.72;
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     gap: 12px;
     max-width: 100%;
@@ -82,6 +84,21 @@
     bottom: 0;
   }
 
+  .yp-grid-surface {
+    position: relative;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .yp-item-overlay {
+    position: absolute;
+    inset: 1px;
+    z-index: 3;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
   .yp-grid {
     position: relative;
     display: flex;
@@ -107,6 +124,10 @@
     -webkit-user-select: text;
   }
 
+  .yp-month-row-wrap {
+    position: relative;
+  }
+
   .yp-row {
     position: relative;
     display: grid;
@@ -128,7 +149,7 @@
   .yp-heading,
   .yp-month {
     background: var(--yp-ribbon);
-    color: var(--yp-text-inverse);
+    color: var(--yp-ribbon-text);
   }
 
   .yp-heading {
@@ -151,7 +172,7 @@
 
   .yp-month.yp-context {
     background: var(--yp-ribbon);
-    color: var(--yp-text-inverse);
+    color: var(--yp-ribbon-text);
   }
 
   .yp-cell {
@@ -177,8 +198,8 @@
   }
 
   .yp-cell:focus-visible {
-    outline: 2px solid var(--yp-focus-ring);
-    outline-offset: -2px;
+    outline: 3px dashed var(--yp-focus-ring);
+    outline-offset: -5px;
   }
 
   .yp-cell-label {
@@ -274,7 +295,7 @@
   .yp-fragment-ribbon {
     z-index: 3;
     background: var(--yp-ribbon);
-    color: var(--yp-text-inverse);
+    color: var(--yp-ribbon-text);
   }
 
   .yp-fragment-annotation {
@@ -315,31 +336,55 @@
     pointer-events: auto;
   }
 
+  .yp-fragment:focus-within {
+    z-index: 10;
+    overflow: visible;
+  }
+
   .yp-proxy:focus-visible {
     outline: 2px solid var(--yp-focus-ring);
-    outline-offset: -2px;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--yp-surface);
   }
 
   .yp-proxy[aria-pressed="true"] {
     box-shadow: inset 0 0 0 2px var(--yp-selection-outline);
     background: var(--yp-selection-fill);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .yp-proxy[aria-pressed="true"]:focus-visible {
+    box-shadow:
+      inset 0 0 0 2px var(--yp-selection-outline),
+      0 0 0 4px var(--yp-surface);
   }
 
   .yp-resize-handle {
     position: absolute;
     top: 0;
-    width: 7px;
-    height: 100%;
+    width: 24px;
+    height: 24px;
     padding: 0;
     border: 0;
-    background: var(--yp-selection-outline);
-    opacity: 0;
+    background: transparent;
     cursor: ew-resize;
     pointer-events: auto;
   }
 
-  .yp-fragment:hover .yp-resize-handle,
-  .yp-fragment:focus-within .yp-resize-handle {
+  .yp-resize-handle::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 10px;
+    width: 3px;
+    background: var(--yp-selection-outline);
+    opacity: 0;
+  }
+
+  .yp-fragment:hover .yp-resize-handle::after,
+  .yp-fragment:focus-within .yp-resize-handle::after {
     opacity: 0.7;
   }
 
@@ -492,8 +537,9 @@
   }
 
   .yp-overflow-button {
-    min-width: 28px;
-    height: 20px;
+    min-width: 24px;
+    min-height: 24px;
+    height: 24px;
     padding: 0 5px;
     border: 1px solid var(--yp-border);
     border-radius: 10px;
@@ -533,7 +579,10 @@
   .yp-overflow-entry {
     display: block;
     width: 100%;
-    padding: 5px 6px;
+    min-height: 28px;
+    box-sizing: border-box;
+    margin: 2px 0;
+    padding: 6px;
     border: 0;
     border-radius: 4px;
     background: transparent;
@@ -593,6 +642,18 @@
     top: 4px;
     right: 5px;
     font-size: 12px;
+  }
+
+  .yp-cell[aria-selected="true"] {
+    box-shadow: inset 0 0 0 2px var(--yp-selection-outline);
+  }
+
+  .yp-cell[aria-selected="true"] .yp-day-number {
+    font-weight: 700;
+  }
+
+  .yp-cell.yp-holiday .yp-day-number {
+    text-decoration: underline dotted 2px;
   }
 
   .yp-week-number {
@@ -765,6 +826,7 @@
 
 @layer year-planner.theme {
   .yp-theme-classic-yellow {
+    --yp-ribbon-text: #24251d;
     --yp-surface: #fffef2;
     --yp-surface-muted: #fbfbe6;
     --yp-weekend: #ffffbe;
@@ -783,11 +845,12 @@
   }
 
   .yp-theme-modern {
+    --yp-ribbon-text: #ffffff;
     --yp-surface: #ffffff;
     --yp-surface-muted: #f5f7fa;
     --yp-weekend: #eef2f6;
     --yp-context: #f5f7fa;
-    --yp-border: #8a99a8;
+    --yp-border: #7b8a99;
     --yp-text-primary: #102a43;
     --yp-text-muted: #52606d;
     --yp-text-inverse: #ffffff;
@@ -801,6 +864,7 @@
   }
 
   .yp-theme-high-contrast {
+    --yp-ribbon-text: #ffffff;
     --yp-surface: #ffffff;
     --yp-surface-muted: #ffffff;
     --yp-weekend: #fff7a8;
@@ -819,6 +883,7 @@
   }
 
   .yp-theme-print {
+    --yp-ribbon-text: #ffffff;
     --yp-surface: #ffffff;
     --yp-surface-muted: #ffffff;
     --yp-weekend: #f2f2f2;
@@ -882,5 +947,157 @@
   .yp-unstyled .yp-inspector-create button,
   .yp-unstyled .yp-inspector-close {
     background: transparent;
+  }
+}
+
+@layer year-planner.base {
+  .yp-skip-link {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    z-index: 30;
+    padding: 8px 12px;
+    border: 2px solid var(--yp-focus-ring);
+    border-radius: 4px;
+    background: var(--yp-surface);
+    color: var(--yp-text-primary);
+    font: inherit;
+    font-size: 13px;
+    transform: translateY(-200%);
+  }
+
+  .yp-skip-link:focus {
+    transform: translateY(0);
+    outline: 2px solid var(--yp-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .yp-command-status {
+    flex: 0 0 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 6px 10px;
+    border: 1px solid var(--yp-border);
+    border-left: 4px solid var(--yp-focus-ring);
+    border-radius: 4px;
+    background: var(--yp-surface-muted);
+    color: var(--yp-text-primary);
+    font-size: 12px;
+  }
+
+  .yp-command-status[data-yp-level="error"] {
+    border-left-color: #c1121f;
+  }
+
+  .yp-inspector-items {
+    padding: 8px 0;
+    border-top: 1px solid var(--yp-border);
+  }
+
+  .yp-inspector-items:focus-visible {
+    outline: 2px solid var(--yp-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .yp-inspector-items h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+  }
+
+  .yp-item-list-entries {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .yp-item-list-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    width: 100%;
+    min-height: 26px;
+    box-sizing: border-box;
+    padding: 4px 6px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--yp-text-primary);
+    font: inherit;
+    font-size: 11px;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .yp-item-list-entry:hover,
+  .yp-item-list-entry:focus-visible {
+    background: var(--yp-surface-muted);
+    outline: 2px solid var(--yp-focus-ring);
+    outline-offset: 1px;
+  }
+
+  .yp-item-list-entry[aria-pressed="true"] {
+    box-shadow: inset 0 0 0 2px var(--yp-selection-outline);
+    background: var(--yp-selection-fill);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .yp-item-list-entry small {
+    color: var(--yp-text-muted);
+    font-size: 10px;
+  }
+
+  .yp-item-list-layer {
+    font-weight: 700;
+  }
+
+  .yp-item-list-overflow {
+    color: var(--yp-text-muted);
+    font-size: 10px;
+    font-style: italic;
+  }
+}
+
+@media (forced-colors: active) {
+  .yp-cell,
+  .yp-heading,
+  .yp-band,
+  .yp-month,
+  .yp-fragment,
+  .yp-inspector,
+  .yp-overflow-popover,
+  .yp-command-status {
+    border-color: CanvasText;
+  }
+
+  .yp-cell:focus-visible,
+  .yp-proxy:focus-visible,
+  .yp-overflow-button:focus-visible,
+  .yp-inspector button:focus-visible,
+  .yp-skip-link:focus {
+    outline: 2px solid Highlight;
+  }
+
+  .yp-proxy[aria-pressed="true"],
+  .yp-cell[aria-selected="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yp-root,
+  .yp-root * {
+    scroll-behavior: auto;
+    animation: none;
+    transition: none;
+  }
+}
+
+@media print {
+  .yp-command-status,
+  .yp-skip-link,
+  .yp-sr-only {
+    display: none;
   }
 }

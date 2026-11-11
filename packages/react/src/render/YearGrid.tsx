@@ -21,6 +21,7 @@ import type {
   TooltipRenderContext,
   YearPlannerComponents,
 } from "../types.js";
+import { ItemOverlay } from "./ItemOverlay.js";
 import { Marquee } from "./Marquee.js";
 import { MonthRow } from "./MonthRow.js";
 
@@ -35,6 +36,10 @@ export interface YearGridProps {
   items: ReadonlyMap<string, PlannerItem>;
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
   activeDate: DateKey | undefined;
+  activeRowId: string | undefined;
+  selectedDates: ReadonlySet<DateKey>;
+  errorDescriptionId?: string | undefined;
+  errorItemId?: string | undefined;
   activeFragmentId: string | undefined;
   selectedItemIds: ReadonlySet<string>;
   selection: PlannerSelection;
@@ -51,6 +56,8 @@ export interface YearGridProps {
   renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
   components: YearPlannerComponents;
   displayTimeZone: string;
+  textPrimary: string;
+  textInverse: string;
   globalReadOnly: boolean;
   ariaLabel: string;
   ariaDescribedBy?: string | undefined;
@@ -99,7 +106,11 @@ function headerCells(weekdayNames: string[], components: YearPlannerComponents):
 }
 
 /**
- * Renders the ARIA grid, sticky header/footer and every month row.
+ * Renders the ARIA grid, sticky header/footer and the item overlay.
+ *
+ * The item overlay is a sibling of `role="grid"`. Keeping item buttons outside
+ * the grid preserves the row/gridcell contract while the overlay still aligns
+ * to the same row geometry.
  */
 export function YearGrid({
   layout,
@@ -111,6 +122,10 @@ export function YearGrid({
   items,
   itemsByDate,
   activeDate,
+  activeRowId,
+  selectedDates,
+  errorDescriptionId,
+  errorItemId,
   activeFragmentId,
   selectedItemIds,
   selection,
@@ -127,6 +142,8 @@ export function YearGrid({
   renderTooltip,
   components,
   displayTimeZone,
+  textPrimary,
+  textInverse,
   globalReadOnly,
   ariaLabel,
   ariaDescribedBy,
@@ -155,99 +172,131 @@ export function YearGrid({
     : `${bandWidth * zoom}px repeat(37, 55px) ${bandWidth * zoom}px`;
 
   return (
-    // biome-ignore lint/a11y/useSemanticElements: the CSS grid implements the ARIA grid layout
-    <div
-      className="yp-grid"
-      role="grid"
-      aria-label={ariaLabel}
-      aria-describedby={ariaDescribedBy}
-      aria-rowcount={layout.rows.length + 2}
-      aria-colcount={37}
-      data-yp-part="grid"
-      style={{ touchAction }}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerCancel}
-      onLostPointerCapture={onLostPointerCapture}
-      onKeyDown={onGridKeyDown}
-    >
-      {/* biome-ignore lint/a11y/useSemanticElements: CSS grid rows implement the ARIA grid pattern */}
+    <div className="yp-grid-surface" data-yp-part="grid-surface">
+      {/* biome-ignore lint/a11y/useSemanticElements: the CSS grid implements the ARIA grid layout */}
       <div
-        className="yp-row yp-header"
-        role="row"
-        tabIndex={-1}
-        style={{ gridTemplateColumns: headerTemplate, height: layout.headerHeight }}
-        data-yp-part="header"
+        className="yp-grid"
+        role="grid"
+        style={{ touchAction }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerCancel}
+        onLostPointerCapture={onLostPointerCapture}
+        onKeyDown={onGridKeyDown}
+        aria-label={ariaLabel}
+        aria-describedby={ariaDescribedBy}
+        aria-rowcount={layout.rows.length + 2}
+        aria-colcount={37}
+        aria-multiselectable="true"
+        data-yp-part="grid"
       >
-        <div className="yp-band" aria-hidden="true" />
-        {Header ? <Header className="yp-row-slot">{headings}</Header> : headings}
-        <div className="yp-band" aria-hidden="true" />
+        {/* biome-ignore lint/a11y/useSemanticElements: CSS grid rows implement the ARIA grid pattern */}
+        <div
+          className="yp-row yp-header"
+          role="row"
+          tabIndex={-1}
+          style={{ gridTemplateColumns: headerTemplate, height: layout.headerHeight }}
+          data-yp-part="header"
+        >
+          <div className="yp-band" aria-hidden="true" />
+          {Header ? <Header className="yp-row-slot">{headings}</Header> : headings}
+          <div className="yp-band" aria-hidden="true" />
+        </div>
+        {layout.rows.map((row, index) => {
+          const ribbonRow = ribbons.rows[index];
+          if (!ribbonRow) return null;
+          return (
+            <MonthRow
+              key={row.rowId}
+              row={row}
+              ribbonRow={ribbonRow}
+              formatters={formatters}
+              zoom={zoom}
+              bandWidth={bandWidth}
+              totalDayWidth={layout.totalDayWidth}
+              itemsByDate={itemsByDate}
+              activeDate={activeDate}
+              selectedDates={selectedDates}
+              selection={selection}
+              previews={previews}
+              showISOWeekNumbers={showISOWeekNumbers}
+              getDateMeta={getDateMeta}
+              renderCell={renderCell}
+              components={components}
+              onFocusDate={onFocusDate}
+              onCellKeyDown={onCellKeyDown}
+              onSelectDate={onSelectDate}
+            />
+          );
+        })}
+        {previews.map((entry) =>
+          entry.preview.kind === "marquee" ? (
+            <Marquee
+              key={entry.key}
+              rect={entry.preview.rect}
+              zoom={zoom}
+              bandWidth={bandWidth}
+              headerHeight={layout.headerHeight}
+            />
+          ) : null,
+        )}
+        {/* biome-ignore lint/a11y/useSemanticElements: CSS grid rows implement the ARIA grid pattern */}
+        <div
+          className="yp-row yp-footer"
+          role="row"
+          tabIndex={-1}
+          style={{ gridTemplateColumns: headerTemplate, height: layout.headerHeight }}
+          data-yp-part="footer"
+        >
+          <div className="yp-band" aria-hidden="true" />
+          {Footer ? <Footer className="yp-row-slot">{headings}</Footer> : headings}
+          <div className="yp-band" aria-hidden="true" />
+        </div>
       </div>
-      {layout.rows.map((row, index) => {
-        const ribbonRow = ribbons.rows[index];
-        if (!ribbonRow) return null;
-        return (
-          <MonthRow
-            key={row.rowId}
-            row={row}
-            ribbonRow={ribbonRow}
-            formatters={formatters}
-            zoom={zoom}
-            bandWidth={bandWidth}
-            totalDayWidth={layout.totalDayWidth}
-            layers={layers}
-            items={items}
-            itemsByDate={itemsByDate}
-            activeDate={activeDate}
-            activeFragmentId={activeFragmentId}
-            selectedItemIds={selectedItemIds}
-            pendingItemIds={pendingItemIds}
-            selection={selection}
-            previews={previews}
-            showISOWeekNumbers={showISOWeekNumbers}
-            showAnnotations={showAnnotations}
-            getDateMeta={getDateMeta}
-            renderCell={renderCell}
-            renderItem={renderItem}
-            renderAnnotation={renderAnnotation}
-            renderOverflow={renderOverflow}
-            renderTooltip={renderTooltip}
-            components={components}
-            displayTimeZone={displayTimeZone}
-            globalReadOnly={globalReadOnly}
-            onFocusDate={onFocusDate}
-            onCellKeyDown={onCellKeyDown}
-            onSelectDate={onSelectDate}
-            onSelectItem={onSelectItem}
-            onItemKeyDown={onItemKeyDown}
-            onDoubleClickItem={onDoubleClickItem}
-            onFocusItem={onFocusItem}
-          />
-        );
-      })}
-      {previews.map((entry) =>
-        entry.preview.kind === "marquee" ? (
-          <Marquee
-            key={entry.key}
-            rect={entry.preview.rect}
-            zoom={zoom}
-            bandWidth={bandWidth}
-            headerHeight={layout.headerHeight}
-          />
-        ) : null,
-      )}
-      {/* biome-ignore lint/a11y/useSemanticElements: CSS grid rows implement the ARIA grid pattern */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: the overlay is a presentation wrapper; its children are real buttons */}
       <div
-        className="yp-row yp-footer"
-        role="row"
-        tabIndex={-1}
-        style={{ gridTemplateColumns: headerTemplate, height: layout.headerHeight }}
-        data-yp-part="footer"
+        className="yp-item-overlay"
+        data-yp-part="item-overlay"
+        role="presentation"
+        style={{ touchAction }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerCancel}
+        onLostPointerCapture={onLostPointerCapture}
+        onKeyDown={onGridKeyDown}
       >
-        <div className="yp-band" aria-hidden="true" />
-        {Footer ? <Footer className="yp-row-slot">{headings}</Footer> : headings}
-        <div className="yp-band" aria-hidden="true" />
+        <ItemOverlay
+          layout={layout}
+          ribbons={ribbons}
+          layers={layers}
+          items={items}
+          formatters={formatters}
+          zoom={zoom}
+          bandWidth={bandWidth}
+          selectedItemIds={selectedItemIds}
+          pendingItemIds={pendingItemIds}
+          activeFragmentId={activeFragmentId}
+          activeRowId={activeRowId}
+          previews={previews}
+          showAnnotations={showAnnotations}
+          components={components}
+          displayTimeZone={displayTimeZone}
+          textPrimary={textPrimary}
+          textInverse={textInverse}
+          globalReadOnly={globalReadOnly}
+          errorDescriptionId={errorDescriptionId}
+          errorItemId={errorItemId}
+          renderItem={renderItem}
+          renderAnnotation={renderAnnotation}
+          renderOverflow={renderOverflow}
+          renderTooltip={renderTooltip}
+          onSelectItem={onSelectItem}
+          onFocusItem={onFocusItem}
+          onItemKeyDown={onItemKeyDown}
+          onDoubleClickItem={onDoubleClickItem}
+        />
       </div>
     </div>
   );

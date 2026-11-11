@@ -25,6 +25,7 @@ import {
 } from "./gesture.js";
 import { classifyTarget, isHostInteractive } from "./pointer.js";
 import { type PreviewLayer, previewFromCompletion, previewKey } from "./preview.js";
+import { rowEdgeDate } from "./row.js";
 import {
   applyDateClick,
   applyDateDrag,
@@ -503,6 +504,29 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
       if (event.defaultPrevented || isHostInteractive(event.target)) return;
       if (event.shiftKey && isMod(event)) {
         event.preventDefault();
+        return;
+      }
+      if (event.key === "Home" || event.key === "End") {
+        const next = rowEdgeDate(
+          input.layout,
+          date,
+          event.key === "Home" ? "start" : "end",
+          isDisabled,
+        );
+        if (!next) return;
+        event.preventDefault();
+        if (event.shiftKey) {
+          const nextSelection = applyDateDrag(
+            input.state.selection,
+            input.state.selection.anchorDate ?? date,
+            next,
+            { shift: true, mod: false },
+            isDisabled,
+          );
+          emitSelection(nextSelection, undefined, next);
+        } else {
+          input.onFocusDate(next);
+        }
         return;
       }
       const deltas: Record<string, number> = {

@@ -18,7 +18,7 @@ describe("theme implementation", () => {
       weekendWidth: "0px" as never,
     });
     expect(theme.rowHeight).toBe(90);
-    expect(theme.laneHeight).toBe(18);
+    expect(theme.laneHeight).toBe(24);
     expect(theme.monthBandWidth).toBe(70);
     expect(theme.weekendWidth).toBe(40);
   });

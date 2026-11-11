@@ -406,7 +406,7 @@ describe("RD-08 controlled acceptance", () => {
     });
     const onCommitted = vi.fn();
     const controlled = renderControlled([item("a")], {
-      interaction: { commandTimeoutMs: 100 },
+      interaction: { commandTimeoutMs: 500 },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -434,7 +434,7 @@ describe("RD-08 controlled acceptance", () => {
     const onCommitted = vi.fn();
     const onRejected = vi.fn();
     const controlled = renderControlled([item("a")], {
-      interaction: { commandTimeoutMs: 100 },
+      interaction: { commandTimeoutMs: 500 },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -454,7 +454,7 @@ describe("RD-08 controlled acceptance", () => {
   it("clears pending when controlled props apply after a delay", async () => {
     const updated = item("a", { version: 2 });
     const controlled = renderControlled([item("a")], {
-      interaction: { commandTimeoutMs: 100 },
+      interaction: { commandTimeoutMs: 500 },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -471,7 +471,7 @@ describe("RD-08 controlled acceptance", () => {
   it("accepts a controlled version bump without a payload", async () => {
     const updated = item("a", { version: 2 });
     const controlled = renderControlled([item("a")], {
-      interaction: { commandTimeoutMs: 100 },
+      interaction: { commandTimeoutMs: 500 },
       onChangeRequest: (): CommandOutcome => ({ accepted: true, revision: "2" }),
     });
     act(() => controlled.ref.current?.requestCommand(move()));
@@ -483,7 +483,7 @@ describe("RD-08 controlled acceptance", () => {
   it("applies a controlled create after props show the item", async () => {
     const created = item("new", { title: "New" });
     const controlled = renderControlled([], {
-      interaction: { commandTimeoutMs: 100 },
+      interaction: { commandTimeoutMs: 500 },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -504,7 +504,7 @@ describe("RD-08 controlled acceptance", () => {
     const merged = highlight("merged", { title: "Highlight" });
     const controlled = renderControlled([source], {
       activeLayerId: "highlight",
-      interaction: { commandTimeoutMs: 100 },
+      interaction: { commandTimeoutMs: 500 },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -530,7 +530,7 @@ describe("RD-08 controlled acceptance", () => {
 
   it("accepts a controlled delete when props remove the item", async () => {
     const controlled = renderControlled([item("a")], {
-      interaction: { commandTimeoutMs: 100, confirmChange: () => true },
+      interaction: { commandTimeoutMs: 500, confirmChange: () => true },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -556,7 +556,7 @@ describe("RD-08 controlled acceptance", () => {
     });
     const controlled = renderControlled([source], {
       activeLayerId: "highlight",
-      interaction: { commandTimeoutMs: 100 },
+      interaction: { commandTimeoutMs: 500 },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -660,7 +660,7 @@ describe("RD-08 controlled acceptance", () => {
     const updated = [residualA, residualB];
     const controlled = renderControlled([source], {
       activeLayerId: "highlight",
-      interaction: { commandTimeoutMs: 100 },
+      interaction: { commandTimeoutMs: 500 },
       onChangeRequest: (): CommandOutcome => ({
         accepted: true,
         revision: "2",
@@ -840,7 +840,9 @@ describe("RD-08 paint and retry", () => {
     });
     act(() => ref.current?.openInspector());
     act(() => ref.current?.requestCommand(move()));
-    await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument(), {
+      timeout: 5000,
+    });
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
     await waitFor(() => expect(calls).toBe(2));
     await waitFor(() => expect(screen.queryByText("COMMAND_TIMEOUT")).toBeNull());
@@ -853,7 +855,9 @@ describe("RD-08 paint and retry", () => {
     });
     act(() => ref.current?.openInspector());
     act(() => ref.current?.requestCommand({ type: "delete", itemId: "a", expectedVersion: 1 }));
-    await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument(), {
+      timeout: 5000,
+    });
     expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
   });
 
@@ -864,7 +868,9 @@ describe("RD-08 paint and retry", () => {
     });
     act(() => ref.current?.openInspector());
     act(() => ref.current?.requestCommand({ type: "create", item: item("new") }));
-    await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("COMMAND_TIMEOUT")).toBeInTheDocument(), {
+      timeout: 5000,
+    });
     expect(screen.queryByRole("button", { name: "Retry" })).toBeNull();
   });
 

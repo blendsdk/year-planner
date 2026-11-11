@@ -135,6 +135,19 @@ export function InteractionDemo() {
         <button type="button" onClick={() => ref.current?.requestRedo()}>
           Redo
         </button>
+        <button
+          type="button"
+          data-testid="hide-focused-item"
+          onClick={() => {
+            const itemId = selection.focusItemId ?? selection.items[0];
+            if (itemId) ref.current?.hideItem(itemId);
+          }}
+        >
+          Hide focused item
+        </button>
+        <button type="button" data-testid="show-all-items" onClick={() => ref.current?.showAll()}>
+          Show all
+        </button>
       </div>
       <YearPlanner
         ref={ref}

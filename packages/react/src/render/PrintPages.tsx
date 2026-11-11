@@ -8,6 +8,7 @@ import type {
 } from "@blendsdk/year-planner-core";
 import { isoWeekOf } from "@blendsdk/year-planner-core";
 import type { CSSProperties, ReactNode } from "react";
+import { readableTextColor } from "../a11y.js";
 import { rowTemplate } from "../geometry.js";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor } from "../safeStyle.js";
@@ -24,6 +25,8 @@ export interface PrintPagesProps {
   showISOWeekNumbers: boolean;
   showAnnotations: boolean;
   weekdayNames: string[];
+  textPrimary: string;
+  textInverse: string;
 }
 
 function printRow(
@@ -35,6 +38,8 @@ function printRow(
   bandWidth: number,
   showISOWeekNumbers: boolean,
   showAnnotations: boolean,
+  textPrimary: string,
+  textInverse: string,
 ): ReactNode {
   return (
     <div
@@ -100,7 +105,11 @@ function printRow(
             safeCssColor(item.color) ??
             safeCssColor(annotationBackground) ??
             safeCssColor(layer.color);
-          const textColor = safeCssColor(item.textColor);
+          const textColor =
+            safeCssColor(item.textColor) ??
+            (background
+              ? readableTextColor(background, [textPrimary, textInverse, "#ffffff"])
+              : undefined);
           const style: CSSProperties = {
             left: fragment.x,
             top:
@@ -156,6 +165,8 @@ export function PrintPages({
   showISOWeekNumbers,
   showAnnotations,
   weekdayNames,
+  textPrimary,
+  textInverse,
 }: PrintPagesProps): ReactNode {
   if (pages.length === 0) return null;
   const layoutById = new Map(layout.rows.map((row) => [row.rowId, row]));
@@ -210,6 +221,8 @@ export function PrintPages({
                   bandWidth,
                   showISOWeekNumbers,
                   showAnnotations,
+                  textPrimary,
+                  textInverse,
                 );
               })}
               <div

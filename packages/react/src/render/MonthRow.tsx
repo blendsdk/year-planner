@@ -1,8 +1,6 @@
 import type {
   DateKey,
   MonthRowLayout,
-  PlannerItem,
-  PlannerLayer,
   PlannerSelection,
   RibbonRow,
 } from "@blendsdk/year-planner-core";
@@ -10,20 +8,13 @@ import type { KeyboardEvent, ReactNode } from "react";
 import { rowTemplate, scaledRowHeight } from "../geometry.js";
 import type { PreviewLayer } from "../interaction/preview.js";
 import type { PlannerFormatters } from "../locale.js";
-import { safeCssColor } from "../safeStyle.js";
 import type {
-  AnnotationRenderContext,
   CellRenderContext,
   DateMeta,
   DateMetaContext,
-  ItemRenderContext,
-  OverflowRenderContext,
-  TooltipRenderContext,
   YearPlannerComponents,
 } from "../types.js";
 import { CellLayer } from "./CellLayer.js";
-import { ItemLayer } from "./ItemLayer.js";
-import { Overflow } from "./Overflow.js";
 import { SelectionPreview } from "./SelectionPreview.js";
 
 /** Props for one interactive month row. */
@@ -34,26 +25,15 @@ export interface MonthRowProps {
   zoom: number;
   bandWidth: number;
   totalDayWidth: number;
-  layers: ReadonlyMap<string, PlannerLayer>;
-  items: ReadonlyMap<string, PlannerItem>;
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
   activeDate: DateKey | undefined;
-  activeFragmentId: string | undefined;
-  selectedItemIds: ReadonlySet<string>;
-  pendingItemIds: ReadonlySet<string>;
+  selectedDates: ReadonlySet<DateKey>;
   selection: PlannerSelection;
   previews: readonly PreviewLayer[];
   showISOWeekNumbers: boolean;
-  showAnnotations: boolean;
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
   renderCell?: ((context: CellRenderContext) => ReactNode) | undefined;
-  renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
   components: YearPlannerComponents;
-  displayTimeZone: string;
-  globalReadOnly: boolean;
-  renderAnnotation?: ((context: AnnotationRenderContext) => ReactNode) | undefined;
-  renderOverflow?: ((context: OverflowRenderContext) => ReactNode) | undefined;
-  renderTooltip?: ((context: TooltipRenderContext) => ReactNode) | undefined;
   onFocusDate: (date: DateKey) => void;
   onCellKeyDown: (date: DateKey, event: KeyboardEvent<HTMLElement>) => void;
   onSelectDate: (
@@ -65,23 +45,11 @@ export interface MonthRowProps {
       target?: EventTarget | null;
     },
   ) => void;
-  onSelectItem: (
-    itemId: string,
-    event: {
-      shiftKey?: boolean;
-      ctrlKey?: boolean;
-      metaKey?: boolean;
-      target?: EventTarget | null;
-    },
-  ) => void;
-  onItemKeyDown: (itemId: string, event: KeyboardEvent<HTMLElement>) => void;
-  onDoubleClickItem: (itemId: string) => void;
-  onFocusItem: (itemId: string) => void;
 }
 
 /**
- * Renders one month row with bands, date cells and the absolutely positioned
- * fragment layer. The grid row and item layer share the same geometry.
+ * Renders one month row with bands, date cells and selection previews. Item
+ * fragments live in the overlay sibling so the ARIA row owns only grid cells.
  */
 export function MonthRow({
   row,
@@ -90,33 +58,18 @@ export function MonthRow({
   zoom,
   bandWidth,
   totalDayWidth,
-  layers,
-  items,
   itemsByDate,
   activeDate,
-  activeFragmentId,
-  selectedItemIds,
-  pendingItemIds,
+  selectedDates,
   selection,
   previews,
   showISOWeekNumbers,
-  showAnnotations,
   getDateMeta,
   renderCell,
-  renderItem,
   components,
-  displayTimeZone,
-  globalReadOnly,
-  renderAnnotation,
-  renderOverflow,
-  renderTooltip,
   onFocusDate,
   onCellKeyDown,
   onSelectDate,
-  onSelectItem,
-  onItemKeyDown,
-  onDoubleClickItem,
-  onFocusItem,
 }: MonthRowProps): ReactNode {
   const MonthLabel = components.MonthLabel;
   const label = (
@@ -138,13 +91,7 @@ export function MonthRow({
         height: scaledRowHeight(ribbonRow.height, zoom),
       }}
     >
-      {/* biome-ignore lint/a11y/useSemanticElements: month bands are row headers in the ARIA grid */}
-      <div
-        className={`yp-month ${row.kind === "context" ? "yp-context" : ""}`}
-        role="rowheader"
-        tabIndex={-1}
-        aria-label={`${formatters.monthName(row.monthIndex)} ${row.year}`}
-      >
+      <div className={`yp-month ${row.kind === "context" ? "yp-context" : ""}`} aria-hidden="true">
         {MonthLabel ? <MonthLabel className="yp-month-slot">{label}</MonthLabel> : label}
       </div>
       <SelectionPreview
@@ -175,6 +122,7 @@ export function MonthRow({
         itemsByDate={itemsByDate}
         formatters={formatters}
         activeDate={activeDate}
+        selectedDates={selectedDates}
         showISOWeekNumbers={showISOWeekNumbers}
         getDateMeta={getDateMeta}
         renderCell={renderCell}
@@ -183,70 +131,6 @@ export function MonthRow({
         onCellKeyDown={onCellKeyDown}
         onSelectDate={onSelectDate}
       />
-      <div
-        className="yp-item-layer"
-        data-yp-part="item-layer"
-        style={{
-          left: bandWidth * zoom,
-          width: totalDayWidth * zoom,
-          height: scaledRowHeight(ribbonRow.height, zoom),
-        }}
-      >
-        <ItemLayer
-          row={ribbonRow}
-          layers={layers}
-          items={items}
-          formatters={formatters}
-          zoom={zoom}
-          showAnnotations={showAnnotations}
-          selectedItemIds={selectedItemIds}
-          pendingItemIds={pendingItemIds}
-          activeFragmentId={activeFragmentId}
-          components={components}
-          renderItem={renderItem}
-          renderAnnotation={renderAnnotation}
-          renderTooltip={renderTooltip}
-          displayTimeZone={displayTimeZone}
-          globalReadOnly={globalReadOnly}
-          onSelectItem={onSelectItem}
-          onFocusItem={onFocusItem}
-          onItemKeyDown={onItemKeyDown}
-          onDoubleClickItem={onDoubleClickItem}
-        />
-        {previews.map((entry) =>
-          entry.preview.kind !== "selection" && entry.preview.kind !== "marquee" ? (
-            <SelectionPreview
-              key={entry.key}
-              ranges={entry.preview.ranges}
-              row={row}
-              zoom={zoom}
-              bandWidth={0}
-              totalDayWidth={totalDayWidth}
-              height={scaledRowHeight(ribbonRow.height, zoom)}
-              variant="gesture-preview"
-              previewKind={entry.preview.variant}
-              itemId={entry.preview.kind === "item" ? entry.preview.itemId : undefined}
-              layerId={entry.preview.layerId}
-              color={
-                entry.preview.layerId
-                  ? safeCssColor(layers.get(entry.preview.layerId)?.color)
-                  : undefined
-              }
-              valid={entry.preview.valid}
-            />
-          ) : null,
-        )}
-        <Overflow
-          row={row}
-          ribbonRow={ribbonRow}
-          items={items}
-          formatters={formatters}
-          displayTimeZone={displayTimeZone}
-          renderOverflow={renderOverflow}
-          onSelectItem={(itemId) => onSelectItem(itemId, {})}
-          onFocusItem={onFocusItem}
-        />
-      </div>
       <div className={`yp-month ${row.kind === "context" ? "yp-context" : ""}`} aria-hidden="true">
         {MonthLabel ? <MonthLabel className="yp-month-slot">{label}</MonthLabel> : label}
       </div>

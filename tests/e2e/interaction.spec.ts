@@ -100,7 +100,7 @@ test.describe("RD-07 interaction demo", () => {
     const start = await proxy.boundingBox();
     const target = await cell(page, "2027-02-20").boundingBox();
     if (!start || !target) throw new Error("missing move target");
-    await page.mouse.move(start.x + 20, start.y + start.height / 2);
+    await page.mouse.move(start.x + 40, start.y + start.height / 2);
     await page.mouse.down();
     await page.mouse.move(target.x + target.width / 2, target.y + target.height / 2, { steps: 8 });
     await page.mouse.up();

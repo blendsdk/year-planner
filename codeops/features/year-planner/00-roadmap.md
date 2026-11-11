@@ -3,8 +3,8 @@
 > **Feature-Set**: Year Planner for React
 > **Status**: In Progress
 > **Created**: 2026-11-10
-> **Last Updated**: 2026-11-11
-> **Progress**: 8 / 12 (67%)
+> **Last Updated**: 2026-11-11 13:55
+> **Progress**: 9 / 12 (75%)
 > **CodeOps Artifact Schema**: 1
 
 ## Legend
@@ -23,7 +23,7 @@
 | RD-06 | React view, theming and style integration | [RD-06](requirements/RD-06-react-view-theming.md) | [m3-react-view](plans/m3-react-view/00-index.md) | Done | ✅ | 2026-11-10 16:58 | depends on RD-03, RD-04, RD-05 |
 | RD-07 | Interaction engine, selection and keyboard | [RD-07](requirements/RD-07-interaction-selection.md) | [m4-interaction-engine](plans/m4-interaction-engine/00-index.md) | Done | ✅ | 2026-11-11 00:19 | depends on RD-03, RD-04, RD-05, RD-06 |
 | RD-08 | Controlled commands, validation and rollback | [RD-08](requirements/RD-08-controlled-commands.md) | [m5-controlled-commands](plans/m5-controlled-commands/00-index.md) | Done | ✅ | 2026-11-11 04:00 | depends on RD-04, RD-05, RD-06, RD-07 |
-| RD-09 | Accessibility and keyboard experience | [RD-09](requirements/RD-09-accessibility.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-06, RD-07 |
+| RD-09 | Accessibility and keyboard experience | [RD-09](requirements/RD-09-accessibility.md) | [m6-accessibility](plans/m6-accessibility/00-index.md) | Done | ✅ | 2026-11-11 13:55 | depends on RD-06, RD-07 |
 | RD-10 | Quality gates, performance, security and browsers | [RD-10](requirements/RD-10-quality-gates.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-09 |
 | RD-11 | Documentation, Storybook and API reference | [RD-11](requirements/RD-11-documentation.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-10 |
 | RD-12 | Release, versioning and maintenance | [RD-12](requirements/RD-12-release-maintenance.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-11 |

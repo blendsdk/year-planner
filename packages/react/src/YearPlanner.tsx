@@ -6,6 +6,7 @@ import {
   buildRibbonLayout,
   diffDays,
   type InteractionMode,
+  type PlannerCommand,
   type PlannerFilter,
   type PlannerSelection,
   planRibbonPrint,
@@ -15,13 +16,16 @@ import {
 } from "@blendsdk/year-planner-core";
 import {
   forwardRef,
+  type MouseEvent,
   useCallback,
   useEffect,
+  useId,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from "react";
+import { readableTextColor, selectedDateSet } from "./a11y.js";
 import { useCommandPipeline } from "./commands.js";
 import { useInteraction } from "./interaction/useInteraction.js";
 import { createFormatters } from "./locale.js";
@@ -29,10 +33,12 @@ import { resolveDisplayOptions } from "./options.js";
 import { useYearPlannerTheme } from "./provider.js";
 import { Inspector } from "./render/Inspector.js";
 import { PrintPages } from "./render/PrintPages.js";
+import { StatusBar } from "./render/StatusBar.js";
 import { YearGrid } from "./render/YearGrid.js";
 import { usePlannerState } from "./state.js";
 import { resolveTheme, themeToCssVars } from "./theme.js";
 import type { YearPlannerHandle, YearPlannerProps } from "./types.js";
+import { useAnnouncements } from "./useAnnouncements.js";
 
 const EMPTY_LAYOUT: YearLayout = {
   rows: [],
@@ -51,7 +57,7 @@ const EMPTY_RIBBONS: RibbonLayout = {
   fragments: [],
   density: "compact",
   compactMaxLanes: 3,
-  laneHeight: 18,
+  laneHeight: 24,
   laneTop: 18,
   headerHeight: 0,
   footerHeight: 0,
@@ -91,7 +97,14 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     );
     const theme = resolvedTheme.theme;
     const cssVars = useMemo(
-      () => ({ ...themeToCssVars(theme), ...(props.cssVars ?? {}) }),
+      () => ({
+        ...themeToCssVars(theme),
+        "--yp-ribbon-text": readableTextColor(String(theme.ribbon), [
+          String(theme.textPrimary),
+          String(theme.textInverse),
+        ]),
+        ...(props.cssVars ?? {}),
+      }),
       [theme, props.cssVars],
     );
     const units = useMemo(
@@ -231,7 +244,65 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       }
       return map;
     }, [ribbons]);
+    const proxyFragments = useMemo(
+      () =>
+        (ribbons?.fragments ?? []).filter((fragment) => {
+          if (fragment.channel === "background" || fragment.channel === "highlight") return false;
+          if (fragment.channel === "annotation" && !resolvedDisplay.options.showAnnotations) {
+            return false;
+          }
+          if (fragment.channel === "ribbon") {
+            const row = ribbons?.rows[fragment.rowIndex];
+            if (!row || fragment.lane >= row.visibleLaneCount) return false;
+          }
+          return true;
+        }),
+      [resolvedDisplay.options.showAnnotations, ribbons],
+    );
+    const proxyItemIds = useMemo(
+      () => new Set(proxyFragments.map((fragment) => fragment.itemId)),
+      [proxyFragments],
+    );
     const selectedItemIds = useMemo(() => new Set(state.selection.items), [state.selection.items]);
+    const renderedItemIds = useMemo(
+      () => new Set((ribbons?.fragments ?? []).map((fragment) => fragment.itemId)),
+      [ribbons],
+    );
+    const selectedDates = useMemo(
+      () => selectedDateSet(state.selection.dates),
+      [state.selection.dates],
+    );
+    const visibleItemCount = useMemo(
+      () =>
+        state.items.filter(
+          (item) =>
+            resolveEffectiveVisibility(item.id, {
+              model: state.model,
+              visibility: state.visibility,
+              filter: state.filter,
+            }).visible,
+        ).length,
+      [state.filter, state.items, state.model, state.visibility],
+    );
+    const announcements = useAnnouncements({
+      pending: pipeline.pendingItemIds.size > 0,
+      settled: pipeline.lastSettled,
+      feedbackVisible: pipeline.feedback !== undefined,
+      selection: state.selection,
+      visibility: state.visibility,
+      visibleItemCount,
+    });
+    const helpId = useId();
+    const inspectorId = useId();
+    const feedbackId = useId();
+    const itemListId = `${inspectorId}-items`;
+    const errorItemId = pipeline.feedback ? commandItemId(pipeline.feedback.command) : undefined;
+    const itemListRef = useRef<HTMLElement>(null);
+    const regionLabel = (
+      props.ariaLabel ?? `Year planner ${layout?.highlightYear ?? props.year ?? ""}`
+    ).trim();
+    const gridLabel = `${regionLabel} grid`;
+    const gridDescribedBy = [props.ariaDescribedBy, helpId].filter(Boolean).join(" ") || undefined;
 
     const isDisabledDate = useCallback(
       (date: string): boolean => {
@@ -298,26 +369,6 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       }
     }, []);
 
-    useEffect(() => {
-      const settled = pipeline.lastSettled;
-      if (!settled) return;
-      let message: string | undefined;
-      if (settled.result === "accepted") {
-        message = "Change accepted";
-      } else if (settled.result === "rejected") {
-        message = `Change rejected: ${settled.diagnostics[0]?.message ?? "The host rejected the change"}`;
-      } else if (settled.result === "accepted-not-applied") {
-        message = "Change accepted by the host but not applied";
-      }
-      if (!message) return;
-      setCommandAnnouncement(undefined);
-      if (typeof queueMicrotask === "function") {
-        queueMicrotask(() => setCommandAnnouncement(message));
-      } else {
-        setCommandAnnouncement(message);
-      }
-    }, [pipeline.lastSettled]);
-
     const layoutDiagnostics = layoutResult.ok ? [] : layoutResult.diagnostics;
     const printDiagnostics = printResult?.diagnostics ?? [];
     const diagnostics = useMemo(
@@ -354,16 +405,21 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const [inspectorOpen, setInspectorOpen] = useState(props.showInspector !== false);
     const inspectorRef = useRef<HTMLElement>(null);
     const [focusInspector, setFocusInspector] = useState(false);
+    const [focusItemList, setFocusItemList] = useState(false);
     const [focusAnnouncement, setFocusAnnouncement] = useState<string | undefined>(undefined);
-    const [commandAnnouncement, setCommandAnnouncement] = useState<string | undefined>(undefined);
     const viewportRef = useRef<HTMLDivElement>(null);
     const warnedInteractiveSlot = useRef(false);
     const [pendingFocus, setPendingFocus] = useState<
       { type: "date" | "item"; id: string } | undefined
     >(undefined);
 
-    const effectiveActiveDate =
+    const activeCandidate =
       activeDate && layout && isKnownDate(layout, activeDate) ? activeDate : firstDate;
+    const effectiveActiveDate =
+      activeCandidate && !isDisabledDate(activeCandidate)
+        ? activeCandidate
+        : nearestEnabledDate(activeCandidate);
+    const rovingRowId = effectiveActiveDate?.slice(0, 7) ?? layout?.rows[0]?.rowId;
 
     useEffect(() => {
       if (!pendingFocus) return;
@@ -434,6 +490,16 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       setFocusInspector(false);
     }, [focusInspector]);
 
+    useEffect(() => {
+      if (!focusItemList) return;
+      if (!inspectorOpen) {
+        setInspectorOpen(true);
+        return;
+      }
+      itemListRef.current?.focus();
+      setFocusItemList(false);
+    }, [focusItemList, inspectorOpen]);
+
     // biome-ignore lint/correctness/useExhaustiveDependencies: re-scan when ribbons or slot renderers change
     useEffect(() => {
       if (warnedInteractiveSlot.current) return;
@@ -465,6 +531,19 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       setPendingFocus({ type: "date", id: date });
     }, []);
 
+    useEffect(() => {
+      if (!activeDate || !layout) return;
+      const row = layout.rows.find(
+        (entry) => activeDate >= entry.firstDate && activeDate < entry.endDateExclusive,
+      );
+      if (!row || !isDisabledDate(activeDate)) return;
+      const fallback = nearestEnabledDate(activeDate);
+      if (fallback) {
+        focusDate(fallback);
+        announceFocus(fallback);
+      }
+    }, [activeDate, announceFocus, focusDate, isDisabledDate, layout, nearestEnabledDate]);
+
     const focusItem = useCallback((itemId: string) => {
       setActiveItemId(itemId);
       setPendingFocus({ type: "item", id: itemId });
@@ -488,6 +567,12 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       setInspectorOpen(true);
       setFocusInspector(true);
     }, [props.showInspector]);
+
+    const skipToItemList = useCallback((event: MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      setInspectorOpen(true);
+      setFocusItemList(true);
+    }, []);
 
     const interaction = useInteraction({
       state,
@@ -555,7 +640,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       if (!activeItemId) return;
       const item = state.items.find((entry) => entry.id === activeItemId);
       const visible = item
-        ? resolveEffectiveVisibility(item.id, {
+        ? proxyItemIds.has(item.id) &&
+          resolveEffectiveVisibility(item.id, {
             model: state.model,
             visibility: state.visibility,
             filter: state.filter,
@@ -579,6 +665,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       announceFocus,
       focusDate,
       nearestEnabledDate,
+      proxyItemIds,
       state.filter,
       state.items,
       state.model,
@@ -650,6 +737,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           className={className}
           data-yp-part="root"
           data-yp-theme={resolvedTheme.themeName}
+          role="region"
+          aria-label={regionLabel}
           dir="ltr"
           style={{ ...cssVars, ...props.style }}
         >
@@ -675,34 +764,60 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       }
     };
 
-    const selectedVisibleItem = state.selection.items.find((id) =>
-      ribbons.fragments.some((fragment) => fragment.itemId === id),
-    );
+    const selectedVisibleItem = state.selection.items.find((id) => proxyItemIds.has(id));
     const activeVisibleItem =
-      activeItemId && ribbons.fragments.some((fragment) => fragment.itemId === activeItemId)
-        ? activeItemId
-        : undefined;
-    const rovingItemId =
-      activeVisibleItem ??
-      selectedVisibleItem ??
-      ribbons.fragments.find(
-        (fragment) =>
-          fragment.channel === "ribbon" ||
-          fragment.channel === "annotation" ||
-          fragment.channel === "foreground",
-      )?.itemId;
-    const activeFragmentId = ribbons.fragments.find(
+      activeItemId && proxyItemIds.has(activeItemId) ? activeItemId : undefined;
+    const rovingItemId = activeVisibleItem ?? selectedVisibleItem ?? proxyFragments[0]?.itemId;
+    const activeFragmentId = proxyFragments.find(
       (fragment) => fragment.itemId === rovingItemId,
     )?.fragmentId;
 
     const content = (
       <>
+        {props.showInspector !== false && (
+          <a className="yp-skip-link" href={`#${itemListId}`} onClick={skipToItemList}>
+            Skip to item list
+          </a>
+        )}
+        <p id={helpId} className="yp-sr-only">
+          Use arrow keys to move between dates. Hold Shift with an arrow key to extend the
+          selection. Press Space to toggle a date or item, Enter to inspect, Escape to cancel or
+          clear, and Delete to delete the focused item after confirmation.
+        </p>
         <p className="yp-sr-only" role="status" aria-live="polite" data-yp-part="focus-status">
           {focusAnnouncement}
         </p>
-        <p className="yp-sr-only" role="status" aria-live="polite" data-yp-part="command-status">
-          {commandAnnouncement}
+        <p
+          className="yp-sr-only"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-yp-part="command-announcer"
+        >
+          {announcements.polite}
         </p>
+        <p className="yp-sr-only" role="alert" aria-atomic="true" data-yp-part="error-announcer">
+          {announcements.assertive}
+        </p>
+        <p
+          className="yp-sr-only"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-yp-part="selection-announcer"
+        >
+          {announcements.selection}
+        </p>
+        <p
+          className="yp-sr-only"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-yp-part="visibility-announcer"
+        >
+          {announcements.visibility}
+        </p>
+        <StatusBar status={announcements.status} />
         <div
           className="yp-viewport"
           data-yp-part="viewport"
@@ -720,6 +835,14 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             items={items}
             itemsByDate={itemsByDate}
             activeDate={effectiveActiveDate}
+            activeRowId={rovingRowId}
+            selectedDates={selectedDates}
+            errorDescriptionId={
+              pipeline.feedback && props.showInspector !== false && inspectorOpen
+                ? feedbackId
+                : undefined
+            }
+            errorItemId={errorItemId}
             activeFragmentId={activeFragmentId}
             selectedItemIds={selectedItemIds}
             pendingItemIds={pipeline.pendingItemIds}
@@ -736,9 +859,11 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             renderTooltip={props.renderTooltip}
             components={props.components ?? {}}
             displayTimeZone={resolvedDisplay.options.displayTimeZone}
+            textPrimary={String(theme.textPrimary)}
+            textInverse={String(theme.textInverse)}
             globalReadOnly={props.readOnly === true}
-            ariaLabel={props.ariaLabel ?? `Year planner ${layout.highlightYear}`}
-            ariaDescribedBy={props.ariaDescribedBy}
+            ariaLabel={gridLabel}
+            ariaDescribedBy={gridDescribedBy}
             onFocusDate={handleCellFocus}
             onCellKeyDown={interaction.onCellKeyDown}
             onSelectDate={interaction.selectDate}
@@ -774,7 +899,12 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           onClose={closeInspector}
           onSelectItem={(itemId) => interaction.selectItem(itemId, {})}
           onFocusItem={focusItem}
+          asideId={inspectorId}
           asideRef={inspectorRef}
+          itemListId={itemListId}
+          itemListRef={itemListRef}
+          renderedItemIds={renderedItemIds}
+          feedbackId={feedbackId}
         />
         {printResult && (
           <PrintPages
@@ -788,6 +918,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             showISOWeekNumbers={resolvedDisplay.options.showISOWeekNumbers}
             showAnnotations={resolvedDisplay.options.showAnnotations}
             weekdayNames={formatters.weekdayNames()}
+            textPrimary={String(theme.textPrimary)}
+            textInverse={String(theme.textInverse)}
           />
         )}
       </>
@@ -802,6 +934,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         data-yp-command-state={
           pipeline.pendingItemIds.size > 0 ? "pending" : (pipeline.lastSettled?.result ?? "idle")
         }
+        role="region"
+        aria-label={regionLabel}
         dir="ltr"
         style={{ ...cssVars, ...props.style }}
       >
@@ -810,6 +944,12 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     );
   },
 );
+
+function commandItemId(command: PlannerCommand): string | undefined {
+  if ("itemId" in command) return command.itemId;
+  if (command.type === "create") return command.item.id;
+  return undefined;
+}
 
 function getPresetClass(themeName: string): string {
   return /^[a-z0-9-]+$/.test(themeName) ? `yp-theme-${themeName}` : "";

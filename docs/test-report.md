@@ -1,4 +1,4 @@
-# Test Report — Year Planner for React (M1 + M2 + RD-06 + RD-07 + RD-08)
+# Test Report — Year Planner for React (M1 + M2 + RD-06 + RD-07 + RD-08 + RD-09)
 
 > **Date**: 2026-11-11
 > **Scope**: M1 foundation/temporal core/classic grid; M2 layers, visibility,
@@ -6,11 +6,12 @@
 > theming, slots, inspector, adapters and A3 print output; RD-07 pointer,
 > keyboard and touch interaction, selection matrix, previews and focus;
 > RD-08 controlled commands, validation, versions, rollback and
-> accepted-not-applied handling
+> accepted-not-applied handling; RD-09 accessibility semantics, focus, live
+> regions, contrast and axe evidence
 > **Workflow**: CodeOps (`exec-plan`), plans `m1-foundation-core`,
 > `m2-layers-ribbons`, `m3-react-view`, `m4-interaction-engine` and
-> `m5-controlled-commands`
-> **Verdict**: **PASS** for the M1 + M2 + RD-06 + RD-07 + RD-08 slices.
+> `m5-controlled-commands` and `m6-accessibility`
+> **Verdict**: **PASS** for the M1 + M2 + RD-06 + RD-07 + RD-08 + RD-09 slices.
 
 ---
 
@@ -40,19 +41,19 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | Check | Result |
 |---|---|
 | Core tests | **207 passed** |
-| React tests | **405 passed** (34 files) |
+| React tests | **474 passed** (42 files) |
 | Core coverage | **99.34% lines, 96.08% branches, 99.23% functions** |
-| React coverage | **94.03% lines, 92.59% branches, 98.10% functions** |
-| Playwright | **78 passed, 7 skipped** (PDF is Chromium-only; touch is Chromium-only) |
+| React coverage | **94.27% lines, 92.90% branches, 97.87% functions** |
+| Playwright | **108 passed, 25 skipped** (PDF and axe are Chromium-only; touch is Chromium-only) |
 | Browsers | Chromium, Firefox, WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
 | Clean consumer | **PASS** — packed core + React installed and built |
-| Storybook | **PASS** — static build succeeds; **157 stories across 11 files** |
+| Storybook | **PASS** — static build succeeds; **171 stories across 12 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **58.74 kB gzip** including core, React, adapters and CSS; 60 kB budget |
+| Bundle size | **63.36 kB gzip** including core, React, adapters and CSS; 65 kB budget (RD-09 accessibility cost) |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | **Green** — [run 42949107179](https://github.com/blendsdk/year-planner/actions/runs/42949107179), `verify` + `browsers` jobs |
 
@@ -120,6 +121,8 @@ lines, branches, functions and statements.
 | Interaction | `packages/react/src/interaction/selection.spec.test.tsx`, `gesture.spec.test.tsx`, `pointer.spec.test.tsx`, `keyboard.spec.test.tsx`, `interaction.integration.spec.test.tsx` |
 | Interaction impl | `packages/react/src/interaction/selection.impl.test.tsx`, `gesture.impl.test.tsx`, `pointer.impl.test.tsx`, `keyboard.impl.test.tsx` |
 | Interaction E2E | `tests/e2e/interaction.spec.ts`, `tests/e2e/interaction-touch.spec.ts` |
+| Accessibility | `a11y.spec.test.tsx`, `a11y.impl.test.tsx`, `announcements.spec.test.tsx`, `announcements.impl.test.tsx`, `accessibility.spec.test.tsx`, `accessibility.impl.test.tsx`, `interaction/row.spec.test.tsx`, `interaction/row.impl.test.tsx`, `styles.spec.test.tsx` |
+| Accessibility E2E | `tests/e2e/accessibility.spec.ts` (eight axe states plus keyboard, skip link, hidden item) |
 | Integration | `packages/react/src/integration.spec.test.tsx` |
 | E2E | `tests/e2e/classic-year.spec.ts` |
 | Red phases | `docs/m1-red-phase.md`, `docs/m2-red-phase.md`, `docs/m3-red-phase.md`, `docs/m4-red-phase.md` |
@@ -164,6 +167,24 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 | Browser evidence | `tests/e2e/commands.spec.ts` in Chromium, Firefox and WebKit: accept, reject, stale, timeout, never-apply, warning, pending preview and capacity mock |
 | Security | Diagnostics render as text; local hidden-item diagnostics omit titles/dates; host prose is host-owned; no authorization inferred |
 
+## RD-09 evidence
+
+| Area | Evidence |
+|---|---|
+| Semantics | Root region, labelled grid, `aria-selected` cells, 37 columns, generated shortcut description, item names with period/layer/pattern/status/selection/clipping |
+| Grid structure | Item proxies moved to a grid-sibling overlay; axe `aria-required-children` passes in every scanned state |
+| Focus | One roving tab stop for cells, proxies and the active row’s overflow; Home/End row bounds; disabled-date fallback |
+| Skip link | First focusable planner control opens the inspector and focuses the item list |
+| Item list | Visible, keyboard-reachable list with rendered-fragment filtering, overflow markers and hidden-item exclusion |
+| Live regions | Visible status bar; hidden polite and assertive regions; pending/accepted/rejected/timeout/stale/aborted/not-applied mapped once |
+| Contrast | Computed per-fragment text colour; all built-in presets pass 4.5:1 ribbon text and 3:1 focus/border |
+| Target size | 24 px lanes, 24×24 resize handles, 24 px overflow, 28 px overflow entries, 26 px inspector buttons |
+| Non-colour cues | Selected outline/weight/underline, dotted holiday underline, `+N` overflow, layer patterns/labels |
+| Media | Forced-colours borders/outlines, reduced-motion rules, print hides status/skip/live regions |
+| Automated axe | Eight states: blue, yellow, high-contrast, compact, expanded, overflow dialog, command error, AC3 Fluent/MUI and 36 months — all zero serious/critical |
+| Keyboard E2E | Arrow/Shift+Arrow/Space/Enter, one tab stop per composite, skip link, move-by-week, hidden-item fallback, no nested proxy controls |
+| Manual AT | Orca smoke attempt recorded; NVDA/VoiceOver still pending; no WCAG conformance claim |
+
 ## Known gaps and honest limitations
 
 | Gap | Status |
@@ -172,10 +193,11 @@ landing page at `docs/api/index.html`. Generated HTML is not committed.
 | Batch multi-move, alt+drag subtraction, drag between layers/resources | Deferred from R1 |
 | Native touch-scroll E2E | Touch gating and `touch-action` are tested; full scroll physics is RD-10 |
 | Controlled-host undo history | Not implemented; rejected with `UNDO_UNAVAILABLE` |
-| Fluent UI v9/MUI example stories | Real Buttons are proven in the demo fixture; Storybook examples remain RD-11 polish |
+| Fluent UI v9/MUI example stories | Real Buttons are proven in the demo fixture; accessibility stories cover the states |
 | Annotation editing | Rendered but host-owned in this slice (AR-31) |
 | Geometry via arbitrary `cssVars` | CSS variables change visually; use theme tokens or `units` for layout geometry |
-| Full axe and manual screen-reader audit | Not performed; WCAG conformance is not claimed |
+| Full axe audit | Automated axe matrix green in Chromium; no serious/critical violations |
+| Manual NVDA/VoiceOver audit | Not performed; Orca smoke attempt recorded; WCAG conformance is not claimed |
 | Performance benchmarks (500/2k/10k items) | Not run |
 | Mobile touch and RTL | Touch editing and marquee are implemented; RTL-specific pointer behavior is not |
 | SVG shape plane and `edge-path` connectors | Deferred; `edge-path` emits `INVALID_RENDERER_OPTION` |
@@ -195,5 +217,5 @@ React 19-only is the support policy (requirements AR #80).
 - MIT license, DCO, no CLA.
 - ESM-only package; no CJS/UMD build.
 - `pnpm verify` and `pnpm verify:full` pass locally.
-- M1 plan: 48/48 tasks; M2 plan: 46/46; RD-06 plan: 46/46; RD-07 plan: 33/33.
+- M1 plan: 48/48 tasks; M2 plan: 46/46; RD-06 plan: 46/46; RD-07 plan: 33/33; RD-09 plan: 55/55.
 - No deferred feature is presented as implemented.

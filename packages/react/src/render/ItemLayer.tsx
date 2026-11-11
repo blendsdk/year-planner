@@ -13,6 +13,7 @@ import {
   useId,
   useState,
 } from "react";
+import { itemAccessibleName, readableTextColor } from "../a11y.js";
 import { scaleFragment } from "../geometry.js";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor, safeItemStyle } from "../safeStyle.js";
@@ -34,9 +35,13 @@ export interface ItemLayerProps {
   showAnnotations: boolean;
   selectedItemIds: ReadonlySet<string>;
   pendingItemIds: ReadonlySet<string>;
+  errorDescriptionId?: string | undefined;
+  errorItemId?: string | undefined;
   activeFragmentId: string | undefined;
   components: YearPlannerComponents;
   displayTimeZone: string;
+  textPrimary: string;
+  textInverse: string;
   globalReadOnly: boolean;
   renderItem?: ((context: ItemRenderContext) => ReactNode) | undefined;
   renderAnnotation?: ((context: AnnotationRenderContext) => ReactNode) | undefined;
@@ -75,9 +80,13 @@ export function ItemLayer({
   showAnnotations,
   selectedItemIds,
   pendingItemIds,
+  errorDescriptionId,
+  errorItemId,
   activeFragmentId,
   components,
   displayTimeZone,
+  textPrimary,
+  textInverse,
   globalReadOnly,
   renderItem,
   renderAnnotation,
@@ -113,17 +122,34 @@ export function ItemLayer({
     indices.set(item.id, index + 1);
     const label = itemLabel(item);
     const periodLabel = formatters.formatPeriod(item.period, displayTimeZone);
+    const visibleLabel =
+      fragment.channel === "annotation" ? (item.annotation?.label ?? label) : label;
+    const accessibleName = itemAccessibleName({
+      item,
+      layer,
+      periodLabel,
+      visibleLabel,
+      selected,
+      clipped: fragment.isStartClipped || fragment.isEndClipped,
+    });
     const annotationBackground =
       fragment.channel === "annotation" ? item.annotation?.background : undefined;
     const background =
       safeCssColor(item.color) ?? safeCssColor(annotationBackground) ?? safeCssColor(layer.color);
-    const textColor = safeCssColor(item.textColor);
+    const itemStyle = safeItemStyle(item.style);
+    const styleTextColor = typeof itemStyle.color === "string" ? itemStyle.color : undefined;
+    const explicitTextColor = safeCssColor(item.textColor) ?? styleTextColor;
+    const textColor =
+      explicitTextColor ??
+      (background
+        ? readableTextColor(background, [textPrimary, textInverse, "#ffffff"])
+        : undefined);
     const sharedStyle: CSSProperties = {
       left: scaled.x,
       top: scaled.y,
       width: Math.max(1, scaled.width),
       height: Math.max(1, scaled.height),
-      ...safeItemStyle(item.style),
+      ...itemStyle,
       ...(background ? { background } : {}),
       ...(textColor ? { color: textColor } : {}),
       ...(fragment.channel === "background" || fragment.channel === "highlight"
@@ -153,6 +179,13 @@ export function ItemLayer({
       );
     }
 
+    const describedBy =
+      [
+        tooltip?.item.id === item.id ? tooltipId : undefined,
+        errorItemId === item.id ? errorDescriptionId : undefined,
+      ]
+        .filter(Boolean)
+        .join(" ") || undefined;
     const context: ItemRenderContext = {
       item,
       fragment,
@@ -187,8 +220,8 @@ export function ItemLayer({
           tabIndex={fragment.fragmentId === activeFragmentId ? 0 : -1}
           aria-pressed={selected}
           aria-busy={pendingItemIds.has(item.id) ? "true" : undefined}
-          aria-describedby={tooltip?.item.id === item.id ? tooltipId : undefined}
-          aria-label={`${label}, ${layer.label ?? layer.name}, ${periodLabel}`}
+          aria-describedby={describedBy}
+          aria-label={accessibleName}
           title={`${label} (${layer.label ?? layer.name})`}
           data-yp-part="item-proxy"
           data-item-id={item.id}
@@ -253,20 +286,16 @@ export function ItemLayer({
             </>
           )}
         </div>
-        {fragment.channel !== "annotation" && (
+        {fragment.channel !== "annotation" && scaled.width >= 72 && (
           <>
-            <button
-              type="button"
+            <span
+              aria-hidden="true"
               data-yp-part="resize-start"
-              tabIndex={-1}
-              aria-label="Resize start"
               className="yp-resize-handle yp-resize-start"
             />
-            <button
-              type="button"
+            <span
+              aria-hidden="true"
               data-yp-part="resize-end"
-              tabIndex={-1}
-              aria-label="Resize end"
               className="yp-resize-handle yp-resize-end"
             />
           </>

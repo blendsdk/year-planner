@@ -108,6 +108,7 @@ export function App() {
   const commandsMode = new URLSearchParams(search).get("commands") === "1";
   const [theme, setTheme] = useState<YearPlannerThemeName>("classic-blue");
   const [months, setMonths] = useState(14);
+  const [density, setDensity] = useState<"compact" | "expanded">("compact");
   const [zoom, setZoom] = useState(1);
   const items = [...baseItems, ...overflowItems, ...(securityMode ? [securityItem] : [])];
   const layoutProps =
@@ -160,6 +161,17 @@ export function App() {
           </select>
         </label>
         <label>
+          Density{" "}
+          <select
+            data-testid="density"
+            value={density}
+            onChange={(event) => setDensity(event.target.value as "compact" | "expanded")}
+          >
+            <option value="compact">Compact</option>
+            <option value="expanded">Expanded</option>
+          </select>
+        </label>
+        <label>
           Zoom{" "}
           <input
             type="range"
@@ -186,7 +198,7 @@ export function App() {
             ]}
             defaultItems={items}
             defaultSelection={{ dates: [], items: year === 2027 ? ["booking"] : [] }}
-            display={{ theme, zoom, showISOWeekNumbers: true }}
+            display={{ theme, zoom, density, showISOWeekNumbers: true }}
             print={{ mode: "paginate" }}
             activeLayerId="bookings"
             renderCell={

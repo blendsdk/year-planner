@@ -35,6 +35,7 @@ and January of the next year — with:
 | A3 multi-page print output and Fluent/MUI token adapters | Done — RD-06 |
 | Pointer, keyboard and touch interaction, marquee, drag/resize/paint/create | Done — RD-07 |
 | Controlled commands, request IDs, versions, rollback and accepted-not-applied | Done — RD-08 |
+| Accessibility semantics, roving focus, live regions, contrast and axe evidence | Done — RD-09 |
 
 The renderer decision is recorded in
 [ADR 0001](docs/adr/0001-renderer-strategy.md), with measurements in
@@ -52,8 +53,9 @@ import "@blendsdk/react-year-planner/styles.css";
 <YearPlanner year={2027} items={items} layers={layers} activeLayerId="bookings" />;
 ```
 
-Interaction is documented in [docs/interaction.md](docs/interaction.md) and the
-controlled command contract in [docs/commands.md](docs/commands.md). The package
+Interaction is documented in [docs/interaction.md](docs/interaction.md), the
+controlled command contract in [docs/commands.md](docs/commands.md), and the
+keyboard/screen-reader contract in [docs/accessibility.md](docs/accessibility.md). The package
 is **ESM-only**: `"type": "module"`, an `import`-only export map and
 an ES Vite build. Fluent UI v9 and MUI token adapters are available at
 `@blendsdk/react-year-planner/adapters/fluent` and

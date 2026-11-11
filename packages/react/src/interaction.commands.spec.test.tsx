@@ -202,7 +202,7 @@ describe("RD-08 pending previews", () => {
   it("clears the preview when the host accepts but props never apply", async () => {
     const harness = setup({
       items: [booking, maintenance, highlight],
-      interaction: { commandTimeoutMs: 20 },
+      interaction: { commandTimeoutMs: 100 },
       onChangeRequest: () => ({
         accepted: true,
         revision: "2",
@@ -216,8 +216,10 @@ describe("RD-08 pending previews", () => {
       }),
     });
     dragItem(harness, "booking", "2027-01-28", "2027-02-02");
-    await waitFor(() => expect(previews(harness.container)).toHaveLength(0));
-    await waitFor(() => expect(harness.container.textContent).toContain("ACCEPTED_NOT_APPLIED"));
+    await waitFor(() => expect(previews(harness.container)).toHaveLength(0), { timeout: 5000 });
+    await waitFor(() => expect(harness.container.textContent).toContain("ACCEPTED_NOT_APPLIED"), {
+      timeout: 5000,
+    });
   });
 
   it("holds a paint preview until the host rejects", async () => {

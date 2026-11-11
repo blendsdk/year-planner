@@ -37,6 +37,12 @@ describe("RD-06 print output", () => {
     });
   });
 
+  it("uses readable white text for a dark print layer", () => {
+    const { container } = render(<YearPlanner year={2027} layers={[layer]} items={[item]} />);
+    const fragment = container.querySelector('[data-print-item-id="booking"]') as HTMLElement;
+    expect(fragment.style.color).toBe("rgb(255, 255, 255)");
+  });
+
   it("renders labels, weekends, ISO weeks and fragments in print", () => {
     const { container } = render(<YearPlanner year={2027} layers={[layer]} items={[item]} />);
     const tree = container.querySelector('[data-yp-part="print-pages"]') as HTMLElement;

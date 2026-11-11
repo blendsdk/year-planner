@@ -49,7 +49,7 @@ export function resolveDisplayOptions(
   }
 
   const themeLaneHeight = Number(theme.laneHeight);
-  const laneHeight = Number.isFinite(themeLaneHeight) && themeLaneHeight > 0 ? themeLaneHeight : 18;
+  const laneHeight = Number.isFinite(themeLaneHeight) && themeLaneHeight > 0 ? themeLaneHeight : 24;
 
   const rawZone = display?.displayTimeZone ?? "UTC";
   const displayTimeZone = isValidTimeZone(rawZone) ? rawZone : "UTC";

@@ -31,6 +31,7 @@ import type {
   InteractionConfig,
   YearPlannerComponents,
 } from "../types.js";
+import { ItemList } from "./ItemList.js";
 
 /** Props for the default inspector. */
 export interface InspectorProps {
@@ -53,7 +54,12 @@ export interface InspectorProps {
   onClose: () => void;
   onSelectItem: (itemId: string) => void;
   onFocusItem: (itemId: string) => void;
+  asideId?: string | undefined;
   asideRef?: RefObject<HTMLElement | null> | undefined;
+  itemListId: string;
+  itemListRef?: RefObject<HTMLElement | null> | undefined;
+  renderedItemIds: ReadonlySet<string>;
+  feedbackId?: string | undefined;
 }
 
 function groupPath(layer: PlannerLayer, groups: LayerGroup[]): string {
@@ -169,7 +175,12 @@ export function Inspector({
   onClose,
   onSelectItem,
   onFocusItem,
+  asideId,
   asideRef,
+  itemListId,
+  itemListRef,
+  renderedItemIds,
+  feedbackId,
 }: InspectorProps): ReactNode {
   if (!open) return null;
   const InspectorSlot = components.Inspector;
@@ -180,6 +191,7 @@ export function Inspector({
   const overflowItems = (overflowRow?.overflow ?? [])
     .map((entry) => model.items.find((item) => item.id === entry.itemId))
     .filter((item): item is PlannerItem => item !== undefined);
+  const overflowItemIds = new Set(overflowItems.map((item) => item.id));
   const layerById = new Map(model.layers.map((layer) => [layer.id, layer]));
 
   const actions: InspectorActions = {
@@ -202,6 +214,7 @@ export function Inspector({
 
   return (
     <aside
+      id={asideId}
       ref={asideRef}
       className="yp-inspector"
       data-yp-part="inspector"
@@ -244,7 +257,7 @@ export function Inspector({
               onFocusItem={onFocusItem}
               layerById={layerById}
             />
-            <InspectorFeedback pipeline={pipeline} />
+            <InspectorFeedback pipeline={pipeline} id={feedbackId} />
           </InspectorSlot>
         ) : (
           <>
@@ -269,10 +282,24 @@ export function Inspector({
               onFocusItem={onFocusItem}
               layerById={layerById}
             />
-            <InspectorFeedback pipeline={pipeline} />
+            <InspectorFeedback pipeline={pipeline} id={feedbackId} />
           </>
         )}
       </div>
+      <ItemList
+        model={model}
+        visibility={visibility}
+        filter={filter}
+        selection={selection}
+        formatters={formatters}
+        displayTimeZone={displayTimeZone}
+        renderedItemIds={renderedItemIds}
+        overflowItemIds={overflowItemIds}
+        listId={itemListId}
+        listRef={itemListRef}
+        onSelectItem={onSelectItem}
+        onFocusItem={onFocusItem}
+      />
     </aside>
   );
 }
@@ -612,12 +639,23 @@ function DefaultInspectorBody({
 }
 
 /** Renders command feedback and non-blocking notices with retry/dismiss actions. */
-export function InspectorFeedback({ pipeline }: { pipeline: CommandPipeline }): ReactNode {
+export function InspectorFeedback({
+  pipeline,
+  id,
+}: {
+  pipeline: CommandPipeline;
+  id?: string | undefined;
+}): ReactNode {
   const feedback: CommandFeedback | undefined = pipeline.feedback;
   const notices = pipeline.notices;
   if (!feedback && notices.length === 0) return null;
   return (
-    <section className="yp-inspector-feedback" data-yp-part="inspector-feedback" role="status">
+    <section
+      id={id}
+      className="yp-inspector-feedback"
+      data-yp-part="inspector-feedback"
+      aria-label="Command feedback"
+    >
       {feedback && (
         <p data-yp-level={feedback.level}>
           <code>{feedback.code}</code> {feedback.message}

@@ -38,7 +38,7 @@ export type YearPlannerThemeName =
 
 const SHARED = {
   rowHeight: 90,
-  laneHeight: 18,
+  laneHeight: 24,
   monthBandWidth: 70,
   weekendWidth: 40,
   weekdayWidth: 55,
@@ -92,7 +92,7 @@ const MODERN: YearPlannerTheme = Object.freeze({
   surfaceMuted: "#f5f7fa",
   weekend: "#eef2f6",
   context: "#f5f7fa",
-  border: "#8a99a8",
+  border: "#7b8a99",
   textPrimary: "#102a43",
   textMuted: "#52606d",
   textInverse: "#ffffff",

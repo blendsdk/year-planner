@@ -11,6 +11,7 @@ export interface OverflowProps {
   formatters: PlannerFormatters;
   displayTimeZone: string;
   renderOverflow?: ((context: OverflowRenderContext) => ReactNode) | undefined;
+  active: boolean;
   onSelectItem: (itemId: string) => void;
   onFocusItem: (itemId: string) => void;
 }
@@ -28,11 +29,13 @@ export function Overflow({
   formatters,
   displayTimeZone,
   renderOverflow,
+  active,
   onSelectItem,
   onFocusItem,
 }: OverflowProps): ReactNode {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const popoverId = useId();
   const entries = ribbonRow.overflow;
   const visible = entries
@@ -50,6 +53,11 @@ export function Overflow({
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    popoverRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+  }, [open]);
+
   if (ribbonRow.overflowCount <= 0) return null;
 
   const context: OverflowRenderContext = {
@@ -59,14 +67,25 @@ export function Overflow({
   };
 
   return (
-    <div className="yp-overflow" data-yp-part="overflow">
+    // biome-ignore lint/a11y/noStaticElementInteractions: the wrapper only closes the popover when focus leaves
+    <div
+      className="yp-overflow"
+      data-yp-part="overflow"
+      onBlur={(event) => {
+        const next = event.relatedTarget;
+        if (next instanceof Node && event.currentTarget.contains(next)) return;
+        setOpen(false);
+      }}
+    >
       <button
         ref={buttonRef}
         type="button"
         className="yp-overflow-button"
         data-yp-part="overflow-button"
+        tabIndex={active ? 0 : -1}
         aria-expanded={open}
         aria-controls={open ? popoverId : undefined}
+        aria-haspopup="dialog"
         aria-label={`Show ${ribbonRow.overflowCount} hidden items`}
         onClick={() => setOpen((value) => !value)}
         onKeyDown={(event) => {
@@ -81,6 +100,7 @@ export function Overflow({
       {open && (
         <div
           id={popoverId}
+          ref={popoverRef}
           className="yp-overflow-popover"
           data-yp-part="overflow-popover"
           role="dialog"
@@ -108,7 +128,7 @@ export function Overflow({
                       setOpen(false);
                     }}
                   >
-                    <span>{item.title ?? item.id}</span>
+                    <span>{item.title ?? item.id}</span>{" "}
                     <small>{formatters.formatPeriod(item.period, displayTimeZone)}</small>
                   </button>
                 </li>

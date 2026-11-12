@@ -64,7 +64,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
-| Quality tests | **183 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
+| Quality tests | **185 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
@@ -320,7 +320,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 
 | Command | Result |
 | ------- | ------ |
-| `pnpm verify` | PASS — 220 core, 508 React, 183 quality tests |
+| `pnpm verify` | PASS — 220 core, 508 React, 185 quality tests |
 | `pnpm release:check` | PASS — versions, changelogs, tarballs, source maps and `npm pack --dry-run` |
 | `pnpm release:publish --dry-run --allow-dirty` | PASS — core then React packed, validated and published in npm dry-run mode; no upload |
 | `node scripts/apply-branch-protection.mjs --record` | PASS (exit 0) — records the private-repo HTTP 403 and the missing second reviewer |
@@ -332,7 +332,8 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 - Both packages are at `0.2.0` with generated changelogs, package READMEs,
   checked-in LICENSE copies and complete publish metadata.
 - `scripts/release-check.mjs` validates versions, changelogs, tarballs, source
-  maps, the npm dry-run allowlist and pending changesets.
+  maps and the npm dry-run allowlist; `release:publish` refuses pending
+  changesets.
 - `scripts/release-publish.mjs` packs with pnpm, verifies the exact core
   dependency, compares published integrity, publishes core before React with
   npm provenance, and creates one `v<version>` GitHub release.

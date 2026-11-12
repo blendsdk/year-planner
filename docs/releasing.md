@@ -69,7 +69,7 @@ Run these steps once, after the license and asset review above:
    `gh api -X PUT repos/blendsdk/year-planner/private-vulnerability-reporting`.
 2. Enable Dependabot alerts:
    `gh api -X PUT repos/blendsdk/year-planner/vulnerability-alerts`.
-3. Change visibility:
+3. Change visibility only after private vulnerability reporting is enabled:
    `gh repo edit blendsdk/year-planner --visibility public --accept-visibility-change-consequences`.
 4. Enable GitHub Pages with **GitHub Actions** as the source.
 5. Create the `npm-production` environment with required reviewers and a

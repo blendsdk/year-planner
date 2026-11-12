@@ -246,6 +246,6 @@
 | RD-12-AC-08 | RD-12 | 8 | proven | `tests/quality/release-governance.spec.test.ts` | `RD-12-AC-08: support policy` | Best-effort support, no SLA |
 | RD-12-AC-09 | RD-12 | 9 | proven | `tests/quality/release-governance.spec.test.ts` | `RD-12-AC-09: release checklist` | Checklist covers the required gates |
 | RD-12-AC-10 | RD-12 | 10 | partial |  |  | Visibility/license checklist proven; the owner changes visibility at release |
-| RD-12-AC-11 | RD-12 | 11 | proven | `tests/quality/release-metadata.spec.test.ts` | `RD-12-AC-11: package metadata and changelogs` | Metadata, files and pinned actions |
+| RD-12-AC-11 | RD-12 | 11 | proven | `tests/quality/release-metadata.spec.test.ts` | `RD-12-AC-11: package metadata and changelogs` | Metadata/files; action pins proven in `release-workflow.spec.test.ts` |
 | RD-12-AC-12 | RD-12 | 12 | proven | `tests/quality/release-governance.spec.test.ts` | `RD-12-AC-12: dependency audit` | Audit gate and grouped updates |
 | RD-12-AC-13 | RD-12 | 13 | proven | `tests/quality/release-workflow.spec.test.ts` | `RD-12-AC-13: uses no token secret or registry credential` | OIDC only, least privilege, no secrets |

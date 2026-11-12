@@ -73,7 +73,10 @@ describe("RD-12-AC-02: manual main-only release", () => {
     expect(publish).not.toContain("pnpm install");
     expect(publish).not.toContain("pnpm build");
     expect(publish).toContain("release-publish.mjs");
-    expect(publish).toContain("GH_TOKEN");
+    expect(publish).toContain("RELEASE_GITHUB_TOKEN");
+    expect(publish).toContain("persist-credentials: false");
+    expect(publish).toContain("timeout-minutes: 30");
+    expect(publish).toContain("gh workflow run pages.yml");
     expect(smoke).toContain("release:smoke");
     expect(smoke).not.toContain("id-token");
   });
@@ -109,9 +112,7 @@ describe("RD-12-AC-02: publish script", () => {
       dryRun: true,
       allowDirty: true,
     });
-    expect(parseReleaseFlags(["--packs", "release-packs"])).toMatchObject({
-      packs: "release-packs",
-    });
+    expect(parseReleaseFlags(["--packs", "release-packs"]).packs).toMatch(/release-packs$/);
     expect(() => parseReleaseFlags(["--allow-dirty"])).toThrow(/dry-run/);
     expect(() => parseReleaseFlags(["--skip-github-release"])).toThrow(/bootstrap/);
     expect(parseReleaseFlags(["--bootstrap", "--skip-github-release"])).toMatchObject({

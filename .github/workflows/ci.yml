@@ -87,7 +87,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: git fetch origin main --depth=1
+      - run: git fetch origin main
       - run: pnpm changeset status --since=origin/main
 
   dco:
@@ -98,9 +98,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Check Signed-off-by
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          BASE="origin/${{ github.base_ref }}"
-          git fetch origin "${{ github.base_ref }}" --depth=1
+          BASE="origin/$BASE_REF"
+          git fetch origin "$BASE_REF" --depth=1
           missing=0
           for sha in $(git rev-list "$BASE"..HEAD); do
             if ! git log -1 --format=%B "$sha" | grep -q '^Signed-off-by: '; then

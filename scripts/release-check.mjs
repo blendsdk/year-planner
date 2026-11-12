@@ -7,7 +7,7 @@ import {
   changelogSection,
   inspectSourceMaps,
   inspectTarball,
-  pendingChangesets,
+  inspectTarballSourceMaps,
   readPackageManifests,
   validatePackedManifest,
   validateTarballPaths,
@@ -71,10 +71,6 @@ export function checkRelease(root) {
       errors.push(`${path} has no ## ${manifests[key].version} section`);
     }
   }
-  const changesets = pendingChangesets(root);
-  if (changesets.length > 0) {
-    errors.push(`pending changesets: ${changesets.join(", ")}; run pnpm version-packages`);
-  }
   for (const directory of ["packages/core/dist", "packages/react/dist"]) {
     if (!existsSync(join(root, directory))) errors.push(`${directory} is missing; run pnpm build`);
   }
@@ -82,8 +78,13 @@ export function checkRelease(root) {
 
   const tarballs = pack(root, manifests);
   for (const [key, tarball] of Object.entries(tarballs)) {
+    if (!existsSync(tarball)) {
+      errors.push(`missing tarball ${tarball}`);
+      continue;
+    }
     const inspection = inspectTarball(tarball);
     errors.push(...inspection.errors);
+    errors.push(...inspectTarballSourceMaps(tarball));
     errors.push(
       ...validatePackedManifest(inspection.manifest, {
         name: manifests[key].name,

@@ -20,6 +20,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  guard:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Release must be dispatched from main"
+          exit 1
+
   verify:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -63,6 +71,7 @@ jobs:
     needs: build
     if: inputs.publish && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment:
       name: npm-production
       url: https://www.npmjs.com/package/@blendsdk/react-year-planner
@@ -72,9 +81,8 @@ jobs:
       actions: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
-          version: 12.9.1
+          persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
@@ -83,6 +91,11 @@ jobs:
           name: release-packs
           path: release-packs
       - run: node scripts/release-publish.mjs --packs release-packs
+        env:
+          RELEASE_GITHUB_TOKEN: ${{ github.token }}
+      - if: inputs.deploy-docs
+        continue-on-error: true
+        run: gh workflow run pages.yml --ref main -f deploy=true
         env:
           GH_TOKEN: ${{ github.token }}
 
@@ -100,8 +113,3 @@ jobs:
         with:
           node-version: 24
       - run: pnpm release:smoke
-      - if: inputs.deploy-docs
-        continue-on-error: true
-        run: gh workflow run pages.yml --ref main -f deploy=true
-        env:
-          GH_TOKEN: ${{ github.token }}

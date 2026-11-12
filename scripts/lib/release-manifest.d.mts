@@ -67,5 +67,8 @@ export declare function validateVersions(manifests: {
 /** Reads the paths and manifest from a packed tarball. */
 export declare function inspectTarball(tarball: string): TarballInspection;
 
+/** Validates source maps from inside a packed tarball. */
+export declare function inspectTarballSourceMaps(tarball: string): string[];
+
 /** Recursively validates every source map under a directory. */
 export declare function inspectSourceMaps(directory: string): string[];

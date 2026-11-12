@@ -14,7 +14,7 @@ packages are still `0.1.0`, unpublished, and carry no package changelogs,
 homepage, bug tracker or publish configuration. A catch-all CODEOWNERS exists;
 five changesets are pending. There is no version or release
 workflow, no branch protection, no support policy and no written release
-sequence; CODEOWNERS exists with a catch-all owner. Six reviewed changesets are waiting to become the first
+sequence; CODEOWNERS exists with a catch-all owner. Five reviewed changesets are waiting to become the first
 release.
 
 This plan adds no product behavior. It makes the first release repeatable: a
@@ -68,6 +68,7 @@ surface named by RD-12; each is tested by a contract or a dry run.
 | 03  | [Versioning and Packaging](03-01-versioning-packaging.md)       | Lockstep versions, changelogs, metadata, packs   |
 | 04  | [Release Automation](03-02-release-automation.md)               | Human release PR, OIDC publish, docs dispatch    |
 | 05  | [Governance and Support](03-03-governance-support.md)           | Community files, security process, protection    |
+| 05  | [Findings](05-findings.md)                                      | Post-phase review rulings                         |
 | 07  | [Testing Strategy](07-testing-strategy.md)                      | ST-cases and verification                        |
 | 99  | [Execution Plan](99-execution-plan.md)                          | Phases, sessions and task checklist              |
 
@@ -122,7 +123,7 @@ proposed; candidate creation is reserved authority._
 | `codeops/features/year-planner/requirements/RD-12-release-maintenance.md` | Owning requirements |
 | `codeops/features/year-planner/requirements/00-traceability.md` | AC matrix; gains RD-12 rows |
 | `.changeset/config.json` | Fixed group and access policy |
-| `.changeset/*.md` | Six pending release notes consumed by `changeset version` |
+| `.changeset/*.md` | Five pending release notes consumed by `changeset version` |
 | `packages/core/package.json`, `packages/react/package.json` | Version, metadata, files and exports |
 | `packages/core/CHANGELOG.md`, `packages/react/CHANGELOG.md` | Generated per-package changelogs |
 | `packages/core/README.md`, `packages/react/README.md` | Short package landing pages |

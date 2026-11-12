@@ -39,6 +39,11 @@ export function validateTarballPaths(paths) {
     errors.push("missing dist/ files");
   }
   for (const path of files) {
+    const segments = path.split("/");
+    if (path.startsWith("/") || segments.includes("..")) {
+      errors.push(`forbidden path ${path}`);
+      continue;
+    }
     if (path === "package/package.json") continue;
     if (path === "package/README.md") continue;
     if (path === "package/LICENSE") continue;
@@ -128,12 +133,12 @@ export function validateSourceMap(source, file) {
  * changelogSection("## 0.2.0\n\n- fix", "0.2.0")
  */
 export function changelogSection(changelog, version) {
-  const heading = `## ${version}`;
-  const start = changelog.indexOf(heading);
-  if (start < 0) return "";
-  const bodyStart = changelog.indexOf("\n", start) + 1;
-  const next = changelog.indexOf("\n## ", bodyStart);
-  return (next < 0 ? changelog.slice(bodyStart) : changelog.slice(bodyStart, next)).trim();
+  const escaped = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const heading = new RegExp(`^## ${escaped}\\s*$`, "m").exec(changelog);
+  if (!heading) return "";
+  const rest = changelog.slice(heading.index + heading[0].length).replace(/^\n/, "");
+  const next = /^## /m.exec(rest);
+  return (next ? rest.slice(0, next.index) : rest).trim();
 }
 
 /**
@@ -255,6 +260,29 @@ export function inspectTarball(tarball) {
     execFileSync("tar", ["-xOzf", tarball, "package/package.json"], { encoding: "utf8" }),
   );
   return { paths, manifest, errors: validateTarballPaths(paths) };
+}
+
+/**
+ * Validates source maps from inside a packed tarball.
+ *
+ * This covers the bytes that will be published even when no build directory
+ * exists, such as the credential-free publish job.
+ *
+ * @param tarball - Packed tarball path.
+ * @returns Error messages.
+ * @example
+ * inspectTarballSourceMaps("release-packs/pkg-0.2.0.tgz")
+ */
+export function inspectTarballSourceMaps(tarball) {
+  const paths = execFileSync("tar", ["-tzf", tarball], { encoding: "utf8" })
+    .split("\n")
+    .filter((path) => path.startsWith("package/dist/") && path.endsWith(".map"));
+  const errors = [];
+  for (const path of paths) {
+    const source = execFileSync("tar", ["-xOzf", tarball, path], { encoding: "utf8" });
+    errors.push(...validateSourceMap(source, path));
+  }
+  return errors;
 }
 
 /**

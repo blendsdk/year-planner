@@ -58,7 +58,7 @@ describe("RD-10-AC-01: release gate evidence", () => {
       "benchmarks/rd10-baseline",
       "A3 print",
       "220 core tests pass",
-      "Quality tests | **183 passed**",
+      "Quality tests | **185 passed**",
       "41.67 kB",
       "64.47 kB",
       "PASS** for RD-01 through RD-12",

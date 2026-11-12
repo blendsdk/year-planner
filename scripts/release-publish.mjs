@@ -7,8 +7,8 @@ import { pathToFileURL } from "node:url";
 import {
   buildReleaseNotes,
   changelogSection,
-  inspectSourceMaps,
   inspectTarball,
+  inspectTarballSourceMaps,
   pendingChangesets,
   readPackageManifests,
   validatePackedManifest,
@@ -53,8 +53,8 @@ export function parseReleaseFlags(argv) {
     else if (token === "--allow-dirty") options.allowDirty = true;
     else if (token === "--packs") {
       const value = argv[index + 1];
-      if (!value) throw new Error("--packs needs a directory");
-      options.packs = value;
+      if (!value || value.startsWith("--")) throw new Error("--packs needs a directory");
+      options.packs = resolve(value);
       index += 1;
     } else {
       throw new Error(`unknown option: ${token}`);
@@ -69,7 +69,23 @@ export function parseReleaseFlags(argv) {
   if (options.bootstrap && options.dryRun) {
     throw new Error("--bootstrap and --dry-run cannot be combined");
   }
+  if (options.bootstrap && process.env.CI) {
+    throw new Error("--bootstrap is not allowed in CI; run it locally with npm login");
+  }
   return options;
+}
+
+/** Runs one command and inherits stdout/stderr. */
+function gh(args, input) {
+  return execFileSync("gh", args, {
+    encoding: "utf8",
+    stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
+    input,
+    env: {
+      ...process.env,
+      GH_TOKEN: process.env.RELEASE_GITHUB_TOKEN ?? process.env.GH_TOKEN,
+    },
+  });
 }
 
 /** Runs one command and inherits stdout/stderr. */
@@ -196,8 +212,12 @@ function publishTarball(tarball, name, version, options) {
 
 /** Creates or updates the single v<version> GitHub release. */
 function publishGithubRelease(root, version, options) {
-  if (options.dryRun || options.skipGithubRelease) {
+  if (options.dryRun) {
     console.log("[dry-run] GitHub release skipped");
+    return;
+  }
+  if (options.skipGithubRelease) {
+    console.log("[release] GitHub release skipped by --skip-github-release");
     return;
   }
   const notes = buildReleaseNotes({
@@ -213,24 +233,20 @@ function publishGithubRelease(root, version, options) {
   const tag = `v${version}`;
   let exists = true;
   try {
-    run("gh", ["release", "view", tag], { capture: true });
+    gh(["release", "view", tag]);
   } catch {
     exists = false;
   }
   if (exists) {
-    const repo = run("gh", ["repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner"], {
-      capture: true,
-    }).trim();
-    const tagCommit = run("gh", ["api", `repos/${repo}/commits/${tag}`, "--jq", ".sha"], {
-      capture: true,
-    }).trim();
+    const repo = gh(["repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner"]).trim();
+    const tagCommit = gh(["api", `repos/${repo}/commits/${tag}`, "--jq", ".sha"]).trim();
     if (tagCommit !== headCommit()) {
       throw new Error(`release ${tag} points at ${tagCommit}, not HEAD ${headCommit()}`);
     }
-    run("gh", ["release", "edit", tag, "--notes-file", notesFile]);
+    gh(["release", "edit", tag, "--notes-file", notesFile]);
     console.log(`updated GitHub release ${tag}`);
   } else {
-    run("gh", ["release", "create", tag, "--title", tag, "--notes-file", notesFile]);
+    gh(["release", "create", tag, "--title", tag, "--notes-file", notesFile]);
     console.log(`created GitHub release ${tag}`);
   }
 }
@@ -255,8 +271,8 @@ export function release(root, options) {
     tarballs = packPackages(root, "release-packs");
   }
   const errors = inspectRelease(tarballs, manifests);
-  errors.push(...inspectSourceMaps(join(root, "packages/core/dist")));
-  errors.push(...inspectSourceMaps(join(root, "packages/react/dist")));
+  if (existsSync(tarballs.core)) errors.push(...inspectTarballSourceMaps(tarballs.core));
+  if (existsSync(tarballs.react)) errors.push(...inspectTarballSourceMaps(tarballs.react));
   if (errors.length > 0) throw new Error(errors.join("\n"));
 
   const published = [];

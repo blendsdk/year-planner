@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- 478cf9a: Add the RD-06 rendered React view: scrollable and zoomable year grid, item and
+- 478cf9a: Add the rendered React view: scrollable and zoomable year grid, item and
   annotation fragments, compact overflow, tooltips, component-owned inspector,
   CSS-variable themes and presets, provider, render slots, controlled
   items/visibility/selection/filter state, A3 multi-page print output, SSR-safe

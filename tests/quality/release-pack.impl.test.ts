@@ -1,9 +1,13 @@
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   buildReleaseNotes,
   changelogSection,
   inspectSourceMaps,
+  inspectTarballSourceMaps,
   pendingChangesets,
   validatePackedManifest,
   validatePublishedIntegrity,
@@ -53,8 +57,37 @@ describe("release manifest helper failure modes", () => {
     );
   });
 
-  it("reports pending changesets", () => {
-    expect(pendingChangesets(new URL("../../", import.meta.url).pathname)).toEqual([]);
+  it("reports pending changesets from a fixture", () => {
+    const directory = mkdtempSync(join(tmpdir(), "release-changeset-"));
+    try {
+      mkdirSync(join(directory, ".changeset"));
+      writeFileSync(join(directory, ".changeset", "fix.md"), "---\n---\n");
+      expect(pendingChangesets(directory)).toEqual(["fix.md"]);
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("validates source maps inside a tarball without a build tree", () => {
+    const directory = mkdtempSync(join(tmpdir(), "release-map-"));
+    const tarball = join(directory, "package.tgz");
+    try {
+      mkdirSync(join(directory, "package", "dist"), { recursive: true });
+      writeFileSync(join(directory, "package", "package.json"), "{}");
+      writeFileSync(
+        join(directory, "package", "dist", "index.js.map"),
+        JSON.stringify({ sources: ["../src/index.ts"] }),
+      );
+      execFileSync("tar", ["-czf", tarball, "-C", directory, "package"]);
+      expect(inspectTarballSourceMaps(tarball)).toEqual([]);
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("does not match a longer changelog version prefix", () => {
+    expect(changelogSection("## 0.2.10\n\n- future", "0.2.1")).toBe("");
+    expect(changelogSection("## 0.2.1\n\n- current", "0.2.1")).toBe("- current");
   });
 
   it("rejects a published version with different content and accepts an identical one", () => {
@@ -68,6 +101,7 @@ describe("release manifest helper failure modes", () => {
   it("rejects unsafe release flag combinations", () => {
     expect(() => parseReleaseFlags(["--allow-dirty"])).toThrow(/dry-run/);
     expect(() => parseReleaseFlags(["--skip-github-release"])).toThrow(/bootstrap/);
+    expect(() => parseReleaseFlags(["--packs", "--dry-run"])).toThrow(/directory/);
     expect(() => parseReleaseFlags(["--bootstrap", "--dry-run"])).toThrow(/cannot be combined/);
     expect(parseReleaseFlags(["--bootstrap", "--skip-github-release"])).toMatchObject({
       bootstrap: true,

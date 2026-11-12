@@ -12,6 +12,9 @@ Do not open a public issue for a suspected vulnerability.
 
 Include the affected version, a reproduction, and the impact you observed.
 
+If private vulnerability reporting is not yet enabled, open a minimal public
+issue asking for a private channel without including vulnerability details.
+
 ## Response process
 
 | Stage | Commitment |

@@ -9,7 +9,7 @@
   visible command status bar, contrast-safe ribbon text, 24 px targets, forced-colours and
   reduced-motion rules. Item proxies now render in a grid-sibling overlay so the ARIA row contract
   stays valid.
-- 478cf9a: Add the RD-06 rendered React view: scrollable and zoomable year grid, item and
+- 478cf9a: Add the rendered React view: scrollable and zoomable year grid, item and
   annotation fragments, compact overflow, tooltips, component-owned inspector,
   CSS-variable themes and presets, provider, render slots, controlled
   items/visibility/selection/filter state, A3 multi-page print output, SSR-safe

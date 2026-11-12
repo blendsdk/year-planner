@@ -225,6 +225,12 @@ describe("RD-10-AC-02: traceability title rules", () => {
 });
 
 describe("RD-10-AC-02: repository traceability", () => {
+  it("defaults through RD-11", () => {
+    const result = checkTraceability(process.cwd());
+    expect(result.ok).toBe(true);
+    expect(result.expected).toHaveLength(170);
+  });
+
   it("covers RD-01 through RD-11", () => {
     const result = checkTraceability(process.cwd(), { through: 11 });
     expect(result.ok).toBe(true);

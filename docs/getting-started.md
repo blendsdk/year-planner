@@ -178,7 +178,8 @@ The private demo demonstrates the integration states:
 - `?interaction=1` — selection, marquee, paint/erase, move and resize;
 - `?ac3=1` — real Fluent UI v9 and MUI buttons in a cell and inspector;
 - `?security=1` — a hidden item that must not reach the DOM or the inspector;
-- `?print=prt01` — the 2017 classic-yellow print sample.
+- `?print=prt01` — the 2017 classic-yellow print sample;
+- `?bench=1` — the layout and browser benchmark host.
 
 Run it with `pnpm dev`.
 

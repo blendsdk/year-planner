@@ -91,3 +91,14 @@
 | SA-006 | 4 | INFO | docs-site/absolute-urls | fixed |
 | SA-007 | 4 | INFO | workflows/concurrency | fixed |
 | SA-008 | 4 | INFO | ci/artifact-always | fixed |
+
+### Phase 5 review
+
+| Finding | Phase | Severity | Area | Ruling |
+| ------- | ----- | -------- | ---- | ------ |
+| RV-001 | 5 | MAJOR | traceability/cli-default | fixed |
+| RV-002 | 5 | MAJOR | demo-contract/render-proof | fixed |
+| RV-003 | 5 | MINOR | test-report/header | fixed |
+| RV-004 | 5 | MINOR | test-report/inventory | fixed |
+| RV-005 | 5 | OBSERVATION | docs/getting-started | fixed |
+| RV-006 | 5 | OBSERVATION | storybook-contract/regex | fixed (documented) |

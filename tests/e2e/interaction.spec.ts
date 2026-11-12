@@ -32,6 +32,7 @@ test.describe("RD-07-AC-01/05/06/07/08/11: interaction demo", () => {
   });
 
   test("RD-11-AC-08: drags a cross-month date range with two previews", async ({ page }) => {
+    await expect(page.getByRole("navigation", { name: "Demo routes" })).toBeVisible();
     await page.getByTestId("interaction-mode").selectOption("select");
     await cell(page, "2027-01-28").scrollIntoViewIfNeeded();
     await cell(page, "2027-02-06").scrollIntoViewIfNeeded();

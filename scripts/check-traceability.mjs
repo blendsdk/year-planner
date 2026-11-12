@@ -12,7 +12,7 @@ import { checkTraceability } from "./lib/traceability.mjs";
  */
 function main() {
   const args = process.argv.slice(2);
-  let through = 10;
+  let through = 11;
   let root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
   for (let index = 0; index < args.length; index += 1) {
     const flag = args[index];

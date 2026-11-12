@@ -34,6 +34,7 @@ test.describe("RD-10-AC-08/10/13: security and privacy", () => {
     });
 
     await page.goto("/?security=1");
+    await expect(page.getByRole("navigation", { name: "Demo routes" })).toBeVisible();
     await expect(page.getByRole("grid")).toBeVisible();
     await page.getByTestId("year").selectOption("2027");
     await expect(

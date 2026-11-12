@@ -28,6 +28,8 @@ function storyFiles(): StoryFile[] {
     const exports = [...source.matchAll(/^export const (\w+): Story/gm)].map(
       (match) => match[1] ?? "",
     );
+    // The traceability title parser handles quoted strings but not quotes inside
+    // regex literals, so the title pattern spells the quote as a Unicode escape.
     const meta = /const meta[\s\S]*?title:\s*[\u0022]([^\u0022]+)[\u0022]/.exec(source)?.[1];
     files.push({
       name: entry.name,

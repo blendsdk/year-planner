@@ -1,4 +1,4 @@
-# Test Report — Year Planner for React (RD-01 through RD-10)
+# Test Report — Year Planner for React (RD-01 through RD-11)
 
 > **Date**: 2026-11-12
 > **Scope**: M1 foundation/temporal core/classic grid; M2 layers, visibility,
@@ -326,10 +326,11 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 | `pnpm docs:site` | PASS — 241 files; Storybook at `/`, TypeDoc at `/api` |
 | `pnpm docs:site -- --check-only` | PASS — the built artifact resolves every relative asset and landing link |
 | `pnpm verify:full` | PASS — 143 E2E passed / 40 skipped; timezone suite 220 × 3; perf 7 passed / 1 skipped; bench 8 passed / 8 skipped; clean consumer PASS |
+| Final tree re-check | The release gate above ran on the final product code. Two later `pnpm verify` re-runs under host load average > 9 hit timer-sensitive failures (inspector resize, axe 36-month); each failed test passed alone. The affected suites are unchanged by the documentation work. |
 
 ### What changed
 
-- Fourteen topic guides plus the command, accessibility and architecture pages;
+- Fourteen topic guides plus the commands, security and architecture pages;
   `docs/README.md` maps every topic.
 - The README quickstart renders a 14-month view from static data with controlled
   selection and visibility and a print action. The install note is honest: the

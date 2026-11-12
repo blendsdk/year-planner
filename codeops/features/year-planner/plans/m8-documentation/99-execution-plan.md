@@ -146,7 +146,7 @@ add implementation tests, verify.
 
 ## Phase 3: TSDoc and API reference
 
-> **Phase baseline tree**: 248d69e0b1a3f1e5b2f9c2d5e6f7a8b9c0d1e2f3
+> **Phase baseline tree**: edf8625 (Phase 2 end)
 > **Lenses**: correctness, api-surface, maintainability
 > **Reasoning**: high — the API report is the reviewed public contract; a wrong member doc is a published statement.
 

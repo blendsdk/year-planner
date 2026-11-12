@@ -3,7 +3,7 @@
 > **Feature-Set**: Year Planner for React
 > **Status**: In Progress
 > **Created**: 2026-11-10
-> **Last Updated**: 2026-11-12 17:25
+> **Last Updated**: 2026-11-12 20:35
 > **Progress**: 11 / 12 (92%)
 > **CodeOps Artifact Schema**: 1
 
@@ -26,6 +26,6 @@
 | RD-09 | Accessibility and keyboard experience | [RD-09](requirements/RD-09-accessibility.md) | [m6-accessibility](plans/m6-accessibility/00-index.md) | Done | ✅ | 2026-11-11 13:55 | depends on RD-06, RD-07 |
 | RD-10 | Quality gates, performance, security and browsers | [RD-10](requirements/RD-10-quality-gates.md) | [m7-quality-gates](plans/m7-quality-gates/00-index.md) | Done | ✅ | 2026-11-12 09:45 | depends on RD-01–RD-09 |
 | RD-11 | Documentation, Storybook and API reference | [RD-11](requirements/RD-11-documentation.md) | [m8-documentation](plans/m8-documentation/00-index.md) | Done | ✅ | 2026-11-12 17:25 | depends on RD-01–RD-10 |
-| RD-12 | Release, versioning and maintenance | [RD-12](requirements/RD-12-release-maintenance.md) | — | RD Preflighted | 🔎 | 2026-11-10 | depends on RD-01–RD-11 |
+| RD-12 | Release, versioning and maintenance | [RD-12](requirements/RD-12-release-maintenance.md) | [m9-release-maintenance](plans/m9-release-maintenance/00-index.md) | Plan Preflighted | 🔬 | 2026-11-12 20:35 | depends on RD-01–RD-11 |
 
 > **Note**: RD-09 and RD-10 are Done for R1. The manual NVDA/VoiceOver evidence (RD-09 AC10) is parked by user decision on 2026-11-11 as a low-priority release-gate item; no WCAG conformance claim is made. RD-10 records initial-render and 10k-overflow performance misses and a WebKit/desktop pending-preview test quarantine in `docs/test-report.md`.

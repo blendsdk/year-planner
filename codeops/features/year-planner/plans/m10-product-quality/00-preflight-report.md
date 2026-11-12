@@ -3,7 +3,7 @@
 > **Status**: ✅ PREFLIGHT PASSED WITH NOTES — 43 findings resolved, 3 accepted notes
 > **Iteration**: 2 (re-scan after fixes)
 > **Artifact**: RD-13 plus the implementation plan at `codeops/features/year-planner/plans/m10-product-quality/` (10 documents)
-> **Artifact hash**: `17bb7beb8c6e2c81d5a7c344c573a54ba0ea5ffa31988aa0ae4e0b301d775c42` (RD-13 + 10 plan docs, before this report)
+> **Artifact hash**: `17bb7beb8c6e2c81d5a7c344c573a54ba0ea5ffa31988aa0ae4e0b301d775c42` (RD-13 plus the plan documents at the Phase 0 snapshot)
 > **Codebase Grounded**: package manifests, layout/ribbon code, React renderer, interaction engine, Storybook contract, performance harness and release docs
 > **Last Updated**: 2026-11-13 00:35
 

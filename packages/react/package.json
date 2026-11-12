@@ -1,6 +1,6 @@
 {
   "name": "@blendsdk/react-year-planner",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "license": "MIT",
   "description": "React classic year planner view for Year Planner for React",
@@ -11,7 +11,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "sideEffects": [
     "**/*.css"
@@ -61,5 +62,12 @@
     "typescript": "6.0.3",
     "vite": "7.3.8",
     "vitest": "4.1.12"
+  },
+  "homepage": "https://github.com/blendsdk/year-planner#readme",
+  "bugs": {
+    "url": "https://github.com/blendsdk/year-planner/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

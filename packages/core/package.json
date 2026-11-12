@@ -1,6 +1,6 @@
 {
   "name": "@blendsdk/year-planner-core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "license": "MIT",
   "description": "Pure TypeScript date, interval and classic year layout core for Year Planner for React",
@@ -11,7 +11,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "sideEffects": false,
   "exports": {
@@ -34,5 +35,12 @@
     "publint": "0.3.25",
     "typescript": "6.0.3",
     "vitest": "4.1.12"
+  },
+  "homepage": "https://github.com/blendsdk/year-planner#readme",
+  "bugs": {
+    "url": "https://github.com/blendsdk/year-planner/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

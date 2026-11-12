@@ -27,6 +27,10 @@ dynamic `import()` or bundle the component with an ESM-aware tool.
 
 ## Semver
 
+The first public release is the `0.2.x` line. `0.2.0` is the bootstrap
+publication that creates the npm packages; `0.2.1` is the first
+provenance-signed release. Both share the same API.
+
 Once the packages are published, they follow semantic versioning:
 
 - **patch** — fixes and documentation, no public API change;

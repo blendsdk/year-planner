@@ -19,6 +19,7 @@
       "scripts/**",
       "tests/**",
       "spike/**",
+      "!**/CHANGELOG.md",
       "!**/dist",
       "!**/coverage",
       "!spike/renderer/evidence",

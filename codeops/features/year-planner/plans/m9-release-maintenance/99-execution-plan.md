@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 20:25
-> **Progress**: 0/55 tasks (0%)
+> **Last Updated**: 2026-11-12 20:36
+> **Progress**: 13/55 tasks (24%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -48,7 +48,7 @@ implementation tests, verify.
 
 ## Phase 1: Versioning and package metadata
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: 5d4e0c72e6fb8a56a9063da604b726e79d78bb38
 > **Lenses**: correctness, data and migration
 > **Reasoning**: high — a wrong version, changelog or tarball becomes the published contract.
 
@@ -57,34 +57,34 @@ implementation tests, verify.
 **Reference**: [03-01](03-01-versioning-packaging.md) · ST-1–ST-8 · AR-2, AR-5, AR-13, AR-15
 **Objective**: Prove the version, changelog, metadata and tarball contracts are incomplete.
 
-- [ ] 1.1.1 [spec-author] Write the fixed-group, lockstep-version, changelog and metadata cases with `RD-12-AC-01`, `RD-12-AC-11` — `tests/quality/release-metadata.spec.test.ts`
-- [ ] 1.1.2 [spec-author] Write the tarball, exact-dependency and source-map cases with `RD-12-AC-03`, `RD-12-AC-11` — `tests/quality/release-pack.spec.test.ts`
-- [ ] 1.1.3 Run the new tests and record the red result — `pnpm test:quality`
+- [x] 1.1.1 [spec-author] Write the fixed-group, lockstep-version, changelog and metadata cases with `RD-12-AC-01`, `RD-12-AC-11` — `tests/quality/release-metadata.spec.test.ts` ✅ (completed: 2026-11-12 20:45)
+- [x] 1.1.2 [spec-author] Write the tarball, exact-dependency and source-map cases with `RD-12-AC-03`, `RD-12-AC-11` — `tests/quality/release-pack.spec.test.ts` ✅ (completed: 2026-11-12 20:47)
+- [x] 1.1.3 Run the new tests and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-12 20:48)
 
 ### Step 1.2: Implementation
 
 **Reference**: [03-01](03-01-versioning-packaging.md) · AR-2, AR-5, AR-13, AR-14, AR-15
 **Objective**: Produce the lockstep `0.2.0` version, generated changelogs, package READMEs and complete metadata.
 
-- [ ] 1.2.1 Add the `version-packages` script — `package.json`
-- [ ] 1.2.2 Run `changeset version` and commit the lockstep `0.2.0` bump with both changelogs — `packages/*/package.json`, `packages/*/CHANGELOG.md`
-- [ ] 1.2.3 Add short package READMEs — `packages/core/README.md`, `packages/react/README.md`
-- [ ] 1.2.4 Add checked-in package LICENSE copies matching the root — `packages/core/LICENSE`, `packages/react/LICENSE`
-- [ ] 1.2.5 Add homepage, bugs, publishConfig and the files allowlist — `packages/core/package.json`, `packages/react/package.json`
-- [ ] 1.2.6 Add the first-release note to the SemVer and deprecation policy — `docs/migration.md`
-- [ ] 1.2.7 Add the shared release-manifest helpers and declarations — `scripts/lib/release-manifest.mjs`, `scripts/lib/release-manifest.d.mts`
+- [x] 1.2.1 Add the `version-packages` script — `package.json` ✅ (completed: 2026-11-12 20:29)
+- [x] 1.2.2 Run `changeset version` and commit the lockstep `0.2.0` bump with both changelogs — `packages/*/package.json`, `packages/*/CHANGELOG.md` ✅ (completed: 2026-11-12 20:29)
+- [x] 1.2.3 Add short package READMEs — `packages/core/README.md`, `packages/react/README.md` ✅ (completed: 2026-11-12 20:30)
+- [x] 1.2.4 Add checked-in package LICENSE copies matching the root — `packages/core/LICENSE`, `packages/react/LICENSE` ✅ (completed: 2026-11-12 20:30)
+- [x] 1.2.5 Add homepage, bugs, publishConfig and the files allowlist — `packages/core/package.json`, `packages/react/package.json` ✅ (completed: 2026-11-12 20:30)
+- [x] 1.2.6 Add the first-release note to the SemVer and deprecation policy — `docs/migration.md` ✅ (completed: 2026-11-12 20:31)
+- [x] 1.2.7 Add the shared release-manifest helpers and declarations — `scripts/lib/release-manifest.mjs`, `scripts/lib/release-manifest.d.mts` ✅ (completed: 2026-11-12 20:31)
 
 ### Step 1.3: Green, implementation tests and verify
 
-- [ ] 1.3.1 Prove green for ST-1–ST-8 — `pnpm test:quality`
-- [ ] 1.3.2 Add shared-helper failure cases (forbidden path, version mismatch, private map path) — `tests/quality/release-pack.impl.test.ts`
-- [ ] 1.3.3 Verify the phase — `pnpm verify`
+- [x] 1.3.1 Prove green for ST-1–ST-8 — `pnpm test:quality` ✅ (completed: 2026-11-12 20:32)
+- [x] 1.3.2 Add shared-helper failure cases (forbidden path, version mismatch, private map path) — `tests/quality/release-pack.impl.test.ts` ✅ (completed: 2026-11-12 20:32)
+- [x] 1.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 20:36)
 
 **Deliverables**:
-- [ ] Both packages at `0.2.0` with generated changelogs
-- [ ] Complete package metadata, README, LICENSE and allowlisted files
-- [ ] Shared release-manifest helpers present
-- [ ] All phase verification passing
+- [x] Both packages at `0.2.0` with generated changelogs
+- [x] Complete package metadata, README, LICENSE and allowlisted files
+- [x] Shared release-manifest helpers present
+- [x] All phase verification passing
 
 **Test slices**: `verification` (task); package manifests and scripts are full-on
 **Task verify**: `pnpm verify` (full gate)

@@ -109,6 +109,15 @@ const prt01Items: PlannerItem[] = [
   },
 ];
 
+const securityHiddenItem: PlannerItem = {
+  id: "security-secret",
+  kind: "activity",
+  layerId: "bookings",
+  period: { kind: "all-day", startDate: "2027-03-05", endDateExclusive: "2027-03-07" },
+  title: "TOPSECRET-HIDDEN",
+  version: 1,
+};
+
 const securityItem: PlannerItem = {
   id: "security-probe",
   kind: "activity",
@@ -137,7 +146,7 @@ export function App() {
   const [zoom, setZoom] = useState(1);
   const items = prt01Mode
     ? prt01Items
-    : [...baseItems, ...overflowItems, ...(securityMode ? [securityItem] : [])];
+    : [...baseItems, ...overflowItems, ...(securityMode ? [securityItem, securityHiddenItem] : [])];
   const layoutProps =
     months === 14 ? { year } : { range: { start: { year, month: 0 }, monthCount: months } };
 
@@ -236,6 +245,15 @@ export function App() {
               { id: "bob", name: "Bob", type: "person" },
             ]}
             defaultItems={items}
+            {...(securityMode
+              ? {
+                  defaultVisibility: {
+                    hiddenGroupIds: [],
+                    hiddenLayerIds: [],
+                    hiddenItemIds: ["security-secret"],
+                  },
+                }
+              : {})}
             defaultSelection={{ dates: [], items: year === 2027 ? ["booking"] : [] }}
             display={{ theme, zoom, density, showISOWeekNumbers: true }}
             print={{ mode: "paginate" }}

@@ -4,7 +4,7 @@
     "rootDir": "src",
     "outDir": "dist",
     "composite": false,
-    "types": ["vitest/globals"]
+    "types": ["node", "vitest/globals"]
   },
   "include": ["src/**/*.ts"]
 }

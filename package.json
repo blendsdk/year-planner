@@ -26,8 +26,8 @@
     "storybook:build": "pnpm --filter @blendsdk/year-planner-storybook build",
     "api-report": "pnpm build && pnpm --filter @blendsdk/year-planner-core api-report && pnpm --filter @blendsdk/react-year-planner api-report",
     "pack:check": "pnpm -r pack:check",
-    "verify": "pnpm test:toolchain && pnpm typecheck && pnpm typecheck:tools && pnpm lint && pnpm test && pnpm test:quality && pnpm build && pnpm api-report:ci && pnpm test:size && pnpm storybook:build && pnpm docs:build && pnpm pack:check",
-    "verify:full": "pnpm verify && pnpm test:e2e && pnpm test:consumer",
+    "verify": "pnpm test:toolchain && pnpm typecheck && pnpm typecheck:tools && pnpm lint && pnpm test && pnpm test:quality && pnpm test:licenses && pnpm build && pnpm api-report:ci && pnpm test:size && pnpm storybook:build && pnpm docs:build && pnpm pack:check",
+    "verify:full": "pnpm verify && pnpm test:e2e && pnpm test:timezones && pnpm test:audit && pnpm test:perf && pnpm bench && pnpm test:consumer",
     "api-report:ci": "pnpm build && pnpm --filter @blendsdk/year-planner-core api-report:ci && pnpm --filter @blendsdk/react-year-planner api-report:ci",
     "docs": "pnpm api-report && pnpm docs:build",
     "test:coverage": "pnpm test",
@@ -37,7 +37,9 @@
     "test:timezones": "bash scripts/test-timezones.sh",
     "test:flaky": "playwright test --repeat-each=3 --project=chromium",
     "bench": "node scripts/bench.mjs",
-    "test:perf": "pnpm build && pnpm --filter @blendsdk/year-planner-demo build && playwright test -c playwright.bench.config.ts --project=bench-preview"
+    "test:perf": "pnpm build && pnpm --filter @blendsdk/year-planner-demo build && playwright test -c playwright.bench.config.ts --project=bench-preview",
+    "test:licenses": "node scripts/write-licenses.mjs",
+    "test:audit": "pnpm audit --audit-level high"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",
@@ -45,11 +47,11 @@
     "@microsoft/api-extractor": "7.60.1",
     "@playwright/test": "1.65.0",
     "@types/node": "24.10.1",
-    "@vitest/coverage-v8": "3.2.7",
+    "@vitest/coverage-v8": "4.1.12",
     "axe-core": "4.14.0",
     "turbo": "2.11.10",
     "typedoc": "0.28.20",
     "typescript": "6.0.3",
-    "vitest": "3.2.7"
+    "vitest": "4.1.12"
   }
 }

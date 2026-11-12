@@ -1,8 +1,8 @@
 # Security Notes — Year Planner for React
 
-> **Scope**: RD-06 rendering/styles/slots, RD-07 pointer/selection input and
-> RD-08 command diagnostics
-> **Status**: Implemented controls; a full security gate suite is RD-10
+> **Scope**: RD-06 rendering/styles/slots, RD-07 pointer/selection input,
+> RD-08 command diagnostics and the RD-10 security, privacy and dependency gates
+> **Status**: Complete for R1 — automated security suite, CSP, audit and license report
 
 ## Trust boundary
 
@@ -62,6 +62,22 @@ connect-src 'self';
 The Playwright suite loads the demo under this allowance and asserts the grid
 renders. Unit tests assert that metadata strings never appear as HTML or CSS and
 that unsafe item-style values are dropped.
+
+## RD-10 evidence
+
+| Gate | Evidence |
+|---|---|
+| Hidden data | `security.spec.test.tsx` proves a sentinel hidden by id, layer and group is absent from the DOM, ARIA, print tree, tooltip and item list; the E2E scan repeats it on the demo fixture |
+| Injection | Hostile titles, annotation labels, metadata, style values, class names and `getDateMeta` styles stay inert in the component and implementation tests |
+| Network | Unit spies on `fetch`, `XMLHttpRequest`, `sendBeacon`, `WebSocket` and `EventSource` record zero calls; the E2E request log rejects any cross-origin or unexpected same-origin request |
+| CSP | The demo renders under the documented `style-src-attr 'unsafe-inline'` policy with no attacker request |
+| Parser fuzz | 1,000 seeded malformed dates and periods return diagnostics and never throw (`fuzz.spec.test.ts`) |
+| Dependency audit | `pnpm audit --audit-level high` exits 0: no high or critical advisories. Two **moderate**, development-only advisories remain (`glob`, `minimatch`); both are transitive build-tool dependencies and are accepted until their parents update |
+| Licenses | `THIRD_PARTY_NOTICES.md` is generated from `pnpm licenses list` and checked by `pnpm test:licenses`; the published library bundles no third-party runtime code |
+| CI least privilege | `contents: read`, no `secrets.`, no `pull_request_target`, no `write-all`, no committed tokens; asserted by `audit-contract.spec.test.ts` |
+| Toolchain | Vitest and `@vitest/coverage-v8` upgraded from 3.2.7 to 4.1.12, removing the two critical `tinypool` advisories |
+
+The manual NVDA/VoiceOver audit remains parked by user decision; no WCAG conformance claim is made.
 
 ## Limitations
 

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 00:01
-> **Progress**: 65/92 tasks (71%)
+> **Last Updated**: 2026-11-12 01:11
+> **Progress**: 79/92 tasks (86%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -267,33 +267,33 @@ behavior.
 **Objective**: Prove hidden data, XSS, network calls, audit and licenses are covered before changing
 the code or dependencies.
 
-- [ ] 6.1.1 [spec-author] Write the valid hidden/XSS/network component tests with `RD-10-AC-08`, `RD-10-AC-09` and `RD-10-AC-10`; include the print hidden assertion — `packages/react/src/security.spec.test.tsx`, `packages/react/src/print.spec.test.tsx`
-- [ ] 6.1.2 [spec-author] Write the style/class/diagnostic and seeded parser-fuzz cases — `packages/react/src/security.impl.test.tsx`, `packages/core/src/fuzz.spec.test.ts`
-- [ ] 6.1.3 [spec-author] Write the browser request-log, hidden-data and CSP E2E tests with `RD-10-AC-08`, `RD-10-AC-10` and `RD-10-AC-13` — `tests/e2e/security.spec.ts`
-- [ ] 6.1.4 [spec-author] Write the audit/license/CI least-privilege contract tests with `RD-10-AC-16` — `tests/quality/audit-contract.spec.test.ts`, `tests/quality/ci-contract.spec.test.ts`
-- [ ] 6.1.5 [spec-author] Add the hidden sentinel and visible control to the `?security=1` fixture — `apps/demo/src/App.tsx`
-- [ ] 6.1.6 Run the new component and E2E tests; record the red result and justify any already-green case — `pnpm --filter @blendsdk/react-year-planner test && pnpm exec playwright test tests/e2e/security.spec.ts`
+- [x] 6.1.1 [spec-author] Write the valid hidden/XSS/network component tests with `RD-10-AC-08`, `RD-10-AC-09` and `RD-10-AC-10`; include the print hidden assertion — `packages/react/src/security.spec.test.tsx`, `packages/react/src/print.spec.test.tsx` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.1.2 [spec-author] Write the style/class/diagnostic and seeded parser-fuzz cases — `packages/react/src/security.impl.test.tsx`, `packages/core/src/fuzz.spec.test.ts` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.1.3 [spec-author] Write the browser request-log, hidden-data and CSP E2E tests with `RD-10-AC-08`, `RD-10-AC-10` and `RD-10-AC-13` — `tests/e2e/security.spec.ts` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.1.4 [spec-author] Write the audit/license/CI least-privilege contract tests with `RD-10-AC-16` — `tests/quality/audit-contract.spec.test.ts`, `tests/quality/ci-contract.spec.test.ts` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.1.5 [spec-author] Add the hidden sentinel and visible control to the `?security=1` fixture — `apps/demo/src/App.tsx` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.1.6 Run the new component and E2E tests; record the red result and justify any already-green case — `pnpm --filter @blendsdk/react-year-planner test && pnpm exec playwright test tests/e2e/security.spec.ts` ✅ (completed: 2026-11-12 00:59)
 
 ### Step 6.2: Implementation
 
 **Reference**: [03-04](03-04-security-privacy.md) · AR-15–AR-19
 **Objective**: Fix any leak, upgrade Vitest, add the audit/license gates and update the security notes.
 
-- [ ] 6.2.1 Upgrade Vitest and coverage to 4.1.12; fix configuration drift — `package.json`, `pnpm-lock.yaml`, package Vitest configs
-- [ ] 6.2.2 Fix any hidden-data, XSS or network finding exposed by ST-21–ST-25
-- [ ] 6.2.3 Fix any print/filter leak exposed by the ST-21 assertion — `packages/react/src/print.spec.test.tsx`
-- [ ] 6.2.4 Add the license generator and checked-in notices — `scripts/write-licenses.mjs`, `THIRD_PARTY_NOTICES.md`
-- [ ] 6.2.5 Add `test:audit`/`test:licenses`, run the audit and record the result — `package.json`, `docs/security.md`
-- [ ] 6.3.1 Prove green for ST-21–ST-28 — `pnpm test:quality && pnpm --filter @blendsdk/react-year-planner test && pnpm exec playwright test tests/e2e/security.spec.ts && pnpm test:audit && pnpm test:licenses`
-- [ ] 6.3.2 Add implementation tests for safe-style edges and diagnostics redaction — `packages/react/src/security.impl.test.tsx`
-- [ ] 6.3.3 Verify the phase — `pnpm verify`
+- [x] 6.2.1 Upgrade Vitest and coverage to 4.1.12; fix configuration drift — `package.json`, `pnpm-lock.yaml`, package Vitest configs ✅ (completed: 2026-11-12 00:59)
+- [x] 6.2.2 Fix any hidden-data, XSS or network finding exposed by ST-21–ST-25 ✅ (completed: 2026-11-12 00:59)
+- [x] 6.2.3 Fix any print/filter leak exposed by the ST-21 assertion — `packages/react/src/print.spec.test.tsx` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.2.4 Add the license generator and checked-in notices — `scripts/write-licenses.mjs`, `THIRD_PARTY_NOTICES.md` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.2.5 Add `test:audit`/`test:licenses`, run the audit and record the result — `package.json`, `docs/security.md` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.3.1 Prove green for ST-21–ST-28 — `pnpm test:quality && pnpm --filter @blendsdk/react-year-planner test && pnpm exec playwright test tests/e2e/security.spec.ts && pnpm test:audit && pnpm test:licenses` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.3.2 Add implementation tests for safe-style edges and diagnostics redaction — `packages/react/src/security.impl.test.tsx` ✅ (completed: 2026-11-12 00:59)
+- [x] 6.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 01:11)
 
 **Deliverables**:
-- [ ] Hidden item absent from DOM, ARIA, tooltip, item list, inspector, print and overflow
-- [ ] XSS payloads inert and no network request
-- [ ] `pnpm audit --audit-level high` clean
-- [ ] Current `THIRD_PARTY_NOTICES.md`
-- [ ] All phase verification passing
+- [x] Hidden item absent from DOM, ARIA, tooltip, item list, inspector, print and overflow ✅ (completed: 2026-11-12 07:30)
+- [x] XSS payloads inert and no network request ✅ (completed: 2026-11-12 07:30)
+- [x] `pnpm audit --audit-level high` clean ✅ (completed: 2026-11-12 07:30)
+- [x] Current `THIRD_PARTY_NOTICES.md` ✅ (completed: 2026-11-12 07:30)
+- [x] All phase verification passing ✅ (completed: 2026-11-12 07:30)
 
 **Verify**: `pnpm verify`
 

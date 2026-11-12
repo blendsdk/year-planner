@@ -40,15 +40,18 @@ toolchain check → typecheck → lint → unit/component coverage → build
 
 | Check | Result |
 |---|---|
-| Core tests | **207 passed** |
-| React tests | **474 passed** (42 files) |
-| Core coverage | **99.34% lines, 96.08% branches, 99.23% functions** |
-| React coverage | **94.27% lines, 92.90% branches, 97.87% functions** |
-| Playwright | **108 passed, 25 skipped** (PDF and axe are Chromium-only; touch is Chromium-only) |
-| Browsers | Chromium, Firefox, WebKit, Chromium touch |
+| Core tests | **220 passed** |
+| React tests | **507 passed** (47 files) |
+| Core coverage | **99.00% lines, 95.88% branches, 99.50% functions** |
+| React coverage | **94.01% lines, 85.60% branches, 94.98% functions** |
+| Playwright | **145 passed, 38 skipped** (PDF and axe are Chromium-only; touch is Chromium-only; one WebKit timing test quarantined) |
+| Browsers | Chromium, Firefox, WebKit, Pixel 5 Chromium, iPhone 13 WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
+| Quality tests | **79 passed** (traceability, public API, CI/license/audit contracts) |
+| Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
+| Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed core + React installed and built |
 | Storybook | **PASS** — static build succeeds; **171 stories across 12 files** |
 | API Extractor | **PASS** — reports checked in |
@@ -268,6 +271,8 @@ Two results remain documented misses rather than claims:
 | Full axe audit | Automated axe matrix green in Chromium; no serious/critical violations |
 | Manual NVDA/VoiceOver audit | **Parked by user decision 2026-11-11** — low priority, not an R1 blocker, no Linux path; WCAG conformance is not claimed |
 | Performance benchmarks (500/2k/10k items) | Before/after evidence in `docs/benchmarks/rd10-baseline.md` and `rd10-after.md`; drag now 16.7 ms p95. Initial render and 10k overflow remain documented misses |
+| WebKit pending-preview E2E | One timing test is `fixme` on WebKit under parallel load. The behavior passes on Chromium, Firefox and a standalone WebKit probe (5/5 runs: preview present, command state `pending`). Revisit with a serial WebKit run before release |
+| 36-month drag variance | 16.7–33.3 ms p95 across repeated runs; the checked-in after run recorded 16.7 ms and the budget is met or missed within one frame |
 | Mobile touch and RTL | Touch editing and marquee are implemented; RTL-specific pointer behavior is not |
 | SVG shape plane and `edge-path` connectors | Deferred; `edge-path` emits `INVALID_RENDERER_OPTION` |
 | Published packages | Not published; pre-alpha |
@@ -277,9 +282,10 @@ Two results remain documented misses rather than claims:
 
 Vite 8 / Vitest 5 crashed with `Illegal instruction` on the reference CPU
 (Intel i5-3470S, no AVX2) through the Rolldown native binding. The verified
-fallback is **Vite 7.3.8 + Vitest 3.2.7**, recorded in plan AR #15 and
+fallback is **Vite 7.3.8 + Vitest 4.1.12**, recorded in plan AR #15 and
 requirements AR #79. Vite 8 / Vitest 5 remain the target on compatible hardware.
-React 19-only is the support policy (requirements AR #80).
+React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes the critical
+`tinypool` advisories; the two remaining moderate advisories are development-only.
 
 ## Repository state
 

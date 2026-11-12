@@ -15,7 +15,6 @@ function asElement(target: EventTarget | null): Element | null {
 /**
  * Returns true when the event target belongs to host content rather than a
  * planner-owned proxy or resize handle.
- * @public
  */
 export function isHostInteractive(target: EventTarget | null): boolean {
   const element = asElement(target);
@@ -30,7 +29,6 @@ export function isHostInteractive(target: EventTarget | null): boolean {
  *
  * The pointer date comes from the coordinate mapper; the DOM supplies stable
  * identity attributes and the cell date.
- * @public
  */
 export function classifyTarget(
   target: EventTarget | null,

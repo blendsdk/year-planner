@@ -12,7 +12,6 @@ import type { PlannerState } from "../state.js";
 
 /**
  * Feedback shown for a rejected, timed-out or unapplied command.
- * @public
  */
 export interface CommandFeedback {
   /** Stable diagnostic code. */
@@ -29,7 +28,6 @@ export interface CommandFeedback {
 
 /**
  * Terminal result of a command request.
- * @public
  */
 export type CommandRequestResult =
   | "accepted"
@@ -40,7 +38,6 @@ export type CommandRequestResult =
 
 /**
  * The last terminal result, used by the command-status announcer.
- * @public
  */
 export interface CommandSettlement {
   /** Terminal result. */
@@ -53,7 +50,6 @@ export interface CommandSettlement {
 
 /**
  * Inputs for the command request pipeline.
- * @public
  */
 export interface CommandPipelineInput {
   /** Planner state that owns items, visibility, filter and selection. */
@@ -96,7 +92,6 @@ export interface CommandPipelineInput {
 
 /**
  * Command pipeline state and actions.
- * @public
  */
 export interface CommandPipeline {
   /** Item IDs with an active command. */
@@ -121,7 +116,6 @@ export interface CommandPipeline {
 
 /**
  * Local replacement set produced by the pure reducer.
- * @public
  */
 export interface LocalCommandResult {
   /** New or changed items. */

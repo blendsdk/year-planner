@@ -78,7 +78,6 @@ function mergeNotices(previous: readonly Diagnostic[], next: readonly Diagnostic
  * Local checks run first, then host validation and the host request share one
  * deadline. A response settles only the active request. Controlled acceptance
  * waits for props; uncontrolled acceptance re-checks versions before applying.
- * @public
  */
 export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline {
   const { state } = input;

@@ -27,7 +27,6 @@ import { MonthRow } from "./MonthRow.js";
 
 /**
  * Props for the scrollable year grid.
- * @public
  */
 export interface YearGridProps {
   layout: YearLayout;
@@ -114,7 +113,6 @@ function headerCells(weekdayNames: string[], components: YearPlannerComponents):
  * The item overlay is a sibling of `role="grid"`. Keeping item buttons outside
  * the grid preserves the row/gridcell contract while the overlay still aligns
  * to the same row geometry.
- * @public
  */
 export function YearGrid({
   layout,

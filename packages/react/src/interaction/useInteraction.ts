@@ -54,7 +54,6 @@ function knownDates(layout: UseInteractionInput["layout"]): Set<DateKey> {
  *
  * The pure selection and gesture modules do the policy work; this hook supplies
  * DOM geometry, one-shot click suppression, command emission and focus.
- * @public
  */
 export function useInteraction(input: UseInteractionInput): InteractionController {
   const [gesture, setGesture] = useState<GestureState>({ phase: "idle" });

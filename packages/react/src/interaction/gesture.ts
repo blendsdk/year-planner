@@ -14,7 +14,6 @@ import { rangeBetween, type SelectionModifiers } from "./selection.js";
 
 /**
  * A pointer position in client coordinates.
- * @public
  */
 export interface GesturePoint {
   clientX: number;
@@ -23,7 +22,6 @@ export interface GesturePoint {
 
 /**
  * A point in day-plane design units.
- * @public
  */
 export interface DesignPoint {
   x: number;
@@ -32,7 +30,6 @@ export interface DesignPoint {
 
 /**
  * A rectangle in day-plane design units.
- * @public
  */
 export interface DesignRect {
   left: number;
@@ -43,7 +40,6 @@ export interface DesignRect {
 
 /**
  * Classified pointer-down target.
- * @public
  */
 export type GestureTarget =
   | { kind: "cell"; date: DateKey }
@@ -66,7 +62,6 @@ export type GestureTarget =
 
 /**
  * Pure context supplied by the view.
- * @public
  */
 export interface GestureContext {
   /** Active interaction mode. */
@@ -85,7 +80,6 @@ export interface GestureContext {
 
 /**
  * Active gesture kinds.
- * @public
  */
 export type ActiveGesture =
   | { kind: "select-dates"; anchorDate: DateKey; focusDate: DateKey }
@@ -120,7 +114,6 @@ export type ActiveGesture =
 
 /**
  * Finite-state machine state.
- * @public
  */
 export type GestureState =
   | { phase: "idle" }
@@ -146,7 +139,6 @@ export type GestureState =
 
 /**
  * The committed result of a completed gesture.
- * @public
  */
 export type GestureCompletion =
   | { kind: "none" }
@@ -198,7 +190,6 @@ export type GestureCompletion =
 
 /**
  * Returns true when a pointer moved at least the threshold distance.
- * @public
  */
 export function exceedsThreshold(
   start: GesturePoint,
@@ -212,7 +203,6 @@ export function exceedsThreshold(
 
 /**
  * Builds a normalized rectangle from two design points.
- * @public
  */
 export function designRectBetween(start: DesignPoint, end: DesignPoint): DesignRect {
   return {
@@ -225,7 +215,6 @@ export function designRectBetween(start: DesignPoint, end: DesignPoint): DesignR
 
 /**
  * Converts a design rectangle to fixed screen coordinates.
- * @public
  */
 export function designRectToScreen(
   rect: DesignRect,
@@ -260,7 +249,6 @@ function axisDelta(
  *
  * The result is proportional to how deep the pointer is in the 32 px edge
  * zone and never exceeds 12 px per axis per frame.
- * @public
  */
 export function autoScrollDelta(input: {
   point: GesturePoint;
@@ -400,7 +388,6 @@ function activate(
 
 /**
  * Starts a pending gesture, or returns idle for an ignored target.
- * @public
  */
 export function beginGesture(input: {
   target: GestureTarget;
@@ -428,7 +415,6 @@ export function beginGesture(input: {
 
 /**
  * Advances a pending gesture into active after the threshold, or updates it.
- * @public
  */
 export function moveGesture(input: {
   state: GestureState;
@@ -595,7 +581,6 @@ function finishResize(
 
 /**
  * Produces the commit intent; never mutates canonical items.
- * @public
  */
 export function endGesture(input: {
   state: GestureState;
@@ -659,7 +644,6 @@ export function endGesture(input: {
 
 /**
  * Cancels any gesture and reports the focus to restore.
- * @public
  */
 export function cancelGesture(state: GestureState): {
   state: GestureState;
@@ -686,7 +670,6 @@ export function cancelGesture(state: GestureState): {
 
 /**
  * Returns true when the gesture context changed enough to cancel.
- * @public
  */
 export function gestureContextChanged(
   previous: { signature: string; mode: InteractionMode },
@@ -697,7 +680,6 @@ export function gestureContextChanged(
 
 /**
  * Returns visible item IDs whose fragments intersect the design rectangle.
- * @public
  */
 export function intersectMarquee(
   ribbons: RibbonLayout,

@@ -10,13 +10,11 @@ import {
 
 /**
  * A host failure source, used to decide whether a retry is safe.
- * @public
  */
 export type RetrySource = "explicit" | "timeout" | "thrown" | "other";
 
 /**
  * Normalized validation result.
- * @public
  */
 export interface NormalizedValidation {
   /** Host permit flag. */
@@ -29,7 +27,6 @@ export interface NormalizedValidation {
 
 /**
  * Result of normalizing a host outcome.
- * @public
  */
 export type NormalizedOutcome =
   | { ok: true; outcome: CommandOutcome }
@@ -84,7 +81,6 @@ function periodArray(value: unknown): PlannerPeriod[] | undefined {
 
 /**
  * Returns a safe generic host-rejection diagnostic.
- * @public
  */
 export function hostRejected(message = "The host rejected the command"): Diagnostic {
   return { code: "HOST_REJECTED", level: "error", message };
@@ -96,7 +92,6 @@ export function hostRejected(message = "The host rejected the command"): Diagnos
  * Unknown codes become `HOST_REJECTED`; malformed levels default to error;
  * non-string messages are replaced with a generic message. Optional item,
  * resource and period arrays are preserved when they have the right shape.
- * @public
  */
 export function normalizeDiagnostic(value: unknown): Diagnostic {
   if (!isRecord(value)) return hostRejected();
@@ -124,7 +119,6 @@ export function normalizeDiagnostic(value: unknown): Diagnostic {
 
 /**
  * Normalizes a host validation result, or returns `undefined` when malformed.
- * @public
  */
 export function normalizeValidation(value: unknown): NormalizedValidation | undefined {
   if (
@@ -173,7 +167,6 @@ function paintPayloadProblem(
  * The whole result is validated before any mutation. Controlled paint outcomes
  * must prove they covered every expected source and, for a union, created at
  * least one new item.
- * @public
  */
 export function normalizeOutcome(
   value: unknown,
@@ -250,7 +243,6 @@ export function normalizeOutcome(
  *
  * A create is current only while its ID is unused. Update/move/resize/delete
  * require the exact expected version. Paint requires every expected version.
- * @public
  */
 export function commandStillCurrent(
   items: readonly PlannerItem[],
@@ -273,7 +265,6 @@ export function commandStillCurrent(
  *
  * Create waits for the ID, delete for absence, update/move/resize for an
  * advanced version, and paint for every payload entry plus every removal.
- * @public
  */
 export function isApplied(
   items: readonly PlannerItem[],
@@ -317,7 +308,6 @@ export function isApplied(
 
 /**
  * Returns true when a failed command may be retried without replay risk.
- * @public
  */
 export function isRetryable(
   command: PlannerCommand,
@@ -345,7 +335,6 @@ export function isRetryable(
 
 /**
  * Returns the highest diagnostic level in a list.
- * @public
  */
 export function highestLevel(diagnostics: readonly Diagnostic[]): DiagnosticLevel {
   if (diagnostics.some((entry) => entry.level === "error")) return "error";
@@ -355,7 +344,6 @@ export function highestLevel(diagnostics: readonly Diagnostic[]): DiagnosticLeve
 
 /**
  * Returns the first error diagnostic, else the first diagnostic.
- * @public
  */
 export function primaryDiagnostic(diagnostics: readonly Diagnostic[]): Diagnostic | undefined {
   return diagnostics.find((entry) => entry.level === "error") ?? diagnostics[0];

@@ -4,13 +4,11 @@ import { projectPreviewRangesForRow } from "../interaction/preview.js";
 
 /**
  * Preview layer variants rendered by a month row.
- * @public
  */
 export type PreviewVariant = "selection" | "selection-preview" | "gesture-preview";
 
 /**
  * Props for one row's selection or gesture preview layer.
- * @public
  */
 export interface SelectionPreviewProps {
   ranges: readonly SelectionDateRange[];
@@ -32,7 +30,6 @@ export interface SelectionPreviewProps {
  *
  * Previews are decorative and never intercept pointer events; the planner-owned
  * cells and proxies remain the hit surface.
- * @public
  */
 export function SelectionPreview({
   ranges,

@@ -21,7 +21,6 @@ const COMMAND_TYPES = new Set(["create", "update", "move", "resize", "delete", "
 
 /**
  * Options used by local command checks.
- * @public
  */
 export interface LocalCheckOptions {
   /** Global read-only guardrail. */
@@ -32,7 +31,6 @@ export interface LocalCheckOptions {
 
 /**
  * Failure data shared by local checks and host rejections.
- * @public
  */
 export interface CommandFailure {
   ok: false;
@@ -42,7 +40,6 @@ export interface CommandFailure {
 
 /**
  * Options for building a failure.
- * @public
  */
 export interface FailureOptions {
   /** Whether the inspector may offer a retry. */
@@ -59,7 +56,6 @@ export interface FailureOptions {
 
 /**
  * Builds a failure with a diagnostic and matching feedback.
- * @public
  */
 export function failure(
   command: PlannerCommand,
@@ -89,7 +85,6 @@ export function failure(
 
 /**
  * Returns true for a positive integer version.
- * @public
  */
 export function isPositiveInteger(value: unknown): value is number {
   return typeof value === "number" && Number.isInteger(value) && value > 0;
@@ -109,7 +104,6 @@ function layerAllowsPaint(layer: PlannerLayer, state: PlannerState): boolean {
  *
  * Local checks are authoritative for read-only state, identity protection,
  * versions, paint targets, editability and ranged editing rules.
- * @public
  */
 export function checkLocal(
   state: PlannerState,
@@ -288,7 +282,6 @@ export function checkLocal(
 
 /**
  * Builds the context passed to host validation and requests.
- * @public
  */
 export function buildContext(requestId: string, baseRevision: string | undefined): CommandContext {
   return {

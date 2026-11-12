@@ -15,7 +15,6 @@ import { safeCssColor } from "../safeStyle.js";
 
 /**
  * Props for the hidden print tree.
- * @public
  */
 export interface PrintPagesProps {
   layout: YearLayout;
@@ -156,7 +155,6 @@ function printRow(
 /**
  * Renders the hidden A3 print tree. Each planned page gets its own uniform scale
  * and a forced page break; the screen view is unaffected.
- * @public
  */
 export const PrintPages = memo(function PrintPages({
   layout,

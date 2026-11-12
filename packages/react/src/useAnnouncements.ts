@@ -6,7 +6,6 @@ import type { CommandSettlement } from "./commands.js";
 
 /**
  * Inputs for the announcement hook.
- * @public
  */
 export interface UseAnnouncementsInput {
   /** True while at least one command is pending. */
@@ -25,7 +24,6 @@ export interface UseAnnouncementsInput {
 
 /**
  * Messages and visible status owned by the announcement hook.
- * @public
  */
 export interface AnnouncementState {
   /** Visible status bar view, or `undefined`. */
@@ -71,7 +69,6 @@ function announce(setter: (value: string | undefined) => void, message: string):
  *
  * @param input - Pipeline, selection and visibility state.
  * @returns Visible status and the live-region messages.
- * @public
  */
 export function useAnnouncements(input: UseAnnouncementsInput): AnnouncementState {
   const [polite, setPolite] = useState<string | undefined>(undefined);

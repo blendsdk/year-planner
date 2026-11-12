@@ -132,7 +132,7 @@ export interface RibbonOptions {
 }
 
 /**
- * Internal candidate used by the lane allocator.
+ * Candidate used by the lane allocator.
  * @public
  */
 export interface LaneCandidate {

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
 
@@ -21,6 +21,51 @@ function read(path: string): string {
 /** Parses a repository JSON file. */
 function json<T>(path: string): T {
   return JSON.parse(read(path)) as T;
+}
+
+/** Returns every exported declaration name in a report. */
+function reportExports(path: string): string[] {
+  return [
+    ...read(path).matchAll(/^export (?:interface|type|function|const|class|enum) (\w+)/gm),
+  ].map((match) => match[1] ?? "");
+}
+
+/** Reads every public source file once, keyed by repository path. */
+function sourceFiles(): Map<string, string[]> {
+  const files = new Map<string, string[]>();
+  for (const directory of ["packages/core/src", "packages/react/src"]) {
+    for (const entry of readdirSync(new URL(directory, ROOT), {
+      recursive: true,
+      withFileTypes: true,
+    })) {
+      if (!entry.isFile() || (!entry.name.endsWith(".ts") && !entry.name.endsWith(".tsx")))
+        continue;
+      if (/\.(test|impl|spec)\./.test(entry.name) || entry.name === "test-setup.ts") continue;
+      const path = `${entry.parentPath.replace(`${ROOT.pathname}`, "")}/${entry.name}`;
+      files.set(path, read(path).split("\n"));
+    }
+  }
+  return files;
+}
+
+/** Reports whether the declaration `name` carries a `@public` source tag. */
+function sourceTagged(files: Map<string, string[]>, name: string): boolean {
+  for (const lines of files.values()) {
+    for (const [index, line] of lines.entries()) {
+      if (
+        !new RegExp(`^export (?:interface|type|function|const|class|enum) ${name}\\b`).test(line)
+      ) {
+        continue;
+      }
+      let cursor = index - 1;
+      while (cursor >= 0 && lines[cursor]?.trim() === "") cursor -= 1;
+      if (cursor < 0 || !lines[cursor]?.trim().endsWith("*/")) return false;
+      let start = cursor;
+      while (start >= 0 && !lines[start]?.includes("/**")) start -= 1;
+      return lines.slice(start, cursor + 1).some((row) => /@public\b/.test(row ?? ""));
+    }
+  }
+  return false;
 }
 
 const REPORTS = [
@@ -72,6 +117,11 @@ describe("RD-11-AC-03: public TSDoc", () => {
     }
   });
 
+  it("has a non-empty reviewed report", () => {
+    expect(reportExports(REPORTS[0]).length).toBeGreaterThanOrEqual(137);
+    expect(reportExports(REPORTS[1]).length).toBeGreaterThanOrEqual(31);
+  });
+
   it("tags every exported declaration with a release tag", () => {
     for (const report of REPORTS) {
       const lines = read(report).split("\n");
@@ -81,6 +131,15 @@ describe("RD-11-AC-03: public TSDoc", () => {
         expect(precedingTag(lines, index), `${report}:${index + 1}`).toMatch(
           /^\/\/ @(public|beta|alpha|internal)/,
         );
+      }
+    }
+  });
+
+  it("tags every report export in the source", () => {
+    const files = sourceFiles();
+    for (const report of REPORTS) {
+      for (const name of reportExports(report)) {
+        expect(sourceTagged(files, name), `${name} has no @public source tag`).toBe(true);
       }
     }
   });

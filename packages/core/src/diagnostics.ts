@@ -128,14 +128,15 @@ export interface Diagnostic {
 
 /**
  * Builds a diagnostic with the default error level.
+ *
+ * @param code - Stable diagnostic code.
+ * @param message - Human-readable message shown to end users.
+ * @param level - Severity used by the inspector and host diagnostics.
  * @public
  */
 export function diagnostic(
-  /** Stable diagnostic code used for programmatic handling. */
   code: DiagnosticCode,
-  /** Human-readable message shown to end users. */
   message: string,
-  /** Severity used by the inspector and host diagnostics. */
   level: DiagnosticLevel = "error",
 ): Diagnostic {
   return { code, level, message };

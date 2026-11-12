@@ -2,7 +2,6 @@ import type { CommandSettlement } from "./commands.js";
 
 /**
  * Visible and announced form of the current command state.
- * @public
  */
 export interface CommandStatusView {
   /** Short visible text. */
@@ -38,7 +37,6 @@ const ERROR_PREFIX: Record<string, string> = {
  * });
  * // { text: "Change accepted", level: "success", announcement: "polite" }
  * ```
- * @public
  */
 export function commandStatusView(input: {
   pending: boolean;

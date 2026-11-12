@@ -10,7 +10,6 @@ import { rangeBetween } from "./selection.js";
 
 /**
  * One preview rectangle clipped to one month row.
- * @public
  */
 export interface PreviewFragment {
   /** Stable preview identity. */
@@ -32,7 +31,6 @@ export interface PreviewFragment {
  *
  * Blank slots are never included; the x/width use the same prefix widths as
  * ribbon fragments so previews align with the grid.
- * @public
  */
 export function projectPreviewRangesForRow(
   ranges: readonly SelectionDateRange[],
@@ -81,7 +79,6 @@ export function projectPreviewRangesForRow(
 
 /**
  * Projects ranges across every row of a layout.
- * @public
  */
 export function projectPreviewRanges(
   ranges: readonly SelectionDateRange[],
@@ -93,7 +90,6 @@ export function projectPreviewRanges(
 
 /**
  * A preview of a selection, marquee, item or range gesture.
- * @public
  */
 export type GesturePreview =
   | { kind: "selection"; ranges: SelectionDateRange[] }
@@ -123,7 +119,6 @@ function rangeKey(ranges: readonly SelectionDateRange[]): string {
 
 /**
  * Returns a stable key for a preview layer.
- * @public
  */
 export function previewKey(preview: GesturePreview): string {
   if (preview.kind === "selection") return `selection:${rangeKey(preview.ranges)}`;
@@ -148,7 +143,6 @@ function previewValidity(preview: GesturePreview): boolean | undefined {
  * Gesture previews are rebuilt on every pointer frame, so reference equality
  * would defeat row memoization. The key already encodes the ranges and item
  * identity; validity and kind complete the render-relevant content.
- * @public
  */
 export function samePreviewEntries(
   previous: readonly PreviewLayer[],
@@ -171,7 +165,6 @@ export function samePreviewEntries(
  * Marquee previews are viewport rectangles and are rendered once by the grid,
  * so they never belong to a row. Selection, item and range previews intersect
  * a row when any of their ranges overlaps the row's date span.
- * @public
  */
 export function previewIntersectsRow(preview: GesturePreview, row: MonthRowLayout): boolean {
   if (preview.kind === "marquee") return false;
@@ -182,7 +175,6 @@ export function previewIntersectsRow(preview: GesturePreview, row: MonthRowLayou
 
 /**
  * Narrows a preview list to the entries that can paint on one row.
- * @public
  */
 export function previewsForRow(
   previews: readonly PreviewLayer[],
@@ -193,7 +185,6 @@ export function previewsForRow(
 
 /**
  * A preview plus its stable render identity.
- * @public
  */
 export interface PreviewLayer {
   /** Unique key for the preview layer. */
@@ -214,7 +205,6 @@ function periodRange(period: PlannerPeriod): SelectionDateRange[] {
  * Invalid completions render a red, non-committing preview when they carry a
  * proposed range; the diagnostic is emitted on commit and the original item
  * stays visible.
- * @public
  */
 export function previewFromCompletion(
   completion: GestureCompletion,

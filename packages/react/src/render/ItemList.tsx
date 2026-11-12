@@ -11,7 +11,6 @@ import type { PlannerFormatters } from "../locale.js";
 
 /**
  * Props for the planner-owned item list.
- * @public
  */
 export interface ItemListProps {
   /** Planner model with layers and items. */
@@ -70,7 +69,6 @@ function titleOf(item: PlannerItem): string {
  *   onFocusItem={focusItem}
  * />
  * ```
- * @public
  */
 export const ItemList = memo(function ItemList({
   model,

@@ -246,7 +246,7 @@ export function eachDate(start: DateKey, endExclusive: DateKey): DateKey[] {
 }
 
 /**
- * Internal epoch-day helper used by period/layout code.
+ * Converts a date key to an epoch day.
  * @public
  */
 export function toEpochDay(date: DateKey): number {
@@ -258,7 +258,7 @@ export function toEpochDay(date: DateKey): number {
 }
 
 /**
- * Internal civil-date helper used by period/layout code.
+ * Converts an epoch day back to a date key.
  * @public
  */
 export function fromEpochDay(epochDay: number): DateKey {

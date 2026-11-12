@@ -1,6 +1,5 @@
 /**
  * A minimal structural subset of an MUI theme.
- * @public
  */
 export interface MuiLikeTheme {
   palette?: {

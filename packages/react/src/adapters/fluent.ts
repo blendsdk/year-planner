@@ -1,6 +1,5 @@
 /**
  * A minimal structural subset of a Fluent UI v9 theme.
- * @public
  */
 export interface FluentLikeTheme {
   colorNeutralBackground1?: string;

@@ -8,7 +8,7 @@ import { type Diagnostic, diagnostic } from "../diagnostics.js";
 export interface DayColumnLayout {
   /** Zero-based column within the 37-column row. */
   columnIndex: number;
-  /** Calendar date for a real day; omitted for a leading blank column. */
+  /** Calendar date for a real day; omitted for filler columns before or after the month. */
   date?: string;
   /** Whether the column is a weekend day. */
   isWeekend: boolean;
@@ -29,7 +29,7 @@ export interface MonthRowLayout {
   rowId: string;
   /** Zero-based row index in the layout. */
   rowIndex: number;
-  /** Calendar year of the row or the year to render. */
+  /** Calendar year of the month in this row; context rows may sit outside the view year. */
   year: number;
   /** Zero-based month index (0 = January). */
   monthIndex: number;
@@ -148,7 +148,6 @@ const DEFAULT_UNITS: ClassicYearUnits = {
   weekend: 40,
   weekday: 55,
   rowHeight: 90,
-  /** Height of the weekday header in design pixels. */
   headerHeight: 36,
 };
 

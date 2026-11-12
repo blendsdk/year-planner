@@ -21,7 +21,6 @@ const COLOR_PROPERTIES = new Set(["background", "backgroundColor", "borderColor"
  *
  * Accepts hex, rgb/rgba, hsl/hsla, named colors and `var(--yp-*)`. Rejects URLs,
  * expressions and any value containing CSS structure characters.
- * @public
  */
 export function safeCssColor(value: string | undefined): string | undefined {
   if (!value) return undefined;
@@ -34,7 +33,6 @@ export function safeCssColor(value: string | undefined): string | undefined {
  *
  * Values containing URLs, `expression()`, `@import` or `javascript:` are
  * dropped. The planner never reads item metadata for styling.
- * @public
  */
 export function safeItemStyle(style: Record<string, string | number> | undefined): CSSProperties {
   if (!style) return {};
@@ -56,7 +54,6 @@ export function safeItemStyle(style: Record<string, string | number> | undefined
 
 /**
  * Filters a React style object from `getDateMeta` to the same allowlist.
- * @public
  */
 export function safeMetaStyle(style: CSSProperties | undefined): CSSProperties {
   if (!style) return {};

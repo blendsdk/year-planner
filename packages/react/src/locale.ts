@@ -2,7 +2,6 @@ import { addDays, type DateKey, type PlannerPeriod } from "@blendsdk/year-planne
 
 /**
  * Formatters derived from one explicit locale.
- * @public
  */
 export interface PlannerFormatters {
   locale: string;
@@ -33,7 +32,6 @@ function dateParts(date: DateKey): Date {
  *
  * @param locale - Host locale; invalid values fall back to `en-US`.
  * @returns Formatters plus the effective locale.
- * @public
  */
 export function createFormatters(locale: string | undefined): PlannerFormatters {
   const requested = locale ?? FALLBACK_LOCALE;
@@ -117,7 +115,6 @@ export function createFormatters(locale: string | undefined): PlannerFormatters 
 
 /**
  * Returns whether a locale can construct an Intl formatter.
- * @public
  */
 export function isValidLocale(locale: string): boolean {
   try {
@@ -129,7 +126,6 @@ export function isValidLocale(locale: string): boolean {
 
 /**
  * Returns whether a time zone is accepted by Intl.
- * @public
  */
 export function isValidTimeZone(timeZone: string): boolean {
   return safeIntl(() => new Intl.DateTimeFormat("en-US", { timeZone }).format(0)) !== undefined;

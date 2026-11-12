@@ -5,7 +5,6 @@ import type { TooltipRenderContext, YearPlannerComponents } from "../types.js";
 
 /**
  * A tooltip target and its viewport position.
- * @public
  */
 export interface TooltipState {
   item: PlannerItem;
@@ -16,7 +15,6 @@ export interface TooltipState {
 
 /**
  * Props for the owned tooltip overlay.
- * @public
  */
 export interface TooltipProps {
   state: TooltipState;
@@ -30,7 +28,6 @@ export interface TooltipProps {
 /**
  * Renders the component-owned tooltip. The surface is fixed-positioned inside
  * the root and is never created for hidden items.
- * @public
  */
 export function Tooltip({
   state,

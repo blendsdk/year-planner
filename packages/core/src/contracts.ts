@@ -131,7 +131,7 @@ export type CommandOutcome =
       accepted: true;
       /** Host revision token after the change. */
       revision: string;
-      /** Full replacement item list, when the host returns one. */
+      /** Items the host created or changed; ids in `removedItemIds` are deleted. */
       updatedItems?: PlannerItem[];
       /** IDs removed by the command. */
       removedItemIds?: string[];

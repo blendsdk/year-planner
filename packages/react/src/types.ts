@@ -213,7 +213,7 @@ export interface ItemRenderContext {
   fragment: RibbonFragment;
   /** Zero-based index of this fragment. */
   fragmentIndex: number;
-  /** Number of fragments for the item in the layout. */
+  /** Number of fragments for the item in this month row. */
   fragmentCount: number;
   /** Whether the item is selected. */
   selected: boolean;
@@ -241,7 +241,7 @@ export interface OverflowRenderContext {
   row: MonthRowLayout;
   /** Number of items hidden by compact density. */
   hiddenCount: number;
-  /** Items in the current context. */
+  /** Items hidden by the compact lane limit in this row. */
   items: readonly PlannerItem[];
 }
 
@@ -254,7 +254,7 @@ export interface InspectorActions {
   close(): void;
   /** Moves focus to an item proxy. */
   focusItem(id: string): void;
-  /** Routes a command through the host pipeline. */
+  /** Routes a command through the command pipeline. */
   requestCommand(command: PlannerCommand): void;
   /** Retries the last failed request, when available. */
   retry?(): void;
@@ -269,7 +269,7 @@ export interface InspectorActions {
 export interface InspectorRenderContext {
   /** Current selection. */
   selection: PlannerSelection;
-  /** Items in the current context. */
+  /** Selected items that are currently visible. */
   items: readonly PlannerItem[];
   /** Actions available to the custom body. */
   actions: InspectorActions;
@@ -305,7 +305,7 @@ export interface YearPlannerHandle {
   showItem(id: string): void;
   /** Hides an item. */
   hideItem(id: string): void;
-  /** Shows every group, layer and item. */
+  /** Shows every group, layer and item; hidden render channels stay hidden. */
   showAll(): void;
   /** Replaces the filter. */
   setFilter(filter: PlannerFilter): void;
@@ -321,11 +321,11 @@ export interface YearPlannerHandle {
   scrollToDate(date: DateKey): void;
   /** Changes the interaction mode. */
   setInteractionMode(mode: InteractionMode): void;
-  /** Routes a command through the host pipeline. */
+  /** Routes a command through the command pipeline. */
   requestCommand(command: PlannerCommand): void;
-  /** Requests an undo from the host. */
+  /** Reverts the last local change; controlled item lists delegate undo to the host. */
   requestUndo(): void;
-  /** Requests a redo from the host. */
+  /** Reapplies the last undone local change; controlled item lists delegate redo to the host. */
   requestRedo(): void;
   /** Opens the inspector. */
   openInspector(): void;

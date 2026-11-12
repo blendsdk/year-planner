@@ -5,7 +5,6 @@ import type { OverflowRenderContext } from "../types.js";
 
 /**
  * Props for one row's overflow control.
- * @public
  */
 export interface OverflowProps {
   row: MonthRowLayout;
@@ -24,7 +23,6 @@ export interface OverflowProps {
  *
  * The list is deduplicated by item, in first-fragment order, and never contains
  * hidden items because it is built from visible ribbon descriptors.
- * @public
  */
 export function Overflow({
   row,

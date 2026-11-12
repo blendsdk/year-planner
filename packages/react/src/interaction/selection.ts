@@ -13,7 +13,6 @@ import {
 
 /**
  * Keyboard or pointer modifiers relevant to selection.
- * @public
  */
 export interface SelectionModifiers {
   /** Shift extends or replaces from the anchor. */
@@ -24,7 +23,6 @@ export interface SelectionModifiers {
 
 /**
  * A predicate that reports host-disabled dates.
- * @public
  */
 export type DisabledDatePredicate = (date: DateKey) => boolean;
 
@@ -33,7 +31,6 @@ export type DisabledDatePredicate = (date: DateKey) => boolean;
  *
  * Ctrl and Cmd are treated identically so the same policy works on every
  * desktop platform without sniffing the user agent.
- * @public
  */
 export function isMod(event: { ctrlKey?: boolean; metaKey?: boolean }): boolean {
   return event.ctrlKey === true || event.metaKey === true;
@@ -49,7 +46,6 @@ function isReserved(modifiers: SelectionModifiers): boolean {
 
 /**
  * Sorts, drops empty ranges and merges overlapping or adjacent ranges.
- * @public
  */
 export function normalizeDateRanges(ranges: readonly SelectionDateRange[]): SelectionDateRange[] {
   const valid = ranges.filter((range) => range.startDate < range.endDateExclusive);
@@ -58,7 +54,6 @@ export function normalizeDateRanges(ranges: readonly SelectionDateRange[]): Sele
 
 /**
  * True when a date lies in any selected range.
- * @public
  */
 export function isDateSelected(ranges: readonly SelectionDateRange[], date: DateKey): boolean {
   return ranges.some((range) => contains(range, date));
@@ -69,7 +64,6 @@ export function isDateSelected(ranges: readonly SelectionDateRange[], date: Date
  *
  * A disabled date is never selected. Contiguous enabled segments become
  * separate ranges, which keeps the canonical selection free of holes.
- * @public
  */
 export function rangeBetween(
   anchor: DateKey,
@@ -97,7 +91,6 @@ export function rangeBetween(
 
 /**
  * Adds one date to a set of ranges, merging adjacent ranges.
- * @public
  */
 export function addDate(
   ranges: readonly SelectionDateRange[],
@@ -110,7 +103,6 @@ export function addDate(
 
 /**
  * Removes one date from a set of ranges, splitting the containing range.
- * @public
  */
 export function removeDate(
   ranges: readonly SelectionDateRange[],
@@ -121,7 +113,6 @@ export function removeDate(
 
 /**
  * Toggles one date in a set of ranges.
- * @public
  */
 export function toggleDate(
   ranges: readonly SelectionDateRange[],
@@ -135,7 +126,6 @@ export function toggleDate(
 
 /**
  * Plain/Shift/Ctrl date click policy.
- * @public
  */
 export function applyDateClick(
   selection: PlannerSelection,
@@ -180,7 +170,6 @@ export function applyDateClick(
  * `selection` must be the gesture-start snapshot. A mod drag unions the dragged
  * range into that snapshot; `anchor` is ignored when `selection.anchorDate`
  * already exists.
- * @public
  */
 export function applyDateDrag(
   selection: PlannerSelection,
@@ -226,7 +215,6 @@ function toggleInList<T>(list: readonly T[], value: T): T[] {
 
 /**
  * Plain/Shift/Ctrl item click policy.
- * @public
  */
 export function applyItemClick(
   selection: PlannerSelection,
@@ -286,7 +274,6 @@ function visibleIntersection(
 
 /**
  * Plain/Shift/Ctrl marquee item policy.
- * @public
  */
 export function applyItemMarquee(
   selection: PlannerSelection,
@@ -320,7 +307,6 @@ export function applyItemMarquee(
 
 /**
  * Selects every visible item in visual order and clears dates.
- * @public
  */
 export function selectAllVisible(
   _selection: PlannerSelection,
@@ -336,7 +322,6 @@ export function selectAllVisible(
 
 /**
  * Clears dates, items, anchors and focus.
- * @public
  */
 export function clearSelection(): PlannerSelection {
   return emptySelection();
@@ -347,7 +332,6 @@ export function clearSelection(): PlannerSelection {
  *
  * Items without a visible fragment are excluded because they cannot be
  * selected or hit by the pointer.
- * @public
  */
 export function visualItemOrder(
   items: readonly PlannerItem[],

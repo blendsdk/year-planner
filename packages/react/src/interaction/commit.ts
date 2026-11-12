@@ -15,13 +15,11 @@ import { applyDateClick, applyDateDrag, applyItemClick, applyItemMarquee } from 
 
 /**
  * The planner state fields a completed gesture may read.
- * @public
  */
 export type CommitState = Pick<PlannerState, "model" | "visibility" | "filter" | "items">;
 
 /**
  * Inputs needed to turn a completed gesture into selection or a command.
- * @public
  */
 export interface CommitContext {
   selection: PlannerSelection;
@@ -43,7 +41,6 @@ export interface CommitContext {
 
 /**
  * A command started by a completed gesture.
- * @public
  */
 export interface GestureCommit {
   /** Preview to keep visible until the request settles. */
@@ -72,7 +69,6 @@ function focusFailure(
  * the pure policy module. Command completions return a preview and a settlement
  * promise so the interaction layer can keep the proposal visible until the host
  * answers.
- * @public
  */
 export function commitGesture(
   completion: GestureCompletion,

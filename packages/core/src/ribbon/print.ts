@@ -70,7 +70,7 @@ export type PrintPlanResult =
   | {
       /** True when the plan was built. */
       ok: true;
-      /** Pages and diagnostics for the print tree. */
+      /** Pages, scale and diagnostics for this plan. */
       plan: PrintPlan;
     }
   | {

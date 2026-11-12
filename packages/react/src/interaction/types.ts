@@ -24,7 +24,6 @@ export type {
 
 /**
  * Event fields shared by planner selection clicks.
- * @public
  */
 export interface SelectionClickEvent {
   shiftKey?: boolean;
@@ -35,7 +34,6 @@ export interface SelectionClickEvent {
 
 /**
  * The subset of planner state the interaction controller reads.
- * @public
  */
 export type InteractionState = Pick<
   PlannerState,
@@ -44,7 +42,6 @@ export type InteractionState = Pick<
 
 /**
  * Inputs consumed by the interaction controller.
- * @public
  */
 export interface UseInteractionInput {
   state: InteractionState;
@@ -68,7 +65,6 @@ export interface UseInteractionInput {
 
 /**
  * DOM and state handlers exposed by the interaction controller.
- * @public
  */
 export interface InteractionController {
   previews: readonly import("./preview.js").PreviewLayer[];

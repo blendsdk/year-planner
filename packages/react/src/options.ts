@@ -7,7 +7,6 @@ import type { DisplayConfig } from "./types.js";
 
 /**
  * Validated display options used by the renderer.
- * @public
  */
 export interface ResolvedDisplayOptions {
   density: "compact" | "expanded";
@@ -31,7 +30,6 @@ function push(
 /**
  * Validates host display options and falls back before any core call that would
  * throw. Returns one diagnostic per invalid option.
- * @public
  */
 export function resolveDisplayOptions(
   display: DisplayConfig | undefined,

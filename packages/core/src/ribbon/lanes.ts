@@ -38,7 +38,6 @@ function compareCandidates(left: LaneCandidate, right: LaneCandidate): number {
  * @param candidates - Ribbon fragments for one row with their item metadata.
  * @param previousLanes - Lanes used by the same items in the previous row.
  * @returns A map from fragment ID to zero-based lane.
- * @public
  */
 export function assignLanes(
   candidates: LaneCandidate[],

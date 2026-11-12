@@ -52,3 +52,24 @@
 | RV-025 | 2 | MINOR | storybook-contract/manifest | fixed |
 | RV-026 | 2 | OBSERVATION | storybook/fixture-id | fixed |
 | RV-027 | 2 | MINOR | 99-execution-plan | fixed |
+
+### Phase 3 review
+
+| Finding | Phase | Severity | Area | Ruling |
+| ------- | ----- | -------- | ---- | ------ |
+| RV-001 | 3 | MAJOR | tsdoc/internal-tags | fixed |
+| RV-002 | 3 | MAJOR | tsdoc/command-outcome | fixed |
+| RV-003 | 3 | MINOR | tsdoc-contract/report | fixed |
+| RV-004 | 3 | MINOR | tsdoc/date-helpers | fixed |
+| RV-005 | 3 | MINOR | tsdoc/diagnostic-level | fixed |
+| RV-006 | 3 | MINOR | tsdoc/layout-year | fixed |
+| RV-007 | 3 | MINOR | tsdoc/day-column | fixed |
+| RV-008 | 3 | MINOR | tsdoc/fragment-count | fixed |
+| RV-009 | 3 | MINOR | tsdoc/context-items | fixed |
+| RV-010 | 3 | MINOR | tsdoc/undo | fixed |
+| RV-011 | 3 | MINOR | tsdoc-contract/rule | fixed |
+| RV-012 | 3 | MINOR | tsdoc/show-all | fixed |
+| RV-013 | 3 | MINOR | tsdoc/max-zoom | fixed |
+| RV-014 | 3 | MINOR | tsdoc/print-plan | fixed |
+| RV-015 | 3 | MINOR | tsdoc/param-tags | fixed |
+| RV-016 | 3 | MINOR | tsdoc/default-units | fixed |

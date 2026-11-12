@@ -73,8 +73,10 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: mkdir -p test-results && pnpm audit --audit-level high 2>&1 | tee test-results/audit.txt
+      - run: pnpm test:audit
       - run: pnpm test:licenses
+      - if: always()
+        run: mkdir -p test-results && pnpm audit --audit-level high 2>&1 | tee test-results/audit.txt || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:

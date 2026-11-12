@@ -68,19 +68,20 @@ function table(entries) {
 /** Builds the complete notices document. */
 function render() {
   const runtime = readLicenses(["-r", "licenses", "list", "--prod", "--json"]);
-  const development = readLicenses(["licenses", "list", "--dev", "--json"]);
+  const development = readLicenses(["-r", "licenses", "list", "--dev", "--json"]);
   const lines = [
     "# Third-Party Notices",
     "",
     "This project is MIT licensed. The published library bundles no third-party runtime code;",
     "React and React DOM are peer dependencies supplied by the host application. The demo's",
-    "runtime dependencies are listed for completeness.",
+    "direct dependencies are included in the development table because the demo is private and",
+    "is not published.",
     "",
     "## Runtime dependencies",
     "",
     ...(runtime.length ? table(runtime) : ["No third-party runtime dependencies are bundled."]),
     "",
-    "## Development tooling (not distributed)",
+    "## Development tooling and demo dependencies (not published)",
     "",
     ...table(development),
     "",

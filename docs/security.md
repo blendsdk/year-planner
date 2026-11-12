@@ -73,7 +73,7 @@ that unsafe item-style values are dropped.
 | CSP | The demo renders under the documented `style-src-attr 'unsafe-inline'` policy with no attacker request |
 | Parser fuzz | 1,000 seeded malformed dates and periods return diagnostics and never throw (`fuzz.spec.test.ts`) |
 | Dependency audit | `pnpm audit --audit-level high` exits 0: no high or critical advisories. Two **moderate**, development-only advisories remain (`glob`, `minimatch`); both are transitive build-tool dependencies and are accepted until their parents update |
-| Licenses | `THIRD_PARTY_NOTICES.md` is generated from `pnpm licenses list` and checked by `pnpm test:licenses`; the published library bundles no third-party runtime code |
+| Licenses | `THIRD_PARTY_NOTICES.md` is generated from the recursive `pnpm -r licenses list` and checked by `pnpm test:licenses`; the published library bundles no third-party runtime code, and the demo dependencies are covered in the development table |
 | CI least privilege | `contents: read`, no `secrets.`, no `pull_request_target`, no `write-all`, no committed tokens; asserted by `audit-contract.spec.test.ts` |
 | Toolchain | Vitest and `@vitest/coverage-v8` upgraded from 3.2.7 to 4.1.12, removing the two critical `tinypool` advisories |
 

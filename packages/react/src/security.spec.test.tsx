@@ -59,6 +59,27 @@ function documentText(container: HTMLElement): string {
 }
 
 describe("RD-10-AC-08: hidden data never renders", () => {
+  it("shows a tooltip for a visible item and clears it when the item is hidden", () => {
+    const { container, rerender } = render(
+      <YearPlanner year={2027} layers={[bookings]} items={[control]} />,
+    );
+    const proxy = container.querySelector(
+      '[data-yp-part="item-proxy"][data-item-id="visible-control"]',
+    );
+    if (!proxy) throw new Error("expected a visible proxy");
+    fireEvent.focus(proxy);
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Visible control");
+    rerender(
+      <YearPlanner
+        year={2027}
+        layers={[bookings]}
+        items={[control]}
+        visibility={{ hiddenGroupIds: [], hiddenLayerIds: [], hiddenItemIds: ["visible-control"] }}
+      />,
+    );
+    expect(screen.queryByRole("tooltip")).toBeNull();
+  });
+
   it("omits an item hidden by id from DOM, ARIA, print, list and overflow", () => {
     const { container } = renderWithHidden({
       hiddenGroupIds: [],

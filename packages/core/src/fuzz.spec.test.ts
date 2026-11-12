@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseDateKey } from "./date.js";
+import { formatDateKey, parseDateKey } from "./date.js";
 import { validatePlannerData } from "./model/validation.js";
 import { validateAllDayPeriod, validatePeriod } from "./period.js";
 
@@ -38,7 +38,10 @@ describe("RD-10-AC-09: parser fuzz", () => {
       expect(() => {
         result = parseDateKey(value);
       }, value).not.toThrow();
-      if (result && !result.ok) {
+      if (result?.ok) {
+        expect(value).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(formatDateKey(result.date)).toBe(value);
+      } else if (result) {
         expect(["INVALID_DATE", "UNSUPPORTED_YEAR"]).toContain(result.diagnostic.code);
       }
     }
@@ -58,8 +61,12 @@ describe("RD-10-AC-09: parser fuzz", () => {
           endDateExclusive: end,
         });
       }, `${start}..${end}`).not.toThrow();
-      for (const entry of diagnostics ?? []) {
-        expect(codes).toContain(entry.code);
+      if ((diagnostics ?? []).length === 0) {
+        expect(start < end).toBe(true);
+        expect(parseDateKey(start).ok).toBe(true);
+        expect(parseDateKey(end).ok).toBe(true);
+      } else {
+        for (const entry of diagnostics ?? []) expect(codes).toContain(entry.code);
       }
     }
   });
@@ -70,7 +77,7 @@ describe("RD-10-AC-09: parser fuzz", () => {
       { id: "bookings", name: "Bookings", channel: "ribbon" as const, color: "#123456" },
       { id: "notes", name: "Notes", channel: "annotation" as const, color: "#f6bd60" },
     ];
-    for (let index = 0; index < 200; index += 1) {
+    for (let index = 0; index < 1000; index += 1) {
       const items = Array.from({ length: 5 }, (_, position) => ({
         id: `item-${Math.floor(next() * 3)}`,
         kind: "activity" as const,
@@ -86,7 +93,13 @@ describe("RD-10-AC-09: parser fuzz", () => {
       expect(() => validatePlannerData({ items, layers })).not.toThrow();
       const validation = validatePlannerData({ items, layers });
       expect(Array.isArray(validation.diagnostics)).toBe(true);
-      expect(validation.model.items.length).toBeLessThanOrEqual(items.length);
+      const layerIds = new Set(layers.map((layer) => layer.id));
+      const acceptedIds = new Set<string>();
+      for (const item of validation.model.items) {
+        expect(layerIds.has(item.layerId)).toBe(true);
+        expect(acceptedIds.has(item.id)).toBe(false);
+        acceptedIds.add(item.id);
+      }
     }
   });
 

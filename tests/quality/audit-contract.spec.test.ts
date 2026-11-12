@@ -21,10 +21,19 @@ describe("RD-10-AC-16: dependency and license gates", () => {
   it("keeps the checked-in notices current and complete", () => {
     expect(notices).toContain("# Third-Party Notices");
     expect(notices).toContain("## Runtime dependencies");
-    expect(notices).toContain("## Development tooling (not distributed)");
+    expect(notices).toContain("## Development tooling and demo dependencies (not published)");
     expect(notices).toContain("no third-party runtime code");
     expect(notices).toMatch(/\| react \| 19\./);
-    expect(notices.split("\n").length).toBeGreaterThan(50);
+    for (const pkg of [
+      "@fluentui/react-components",
+      "@mui/material",
+      "storybook",
+      "caniuse-lite",
+      "tslib",
+    ]) {
+      expect(notices, pkg).toContain(`| ${pkg} |`);
+    }
+    expect(notices.split("\n").length).toBeGreaterThan(400);
   });
 
   it("supports deterministic write and check modes", () => {
@@ -45,5 +54,15 @@ describe("RD-10-AC-16: least-privilege CI", () => {
     expect(workflow).not.toMatch(/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/);
     expect(workflow).not.toMatch(/\bghp_[A-Za-z0-9]{20,}/);
     expect(workflow).not.toMatch(/\bnpm_[A-Za-z0-9]{30,}/);
+    expect(workflow).not.toContain("github.token");
+    for (const match of workflow.matchAll(/permissions:\s*\n((?:\s+\w+:.*\n)+)/g)) {
+      expect(match[1]).not.toMatch(/write/i);
+    }
+  });
+
+  it("runs the audit as a failing step and keeps evidence separate", () => {
+    expect(workflow).toContain("      - run: pnpm test:audit");
+    expect(workflow).toContain("      - run: pnpm test:licenses");
+    expect(workflow).toMatch(/if: always\(\)[\s\S]*tee test-results\/audit.txt/);
   });
 });

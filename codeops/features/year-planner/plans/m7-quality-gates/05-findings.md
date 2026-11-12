@@ -58,3 +58,12 @@
 | RV-508 | 5 | MINOR | report-counts | fixed |
 | RV-509 | 5 | MINOR | drag-setup-retry | fixed |
 | RV-510 | 5 | MINOR | preview-kind-memo | fixed |
+| SA-601 | 6 | MAJOR | audit-pipefail | fixed |
+| SA-602 | 6 | MAJOR | csp-route | fixed |
+| SA-603 | 6 | MAJOR | license-completeness | fixed |
+| SA-604 | 6 | MINOR | fuzz-oracle | fixed |
+| SA-605 | 6 | MINOR | tooltip-overflow-controls | fixed |
+| SA-606 | 6 | MINOR | request-log-window | fixed |
+| SA-607 | 6 | MINOR | csp-dev-relaxation | fixed |
+| SA-608 | 6 | MINOR | ci-host-variance | accepted |
+| SA-609 | 6 | MINOR | least-privilege-contract | fixed |

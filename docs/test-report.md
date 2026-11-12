@@ -41,7 +41,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | Check | Result |
 |---|---|
 | Core tests | **220 passed** |
-| React tests | **507 passed** (47 files) |
+| React tests | **508 passed** (47 files) |
 | Core coverage | **99.00% lines, 95.88% branches, 99.50% functions** |
 | React coverage | **94.01% lines, 85.60% branches, 94.98% functions** |
 | Playwright | **145 passed, 38 skipped** (PDF and axe are Chromium-only; touch is Chromium-only; one WebKit timing test quarantined) |
@@ -49,7 +49,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
-| Quality tests | **79 passed** (traceability, public API, CI/license/audit contracts) |
+| Quality tests | **80 passed** (traceability, public API, CI/license/audit contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed core + React installed and built |

@@ -6,7 +6,7 @@ describe("environment capture", () => {
     const environment = await collectEnvironment({
       chromium: async () => ({ version: () => "123.4.5", close: async () => {} }),
       firefox: async () => {
-        throw new Error("browser missing");
+        throw new Error("Executable doesn't exist at /ms-playwright/firefox");
       },
       webkit: async () => ({ version: () => "600.1", close: async () => {} }),
     });
@@ -18,6 +18,19 @@ describe("environment capture", () => {
     expect(text).toMatch(/^chromium: 123\.4\.5$/m);
     expect(text).toMatch(/^firefox: not-installed$/m);
     expect(text).toMatch(/^node: /m);
+  });
+
+  it("distinguishes a missing browser from a launch failure", async () => {
+    const environment = await collectEnvironment({
+      chromium: async () => {
+        throw new Error("Executable doesn't exist at /ms-playwright/chromium");
+      },
+      firefox: async () => {
+        throw new Error("sandbox permission denied");
+      },
+    });
+    expect(environment.chromium).toBe("not-installed");
+    expect(environment.firefox).toBe("launch-failed");
   });
 
   it("renders one parseable key per line", () => {

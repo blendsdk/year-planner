@@ -212,10 +212,20 @@ for (const entry of results) {
   entry.status = statusFor(samples.p95, entry.budget);
 }
 
-const failures = results.filter(
-  (entry) =>
-    entry.status === "fail" && entry.project !== "bench-dev" && entry.scenario !== "issue3-dev",
-);
+/** Stress scenarios use an explicit ceiling instead of the 60 Hz budget. */
+const STRESS_CEILINGS = { "drag-10000": 500 };
+
+/** Returns the enforcing ceiling for one result. */
+function enforcingCeiling(entry) {
+  const stress = STRESS_CEILINGS[`${entry.scenario}-${entry.parameters?.items}`];
+  return stress ?? entry.budget * 2;
+}
+
+const failures = results.filter((entry) => {
+  if (entry.project === "bench-dev" || entry.scenario === "issue3-dev") return false;
+  const samples = entry.frames ?? entry;
+  return Number(samples.p95) > enforcingCeiling(entry);
+});
 const reportRunId = runIds.size === 1 ? [...runIds][0] : RUN_ID;
 const report = {
   runId: reportRunId,

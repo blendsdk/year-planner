@@ -112,7 +112,7 @@ requirements, plans and architecture decisions live under `codeops/`.
 ```bash
 pnpm install
 pnpm verify          # fast gate: typecheck, lint, coverage, quality, licenses, build, API report, size, Storybook, TypeDoc, pack
-pnpm verify:full     # adds Playwright, timezones, audit, performance budgets, benchmarks and the clean-consumer install
+pnpm verify:full     # adds Playwright, timezones, audit, performance evidence, benchmarks and the clean-consumer install
 pnpm test:quality    # traceability, public API, coverage, size, CI and license contracts
 pnpm test:timezones  # date suite under UTC, Pacific/Kiritimati and America/Los_Angeles
 pnpm test:audit      # no high or critical dependency advisories

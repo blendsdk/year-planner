@@ -67,3 +67,11 @@
 | SA-607 | 6 | MINOR | csp-dev-relaxation | fixed |
 | SA-608 | 6 | MINOR | ci-host-variance | accepted |
 | SA-609 | 6 | MINOR | least-privilege-contract | fixed |
+| RV-701 | 7 | MAJOR | consumer-tree-shake-claim | fixed |
+| RV-702 | 7 | MAJOR | timezone-contract | fixed |
+| RV-703 | 7 | MAJOR | report-evidence | fixed |
+| RV-704 | 7 | MAJOR | ci-perf-headroom | fixed |
+| RV-705 | 7 | MINOR | skip-note | fixed |
+| RV-706 | 7 | MINOR | gate-wording | fixed |
+| RV-707 | 7 | MINOR | ac01-evidence | fixed |
+| RV-708 | 7 | MINOR | environment-launch-failure | fixed |

@@ -29,7 +29,8 @@ describe("RD-10-AC-11: benchmark command contract", () => {
     expect(source).toContain("bench-layout.mjs");
     expect(source).toContain("playwright.bench.config.ts");
     expect(source).toContain("--out");
-    expect(source).toContain('status === "fail"');
+    expect(source).toContain("STRESS_CEILINGS");
+    expect(source).toContain("enforcingCeiling");
     expect(source).toContain("test-results/bench");
     expect(read("tests/perf/bench.spec.ts")).toContain(".cpuprofile");
   });

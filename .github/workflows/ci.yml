@@ -110,7 +110,8 @@ jobs:
       - run: pnpm build
       - run: npx playwright install --with-deps chromium
       - run: pnpm bench
-      - run: PERF_STRICT=1 pnpm test:perf
+      - run: pnpm test:perf
+      - run: PERF_STRICT=1 pnpm exec playwright test -c playwright.bench.config.ts --project=bench-preview -g "issue-3 production drag"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

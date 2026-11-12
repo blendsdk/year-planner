@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { cpus, platform, release, totalmem } from "node:os";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -58,8 +58,11 @@ export async function collectEnvironment(launchers) {
       const browser = await launch();
       browsers[name] = browser.version();
       await browser.close();
-    } catch {
-      browsers[name] = "not-installed";
+    } catch (error) {
+      const message = String(error instanceof Error ? error.message : error);
+      browsers[name] = /Executable doesn't exist|not found/i.test(message)
+        ? "not-installed"
+        : "launch-failed";
     }
   }
   return {
@@ -97,5 +100,4 @@ if (invokedDirectly) {
   mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, renderEnvironment(environment));
   console.log(`Wrote ${output}`);
-  if (!existsSync(output)) process.exit(1);
 }

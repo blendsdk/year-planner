@@ -34,7 +34,9 @@ describe("RD-10-AC-01: release gate evidence", () => {
     expect(workflow).toContain("pnpm test:audit");
     expect(workflow).toContain("pnpm test:licenses");
     expect(workflow).toContain("pnpm bench");
-    expect(workflow).toContain("PERF_STRICT=1 pnpm test:perf");
+    expect(workflow).toContain(
+      "PERF_STRICT=1 pnpm exec playwright test -c playwright.bench.config.ts",
+    );
     expect(workflow).toContain("docs/benchmarks/");
   });
 
@@ -55,6 +57,11 @@ describe("RD-10-AC-01: release gate evidence", () => {
       "Known gaps",
       "benchmarks/rd10-baseline",
       "A3 print",
+      "220 core tests pass",
+      "Quality tests | **93 passed**",
+      "41.67 kB",
+      "64.47 kB",
+      "PASS** for RD-01 through RD-10",
     ]) {
       expect(report, field).toContain(field);
     }
@@ -65,7 +72,10 @@ describe("RD-02-AC-10 / RD-10-AC-05: timezone evidence", () => {
   it("exposes the timezone command and runs it in CI", () => {
     const manifest = JSON.parse(read("package.json")) as { scripts?: Record<string, string> };
     expect(manifest.scripts?.["test:timezones"]).toContain("scripts/test-timezones.sh");
-    expect(read("scripts/test-timezones.sh")).toContain("Pacific/Kiritimati");
-    expect(read("scripts/test-timezones.sh")).toContain("America/Los_Angeles");
+    const script = read("scripts/test-timezones.sh");
+    expect(script).toContain("for zone in UTC Pacific/Kiritimati America/Los_Angeles");
+    expect(script).toContain(
+      'TZ="$zone" pnpm --filter @blendsdk/year-planner-core exec vitest run',
+    );
   });
 });

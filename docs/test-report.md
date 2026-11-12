@@ -1,17 +1,20 @@
-# Test Report — Year Planner for React (M1 + M2 + RD-06 + RD-07 + RD-08 + RD-09)
+# Test Report — Year Planner for React (RD-01 through RD-10)
 
-> **Date**: 2026-11-11
+> **Date**: 2026-11-12
 > **Scope**: M1 foundation/temporal core/classic grid; M2 layers, visibility,
 > paint/erase, ribbons, hit index and print planning; RD-06 rendered view,
 > theming, slots, inspector, adapters and A3 print output; RD-07 pointer,
 > keyboard and touch interaction, selection matrix, previews and focus;
 > RD-08 controlled commands, validation, versions, rollback and
 > accepted-not-applied handling; RD-09 accessibility semantics, focus, live
-> regions, contrast and axe evidence
+> regions, contrast and axe evidence; RD-10 traceability, browser/visual/print
+> matrices, timezone and SSR evidence, performance budgets, issue #3
+> optimization, security/privacy gates, dependency audit and CI evidence
 > **Workflow**: CodeOps (`exec-plan`), plans `m1-foundation-core`,
-> `m2-layers-ribbons`, `m3-react-view`, `m4-interaction-engine` and
-> `m5-controlled-commands` and `m6-accessibility`
-> **Verdict**: **PASS** for the M1 + M2 + RD-06 + RD-07 + RD-08 + RD-09 slices.
+> `m2-layers-ribbons`, `m3-react-view`, `m4-interaction-engine`,
+> `m5-controlled-commands`, `m6-accessibility` and `m7-quality-gates`
+> **Verdict**: **PASS** for RD-01 through RD-10. The manual NVDA/VoiceOver audit
+> remains parked; no WCAG conformance claim is made.
 
 ---
 
@@ -52,22 +55,23 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | React tests | **508 passed** (47 files) |
 | Core coverage | **99.00% lines, 95.88% branches, 99.50% functions** |
 | React coverage | **94.01% lines, 85.60% branches, 94.98% functions** |
-| Playwright | **143 passed, 40 skipped** (PDF is Chromium-only; touch is Chromium-only; one pending-preview timing test quarantined) |
+| Playwright | **143 passed, 40 skipped** (PDF and axe are Chromium-only; forced-colors is Chromium-only; touch is Chromium-only; one pending-preview timing test is quarantined on all desktop engines) |
 | Browsers | Chromium, Firefox, WebKit, Pixel 5 Chromium, iPhone 13 WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
-| Quality tests | **80 passed** (traceability, public API, CI/license/audit contracts) |
+| Quality tests | **93 passed** (traceability, public API, coverage, size, CI, package, license, audit and environment contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
-| Clean consumer | **PASS** — packed core + React installed and built |
+| Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build |
 | Storybook | **PASS** — static build succeeds; **171 stories across 12 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **React entry + CSS 40.55 kB gzip / 60 kB**; **total 63.36 kB gzip / 65 kB** (core, React, adapters and CSS) |
+| Bundle size | **React entry + CSS 41.67 kB gzip / 60 kB**; **total 64.47 kB gzip / 65 kB** (core, React, adapters and CSS) |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | `verify`, `browsers`, `security`, `performance` and `dco` jobs configured; browser evidence and benchmark artifacts uploaded |
 | Browser versions | Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright 1.65.0) |
+| Timezones | **220 core tests pass under each of UTC, Pacific/Kiritimati and America/Los_Angeles** (660 runs total; final gate) |
 
 The coverage thresholds are enforced by Vitest: core 95% and React 80% for
 lines, branches, functions and statements.
@@ -280,9 +284,9 @@ Two results remain documented misses rather than claims:
 | Full axe audit | Automated axe matrix green in Chromium; no serious/critical violations |
 | Manual NVDA/VoiceOver audit | **Parked by user decision 2026-11-11** — low priority, not an R1 blocker, no Linux path; WCAG conformance is not claimed |
 | Performance benchmarks (500/2k/10k items) | Before/after evidence in `docs/benchmarks/rd10-baseline.md` and `rd10-after.md`; drag now 16.7 ms p95. Initial render and 10k overflow remain documented misses |
-| WebKit pending-preview E2E | One timing test is `fixme` on WebKit under parallel load. The behavior passes on Chromium, Firefox and a standalone WebKit probe (5/5 runs: preview present, command state `pending`). Revisit with a serial WebKit run before release |
+| Pending-preview E2E | One geometry-sensitive timing test is `fixme` on all desktop engines. The state is covered by the React command tests and standalone probes (5/5 runs: preview present, command state `pending`). Revisit with a serial drag run before release |
 | 36-month drag variance | 16.7–33.3 ms p95 across repeated runs; the checked-in after run recorded 16.7 ms and the budget is met or missed within one frame |
-| React entry tree-shaking | The published entry is a single-file ESM bundle; a `createTheme`-only consumer bundle is about 71% of the full app bundle (260 / 365 bytes). Per-export module splitting is deferred; the consumer proof asserts packed types, CSS and the smaller entry |
+| React entry tree-shaking | The published entry is a single-file ESM bundle, so importing one export retains the component. The consumer proof asserts packed types, the CSS import and a production build; per-export module splitting is deferred and no tree-shaking claim is made |
 | Mobile touch and RTL | Touch editing and marquee are implemented; RTL-specific pointer behavior is not |
 | SVG shape plane and `edge-path` connectors | Deferred; `edge-path` emits `INVALID_RENDERER_OPTION` |
 | Published packages | Not published; pre-alpha |

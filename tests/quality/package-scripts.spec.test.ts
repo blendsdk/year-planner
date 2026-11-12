@@ -46,10 +46,11 @@ describe("RD-10-AC-12 / RD-10-AC-14: command and consumer contract", () => {
     expect(scripts["verify:full"]).toContain("test:consumer");
   });
 
-  it("proves packed types and a tree-shaken import in the clean consumer", () => {
+  it("proves packed types, the CSS import and a production build in the clean consumer", () => {
     const consumer = read("scripts/clean-consumer.sh");
     expect(consumer).toContain("tsc --noEmit");
-    expect(consumer).toContain("treeshake");
+    expect(consumer).toContain("vite build");
+    expect(consumer).toContain("@blendsdk/react-year-planner/styles.css");
     expect(consumer).toContain("YearPlanner");
   });
 });

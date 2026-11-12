@@ -1,6 +1,6 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { baseItems, groups, layers, resources } from "./fixtures";
+import { baseItems, groups, layers, prt01Items, resources } from "./fixtures";
 
 const meta = {
   title: "Year Planner/06 Print Planning",
@@ -52,6 +52,23 @@ export const FitTwentyFourMonths: Story = {
   args: {
     range: { start: { year: 2027, month: 0 }, monthCount: 24 },
     print: { page: "A3", mode: "fit" },
+  },
+};
+
+export const Prt01TwoThousandSeventeen: Story = {
+  args: {
+    year: 2017,
+    items: prt01Items,
+    display: { theme: "classic-yellow", showISOWeekNumbers: true },
+    print: { page: "A3", mode: "paginate" },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "The exact PRT-01 print sample: 2017 classic-yellow with one booking and one holiday annotation, printed as a single A3 page.",
+      },
+    },
   },
 };
 

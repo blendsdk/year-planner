@@ -154,7 +154,7 @@ explicit `display.locale`.
 
 ## Storybook
 
-Storybook is the component catalogue: **171 stories across 12 files** covering
+Storybook is the component catalogue: **174 stories across 12 files** covering
 themes, windows, ribbons, overflow, visibility, interaction, inspector states,
 slots, print modes and design-system adapters.
 

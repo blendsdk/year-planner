@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 14:55
-> **Progress**: 24/77 tasks (31%)
+> **Last Updated**: 2026-11-12 15:00
+> **Progress**: 33/77 tasks (43%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -104,7 +104,7 @@ add implementation tests, verify.
 
 ## Phase 2: Storybook coverage
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: 2240eb1045451d42effcae7f2eb6123959a8e04e
 > **Lenses**: correctness, maintainability
 > **Reasoning**: medium — the story set is the public site; a missing state is a documentation gap, not a runtime risk.
 
@@ -113,24 +113,24 @@ add implementation tests, verify.
 **Reference**: [03-02](03-02-storybook.md) · ST-9–ST-12 · AR-6, AR-7, AR-23, AR-27
 **Objective**: Prove the PRT-01 story, wrapper stories and viewport configuration are absent.
 
-- [ ] 2.1.1 [spec-author] Write the story-manifest, PRT-01, wrapper and viewport cases with `RD-11-AC-02`, `RD-11-AC-11` — `tests/quality/storybook-contract.spec.test.ts`
-- [ ] 2.1.2 Run the new tests and record the red result — `pnpm test:quality`
+- [x] 2.1.1 [spec-author] Write the story-manifest, PRT-01, wrapper and viewport cases with `RD-11-AC-02`, `RD-11-AC-11` — `tests/quality/storybook-contract.spec.test.ts` ✅ (completed: 2026-11-12 15:00)
+- [x] 2.1.2 Run the new tests and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-12 15:00)
 
 ### Step 2.2: Implementation
 
 **Reference**: [03-02](03-02-storybook.md) · AR-6, AR-7, AR-23, AR-27
 **Objective**: Add the missing stories, the fixture and the built-in viewport configuration.
 
-- [ ] 2.2.1 Configure named viewports with the built-in `storybook/viewport` — `apps/storybook/.storybook/preview.ts`
-- [ ] 2.2.2 Add the PRT-01 booking and annotation fixture — `apps/storybook/stories/fixtures.ts`
-- [ ] 2.2.3 Add the exact 2017-yellow PRT-01 print story under `Year Planner/06 Print Planning` — `apps/storybook/stories/Print.stories.tsx`
-- [ ] 2.2.4 Add the `FluentWrapper` and `MuiWrapper` provider stories — `apps/storybook/stories/Adapters.stories.tsx`
-- [ ] 2.2.5 Update the story count to 174 in all three docs — `README.md`, `docs/getting-started.md`, `docs/test-report.md`
+- [x] 2.2.1 Configure named viewports with the built-in `storybook/viewport` — `apps/storybook/.storybook/preview.ts` ✅ (completed: 2026-11-12 15:00)
+- [x] 2.2.2 Add the PRT-01 booking and annotation fixture — `apps/storybook/stories/fixtures.ts` ✅ (completed: 2026-11-12 15:00)
+- [x] 2.2.3 Add the exact 2017-yellow PRT-01 print story under `Year Planner/06 Print Planning` — `apps/storybook/stories/Print.stories.tsx` ✅ (completed: 2026-11-12 15:00)
+- [x] 2.2.4 Add the `FluentWrapper` and `MuiWrapper` provider stories — `apps/storybook/stories/Adapters.stories.tsx` ✅ (completed: 2026-11-12 15:00)
+- [x] 2.2.5 Update the story count to 174 in all three docs — `README.md`, `docs/getting-started.md`, `docs/test-report.md` ✅ (completed: 2026-11-12 15:00)
 
 ### Step 2.3: Green, implementation tests and verify
 
-- [ ] 2.3.1 Prove green for ST-9–ST-12 and build the site after the packages — `pnpm test:quality && pnpm build && pnpm storybook:build`
-- [ ] 2.3.2 Verify the phase — `pnpm verify`
+- [x] 2.3.1 Prove green for ST-9–ST-12 and build the site after the packages — `pnpm test:quality && pnpm build && pnpm storybook:build` ✅ (completed: 2026-11-12 15:00)
+- [x] 2.3.2 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 15:00)
 
 **Deliverables**:
 - [ ] PRT-01 2017-yellow print story present and named

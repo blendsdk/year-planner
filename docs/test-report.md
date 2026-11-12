@@ -64,7 +64,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build |
-| Storybook | **PASS** — static build succeeds; **171 stories across 12 files** |
+| Storybook | **PASS** — static build succeeds; **174 stories across 12 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
 | Bundle size | **React entry + CSS 41.67 kB gzip / 60 kB**; **total 64.47 kB gzip / 65 kB** (core, React, adapters and CSS) |

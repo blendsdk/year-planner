@@ -102,7 +102,7 @@ The [documentation index](docs/README.md) maps every guide:
 | Migration | [docs/migration.md](docs/migration.md) |
 | FAQ | [docs/faq.md](docs/faq.md) |
 
-Storybook is the component catalogue (**171 stories across 12 files**); the
+Storybook is the component catalogue (**174 stories across 12 files**); the
 generated TypeDoc reference is served at `/api/` when the docs site is built.
 The renderer decision is in
 [ADR 0001](docs/adr/0001-renderer-strategy.md); the CSP contract is in

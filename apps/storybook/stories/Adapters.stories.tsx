@@ -51,6 +51,25 @@ export const MuiTokens: Story = {
   },
 };
 
+export const FluentWrapper: Story = {
+  render: (args) => (
+    <YearPlannerProvider theme={createTheme({ ribbon: "#0f6cbd" })}>
+      <YearPlanner {...args} cssVars={fluentThemeToCssVars({ colorBrandBackground: "#0f6cbd" })} />
+    </YearPlannerProvider>
+  ),
+};
+
+export const MuiWrapper: Story = {
+  render: (args) => (
+    <YearPlannerProvider theme={createTheme({ ribbon: "#1976d2" })}>
+      <YearPlanner
+        {...args}
+        cssVars={muiThemeToCssVars({ palette: { primary: { main: "#1976d2" } } })}
+      />
+    </YearPlannerProvider>
+  ),
+};
+
 export const FluentAndMuiMerged: Story = {
   args: {
     cssVars: {

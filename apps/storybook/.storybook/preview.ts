@@ -5,6 +5,13 @@ const preview: Preview = {
   parameters: {
     layout: "fullscreen",
     a11y: { test: "todo" },
+    viewport: {
+      options: {
+        mobile: { name: "Mobile", styles: { width: "390px", height: "844px" } },
+        tablet: { name: "Tablet", styles: { width: "834px", height: "1112px" } },
+        desktop: { name: "Desktop", styles: { width: "1440px", height: "900px" } },
+      },
+    },
   },
 };
 

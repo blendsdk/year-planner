@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 16:10
-> **Progress**: 63/77 tasks (82%)
+> **Last Updated**: 2026-11-12 17:25
+> **Progress**: 77/77 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -242,7 +242,7 @@ add implementation tests, verify.
 
 ## Phase 5: Demo, evidence, traceability and final gate
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: 6e0e92e (Phase 4 end)
 > **Lenses**: correctness, maintainability
 > **Reasoning**: high — traceability closes the milestone; a missing AC row blocks RD-12.
 
@@ -251,35 +251,35 @@ add implementation tests, verify.
 **Reference**: [03-05](03-05-demo-evidence.md) · ST-24–ST-27 · AR-15, AR-16, AR-20, AR-31
 **Objective**: Prove the shared demo navigation, evidence section and RD-11 traceability rows are missing.
 
-- [ ] 5.1.1 [spec-author] Write the shared-navigation, route-doc and report cases with `RD-11-AC-08`, `RD-11-AC-10` — `tests/quality/demo-contract.spec.test.ts`
-- [ ] 5.1.2 Extend the traceability test through RD-11 (the CLI default changes in 5.2.5) — `tests/quality/traceability.spec.test.ts`
-- [ ] 5.1.3 Run the new tests and record the red result — `pnpm test:quality`
+- [x] 5.1.1 [spec-author] Write the shared-navigation, route-doc and report cases with `RD-11-AC-08`, `RD-11-AC-10` — `tests/quality/demo-contract.spec.test.ts` ✅ (completed: 2026-11-12 16:35)
+- [x] 5.1.2 Extend the traceability test through RD-11 (the CLI default changes in 5.2.5) — `tests/quality/traceability.spec.test.ts` ✅ (completed: 2026-11-12 16:35)
+- [x] 5.1.3 Run the new tests and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-12 16:35)
 
 ### Step 5.2: Implementation
 
 **Reference**: [03-05](03-05-demo-evidence.md) · AR-15, AR-16, AR-20, AR-31
 **Objective**: Add the shared navigation, the evidence section and the RD-11 traceability rows.
 
-- [ ] 5.2.1 Add the shared `DemoNav` to every route — `apps/demo/src/App.tsx`
-- [ ] 5.2.2 Document the demonstration routes, including `?security=1` — `README.md`, `docs/getting-started.md`
-- [ ] 5.2.3 Add RD-11-AC-01..13 rows with status `partial` — `codeops/features/year-planner/requirements/00-traceability.md`
-- [ ] 5.2.4 Annotate the existing demo E2E titles with `RD-11-AC-08` — `tests/e2e/commands.spec.ts`, `tests/e2e/interaction.spec.ts`, `tests/e2e/accessibility.spec.ts`, `tests/e2e/security.spec.ts`
-- [ ] 5.2.5 Flip the RD-11 rows to `proven` and set the CLI default through RD-11 — `codeops/features/year-planner/requirements/00-traceability.md`, `scripts/check-traceability.mjs`, `scripts/lib/traceability.mjs`
-- [ ] 5.2.6 Add the RD-11 evidence section and correct the story counts — `docs/test-report.md`
-- [ ] 5.2.7 Confirm the roadmap row links this plan; let the completion hook set Done — `codeops/features/year-planner/00-roadmap.md`
+- [x] 5.2.1 Add the shared `DemoNav` to every route — `apps/demo/src/App.tsx` ✅ (completed: 2026-11-12 16:35)
+- [x] 5.2.2 Document the demonstration routes, including `?security=1` — `README.md`, `docs/getting-started.md` ✅ (completed: 2026-11-12 16:35)
+- [x] 5.2.3 Add RD-11-AC-01..13 rows with status `partial` — `codeops/features/year-planner/requirements/00-traceability.md` ✅ (completed: 2026-11-12 16:35)
+- [x] 5.2.4 Annotate the existing demo E2E titles with `RD-11-AC-08` — `tests/e2e/commands.spec.ts`, `tests/e2e/interaction.spec.ts`, `tests/e2e/accessibility.spec.ts`, `tests/e2e/security.spec.ts` ✅ (completed: 2026-11-12 16:35)
+- [x] 5.2.5 Flip the RD-11 rows to `proven` and set the CLI default through RD-11 — `codeops/features/year-planner/requirements/00-traceability.md`, `scripts/check-traceability.mjs`, `scripts/lib/traceability.mjs` ✅ (completed: 2026-11-12 16:35)
+- [x] 5.2.6 Add the RD-11 evidence section and correct the story counts — `docs/test-report.md` ✅ (completed: 2026-11-12 16:35)
+- [x] 5.2.7 Confirm the roadmap row links this plan; let the completion hook set Done — `codeops/features/year-planner/00-roadmap.md` ✅ (completed: 2026-11-12 16:35)
 
 ### Step 5.3: Green, implementation tests and verify
 
-- [ ] 5.3.1 Prove green for ST-24–ST-27 — `pnpm test:quality`
-- [ ] 5.3.2 Run the release gate — `pnpm verify:full`
-- [ ] 5.3.3 Rebuild and verify the docs artifact — `pnpm docs:site && pnpm docs:site -- --check-only`
-- [ ] 5.3.4 Run the packed consumer check — `pnpm test:consumer`
+- [x] 5.3.1 Prove green for ST-24–ST-27 — `pnpm test:quality` ✅ (completed: 2026-11-12 16:40)
+- [x] 5.3.2 Run the release gate — `pnpm verify:full` ✅ (completed: 2026-11-12 17:20)
+- [x] 5.3.3 Rebuild and verify the docs artifact — `pnpm docs:site && pnpm docs:site -- --check-only` ✅ (completed: 2026-11-12 17:22)
+- [x] 5.3.4 Run the packed consumer check — `pnpm test:consumer` ✅ (completed: 2026-11-12 17:24)
 
 **Deliverables**:
-- [ ] Demo routes discoverable from every route, including the visibility proof
-- [ ] Thirteen RD-11 rows proven, checker and CLI through RD-11
-- [ ] RD-11 evidence recorded with named gaps and deviations
-- [ ] Full release gate passing
+- [x] Demo routes discoverable from every route, including the visibility proof
+- [x] Thirteen RD-11 rows proven, checker and CLI through RD-11
+- [x] RD-11 evidence recorded with named gaps and deviations
+- [x] Full release gate passing
 
 **Test slices**: `core.unit`, `react.unit`, `verification` (task); `apps/demo/**` is full-on
 **Task verify**: `pnpm verify` (full gate; AR-30)

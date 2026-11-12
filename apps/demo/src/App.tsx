@@ -129,6 +129,25 @@ const securityItem: PlannerItem = {
   metadata: { html: '<img src="https://attacker.example/pixel">' },
 };
 
+/** Shared route navigation, rendered on every demo route. */
+function DemoNav() {
+  return (
+    <nav
+      aria-label="Demo routes"
+      className="demo-chrome"
+      style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 12 }}
+    >
+      <a href="?">Overview</a>
+      <a href="?commands=1">Controlled commands</a>
+      <a href="?interaction=1">Interaction</a>
+      <a href="?ac3=1">Fluent and MUI buttons</a>
+      <a href="?security=1">Hidden-data privacy</a>
+      <a href="?print=prt01">PRT-01 print</a>
+      <a href="?bench=1">Benchmark</a>
+    </nav>
+  );
+}
+
 export function App() {
   const search = typeof window === "undefined" ? "" : window.location.search;
   const prt01Mode = new URLSearchParams(search).get("print") === "prt01";
@@ -150,13 +169,32 @@ export function App() {
   const layoutProps =
     months === 14 ? { year } : { range: { start: { year, month: 0 }, monthCount: months } };
 
-  if (benchMode) return <BenchDemo />;
-  if (commandsMode) return <CommandsDemo />;
-  if (interactionMode) return <InteractionDemo />;
+  if (benchMode)
+    return (
+      <>
+        <DemoNav />
+        <BenchDemo />
+      </>
+    );
+  if (commandsMode)
+    return (
+      <>
+        <DemoNav />
+        <CommandsDemo />
+      </>
+    );
+  if (interactionMode)
+    return (
+      <>
+        <DemoNav />
+        <InteractionDemo />
+      </>
+    );
 
   return (
     <main style={{ padding: 24, fontFamily: "Arial, sans-serif" }}>
       <style>{`@media print { .demo-chrome { display: none !important; } body { margin: 0; } main { padding: 0 !important; } }`}</style>
+      <DemoNav />
       <div className="demo-chrome">
         <h1 style={{ marginTop: 0 }}>Year Planner for React</h1>
         <p style={{ maxWidth: 760 }}>

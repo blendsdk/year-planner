@@ -308,3 +308,55 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 - `pnpm verify` and `pnpm verify:full` pass locally.
 - M1 plan: 48/48 tasks; M2 plan: 46/46; RD-06 plan: 46/46; RD-07 plan: 33/33; RD-09 plan: 55/55.
 - No deferred feature is presented as implemented.
+
+## RD-11 — Documentation, Storybook and API reference
+
+> **Date**: 2026-11-12
+> **Scope**: the guide set, Storybook states, TSDoc/API Extractor/TypeDoc, the
+> docs-site artifact and the demo evidence.
+
+### Commands and results
+
+| Command | Result |
+| ------- | ------ |
+| `pnpm verify` | PASS — 220 core, 508 React, 138 quality tests |
+| `pnpm api-report:ci` | PASS — both reports checked in, no warnings |
+| `pnpm docs:build` | PASS — TypeDoc core and React, 0 warnings with fatal validation |
+| `pnpm storybook:build` | PASS — 174 stories across 12 files |
+| `pnpm docs:site` | PASS — 241 files; Storybook at `/`, TypeDoc at `/api` |
+| `pnpm docs:site -- --check-only` | PASS — the built artifact resolves every relative asset and landing link |
+| `pnpm verify:full` | PASS — 143 E2E passed / 40 skipped; timezone suite 220 × 3; perf 7 passed / 1 skipped; bench 8 passed / 8 skipped; clean consumer PASS |
+
+### What changed
+
+- Fourteen topic guides plus the command, accessibility and architecture pages;
+  `docs/README.md` maps every topic.
+- The README quickstart renders a 14-month view from static data with controlled
+  selection and visibility and a print action. The install note is honest: the
+  packages are not on a public registry, so the packed-tarball path is documented.
+- Storybook adds the exact 2017 classic-yellow PRT-01 print story and Fluent/MUI
+  provider wrapper stories, and configures the built-in Storybook 10 viewport.
+- TSDoc covers every public report entry, `@public` tags are on the public source
+  surface, and `@example` is bound to the five entry points.
+- The docs-site script builds the packages first, writes Storybook to the repo
+  root, copies TypeDoc to `/api`, and verifies relative links. The PR job builds
+  and checks the artifact; the Pages deploy is manual and `main`-only.
+- The demo renders a shared navigation on every route, including the hidden-data
+  proof at `?security=1`.
+
+### Deviations
+
+- RD-11 names `@storybook/addon-viewport`; Storybook 10 provides the viewport in
+  core, so no addon is installed.
+- RD-11 AC7 says "install the package"; the packages are unpublished, so the
+  quickstart uses the packed-tarball/consumer path until the release milestone.
+- The docs site is built and uploaded but not published; the deploy job waits for
+  the public-release Pages enablement.
+
+### Known gaps
+
+- The manual NVDA/VoiceOver audit remains parked; no WCAG conformance claim is
+  made. Automated axe evidence is green.
+- No versioned docs and no Storybook MDX guide pages in R1; the guides are
+  repository markdown and the published site is Storybook plus TypeDoc.
+- No live Pages deployment.

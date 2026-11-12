@@ -22,6 +22,19 @@ function exists(path: string): boolean {
 const PAGES = ".github/workflows/pages.yml";
 
 describe("RD-11-AC-06: docs-site command", () => {
+  it("RD-11-AC-01: builds the API report and the static site", () => {
+    const manifest = JSON.parse(read("package.json")) as { scripts?: Record<string, string> };
+    expect(manifest.scripts?.docs).toContain("api-report");
+    expect(manifest.scripts?.docs).toContain("docs:build");
+    expect(manifest.scripts?.["storybook:build"]).toContain("storybook build");
+    expect(manifest.scripts?.verify).toContain("docs:site");
+  });
+
+  it("RD-11-AC-05: verifies the API tree under /api", () => {
+    expect(read("scripts/build-docs-site.mjs")).toContain("api/core/index.html");
+    expect(read("scripts/build-docs-site.mjs")).toContain("api/react/index.html");
+  });
+
   it("exposes docs:site and a script with the check flags", () => {
     const manifest = JSON.parse(read("package.json")) as { scripts?: Record<string, string> };
     expect(manifest.scripts?.["docs:site"]).toBe("node scripts/build-docs-site.mjs");

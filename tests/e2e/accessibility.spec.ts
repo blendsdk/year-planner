@@ -162,7 +162,9 @@ test.describe("RD-09-AC-01/02/05/11/14: keyboard evidence", () => {
       .toBe("2027-02-04");
   });
 
-  test("removes a hidden item from the DOM and announces the focus fallback", async ({ page }) => {
+  test("RD-11-AC-08: removes a hidden item from the DOM and announces the focus fallback", async ({
+    page,
+  }) => {
     await page.locator('[data-yp-part="item-proxy"][data-item-id="booking"]').first().click();
     await page.getByTestId("hide-focused-item").click();
     await expect(page.locator('[data-item-id="booking"]')).toHaveCount(0);

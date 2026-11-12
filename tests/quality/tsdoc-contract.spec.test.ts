@@ -168,7 +168,7 @@ describe("RD-11-AC-03: public TSDoc", () => {
     }
   });
 
-  it("keeps the API report comparison in the verify gate", () => {
+  it("RD-11-AC-04: keeps the API report comparison in the verify gate", () => {
     const manifest = json<{ scripts?: Record<string, string> }>("package.json");
     expect(manifest.scripts?.verify).toContain("api-report:ci");
     for (const report of REPORTS) expect(existsSync(new URL(report, ROOT)), report).toBe(true);

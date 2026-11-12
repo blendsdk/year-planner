@@ -223,3 +223,16 @@
 | RD-10-AC-14 | RD-10 | 14 | proven | `tests/quality/package-scripts.spec.test.ts` | `RD-10-AC-12 / RD-10-AC-14: command and consumer contract` | Clean consumer |
 | RD-10-AC-15 | RD-10 | 15 | proven | `packages/react/src/YearPlanner.hydration.spec.test.tsx` | `RD-06-AC-10 / RD-10-AC-15: hydration` | SSR and locale hydration |
 | RD-10-AC-16 | RD-10 | 16 | proven | `tests/quality/audit-contract.spec.test.ts` | `RD-10-AC-16: dependency and license gates` | Audit and least privilege |
+| RD-11-AC-01 | RD-11 | 1 | proven | `tests/quality/docs-site-contract.spec.test.ts` | `RD-11-AC-01: builds the API report and the static site` | Docs and site build |
+| RD-11-AC-02 | RD-11 | 2 | proven | `tests/quality/storybook-contract.spec.test.ts` | `RD-11-AC-02: contains every required named story` | Named stories |
+| RD-11-AC-03 | RD-11 | 3 | proven | `tests/quality/tsdoc-contract.spec.test.ts` | `RD-11-AC-03: public TSDoc` | Reports and release tags |
+| RD-11-AC-04 | RD-11 | 4 | proven | `tests/quality/tsdoc-contract.spec.test.ts` | `RD-11-AC-04: keeps the API report comparison in the verify gate` | API report gate |
+| RD-11-AC-05 | RD-11 | 5 | proven | `tests/quality/docs-site-contract.spec.test.ts` | `RD-11-AC-05: verifies the API tree under /api` | API tree |
+| RD-11-AC-06 | RD-11 | 6 | proven | `tests/quality/docs-site-contract.spec.test.ts` | `RD-11-AC-06: docs-site command` | Pages artifact and workflow |
+| RD-11-AC-07 | RD-11 | 7 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-07: documentation index` | Topic map and quickstart |
+| RD-11-AC-08 | RD-11 | 8 | proven | `tests/quality/demo-contract.spec.test.ts` | `RD-11-AC-08: demo routes` | Demo navigation and E2E |
+| RD-11-AC-09 | RD-11 | 9 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-09: deferred capabilities` | DEFERRED list |
+| RD-11-AC-10 | RD-11 | 10 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-10: honest status` | Status pages and report |
+| RD-11-AC-11 | RD-11 | 11 | proven | `tests/quality/storybook-contract.spec.test.ts` | `RD-11-AC-11: uses the 2017 classic-yellow A3 paginate fixture` | Print story |
+| RD-11-AC-12 | RD-11 | 12 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-12: asset provenance` | Published assets |
+| RD-11-AC-13 | RD-11 | 13 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-13: documentation security` | Synthetic data and examples |

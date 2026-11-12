@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 const APP_ORIGIN = "http://127.0.0.1:4173";
 
 test.describe("RD-10-AC-08/10/13: security and privacy", () => {
-  test("renders only visible data and makes no external request", async ({ page }) => {
+  test("RD-11-AC-08: renders only visible data and makes no external request", async ({ page }) => {
     const unexpected: string[] = [];
     const leaks: string[] = [];
     const sockets: string[] = [];

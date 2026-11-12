@@ -66,7 +66,7 @@ test.describe("RD-08-AC-01/02/03/04/05/06/11/14: controlled command fixture", ()
     await expect(page.locator('[data-yp-part="command-status"]')).toContainText("Change accepted");
   });
 
-  test("rejects a move and keeps the source period", async ({ page }) => {
+  test("RD-11-AC-08: rejects a move and keeps the source period", async ({ page }) => {
     await page.getByTestId("commands-mode").selectOption("reject");
     await dragBookingTo(page, "2027-02-02");
     await expect.poll(async () => diagnostics(page)).toContain("CAPACITY_EXCEEDED");

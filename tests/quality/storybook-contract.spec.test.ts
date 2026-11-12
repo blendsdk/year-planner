@@ -28,7 +28,7 @@ function storyFiles(): StoryFile[] {
     const exports = [...source.matchAll(/^export const (\w+): Story/gm)].map(
       (match) => match[1] ?? "",
     );
-    const meta = /const meta[\s\S]*?title:\s*"([^"]+)"/.exec(source)?.[1];
+    const meta = /const meta[\s\S]*?title:\s*[\u0022]([^\u0022]+)[\u0022]/.exec(source)?.[1];
     files.push({
       name: entry.name,
       title: meta,
@@ -73,7 +73,7 @@ const REQUIRED_STORIES: Array<{ title: string; export: string }> = [
 ];
 
 describe("RD-11-AC-02: Storybook state coverage", () => {
-  it("contains every required named story", () => {
+  it("RD-11-AC-02: contains every required named story", () => {
     const files = storyFiles();
     for (const required of REQUIRED_STORIES) {
       const file = files.find((candidate) => candidate.title === required.title);
@@ -93,7 +93,7 @@ describe("RD-11-AC-02: Storybook state coverage", () => {
 });
 
 describe("RD-11-AC-11: PRT-01 print sample", () => {
-  it("uses the 2017 classic-yellow A3 paginate fixture", () => {
+  it("RD-11-AC-11: uses the 2017 classic-yellow A3 paginate fixture", () => {
     const print = storyFiles().find((file) => file.name === "Print.stories.tsx");
     expect(print).toBeDefined();
     const source = print?.source ?? "";

@@ -89,6 +89,7 @@ complexity escalation remains open.
 | **RD-10** | [Quality Gates, Performance, Security and Browser Support](RD-10-quality-gates.md) | Test tiers, budgets, matrices, evidence | RD-01–RD-09 |
 | **RD-11** | [Documentation, Storybook and API Reference](RD-11-documentation.md) | Storybook, TSDoc, API Extractor, TypeDoc, GH Pages | RD-01–RD-10 |
 | **RD-12** | [Release, Versioning and Maintenance](RD-12-release-maintenance.md) | Lockstep, provenance, support, release gates | RD-01–RD-11 |
+| **RD-13** | [Product Quality — Fit, Performance and Interaction Polish](RD-13-product-quality.md) | Host-region fit, performance, typography, context menus, demos | RD-01–RD-12 |
 
 ## Dependency Graph
 
@@ -105,6 +106,7 @@ RD-01 Foundation
   └── RD-10 Quality gates
         └── RD-11 Docs/API
               └── RD-12 Release
+                    └── RD-13 Product quality
 ```
 
 ## Suggested Implementation Order

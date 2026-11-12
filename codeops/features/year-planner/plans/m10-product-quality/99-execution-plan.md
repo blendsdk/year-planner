@@ -65,7 +65,7 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 - [x] 0.1.6 Inventory stories, play functions, component descriptions and story-level descriptions — `apps/storybook/stories/` ✅ (completed: 2026-11-13 00:15)
 - [x] 0.1.7 Analyse the CPU profile and rank self-time by function, including the per-item visibility path — profiler output in `$CODEOPS_TMPDIR` ✅ (completed: 2026-11-13 00:15)
 - [x] 0.1.8 Record the go/re-scope decision and write the baseline report — `00-baseline.md`, `docs/benchmarks/rd13-baseline.md`, `docs/benchmarks/rd13-baseline.json` ✅ (completed: 2026-11-13 00:15)
-- [x] 0.1.9 Confirm no product source changed and record the artifact paths — `git status --short` ✅ (completed: 2026-11-13 00:15)
+- [x] 0.1.9 Confirm no product source changed and record the artifact paths — repository status check via the git-commit skill ✅ (completed: 2026-11-13 00:15)
 
 **Deliverables**:
 - [x] Production baseline numbers with raw samples

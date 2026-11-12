@@ -1,0 +1,436 @@
+{
+  "schema": 1,
+  "policy": {
+    "full": [
+      "pnpm",
+      "verify:full"
+    ],
+    "budgets": {
+      "taskTargetSeconds": 120,
+      "taskAcceptableSeconds": 180
+    },
+    "branches": {
+      "integration": [
+        "main"
+      ],
+      "feature": [
+        "feature/*"
+      ],
+      "release": [
+        "release/*",
+        "hotfix/*"
+      ],
+      "acceptance": [
+        "acceptance/*"
+      ],
+      "releaseTags": [
+        "v*"
+      ],
+      "unknown": "feature"
+    },
+    "testRoots": [
+      "packages/core/src",
+      "packages/react/src",
+      "tests"
+    ],
+    "fullOnPaths": [
+      ".github/**",
+      "apps/**",
+      "scripts/**",
+      "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tsconfig.base.json",
+      "tsconfig.tools.json",
+      "biome.json",
+      "turbo.json",
+      "vitest.quality.config.ts",
+      "playwright.config.ts",
+      "playwright.bench.config.ts",
+      "typedoc.core.json",
+      "typedoc.react.json",
+      "packages/core/package.json",
+      "packages/core/api-extractor.json",
+      "packages/core/etc/**",
+      "packages/core/tsconfig.json",
+      "packages/core/tsconfig.build.json",
+      "packages/core/vitest.config.ts",
+      "packages/react/package.json",
+      "packages/react/api-extractor.json",
+      "packages/react/etc/**",
+      "packages/react/tsconfig.json",
+      "packages/react/tsconfig.build.json",
+      "packages/react/vite.config.ts",
+      "packages/react/vitest.config.ts"
+    ],
+    "ignorePaths": [
+      {
+        "glob": "docs/**",
+        "reason": "Documentation only; no product code."
+      },
+      {
+        "glob": ".opencode/**",
+        "reason": "Agent skills and instructions; not product code."
+      },
+      {
+        "glob": ".changeset/**",
+        "reason": "Release notes metadata only."
+      },
+      {
+        "glob": "spike/**",
+        "reason": "Renderer research harness and evidence; not shipped."
+      },
+      {
+        "glob": "LICENSE",
+        "reason": "License text."
+      },
+      {
+        "glob": "README.md",
+        "reason": "Project documentation."
+      },
+      {
+        "glob": "CONTRIBUTING.md",
+        "reason": "Contributor documentation."
+      },
+      {
+        "glob": "SECURITY.md",
+        "reason": "Security policy documentation."
+      },
+      {
+        "glob": "CODE_OF_CONDUCT.md",
+        "reason": "Community policy documentation."
+      },
+      {
+        "glob": "THIRD_PARTY_NOTICES.md",
+        "reason": "Generated license report."
+      },
+      {
+        "glob": ".editorconfig",
+        "reason": "Editor configuration."
+      },
+      {
+        "glob": ".gitignore",
+        "reason": "Git ignore configuration."
+      },
+      {
+        "glob": "AGENTS.md",
+        "reason": "Agent guidance documentation; not product code."
+      },
+      {
+        "glob": "codeops/**",
+        "reason": "Requirements, plans, map and evidence; no product code."
+      }
+    ],
+    "caseSensitive": true,
+    "fullThreshold": 0.6,
+    "prSmoke": [
+      "e2e.security"
+    ],
+    "acceptance": {
+      "mode": "automated",
+      "groups": [
+        "e2e.visual",
+        "e2e.print",
+        "e2e.interaction",
+        "e2e.commands",
+        "e2e.accessibility",
+        "e2e.security",
+        "perf.bench"
+      ]
+    }
+  },
+  "groups": [
+    {
+      "id": "core.unit",
+      "slice": "core",
+      "tier": "task",
+      "sources": [
+        "packages/core/src/**"
+      ],
+      "tests": [
+        "packages/core/src/**/*.test.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "--filter",
+          "@blendsdk/year-planner-core",
+          "exec",
+          "vitest",
+          "run"
+        ]
+      },
+      "durationSec": 4,
+      "parallelSafe": true,
+      "acceptance": {
+        "mode": "na",
+        "reason": "The core package is exercised by the React, quality, browser and performance groups."
+      }
+    },
+    {
+      "id": "react.unit",
+      "slice": "react",
+      "tier": "task",
+      "sources": [
+        "packages/react/src/**"
+      ],
+      "tests": [
+        "packages/react/src/**/*.test.tsx"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "--filter",
+          "@blendsdk/react-year-planner",
+          "exec",
+          "vitest",
+          "run"
+        ]
+      },
+      "durationSec": 110,
+      "parallelSafe": true,
+      "dependsOn": [
+        "core.unit"
+      ],
+      "acceptance": {
+        "mode": "na",
+        "reason": "The React package is exercised by the browser, accessibility, security and performance groups."
+      }
+    },
+    {
+      "id": "quality.contracts",
+      "slice": "verification",
+      "tier": "task",
+      "sources": [
+        "tests/quality/**"
+      ],
+      "tests": [
+        "tests/quality/**/*.test.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "vitest",
+          "run",
+          "-c",
+          "vitest.quality.config.ts",
+          "{tests}"
+        ]
+      },
+      "durationSec": 3,
+      "parallelSafe": true,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.visual",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/core/src/layout/**",
+        "packages/core/src/ribbon/**",
+        "packages/react/src/render/**",
+        "packages/react/src/theme.ts",
+        "packages/react/src/styles.css",
+        "packages/react/src/YearPlanner.tsx"
+      ],
+      "tests": [
+        "tests/e2e/classic-year.spec.ts",
+        "tests/e2e/quality-visual.spec.ts",
+        "tests/e2e/mobile.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 180,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.print",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/core/src/ribbon/print.ts",
+        "packages/react/src/render/PrintPages.tsx",
+        "packages/react/src/YearPlanner.tsx"
+      ],
+      "tests": [
+        "tests/e2e/print-matrix.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 90,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.interaction",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/react/src/interaction/**",
+        "packages/react/src/state.ts",
+        "packages/react/src/YearPlanner.tsx"
+      ],
+      "tests": [
+        "tests/e2e/interaction.spec.ts",
+        "tests/e2e/interaction-touch.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 150,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.commands",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/react/src/commands/**",
+        "packages/react/src/commands.ts",
+        "packages/react/src/state.ts",
+        "packages/react/src/YearPlanner.tsx"
+      ],
+      "tests": [
+        "tests/e2e/commands.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 100,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.accessibility",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/react/src/a11y.ts",
+        "packages/react/src/announcements.ts",
+        "packages/react/src/useAnnouncements.ts",
+        "packages/react/src/styles.css",
+        "packages/react/src/render/**",
+        "packages/react/src/YearPlanner.tsx"
+      ],
+      "tests": [
+        "tests/e2e/accessibility.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 160,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.security",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/react/src/safeStyle.ts",
+        "packages/react/src/render/**",
+        "packages/react/src/YearPlanner.tsx"
+      ],
+      "tests": [
+        "tests/e2e/security.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 60,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "perf.bench",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/react/src/YearPlanner.tsx",
+        "packages/react/src/render/**",
+        "packages/react/src/interaction/**"
+      ],
+      "tests": [
+        "tests/perf/bench.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "-c",
+          "playwright.bench.config.ts",
+          "{tests}"
+        ]
+      },
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    }
+  ]
+}

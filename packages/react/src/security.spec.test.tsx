@@ -58,7 +58,7 @@ function documentText(container: HTMLElement): string {
   return container.textContent ?? "";
 }
 
-describe("RD-10-AC-08: hidden data never renders", () => {
+describe("RD-04-AC-18 / RD-05-AC-15 / RD-09-AC-16 / RD-10-AC-08: hidden data never renders", () => {
   it("shows a tooltip for a visible item and clears it when the item is hidden", () => {
     const { container, rerender } = render(
       <YearPlanner year={2027} layers={[bookings]} items={[control]} />,

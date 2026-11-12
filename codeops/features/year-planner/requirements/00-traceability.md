@@ -87,7 +87,7 @@
 | RD-02-AC-07 | RD-02 | 7 | proven | `packages/core/src/interval.spec.test.ts` | `RD-02-AC-07/08: half-open interval algebra` | Core interval test |
 | RD-02-AC-08 | RD-02 | 8 | proven | `packages/core/src/interval.spec.test.ts` | `RD-02-AC-07/08: half-open interval algebra` | Core interval test |
 | RD-02-AC-09 | RD-02 | 9 | proven | `packages/core/src/period.spec.test.ts` | `RD-02-AC-09: invalid input codes` | Core period test |
-| RD-02-AC-10 | RD-02 | 10 | partial |  |  | Time-zone script and its contract test land with the timezone matrix; the date suite itself is unchanged |
+| RD-02-AC-10 | RD-02 | 10 | proven | `tests/quality/ci-contract.spec.test.ts` | `RD-02-AC-10 / RD-10-AC-05: timezone evidence` | Three-timezone script and CI step |
 | RD-02-AC-12 | RD-02 | 12 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-02-AC-12: temporal input safety` | Source scan |
 | RD-03-AC-01 | RD-03 | 1 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-01/02: classic 14-month layout` | Core layout test |
 | RD-03-AC-02 | RD-03 | 2 | proven | `packages/core/src/layout/classic-year.spec.test.ts` | `RD-03-AC-01/02: classic 14-month layout` | Core layout test |
@@ -121,7 +121,7 @@
 | RD-04-AC-16 | RD-04 | 16 | proven | `packages/core/src/model/paint.spec.test.ts` | `RD-04-AC-16: merges only when the title matches` | Core paint test |
 | RD-04-AC-17 | RD-04 | 17 | proven | `packages/core/src/model/paint.spec.test.ts` | `RD-04-AC-17: rejects a layer that is not the active paint target` | Core paint test |
 | RD-04-AC-14 | RD-04 | 14 | proven | `packages/core/src/model/visibility.spec.test.ts` | `RD-04-AC-14: editability precedence` | Core visibility test |
-| RD-04-AC-18 | RD-04 | 18 | partial |  |  | Hidden-data and ARIA proof lands with the security suite; model and source scans pass |
+| RD-04-AC-18 | RD-04 | 18 | proven | `packages/react/src/security.spec.test.tsx` | `RD-04-AC-18 / RD-05-AC-15 / RD-09-AC-16 / RD-10-AC-08: hidden data never renders` | Hidden-data, XSS and network suite |
 | RD-05-AC-01 | RD-05 | 1 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-01: splits a cross-month item into clipped row fragments with one identity` | Core ribbon test |
 | RD-05-AC-02 | RD-05 | 2 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-02: measures one-day and eight-day widths from the actual slots` | Core ribbon test |
 | RD-05-AC-03 | RD-05 | 3 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-03: places three overlapping items in three lanes` | Core ribbon test |
@@ -132,11 +132,11 @@
 | RD-05-AC-08 | RD-05 | 8 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-08: never lists a hidden item in overflow` | Core ribbon test |
 | RD-05-AC-10 | RD-05 | 10 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-10: is stable for identical inputs and changes with version, visibility and window` | Core ribbon test |
 | RD-05-AC-09 | RD-05 | 9 | proven | `packages/core/src/ribbon/print.spec.test.ts` | `RD-05-AC-09/13: print pagination` | Core print pagination test |
-| RD-05-AC-11 | RD-05 | 11 | partial |  |  | PRT-01 print fixture and page assertions land with the print matrix; no PRT-01 claim yet |
+| RD-05-AC-11 | RD-05 | 11 | proven | `tests/e2e/print-matrix.spec.ts` | `RD-05-AC-11 / RD-10-AC-06: PRT-01 keeps the 2017 yellow fixture on one A3 page` | PRT-01 E2E print test |
 | RD-05-AC-12 | RD-05 | 12 | proven | `packages/core/src/ribbon/print.spec.test.ts` | `RD-05-AC-12: print fit` | Core print fit test |
 | RD-05-AC-13 | RD-05 | 13 | partial | `packages/core/src/ribbon/print.spec.test.ts` | `RD-05-AC-09/13: print pagination` | 36-month 14/14/8 pages covered; 15/28/29 boundary windows land with the print matrix |
 | RD-05-AC-14 | RD-05 | 14 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-05-AC-14: renderer decision record` | Documentation and public-surface check |
-| RD-05-AC-15 | RD-05 | 15 | partial |  |  | Hidden overflow is covered; escaped labels and raw-HTML proof land with the security suite |
+| RD-05-AC-15 | RD-05 | 15 | proven | `packages/react/src/security.spec.test.tsx` | `RD-04-AC-18 / RD-05-AC-15 / RD-09-AC-16 / RD-10-AC-08: hidden data never renders` | Hidden and escaped output suite |
 | RD-06-AC-01 | RD-06 | 1 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-01: applies theme classes without changing geometry` | React component test |
 | RD-06-AC-02 | RD-06 | 2 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-02: lets an explicit preset win over the provider and cssVars win over both` | React component test |
 | RD-06-AC-03 | RD-06 | 3 | proven | `packages/react/src/adapters.spec.test.tsx` | `RD-06-AC-03: renders host buttons in cells and the inspector without nesting in a proxy` | Adapter test |
@@ -206,4 +206,20 @@
 | RD-09-AC-13 | RD-09 | 13 | proven | `packages/react/src/items.spec.test.tsx` | `RD-09-AC-13: renders backdrop opacity, patterns and layer labels` | React item test |
 | RD-09-AC-14 | RD-09 | 14 | proven | `tests/e2e/accessibility.spec.ts` | `RD-09-AC-01/02/05/11/14: keyboard evidence` | Playwright keyboard evidence |
 | RD-09-AC-15 | RD-09 | 15 | proven | `tests/e2e/accessibility.spec.ts` | `RD-09-AC-07/15: axe matrix` | Playwright axe matrix |
-| RD-09-AC-16 | RD-09 | 16 | partial |  |  | ARIA hidden-data and escaped-label proof lands with the security suite; source scan passes |
+| RD-09-AC-16 | RD-09 | 16 | proven | `packages/react/src/security.spec.test.tsx` | `RD-04-AC-18 / RD-05-AC-15 / RD-09-AC-16 / RD-10-AC-08: hidden data never renders` | ARIA hidden-data and escaped output |
+| RD-10-AC-01 | RD-10 | 1 | proven | `tests/quality/ci-contract.spec.test.ts` | `RD-10-AC-01: release gate evidence` | CI contract |
+| RD-10-AC-02 | RD-10 | 2 | proven | `tests/quality/traceability.spec.test.ts` | `RD-10-AC-02: repository traceability` | Traceability checker |
+| RD-10-AC-03 | RD-10 | 3 | proven | `tests/quality/coverage-contract.spec.test.ts` | `RD-10-AC-03: coverage floor` | Coverage contract |
+| RD-10-AC-04 | RD-10 | 4 | proven | `tests/e2e/quality-visual.spec.ts` | `RD-10-AC-04: quality visual matrix` | Visual matrix |
+| RD-10-AC-05 | RD-10 | 5 | proven | `tests/quality/ci-contract.spec.test.ts` | `RD-02-AC-10 / RD-10-AC-05: timezone evidence` | Timezone evidence |
+| RD-10-AC-06 | RD-10 | 6 | proven | `tests/e2e/print-matrix.spec.ts` | `RD-10-AC-06: A3 print matrix @print` | Print matrix |
+| RD-10-AC-07 | RD-10 | 7 | partial | `tests/e2e/accessibility.spec.ts` | `RD-09-AC-07/15 / RD-10-AC-07: axe matrix` | Automated axe complete; manual NVDA/VoiceOver parked; no conformance claim |
+| RD-10-AC-08 | RD-10 | 8 | proven | `packages/react/src/security.spec.test.tsx` | `RD-04-AC-18 / RD-05-AC-15 / RD-09-AC-16 / RD-10-AC-08: hidden data never renders` | Hidden-data suite |
+| RD-10-AC-09 | RD-10 | 9 | proven | `packages/react/src/security.spec.test.tsx` | `RD-10-AC-09: injection payloads stay inert` | XSS and fuzz suite |
+| RD-10-AC-10 | RD-10 | 10 | proven | `packages/react/src/security.spec.test.tsx` | `RD-10-AC-10: no network or telemetry` | Network spies and request log |
+| RD-10-AC-11 | RD-10 | 11 | proven | `tests/perf/bench.spec.ts` | `RD-10-AC-11: production budgets` | Benchmark harness |
+| RD-10-AC-12 | RD-10 | 12 | proven | `tests/quality/coverage-contract.spec.test.ts` | `RD-10-AC-12: bundle measurement contract` | Both size measurements |
+| RD-10-AC-13 | RD-10 | 13 | proven | `tests/e2e/security.spec.ts` | `RD-10-AC-08/10/13: security and privacy` | CSP and request log |
+| RD-10-AC-14 | RD-10 | 14 | proven | `tests/quality/package-scripts.spec.test.ts` | `RD-10-AC-12 / RD-10-AC-14: command and consumer contract` | Clean consumer |
+| RD-10-AC-15 | RD-10 | 15 | proven | `packages/react/src/YearPlanner.hydration.spec.test.tsx` | `RD-06-AC-10 / RD-10-AC-15: hydration` | SSR and locale hydration |
+| RD-10-AC-16 | RD-10 | 16 | proven | `tests/quality/audit-contract.spec.test.ts` | `RD-10-AC-16: dependency and license gates` | Audit and least privilege |

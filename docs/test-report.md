@@ -21,7 +21,14 @@
 pnpm install --frozen-lockfile
 pnpm verify
 pnpm verify:full
-pnpm test:size
+pnpm test:quality
+pnpm test:timezones
+pnpm test:audit
+pnpm test:licenses
+pnpm test:environment
+pnpm test:perf            # report mode; PERF_STRICT=1 gates the issue #3 oracle
+pnpm bench                # report-first; --enforce gates the 2x ceiling
+pnpm test:flaky           # triage only (repeat-each=3, Chromium)
 pnpm test:consumer
 pnpm run docs
 ```
@@ -29,12 +36,13 @@ pnpm run docs
 `verify` runs:
 
 ```text
-toolchain check → typecheck → lint → unit/component coverage → build
-→ API Extractor report check → bundle size → Storybook build → TypeDoc
-→ publint/attw
+toolchain check → package and tools typecheck → lint → unit/component coverage
+→ quality contracts → license report check → build → API Extractor report check
+→ bundle size → Storybook build → TypeDoc → publint/attw
 ```
 
-`verify:full` adds Playwright and the clean-consumer install.
+`verify:full` adds Playwright, the three-timezone suite, the dependency audit, the
+performance budget run, the benchmark orchestrator and the clean-consumer install.
 
 ## Results
 
@@ -44,7 +52,7 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | React tests | **508 passed** (47 files) |
 | Core coverage | **99.00% lines, 95.88% branches, 99.50% functions** |
 | React coverage | **94.01% lines, 85.60% branches, 94.98% functions** |
-| Playwright | **145 passed, 38 skipped** (PDF and axe are Chromium-only; touch is Chromium-only; one WebKit timing test quarantined) |
+| Playwright | **143 passed, 40 skipped** (PDF is Chromium-only; touch is Chromium-only; one pending-preview timing test quarantined) |
 | Browsers | Chromium, Firefox, WebKit, Pixel 5 Chromium, iPhone 13 WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
@@ -58,7 +66,8 @@ toolchain check → typecheck → lint → unit/component coverage → build
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
 | Bundle size | **React entry + CSS 40.55 kB gzip / 60 kB**; **total 63.36 kB gzip / 65 kB** (core, React, adapters and CSS) |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
-| CI | **Green** — [run 43024770273](https://github.com/blendsdk/year-planner/actions/runs/43024770273), `verify` + `browsers` jobs |
+| CI | `verify`, `browsers`, `security`, `performance` and `dco` jobs configured; browser evidence and benchmark artifacts uploaded |
+| Browser versions | Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright 1.65.0) |
 
 The coverage thresholds are enforced by Vitest: core 95% and React 80% for
 lines, branches, functions and statements.
@@ -273,6 +282,7 @@ Two results remain documented misses rather than claims:
 | Performance benchmarks (500/2k/10k items) | Before/after evidence in `docs/benchmarks/rd10-baseline.md` and `rd10-after.md`; drag now 16.7 ms p95. Initial render and 10k overflow remain documented misses |
 | WebKit pending-preview E2E | One timing test is `fixme` on WebKit under parallel load. The behavior passes on Chromium, Firefox and a standalone WebKit probe (5/5 runs: preview present, command state `pending`). Revisit with a serial WebKit run before release |
 | 36-month drag variance | 16.7–33.3 ms p95 across repeated runs; the checked-in after run recorded 16.7 ms and the budget is met or missed within one frame |
+| React entry tree-shaking | The published entry is a single-file ESM bundle; a `createTheme`-only consumer bundle is about 71% of the full app bundle (260 / 365 bytes). Per-export module splitting is deferred; the consumer proof asserts packed types, CSS and the smaller entry |
 | Mobile touch and RTL | Touch editing and marquee are implemented; RTL-specific pointer behavior is not |
 | SVG shape plane and `edge-path` connectors | Deferred; `edge-path` emits `INVALID_RENDERER_OPTION` |
 | Published packages | Not published; pre-alpha |

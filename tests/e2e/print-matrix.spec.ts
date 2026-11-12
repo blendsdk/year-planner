@@ -62,7 +62,9 @@ test.describe("RD-10-AC-06: A3 print matrix @print", () => {
     });
   }
 
-  test("PRT-01 keeps the 2017 yellow fixture on one A3 page", async ({ page }) => {
+  test("RD-05-AC-11 / RD-10-AC-06: PRT-01 keeps the 2017 yellow fixture on one A3 page", async ({
+    page,
+  }) => {
     await page.goto("/?print=prt01");
     await expect(page.getByTestId("year")).toHaveValue("2017");
     await expect(page.getByTestId("theme")).toHaveValue("classic-yellow");

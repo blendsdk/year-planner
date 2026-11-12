@@ -35,7 +35,10 @@ pnpm verify:full
 ```
 
 `pnpm verify` is the fast gate. `pnpm verify:full` is the release gate: it adds the
-browser, print and accessibility suites and the packed-tarball consumer proof.
+browser, print and accessibility suites, the three-timezone date suite, the dependency
+audit, the performance budgets and benchmarks, and the packed-tarball consumer proof.
+Run `pnpm test:quality` for the traceability and contract checks and `pnpm test:licenses`
+after a dependency change.
 
 The project uses strict TypeScript, Vitest, Playwright, Storybook and Biome.
 All public APIs require TSDoc documentation.

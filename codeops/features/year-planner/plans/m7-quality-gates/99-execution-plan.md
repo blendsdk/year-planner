@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 01:11
-> **Progress**: 79/92 tasks (86%)
+> **Last Updated**: 2026-11-12 02:01
+> **Progress**: 92/92 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -311,31 +311,31 @@ the code or dependencies.
 **Objective**: Define the CI jobs, artifact paths, reporters and report fields before editing the
 workflow.
 
-- [ ] 7.1.1 [spec-author] Write the CI and report contract test with `RD-10-AC-01` and `RD-10-AC-05` — `tests/quality/ci-contract.spec.test.ts`
-- [ ] 7.1.2 [spec-author] Write the package-script contract test with `RD-10-AC-12` and `RD-10-AC-14` — `tests/quality/package-scripts.spec.test.ts`
-- [ ] 7.1.3 Run the new tests and record the red result — `pnpm test:quality`
+- [x] 7.1.1 [spec-author] Write the CI and report contract test with `RD-10-AC-01` and `RD-10-AC-05` — `tests/quality/ci-contract.spec.test.ts` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.1.2 [spec-author] Write the package-script contract test with `RD-10-AC-12` and `RD-10-AC-14` — `tests/quality/package-scripts.spec.test.ts` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.1.3 Run the new tests and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-12 01:37)
 
 ### Step 7.2: Implementation
 
 **Reference**: [03-05](03-05-ci-evidence.md) · AR-21, AR-22
 **Objective**: Publish the evidence and update the curated reports.
 
-- [ ] 7.2.1 Add the Playwright reporters, environment capture and `test:environment` script — `playwright.config.ts`, `scripts/ci-environment.mjs`, `package.json`
-- [ ] 7.2.2 Add the timezone, security and performance jobs and artifact uploads — `.github/workflows/ci.yml`
-- [ ] 7.2.3 Wire `verify` and `verify:full` to the new gates — `package.json`
-- [ ] 7.2.4 Update the report, security notes, contributing guide and command docs — `docs/test-report.md`, `docs/security.md`, `CONTRIBUTING.md`, `README.md`
-- [ ] 7.2.5 Extend the clean consumer with a packed-types `tsc --noEmit` and a tree-shake assertion — `scripts/clean-consumer.sh`
-- [ ] 7.2.6 Run the full gate and record actual counts, versions, both size measurements and gaps — `pnpm verify:full`
-- [ ] 7.2.7 Add the RD-10 matrix rows, switch the checker `through` to 10 and prove the full traceability set — `codeops/features/year-planner/requirements/00-traceability.md`, `tests/quality/traceability.spec.test.ts`
-- [ ] 7.3.1 Prove green for ST-1 and ST-44–ST-48 — `pnpm test:quality`
-- [ ] 7.3.2 Add environment-capture implementation tests for missing browsers and parseable output — `tests/quality/environment.impl.test.ts`
-- [ ] 7.3.3 Final full verification — `pnpm verify:full && pnpm test:consumer`
+- [x] 7.2.1 Add the Playwright reporters, environment capture and `test:environment` script — `playwright.config.ts`, `scripts/ci-environment.mjs`, `package.json` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.2.2 Add the timezone, security and performance jobs and artifact uploads — `.github/workflows/ci.yml` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.2.3 Wire `verify` and `verify:full` to the new gates — `package.json` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.2.4 Update the report, security notes, contributing guide and command docs — `docs/test-report.md`, `docs/security.md`, `CONTRIBUTING.md`, `README.md` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.2.5 Extend the clean consumer with a packed-types `tsc --noEmit` and a tree-shake assertion — `scripts/clean-consumer.sh` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.2.6 Run the full gate and record actual counts, versions, both size measurements and gaps — `pnpm verify:full` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.2.7 Add the RD-10 matrix rows, switch the checker `through` to 10 and prove the full traceability set — `codeops/features/year-planner/requirements/00-traceability.md`, `tests/quality/traceability.spec.test.ts` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.3.1 Prove green for ST-1 and ST-44–ST-48 — `pnpm test:quality` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.3.2 Add environment-capture implementation tests for missing browsers and parseable output — `tests/quality/environment.impl.test.ts` ✅ (completed: 2026-11-12 01:37)
+- [x] 7.3.3 Final full verification — `pnpm verify:full && pnpm test:consumer` ✅ (completed: 2026-11-12 02:01)
 
 **Deliverables**:
-- [ ] CI publishes the report and raw artifacts
-- [ ] Test report records commands, counts, versions, both size measurements, budget results, audit and gaps
-- [ ] `verify:full` includes timezone, audit, performance and benchmark gates
-- [ ] All final verification passing
+- [x] CI publishes the report and raw artifacts ✅ (completed: 2026-11-12 08:40)
+- [x] Test report records commands, counts, versions, both size measurements, budget results, audit and gaps ✅ (completed: 2026-11-12 08:40)
+- [x] `verify:full` includes timezone, audit, performance and benchmark gates ✅ (completed: 2026-11-12 08:40)
+- [x] All final verification passing ✅ (completed: 2026-11-12 09:20)
 
 **Verify**: `pnpm verify:full && pnpm test:consumer`
 

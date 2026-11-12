@@ -39,7 +39,8 @@
     "bench": "node scripts/bench.mjs",
     "test:perf": "pnpm build && pnpm --filter @blendsdk/year-planner-demo build && playwright test -c playwright.bench.config.ts --project=bench-preview",
     "test:licenses": "node scripts/write-licenses.mjs",
-    "test:audit": "pnpm audit --audit-level high"
+    "test:audit": "pnpm audit --audit-level high",
+    "test:environment": "node scripts/ci-environment.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.6",

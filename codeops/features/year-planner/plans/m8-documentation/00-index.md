@@ -33,7 +33,7 @@ API reference and docs-site artifact without changing product behavior.
 
 **Smallest viable design:** keep the existing markdown and Storybook stack, split
 the overloaded `docs/react-view.md` into the topic pages the RD names, add a
-`docs/README.md` topic map, add the missing PRT-01 story and viewport addon, remove
+`docs/README.md` topic map, add the missing PRT-01 and wrapper stories, remove
 the remaining `(undocumented)` members from the checked-in API reports, and add a
 small Node script that assembles and verifies the Pages artifact.
 
@@ -41,21 +41,23 @@ small Node script that assembles and verifies the Pages artifact.
 migration, no new runtime dependency, no paid documentation service, no live
 GitHub Pages deployment, and no new performance or accessibility measurement.
 
-**Approved complexity:** None beyond RD-mandated machinery. The
-`@storybook/addon-viewport` package and the Pages workflow are named in RD-11.
-The docs-site script reuses the existing Storybook, TypeDoc and Node toolchain;
-the three contract tests reuse the existing `tests/quality` project.
+**Approved complexity:** None beyond RD-mandated machinery. The Pages workflow
+and the `docs-site` CI job are the publication path named in RD-11; Storybook 10
+already provides the viewport, so no addon is added. The docs-site script reuses
+the existing build, Storybook, TypeDoc and Node toolchain; the four contract files
+and two implementation files reuse the existing `tests/quality` project.
 
 ## Document Index
 
 | #   | Document                                                        | Description                                      |
 | --- | --------------------------------------------------------------- | ------------------------------------------------ |
 | AR  | [Ambiguity Register](00-ambiguity-register.md)                  | Zero-Ambiguity Gate decisions (audit trail)      |
+| PF  | [Preflight Report](00-preflight-report.md)                      | Independent audit, findings and resolutions      |
 | 00  | [Index](00-index.md)                                            | This document — overview and navigation          |
 | 01  | [Requirements](01-requirements.md)                              | RD-11 delta view and plan-local decisions        |
 | 02  | [Current State](02-current-state.md)                            | Existing docs, stories, API reports and gaps     |
 | 03  | [Guide Set](03-01-guide-set.md)                                 | Topic pages, README quickstart and `DEFERRED.md` |
-| 04  | [Storybook](03-02-storybook.md)                                 | Missing stories, viewport addon and base path    |
+| 04  | [Storybook](03-02-storybook.md)                                 | Missing stories, viewport config and wrappers |
 | 05  | [API Reference](03-03-api-reference.md)                         | TSDoc, release tags, API reports and TypeDoc     |
 | 06  | [Docs Site](03-04-docs-site.md)                                 | Artifact assembly, Pages workflow and CI         |
 | 07  | [Demo and Evidence](03-05-demo-evidence.md)                     | Demo navigation, test report and traceability    |
@@ -69,14 +71,14 @@ the three contract tests reuse the existing `tests/quality` project.
 ```bash
 pnpm docs            # API reports plus TypeDoc (existing; unchanged contract)
 pnpm docs:build      # TypeDoc HTML under docs/api (existing)
-pnpm docs:site       # Storybook with base path + TypeDoc at /api, verified artifact
-pnpm storybook:build # static Storybook (existing; base defaults to /)
+pnpm docs:site       # Storybook (relative URLs) + TypeDoc at /api, verified artifact
+pnpm storybook:build # static Storybook into the repo-root storybook-static/
 pnpm test:quality    # docs, Storybook and TSDoc contract tests (existing project)
 pnpm verify          # gains the contracts through test:quality
 pnpm verify:full     # release gate; unchanged
 ```
 
-`STORYBOOK_BASE=/year-planner/` is used by `docs:site`; local builds keep `/`.
+Storybook 10 emits relative asset URLs; no base-path environment variable is needed.
 
 ### Key Decisions
 
@@ -86,25 +88,28 @@ pnpm verify:full     # release gate; unchanged
 | Publication | Build and upload the artifact; manual guarded deploy only | AR-2, AR-9 |
 | Guide structure | Flat `docs/*.md`, `docs/README.md` topic map, split `react-view.md` | AR-3, AR-4 |
 | Quickstart | Complete README example with controlled selection/visibility and print | AR-5 |
-| Storybook gaps | PRT-01 print story, viewport addon, documented base path | AR-6, AR-7 |
-| API enforcement | Release tags + zero `(undocumented)` + TypeDoc validation | AR-10, AR-11 |
-| Docs site | `scripts/build-docs-site.mjs`, no new dependency | AR-8 |
+| Storybook gaps | PRT-01 + wrapper stories, built-in viewport, relative URLs | AR-6, AR-7, AR-23, AR-27 |
+| API enforcement | Release tags + zero `(undocumented)` + fatal TypeDoc validation | AR-10, AR-11 |
+| Docs site | `scripts/build-docs-site.mjs`; root artifact; package build first | AR-8, AR-24 |
+| Publication | Build/upload on push; manual `main`-only deploy; PR `docs-site` job | AR-2, AR-9, AR-25 |
+| Quickstart | Packed-tarball install until RD-12 publishes | AR-5, AR-26 |
 | Honesty | Measured status, named misses, no conformance claim | AR-14, AR-18 |
-| Traceability | RD-11 rows, checker through RD-11, demo E2E titles | AR-16 |
-| Test placement | Four `tests/quality` contract files | AR-17 |
+| Traceability | RD-11 rows (partial first), checker and CLI through RD-11 | AR-16, AR-31 |
+| Task gates | Full gate at task level where the map is full-on | AR-30 |
+| Test placement | Four spec + two impl files under `tests/quality` | AR-17 |
 
 ## Specialist Agents
 
-**None** — the capability-gap check found no gap a standing specialist would close.
+| Role | Kind | Use | AR Ref |
+| ---- | ---- | --- | ------ |
+| `security-auditor` | reviewer | Phase 4 — Pages workflow permissions, OIDC scope, artifact contents | AR-9, AR-29 |
 
-_Detection evidence: the repository already carries the generated project agents
-`.opencode/agents/correctness-reviewer.md`, `.opencode/agents/security-auditor.md`
-and `.opencode/agents/performance-auditor.md` from the RD-09/RD-10 work.
-`codeops/codeops.json` sets strict quality with independent review. RD-11 changes
-only documents, stories, configuration, a small Node script and contract tests;
-the correctness reviewer covers content accuracy, and no new security,
-performance or accessibility surface is introduced. Candidate creation is
-reserved authority and is not needed._
+_Detection evidence: `.opencode/agents/security-auditor.md` already exists and
+`codeops/codeops.json` sets strict quality with independent review. The plan adds
+a deployment workflow with `pages: write` and `id-token: write`, so a workflow
+security review is warranted even though no runtime code changes. The
+`correctness-reviewer` covers every phase's content accuracy; no new specialist
+is proposed._
 
 ## Related Files
 
@@ -117,14 +122,17 @@ reserved authority and is not needed._
 | `docs/README.md` | Guide index and topic map |
 | `docs/getting-started.md`, `controlled-api.md`, `visibility.md`, `theming.md`, `customization.md`, `inspector-tooltip.md`, `dynamic-months.md`, `print.md`, `performance.md`, `limitations.md`, `migration.md`, `faq.md` | Topic guides |
 | `docs/interaction.md`, `docs/commands.md`, `docs/accessibility.md` | Existing topic owners, extended and cross-linked |
+| `docs/architecture.md` | Checked-in Mermaid architecture diagram |
 | `apps/storybook/stories/Print.stories.tsx`, `fixtures.ts` | PRT-01 2017-yellow print story |
-| `apps/storybook/.storybook/main.ts` | Viewport addon and `STORYBOOK_BASE` |
+| `apps/storybook/.storybook/preview.ts` | Built-in viewport configuration |
 | `packages/core/src/**`, `packages/react/src/**` | TSDoc on public members and examples |
+| `packages/core/src/date.ts` | `DateParseResult` and `MS_PER_DAY` docs |
 | `packages/*/etc/*.api.md` | Reviewed public API reports |
 | `packages/*/api-extractor.json` | `ae-missing-release-tag` enabled |
 | `typedoc.core.json`, `typedoc.react.json` | `validation.notDocumented` |
-| `scripts/build-docs-site.mjs` | Storybook + TypeDoc artifact assembly and check |
+| `scripts/build-docs-site.mjs`, `scripts/build-docs-site.d.mts` | Artifact assembly, check and types |
 | `.github/workflows/pages.yml` | Build, upload and guarded deploy |
+| `.github/workflows/ci.yml` | PR `docs-site` build/verify job |
 | `apps/demo/src/App.tsx` | Visible navigation to the demonstration routes |
 | `docs/test-report.md` | RD-11 evidence section and corrected counts |
 | `tests/quality/docs-contract.spec.test.ts` | Guide, README, DEFERRED and honesty contract |
@@ -132,3 +140,4 @@ reserved authority and is not needed._
 | `tests/quality/tsdoc-contract.spec.test.ts` | API report, release tag and `@example` contract |
 | `tests/quality/docs-site-contract.spec.test.ts` | Artifact, base-path and Pages workflow contract |
 | `tests/quality/docs-site.impl.test.ts` | Docs-site script failure modes |
+| `tests/quality/docs-contract.impl.test.ts` | Markdown link-extractor edge cases |

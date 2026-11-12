@@ -22,15 +22,16 @@ public entry points.
 - TypeDoc builds `docs/api/core` and `docs/api/react`; `docs/api-index.html` is
   copied to `docs/api/index.html`.
 - The reports contain 55 `(undocumented)` entries for core and 57 for React.
-  All React entries are interface members; core adds three top-level type
-  aliases.
+  All React entries are interface members; core is 52 members plus two type
+  aliases (`ClassicYearLayoutResult`, `DateParseResult`) and one const
+  (`MS_PER_DAY`).
 
 ### Proposed Changes
 
 | Change | File |
 | ------ | ---- |
-| Document every public interface member | `packages/core/src/**`, `packages/react/src/**` |
-| Add entry-point examples | `YearPlanner.tsx`, `provider.tsx`, `theme.ts`, `layout/classic-year.ts`, `ribbon/fragments.ts` |
+| Document every public interface member and the remaining top-level entries | `packages/core/src/**`, `packages/react/src/**` |
+| Add examples to the three missing entry points; verify the two existing ones | `YearPlanner.tsx`, `provider.tsx`, `layout/classic-year.ts`; verify `theme.ts`, `ribbon/fragments.ts` |
 | Enable the release-tag rule | `packages/core/api-extractor.json`, `packages/react/api-extractor.json` |
 | Enable TypeDoc validation | `typedoc.core.json`, `typedoc.react.json` |
 | Regenerate the reviewed reports | `packages/*/etc/*.api.md` |
@@ -43,13 +44,14 @@ public entry points.
 | Group | Files | Members |
 | ----- | ----- | ------- |
 | Core periods and intervals | `period.ts`, `interval.ts` | `AllDayPeriod` 3, `TimedPeriod` 4, `DateInterval` 2 |
+| Core dates | `date.ts` | `DateParseResult`, `MS_PER_DAY` |
 | Core diagnostics | `diagnostics.ts` | `Diagnostic` 6 |
 | Core layout | `layout/classic-year.ts` | `ClassicYearLayoutOptions` 5, `ClassicYearUnits` 5, `DayColumnLayout` 6, `MonthRowLayout` 12, `YearLayout` 9 |
 | React render contexts | `types.ts` | `AnnotationRenderContext` 2, `CellRenderContext` 4, `ItemRenderContext` 6, `OverflowRenderContext` 3, `TooltipRenderContext` 2 |
 | React inspector and theme | `types.ts`, `theme.ts` | `InspectorActions` 5, `InspectorRenderContext` 3, `ResolvedTheme` 3 |
 | React slots | `types.ts` | `YearPlannerComponents` 9 |
 | React handle | `types.ts`, `YearPlanner.tsx` | `YearPlannerHandle` 20 |
-| Type aliases | `layout/classic-year.ts` | `ClassicYearLayoutResult` and the other undocumented aliases |
+| Type aliases | `layout/classic-year.ts` | `ClassicYearLayoutResult` |
 
 Exact counts come from the red contract run; the plan does not invent a number
 that the reports do not show.
@@ -60,8 +62,9 @@ that the reports do not show.
   invariant that is not obvious from the type.
 - No member doc restates the type name (`/** The layer id. */` is not enough when
   the value has a precedence rule; state the rule).
-- `@example` is added to `YearPlanner`, `YearPlannerProvider`, `createTheme`
-  (exists), `buildClassicYearLayout` and `buildRibbonLayout`.
+- `@example` is added to `YearPlanner`, `YearPlannerProvider` and
+  `buildClassicYearLayout`. `createTheme` and `buildRibbonLayout` already have
+  examples; the contract verifies them instead of rewriting them.
 - `@public` release tags are added where the extractor reports them missing; no
   `@internal` is added to a currently public export.
 
@@ -70,12 +73,14 @@ that the reports do not show.
 Both configs gain:
 
 ```json
-"validation": { "notDocumented": true, "invalidLink": true }
+"validation": { "notDocumented": true, "invalidLink": true },
+"treatValidationWarningsAsErrors": true
 ```
 
-If `invalidLink` flags a generated cross-link that cannot be fixed, the failure is
-reported and the option is narrowed with a recorded reason; `notDocumented` is
-not waived.
+`treatValidationWarningsAsErrors` is required: without it TypeDoc prints
+warnings and exits zero, so `docs:build` would not be a gate. If `invalidLink`
+flags a generated cross-link that cannot be fixed, the failure is reported and
+the option is narrowed with a recorded reason; `notDocumented` is not waived.
 
 ### API report update
 
@@ -89,7 +94,7 @@ record; no signature changes are expected.
 | ---------- | ----------------- | ------ |
 | A public member still has no TSDoc | Contract test fails and names the report entry | AR-10, AR-11 |
 | A public export has no release tag | API Extractor warning; contract test fails | AR-10 |
-| TypeDoc rejects an undocumented reflection | `docs:build` fails; fix the doc, do not disable the rule | AR-10 |
+| TypeDoc rejects an undocumented reflection | `docs:build` fails because validation warnings are fatal; fix the doc, do not disable the rule | AR-10 |
 | A generated link is broken | `invalidLink` reports it; fix the anchor or narrow the option with a reason | AR-10 |
 | The API report changes unintentionally | `api-report:ci` fails; review the diff before regenerating | AR-11 |
 
@@ -98,7 +103,8 @@ record; no signature changes are expected.
 
 ## Testing Requirements
 
-- `tests/quality/tsdoc-contract.spec.test.ts` owns ST-13 through ST-17.
-- The test reads the checked-in reports, so it protects the reviewed surface, not
-  an intermediate build.
+- `tests/quality/tsdoc-contract.spec.test.ts` owns ST-13 through ST-18.
+- The test reads the checked-in reports for members and release tags, and parses
+  the source with the TypeScript compiler API to bind `@example` to the named
+  export. It protects the reviewed surface, not an intermediate build.
 - `pnpm docs:build` is the TypeDoc proof and runs inside `pnpm verify`.

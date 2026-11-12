@@ -18,17 +18,17 @@ remaining named gaps and makes the site buildable under the repository base path
   MDX, with `addon-docs`, `addon-a11y` and `addon-themes`.
 - `preview.ts` imports the package CSS and sets `layout: fullscreen`.
 - `apps/storybook/package.json` builds with `storybook build -o storybook-static`.
-- There is no viewport addon, no base-path configuration and no PRT-01 story.
+- There is no named viewport configuration, no PRT-01 story and no provider wrapper story.
 
 ### Proposed Changes
 
 | Change | File |
 | ------ | ---- |
-| Add `@storybook/addon-viewport` 10.6.6 and register it | `apps/storybook/package.json`, `.storybook/main.ts` |
-| Add named viewports (mobile, tablet, desktop A3 width) | `.storybook/preview.ts` |
-| Add `viteFinal` with `base: process.env.STORYBOOK_BASE ?? "/"` | `.storybook/main.ts` |
+| Configure named viewports with the built-in `storybook/viewport` | `.storybook/preview.ts` |
 | Add the PRT-01 fixture | `stories/fixtures.ts` |
 | Add the exact 2017-yellow PRT-01 print story | `stories/Print.stories.tsx` |
+| Add `FluentWrapper` and `MuiWrapper` provider stories | `stories/Adapters.stories.tsx` |
+| Keep Storybook's relative asset URLs; no base override | `.storybook/main.ts` (no change) |
 
 ## Implementation Details
 
@@ -45,14 +45,15 @@ remaining named gaps and makes the site buildable under the repository base path
 | Visibility, group, layer and item controls | `State` → `ControlledVisibility`, `HiddenGroupByDefault`, `HiddenItemByDefault` | Keep |
 | Select, multi-select, marquee, paint/erase, move/resize | `Interaction` → mode and marquee stories | Keep |
 | Keyboard focus and inspector | `Accessibility` → `SkipLinkFocused`, `SelectedItem`; `Inspector` → thirteen stories | Keep |
-| Classic, high contrast, unstyled, Fluent/MUI wrappers | `Themes` and `Adapters` | Keep |
+| Classic, high contrast, unstyled, Fluent/MUI wrappers | `Themes`; `Adapters` → `FluentTokens`, `MuiTokens`, `ProviderWithCustomTheme` | Keep; **add `FluentWrapper` and `MuiWrapper`** |
 | Empty state, inspector, tooltip | `Items` → `NoItems`; `Inspector`; `Slots` → `CustomTooltip` | Keep |
 | PRT-01 exact 2017-yellow print | — | **Add `Prt01TwoThousandSeventeen`** |
 | A3 print preview | `Print` → `PaginateFourteenMonths`, `FitFourteenMonths` | Keep; document in the story description |
 
 ### PRT-01 story contract
 
-The story is named `Prt01TwoThousandSeventeen` in `Print.stories.tsx` and uses:
+The story is named `Prt01TwoThousandSeventeen` under the existing
+`Year Planner/06 Print Planning` meta title and uses:
 
 ```tsx
 args: {
@@ -68,19 +69,29 @@ annotation `2017-02-01` → `2017-02-02`, matching the demo and the RD-10 print
 evidence. The story description states that it is the print sample and that the
 browser print preview shows the A3 page tree.
 
+### Wrapper stories
+
+`FluentWrapper` and `MuiWrapper` render `YearPlannerProvider` around a
+`YearPlanner` whose `cssVars` come from `fluentThemeToCssVars` or
+`muiThemeToCssVars`, so the published site shows the intended provider-level
+integration without adding `@fluentui/react-components` or `@mui/material` to
+the Storybook app. Real design-system buttons remain the demo's AC3 route and
+the copy-paste examples in `docs/theming.md`.
+
 ### Base path
 
-`viteFinal` sets the Vite `base` from `STORYBOOK_BASE`. The default is `/`, so
-`pnpm storybook` and `pnpm storybook:build` behave as today. `docs:site` sets
-`/year-planner/`, so every asset URL in the built `index.html` starts with the
-repository path and the site works from `https://<owner>.github.io/year-planner/`.
+Storybook 10 emits relative `./` asset URLs for the manager and preview, which
+already work under `https://<owner>.github.io/year-planner/`. No `viteFinal`
+base override is added; an absolute base would make local static builds less
+portable and does not rewrite the manager template. The docs-site check resolves
+the relative URLs on disk instead of requiring a `/year-planner/` prefix.
 
 ### Story-count contract
 
 The docs contract parses `^export const \w+: Story` from every
 `apps/storybook/stories/*.stories.tsx` file and requires the same count in
-`docs/getting-started.md`. The current count is 171 across 12 files; the PRT-01
-story makes it 172.
+`README.md`, `docs/getting-started.md` and `docs/test-report.md`. The current
+count is 171 across 12 files; PRT-01 and the two wrapper stories make it 174.
 
 ### Error Handling
 
@@ -88,8 +99,9 @@ story makes it 172.
 | ---------- | ----------------- | ------ |
 | A required RD-11 state has no story | Storybook contract test fails and names the state and file | AR-6 |
 | Duplicate story IDs | `storybook:build` fails; the contract also rejects duplicate `title` values | AR-6 |
-| Base path leaks into local builds | `STORYBOOK_BASE` defaults to `/`; only `docs:site` overrides it | AR-7 |
-| The printed count drifts | Contract recomputes from the story files | AR-19 |
+| The viewport configuration is missing | Contract asserts `parameters.viewport` in `preview.ts`; Storybook 10 provides the feature | AR-23 |
+| The relative asset URLs break under a subpath | `docs:site --check-only` resolves every relative URL on disk | AR-25 |
+| The printed count drifts | Contract recomputes from the story files and checks all three docs | AR-19 |
 
 > **Traceability:** every structural decision above is recorded in
 > [00-ambiguity-register.md](00-ambiguity-register.md).

@@ -44,7 +44,7 @@ therefore scales column widths and chooses how many 24 px lanes fit vertically.
 | Centred month/year label | `packages/react/src/render/MonthRow.tsx`, `styles.css` |
 | Header and cell type tokens | `packages/react/src/styles.css` |
 | Bounded app-shell demo | `apps/demo/src/App.tsx` |
-| Visual baselines and Playwright snapshots | `docs/benchmarks/rd13-baseline/`, `tests/e2e/fit.spec.ts` |
+| Visual baselines and Playwright snapshots | `evidence/rd13-baseline/`, `tests/e2e/fit.spec.ts` |
 | Public API report | `packages/react/etc/react-year-planner.api.md` |
 
 ## Implementation Details

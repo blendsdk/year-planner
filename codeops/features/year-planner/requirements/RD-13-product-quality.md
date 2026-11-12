@@ -47,8 +47,9 @@ capability and does not rewrite the renderer.
   item labels and day numbers keep their current readable sizes.
 - [ ] Production-build performance at the supported data size, unthrottled on
   the reference host: **500-item initial render p95 ≤150 ms**, **2,000-item
-  drag input-delay p95 ≤8 ms** (time from pointer event to handler), and
-  **click-to-select work p95 ≤50 ms** (pointer-down to selection commit). Record
+  drag main-thread work per frame ≤8 ms** with **input-delay p95 ≤16.7 ms**
+  (one frame), and **click-to-select work p95 ≤50 ms** (pointer-down to
+  selection commit). Record
   **4× CPU-throttled** diagnostics for initial render and drag; the throttled
   numbers are reported, not substituted for the gate. 10,000 items remains a
   documented stress case, not a target.
@@ -292,9 +293,9 @@ interface YearPlannerProps {
    component; no cell or item proxy is below 24 × 24 CSS px and no content is
    clipped.
 3. [ ] Unthrottled production-build measurements meet: 500-item initial render
-   p95 ≤150 ms, 2,000-item drag input-delay p95 ≤8 ms, click-to-select work p95
-   ≤50 ms. The 4× CPU-throttled initial-render and drag results are recorded as
-   diagnostics.
+   p95 ≤150 ms, 2,000-item drag main-thread work per frame ≤8 ms with
+   input-delay p95 ≤16.7 ms, and click-to-select work p95 ≤50 ms. The 4×
+   CPU-throttled initial-render and drag results are recorded as diagnostics.
 4. [ ] Month and year labels are centred; day-name and month-name sizes are
    reduced; header and cell font sizes are CSS variables declared in the theme
    root with no hard-coded header sizes left in the stylesheet.

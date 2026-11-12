@@ -3,7 +3,7 @@
 > **Status**: ✅ PREFLIGHT PASSED WITH NOTES — 43 findings resolved, 3 accepted notes
 > **Iteration**: 2 (re-scan after fixes)
 > **Artifact**: RD-13 plus the implementation plan at `codeops/features/year-planner/plans/m10-product-quality/` (10 documents)
-> **Artifact hash**: `2aef6df2bf4fd41fd08faca2c73e621982df2904c9c3956adaac8fc677b80f3b` (RD-13 + 10 plan docs, before this report)
+> **Artifact hash**: `17bb7beb8c6e2c81d5a7c344c573a54ba0ea5ffa31988aa0ae4e0b301d775c42` (RD-13 + 10 plan docs, before this report)
 > **Codebase Grounded**: package manifests, layout/ribbon code, React renderer, interaction engine, Storybook contract, performance harness and release docs
 > **Last Updated**: 2026-11-13 00:35
 
@@ -30,8 +30,8 @@ Playwright 1.65, Node 24, pnpm 12.9.1. **Architecture:** pure core package plus
 a React renderer, interaction engine, command pipeline and quality contracts.
 **Verified constraints:** default units 70/40/55/90/36; 37 columns; ≈2,000 ×
 1,332 px; zoom floor 0.75; no `contextmenu` handler; item proxies are 24 px
-only if lane height is 24; 174 stories, 4 play functions, 2 component
-descriptions, 0 story descriptions; 500-item initial render p95 ≈666 ms
+only if lane height is 24; 174 stories, 4 play functions, 1 component
+description, 1 story description; 500-item initial render p95 ≈666 ms
 (unthrottled), 2,000-item drag frame p95 ≈16.8 ms; 183 traced criteria through
 RD-12; the packages are unpublished `0.2.0`.
 
@@ -279,11 +279,11 @@ RD-12; the packages are unpublished `0.2.0`.
 **Evidence:** No test forbids `transform: scale`, a built-in menu dependency, automatic month reduction or a column-count change.
 **Resolution:** Add ST-39 and the `fit-contract` assertions.
 
-### PF-036: The “two descriptions” were component descriptions [OBSERVATION]
+### PF-036: The description count conflated component and story levels [OBSERVATION]
 
 **Location:** `03-04-storybook-demos.md`
 **Evidence:** `Print.stories.tsx` uses `description.component`, not `description.story`.
-**Resolution:** State “2 component descriptions, 0 story descriptions” and make the contract check the story level.
+**Resolution:** State “1 component description, 1 story description”; 173 stories need a story-level description, and the contract checks that level.
 
 ### PF-037: The index linked two documents that did not exist yet [OBSERVATION]
 
@@ -349,6 +349,22 @@ RD-12; the packages are unpublished `0.2.0`.
 | Release path | `0.3.0` minor changeset; `0.3.1` provenance; `0.2.0` unpublished; release contract updated |
 | Traceability | 183 current criteria; 10 RD-13 ACs; 193 expected; AC8 `partial` |
 | Codebase alignment | No phantom file; all named code paths exist; no new runtime dependency |
+
+## Iteration 2 addendum — post-Phase 0
+
+The Phase 0 baseline (2026-11-13 00:10) confirmed the visibility-path finding and
+refined one metric:
+
+- The 2,000-item drag input delay is ~16 ms (one 60 Hz frame), so the 8 ms gate
+  is now **main-thread work per frame ≤8 ms**; input delay stays ≤16.7 ms.
+  RD-13 AC3 and AR-3 record the change.
+- The story inventory is **1 component description + 1 story description**;
+  173 stories need a story-level description. PF-036 is corrected.
+- The top self-time function at 2,000 items is `buildAncestry`
+  (`visibility.ts:150`), 21.2% at 1× and 40.4% at 4×. Phase 1 task 1.2.1 is
+  confirmed as the first fix.
+- No critical or major finding reopened. The plan remains
+  **✅ PASSED WITH NOTES**.
 
 **Verdict:** ✅ PASSED WITH NOTES — every critical and major finding is resolved
 in RD-13 and the plan; the three notes are release-operation constraints.

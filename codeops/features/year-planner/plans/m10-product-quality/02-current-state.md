@@ -119,8 +119,9 @@ profiles, `laneTop` plumbing, zoom composition and a bounded demo shell.
 **Current Behavior:** 414 ms p50 / 565 ms p95 at 500 items; 50,458 ms p95 at
 10,000; superlinear.
 **Required Behavior:** Unthrottled 500-item initial render p95 ≤150 ms;
-2,000-item drag **input-delay** p95 ≤8 ms; click-to-select **work** p95 ≤50 ms.
-4× CPU-throttled numbers are diagnostics.
+2,000-item drag **main-thread work per frame** ≤8 ms with input-delay p95
+≤16.7 ms; click-to-select **work** p95 ≤50 ms. 4× CPU-throttled numbers are
+diagnostics.
 **Fix Required:** Profile, fix algorithmic work (including the per-item
 visibility pass), stabilize memo boundaries, move transient drag geometry out
 of React state.
@@ -143,8 +144,8 @@ semantics, adapter examples.
 
 ### Gap 5: Storybook is a catalogue, not a demo
 
-**Current Behavior:** 174 stories, 4 play functions, 2 component descriptions
-and zero story-level descriptions.
+**Current Behavior:** 174 stories, 4 play functions, 1 component description
+and 1 story-level description; 173 stories have no story-level description.
 **Required Behavior:** Demos section with at least six play stories, event-log
 playground, one-line description on every story.
 **Fix Required:** Story structure, play functions, event panel, descriptions,

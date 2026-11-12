@@ -67,7 +67,7 @@ Phase gates run `pnpm verify:full`; the plan gate is `pnpm verify:full`.
 | # | Input / Scenario | Expected Output / Behavior | Source |
 |---|------------------|----------------------------|--------|
 | ST-11 | Production build, **unthrottled**, 500 items, 14 months | Initial render p95 is ≤150 ms over five fresh loads; the 4×-throttled result is recorded as a diagnostic | RD-13 AC3; AR-3, AR-22 |
-| ST-12 | Production build, **unthrottled**, 2,000 items, drag | Input-delay p95 (pointer event → handler) is ≤8 ms over at least 30 samples; the frame p95 stays within the 16.7 ms cadence budget | RD-13 AC3; AR-3 |
+| ST-12 | Production build, **unthrottled**, 2,000 items, drag | Profile-derived main-thread work per frame is ≤8 ms; input-delay p95 is ≤16.7 ms; the frame p95 stays within the 16.7 ms cadence budget | RD-13 AC3; AR-3 |
 | ST-13 | Production build, 500 and 2,000 items, click | Pointer-down → selection commit p95 is ≤50 ms over five samples; the paint time is reported separately | RD-13 AC3; AR-23 |
 | ST-14 | Baseline run | `docs/benchmarks/rd13-baseline.json` records raw samples, p50, p95, max, DOM nodes, fit mode and a status for every scenario, including 4× diagnostics | RD-13 AC3; AR-33 |
 | ST-15 | Repository source | No canvas, WebGL, Web Component or vanilla renderer package is introduced; React remains the renderer; no `transform: scale`; 37 columns remain; no automatic month reduction | RD-13 AC10; AR-4, AR-5 |

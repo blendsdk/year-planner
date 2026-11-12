@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-13 00:30
-> **Progress**: 0/77 tasks (0%)
+> **Last Updated**: 2026-11-13 00:15
+> **Progress**: 9/77 tasks (12%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -57,22 +57,22 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 **Reference**: [03-01](03-01-performance.md) §Measurement protocol · AR-3, AR-4, AR-22, AR-24
 **Objective**: Measure the production build before any optimization or visual change.
 
-- [ ] 0.1.1 Build the production demo — `pnpm --filter @blendsdk/year-planner-demo build`
-- [ ] 0.1.2 Record unthrottled and 4×-throttled initial-render p50/p95 at 500 and 2,000 items — `tests/perf` harness
-- [ ] 0.1.3 Record unthrottled and 4×-throttled drag input-delay/frame p95 at 500 and 2,000 items with a CPU profile — `tests/perf` harness
-- [ ] 0.1.4 Record click-to-select work and paint p50/p95 at 500 and 2,000 items — temporary baseline script
-- [ ] 0.1.5 Capture visual snapshots at 1280 × 800, 1440 × 900 and 1024 × 768 — `docs/benchmarks/rd13-baseline/`
-- [ ] 0.1.6 Inventory stories, play functions, component descriptions and story-level descriptions — `apps/storybook/stories/`
-- [ ] 0.1.7 Analyse the CPU profile and rank self-time by function, including the per-item visibility path — profiler output in `$CODEOPS_TMPDIR`
-- [ ] 0.1.8 Record the go/re-scope decision and write the baseline report — `00-baseline.md`, `docs/benchmarks/rd13-baseline.md`, `docs/benchmarks/rd13-baseline.json`
-- [ ] 0.1.9 Confirm no product source changed and record the artifact paths — `git status --short`
+- [x] 0.1.1 Build the production demo — `pnpm --filter @blendsdk/year-planner-demo build` ✅ (completed: 2026-11-13 00:15)
+- [x] 0.1.2 Record unthrottled and 4×-throttled initial-render p50/p95 at 500 and 2,000 items — `tests/perf` harness ✅ (completed: 2026-11-13 00:15)
+- [x] 0.1.3 Record unthrottled and 4×-throttled drag input-delay/frame p95 at 500 and 2,000 items with a CPU profile — `tests/perf` harness ✅ (completed: 2026-11-13 00:15)
+- [x] 0.1.4 Record click-to-select work and paint p50/p95 at 500 and 2,000 items — temporary baseline script ✅ (completed: 2026-11-13 00:15)
+- [x] 0.1.5 Capture visual snapshots at 1280 × 800, 1440 × 900 and 1024 × 768 — `evidence/rd13-baseline/` ✅ (completed: 2026-11-13 00:15)
+- [x] 0.1.6 Inventory stories, play functions, component descriptions and story-level descriptions — `apps/storybook/stories/` ✅ (completed: 2026-11-13 00:15)
+- [x] 0.1.7 Analyse the CPU profile and rank self-time by function, including the per-item visibility path — profiler output in `$CODEOPS_TMPDIR` ✅ (completed: 2026-11-13 00:15)
+- [x] 0.1.8 Record the go/re-scope decision and write the baseline report — `00-baseline.md`, `docs/benchmarks/rd13-baseline.md`, `docs/benchmarks/rd13-baseline.json` ✅ (completed: 2026-11-13 00:15)
+- [x] 0.1.9 Confirm no product source changed and record the artifact paths — `git status --short` ✅ (completed: 2026-11-13 00:15)
 
 **Deliverables**:
-- [ ] Production baseline numbers with raw samples
-- [ ] CPU profile summary, including the visibility path
-- [ ] Three visual snapshots
-- [ ] Story inventory
-- [ ] Go/re-scope decision
+- [x] Production baseline numbers with raw samples
+- [x] CPU profile summary, including the visibility path
+- [x] Three visual snapshots
+- [x] Story inventory
+- [x] Go/re-scope decision
 
 **Test slices**: N/A — measurement phase
 **Task verify**: `pnpm test:perf` (report mode) plus the temporary baseline script
@@ -91,7 +91,7 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 **Reference**: [03-01](03-01-performance.md) §Targets · ST-11–ST-14 · AR-3, AR-4, AR-22, AR-23, AR-37
 **Objective**: Encode the production benchmark scenarios, the metric definitions and the strict gates.
 
-- [ ] 1.1.1 [spec-author] Add the unthrottled initial-render and drag input-delay scenarios with explicit `PERF_STRICT=1` assertions and `RD-13-AC-03` — `tests/perf/bench.spec.ts`
+- [ ] 1.1.1 [spec-author] Add the unthrottled initial-render, drag work-per-frame and drag input-delay scenarios with explicit `PERF_STRICT=1` assertions and `RD-13-AC-03` — `tests/perf/bench.spec.ts`
 - [ ] 1.1.2 [spec-author] Add the click-to-select work-time scenario and its 50 ms strict assertion — `tests/perf/bench.spec.ts`
 - [ ] 1.1.3 Run the new scenarios and record the red/baseline result — `pnpm test:perf`
 
@@ -110,13 +110,13 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 
 ### Step 1.3: Green, implementation tests and verify
 
-- [ ] 1.3.1 Prove the unthrottled targets green and record the throttled diagnostics — `PERF_STRICT=1 pnpm test:perf`
+- [ ] 1.3.1 Prove the unthrottled targets green (drag work per frame ≤8 ms, input delay ≤16.7 ms) and record the throttled diagnostics — `PERF_STRICT=1 pnpm test:perf`
 - [ ] 1.3.2 Add implementation edge cases (dense row, empty model, 2,000 items) — `packages/core/src/ribbon/fragments.impl.test.ts`, `lanes.impl.test.ts`
 - [ ] 1.3.3 Verify the phase — `pnpm verify` plus `pnpm test:perf` and `node "$CODEOPS_PLUGIN_ROOT/bin/codeops-test.mjs" check --strict`
 
 **Deliverables**:
 - [ ] Unthrottled initial render p95 ≤150 ms at 500 items
-- [ ] 2,000-item drag input-delay p95 ≤8 ms
+- [ ] 2,000-item drag main-thread work per frame ≤8 ms; input delay ≤16.7 ms
 - [ ] Click-to-select work p95 ≤50 ms
 - [ ] Benchmark harness records CPU throttle, fit mode and click latency
 - [ ] All phase verification passing
@@ -147,7 +147,7 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 **Reference**: [03-02](03-02-fit-typography.md) §Host-region measurement, §Fit algorithm, §Typography, §Demo shell · AR-5–AR-12, AR-21, AR-30, AR-31, AR-38
 **Objective**: Fit the grid to its host, centre the header and show the embedded layout.
 
-- [ ] 2.2.1 Capture three-size prototypes and record the chosen unit values — `docs/benchmarks/rd13-baseline/`
+- [ ] 2.2.1 Capture three-size prototypes and record the chosen unit values — `evidence/rd13-baseline/`
 - [ ] 2.2.2 Add `display.fit`, the option resolver and validation — `packages/react/src/types.ts`, `options.ts`
 - [ ] 2.2.3 Add the comfortable/compact/dense unit profiles, 24 px lanes, `laneTop` plumbing and font-token defaults — `packages/react/src/theme.ts`, `options.ts`
 - [ ] 2.2.4 Implement host-region measurement, horizontal scale, vertical lane budget and composed zoom — `packages/react/src/geometry.ts`

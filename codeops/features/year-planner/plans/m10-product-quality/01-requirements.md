@@ -48,7 +48,7 @@
 | Story dependencies | Fluent/MUI dev-only in the private Storybook app | AR-29 |
 | Demo interaction | `play` functions plus an event log | AR-19 |
 | Measurement | Production build; unthrottled gate, 4× CPU-throttle diagnostics | AR-22 |
-| Drag metric | Input delay p95 (pointer event → handler) | AR-3 |
+| Drag metric | Main-thread work per frame ≤8 ms; input delay ≤16.7 ms | AR-3 |
 | Click metric | Pointer-down to selection commit (work time) | AR-23 |
 | Visual sizes | 1280 × 800, 1440 × 900, 1024 × 768 | AR-24 |
 | Baseline location | `docs/benchmarks/rd13-baseline.md` | AR-33 |

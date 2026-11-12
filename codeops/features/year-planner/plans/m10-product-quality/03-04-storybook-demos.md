@@ -6,7 +6,8 @@
 ## Overview
 
 The Storybook catalogue contains 174 stories, four `play` functions and two
-**component** descriptions; no story has a story-level description. It proves
+description and 1 **story** description; 173 stories have no story-level
+description. It proves
 that states render; it does not show a first-time reader what the component
 does. This component adds a Demos group with real interactions, an event-log
 playground, and a one-line description on every story. The existing catalogue

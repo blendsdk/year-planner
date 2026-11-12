@@ -40,7 +40,10 @@ const POLICY_KEYS: Array<keyof LayerPolicy> = [
   "allowDelete",
 ];
 
-/** Returns an empty, valid planner model. */
+/**
+ * Returns an empty, valid planner model.
+ * @public
+ */
 export function emptyPlannerModel(): PlannerModel {
   return { groups: [], layers: [], items: [], resources: [] };
 }
@@ -60,6 +63,7 @@ export function emptyPlannerModel(): PlannerModel {
  * ```ts
  * const { model, ok } = validatePlannerData({ items, layers });
  * ```
+ * @public
  */
 export function validatePlannerData(
   input: PlannerDataInput,

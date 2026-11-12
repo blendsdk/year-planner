@@ -22,7 +22,10 @@ export type {
   YearLayout,
 };
 
-/** Event fields shared by planner selection clicks. */
+/**
+ * Event fields shared by planner selection clicks.
+ * @public
+ */
 export interface SelectionClickEvent {
   shiftKey?: boolean;
   ctrlKey?: boolean;
@@ -30,13 +33,19 @@ export interface SelectionClickEvent {
   target?: EventTarget | null;
 }
 
-/** The subset of planner state the interaction controller reads. */
+/**
+ * The subset of planner state the interaction controller reads.
+ * @public
+ */
 export type InteractionState = Pick<
   PlannerState,
   "model" | "visibility" | "filter" | "items" | "selection" | "setSelection" | "interactionMode"
 >;
 
-/** Inputs consumed by the interaction controller. */
+/**
+ * Inputs consumed by the interaction controller.
+ * @public
+ */
 export interface UseInteractionInput {
   state: InteractionState;
   layout: YearLayout;
@@ -57,7 +66,10 @@ export interface UseInteractionInput {
   onDiagnostic?: ((entry: Diagnostic) => void) | undefined;
 }
 
-/** DOM and state handlers exposed by the interaction controller. */
+/**
+ * DOM and state handlers exposed by the interaction controller.
+ * @public
+ */
 export interface InteractionController {
   previews: readonly import("./preview.js").PreviewLayer[];
   touchAction: "none" | "auto";

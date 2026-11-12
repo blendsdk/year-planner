@@ -19,7 +19,10 @@ import type { CommandFeedback } from "./types.js";
 
 const COMMAND_TYPES = new Set(["create", "update", "move", "resize", "delete", "paint"]);
 
-/** Options used by local command checks. */
+/**
+ * Options used by local command checks.
+ * @public
+ */
 export interface LocalCheckOptions {
   /** Global read-only guardrail. */
   readOnly?: boolean;
@@ -27,14 +30,20 @@ export interface LocalCheckOptions {
   activeLayerId?: string;
 }
 
-/** Failure data shared by local checks and host rejections. */
+/**
+ * Failure data shared by local checks and host rejections.
+ * @public
+ */
 export interface CommandFailure {
   ok: false;
   diagnostic: Diagnostic;
   feedback: CommandFeedback;
 }
 
-/** Options for building a failure. */
+/**
+ * Options for building a failure.
+ * @public
+ */
 export interface FailureOptions {
   /** Whether the inspector may offer a retry. */
   retryable?: boolean;
@@ -48,7 +57,10 @@ export interface FailureOptions {
   level?: Diagnostic["level"];
 }
 
-/** Builds a failure with a diagnostic and matching feedback. */
+/**
+ * Builds a failure with a diagnostic and matching feedback.
+ * @public
+ */
 export function failure(
   command: PlannerCommand,
   code: DiagnosticCode,
@@ -75,7 +87,10 @@ export function failure(
   };
 }
 
-/** Returns true for a positive integer version. */
+/**
+ * Returns true for a positive integer version.
+ * @public
+ */
 export function isPositiveInteger(value: unknown): value is number {
   return typeof value === "number" && Number.isInteger(value) && value > 0;
 }
@@ -94,6 +109,7 @@ function layerAllowsPaint(layer: PlannerLayer, state: PlannerState): boolean {
  *
  * Local checks are authoritative for read-only state, identity protection,
  * versions, paint targets, editability and ranged editing rules.
+ * @public
  */
 export function checkLocal(
   state: PlannerState,
@@ -270,7 +286,10 @@ export function checkLocal(
   return { ok: true };
 }
 
-/** Builds the context passed to host validation and requests. */
+/**
+ * Builds the context passed to host validation and requests.
+ * @public
+ */
 export function buildContext(requestId: string, baseRevision: string | undefined): CommandContext {
   return {
     requestId,

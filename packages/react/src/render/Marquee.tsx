@@ -1,6 +1,9 @@
 import type { CSSProperties, ReactNode } from "react";
 
-/** Props for the screen-space marquee rectangle. */
+/**
+ * Props for the screen-space marquee rectangle.
+ * @public
+ */
 export interface MarqueeProps {
   rect: { left: number; top: number; width: number; height: number };
   zoom: number;
@@ -13,6 +16,7 @@ export interface MarqueeProps {
  *
  * The grid is the scroll content, so the rectangle follows scrolling without a
  * portal or fixed-position conversion.
+ * @public
  */
 export function Marquee({ rect, zoom, bandWidth, headerHeight }: MarqueeProps): ReactNode {
   const style: CSSProperties = {

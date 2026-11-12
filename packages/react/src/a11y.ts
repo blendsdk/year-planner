@@ -9,7 +9,10 @@ import {
 } from "@blendsdk/year-planner-core";
 import type { DateMeta } from "./types.js";
 
-/** Inputs for one date cell's accessible name. */
+/**
+ * Inputs for one date cell's accessible name.
+ * @public
+ */
 export interface DateCellNameInput {
   /** ISO date key for the cell. */
   date: DateKey;
@@ -25,7 +28,10 @@ export interface DateCellNameInput {
   selected: boolean;
 }
 
-/** Inputs for one item proxy's accessible name. */
+/**
+ * Inputs for one item proxy's accessible name.
+ * @public
+ */
 export interface ItemNameInput {
   /** Item represented by the proxy. */
   item: PlannerItem;
@@ -67,6 +73,7 @@ function hexChannels(value: string): [number, number, number] | undefined {
  *
  * @param color - `#rgb`, `#rrggbb` or an eight-digit hex value.
  * @returns Luminance in the 0–1 range, or `undefined` for other colour syntaxes.
+ * @public
  */
 export function relativeLuminance(color: string): number | undefined {
   const channels = hexChannels(color);
@@ -84,6 +91,7 @@ export function relativeLuminance(color: string): number | undefined {
  * @param foreground - Text or graphical colour.
  * @param background - Adjacent background colour.
  * @returns A ratio from 1 to 21, or `0` when either value cannot be parsed.
+ * @public
  */
 export function contrastRatio(foreground: string, background: string): number {
   const first = relativeLuminance(foreground);
@@ -109,6 +117,7 @@ export function contrastRatio(foreground: string, background: string): number {
  * ```ts
  * readableTextColor("#76bfe5", ["#1b2329", "#ffffff"]); // "#1b2329"
  * ```
+ * @public
  */
 export function readableTextColor(background: string, candidates: readonly string[]): string {
   const fallback = candidates[0] ?? "#000000";
@@ -145,6 +154,7 @@ export function readableTextColor(background: string, candidates: readonly strin
  * });
  * // "Jan 4, 2027, 2 items"
  * ```
+ * @public
  */
 export function dateCellAccessibleName(input: DateCellNameInput): string {
   if (input.meta?.ariaLabel) return input.meta.ariaLabel;
@@ -179,6 +189,7 @@ export function dateCellAccessibleName(input: DateCellNameInput): string {
  *   clipped: false,
  * });
  * ```
+ * @public
  */
 export function itemAccessibleName(input: ItemNameInput): string {
   const parts: string[] = [input.visibleLabel];
@@ -202,6 +213,7 @@ export function itemAccessibleName(input: ItemNameInput): string {
  *
  * @param ranges - Canonical selection date ranges.
  * @returns Every selected date key.
+ * @public
  */
 export function selectedDateSet(ranges: readonly SelectionDateRange[]): ReadonlySet<DateKey> {
   const dates = new Set<DateKey>();
@@ -223,6 +235,7 @@ export function selectedDateSet(ranges: readonly SelectionDateRange[]): Readonly
  *
  * @param selection - Current planner selection.
  * @returns A short announcement, or `Selection cleared`.
+ * @public
  */
 export function selectionSummary(selection: PlannerSelection): string {
   const days = selection.dates.reduce(

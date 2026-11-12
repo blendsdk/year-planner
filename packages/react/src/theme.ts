@@ -1,4 +1,7 @@
-/** The visual tokens owned by the planner theme. */
+/**
+ * The visual tokens owned by the planner theme.
+ * @public
+ */
 export type YearPlannerTokenName =
   | "surface"
   | "surfaceMuted"
@@ -25,10 +28,16 @@ export type YearPlannerTokenName =
   | "fontWeight"
   | "printScale";
 
-/** A complete planner theme. Geometry values are design pixels. */
+/**
+ * A complete planner theme. Geometry values are design pixels.
+ * @public
+ */
 export type YearPlannerTheme = Record<YearPlannerTokenName, string | number>;
 
-/** The built-in visual presets. */
+/**
+ * The built-in visual presets.
+ * @public
+ */
 export type YearPlannerThemeName =
   | "classic-blue"
   | "classic-yellow"
@@ -144,7 +153,10 @@ const PRINT: YearPlannerTheme = Object.freeze({
   printScale: 1,
 });
 
-/** Frozen built-in themes. */
+/**
+ * Frozen built-in themes.
+ * @public
+ */
 export const yearPlannerPresets: Record<YearPlannerThemeName, YearPlannerTheme> = Object.freeze({
   "classic-blue": CLASSIC_BLUE,
   "classic-yellow": CLASSIC_YELLOW,
@@ -193,6 +205,7 @@ function normalizeGeometry(
  * ```ts
  * const theme = createTheme({ ribbon: "#8358c6" });
  * ```
+ * @public
  */
 export function createTheme(theme: Partial<YearPlannerTheme> = {}): YearPlannerTheme {
   const merged: YearPlannerTheme = { ...CLASSIC_BLUE, ...theme };
@@ -202,7 +215,10 @@ export function createTheme(theme: Partial<YearPlannerTheme> = {}): YearPlannerT
   return merged;
 }
 
-/** Returns a frozen preset by name, or `undefined` for a host theme name. */
+/**
+ * Returns a frozen preset by name, or `undefined` for a host theme name.
+ * @public
+ */
 export function getPresetTheme(name: string): YearPlannerTheme | undefined {
   if (!Object.hasOwn(yearPlannerPresets, name)) return undefined;
   return yearPlannerPresets[name as YearPlannerThemeName];
@@ -210,11 +226,19 @@ export function getPresetTheme(name: string): YearPlannerTheme | undefined {
 
 const UNITLESS = new Set<YearPlannerTokenName>(["fontWeight", "printScale"]);
 
-/** Resolves a preset name, provider theme or classic default. */
+/**
+ * Resolves a preset name, provider theme or classic default.
+ * @public
+ */
 export function resolveTheme(
   name: string | undefined,
   providerTheme: YearPlannerTheme | undefined,
-): { theme: YearPlannerTheme; themeName: string } {
+): {
+  /** Resolved theme tokens. */
+  theme: YearPlannerTheme;
+  /** Preset or host theme name that produced the tokens. */
+  themeName: string;
+} {
   const preset = name ? getPresetTheme(name) : undefined;
   if (preset) return { theme: preset, themeName: name as string };
   return {
@@ -235,6 +259,7 @@ function kebab(name: string): string {
  *
  * @param theme - Complete theme.
  * @returns A map of `--yp-*` custom properties.
+ * @public
  */
 export function themeToCssVars(theme: YearPlannerTheme): Record<`--yp-${string}`, string> {
   const vars: Record<string, string> = {};

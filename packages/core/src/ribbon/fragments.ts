@@ -117,6 +117,7 @@ function sourceDays(period: AllDayPeriod): number {
  * ```ts
  * const ribbons = buildRibbonLayout(layout, { model, visibility });
  * ```
+ * @public
  */
 export function buildRibbonLayout(
   layout: YearLayout,

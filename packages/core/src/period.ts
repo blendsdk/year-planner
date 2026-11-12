@@ -1,33 +1,58 @@
 import { addDays, isDateKey, parseDateKey, toEpochDay } from "./date.js";
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
 
-/** A validated RFC 3339 instant/offset string. */
+/**
+ * A validated RFC 3339 instant/offset string.
+ * @public
+ */
 export type InstantISO = string;
 
-/** A date-only half-open period. */
+/**
+ * A date-only half-open period.
+ * @public
+ */
 export interface AllDayPeriod {
+  /** Discriminator for the period shape. */
   kind: "all-day";
+  /** First date in the period; the date is included. */
   startDate: string;
+  /** Exclusive end date; the period stops before this date. */
   endDateExclusive: string;
 }
 
-/** A timed half-open period with an IANA display zone. */
+/**
+ * A timed half-open period with an IANA display zone.
+ * @public
+ */
 export interface TimedPeriod {
+  /** Discriminator for the period shape. */
   kind: "timed";
+  /** Inclusive start instant as an RFC 3339 string with an offset. */
   start: InstantISO;
+  /** Exclusive end instant as an RFC 3339 string with an offset. */
   endExclusive: InstantISO;
+  /** IANA zone used to project the instants onto the date grid. */
   timeZone: string;
 }
 
-/** A date-only or timed half-open period. */
+/**
+ * A date-only or timed half-open period.
+ * @public
+ */
 export type PlannerPeriod = AllDayPeriod | TimedPeriod;
 
-/** Returns whether a period is date-only. */
+/**
+ * Returns whether a period is date-only.
+ * @public
+ */
 export function isAllDayPeriod(period: PlannerPeriod): period is AllDayPeriod {
   return period.kind === "all-day";
 }
 
-/** Validates a date-only period and its half-open ordering. */
+/**
+ * Validates a date-only period and its half-open ordering.
+ * @public
+ */
 export function validateAllDayPeriod(period: AllDayPeriod): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   const start = parseDateKey(period.startDate);
@@ -40,7 +65,10 @@ export function validateAllDayPeriod(period: AllDayPeriod): Diagnostic[] {
   return diagnostics;
 }
 
-/** Validates a timed period, its instants and its IANA zone. */
+/**
+ * Validates a timed period, its instants and its IANA zone.
+ * @public
+ */
 export function validateTimedPeriod(period: TimedPeriod): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   const start = Date.parse(period.start);
@@ -60,17 +88,26 @@ export function validateTimedPeriod(period: TimedPeriod): Diagnostic[] {
   return diagnostics;
 }
 
-/** Validates any supported period. */
+/**
+ * Validates any supported period.
+ * @public
+ */
 export function validatePeriod(period: PlannerPeriod): Diagnostic[] {
   return period.kind === "all-day" ? validateAllDayPeriod(period) : validateTimedPeriod(period);
 }
 
-/** Returns the number of calendar days in a date-only period. */
+/**
+ * Returns the number of calendar days in a date-only period.
+ * @public
+ */
 export function durationDays(period: AllDayPeriod): number {
   return toEpochDay(period.endDateExclusive) - toEpochDay(period.startDate);
 }
 
-/** Projects a timed period into the date span it touches in an explicit zone. */
+/**
+ * Projects a timed period into the date span it touches in an explicit zone.
+ * @public
+ */
 export function projectTimedPeriod(period: TimedPeriod, timeZone: string): AllDayPeriod {
   const diagnostics = validateTimedPeriod({ ...period, timeZone });
   if (diagnostics.length > 0)
@@ -100,7 +137,10 @@ export function projectTimedPeriod(period: TimedPeriod, timeZone: string): AllDa
   };
 }
 
-/** Returns whether a string is a date-only period. */
+/**
+ * Returns whether a string is a date-only period.
+ * @public
+ */
 export function isDateInterval(value: unknown): value is AllDayPeriod {
   if (typeof value !== "object" || value === null) return false;
   const candidate = value as Partial<AllDayPeriod>;

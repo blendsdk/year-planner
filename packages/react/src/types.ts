@@ -23,7 +23,10 @@ import type {
 import type { ComponentType, CSSProperties, ReactNode } from "react";
 import type { YearPlannerTheme, YearPlannerThemeName } from "./theme.js";
 
-/** Configuration for interaction features. Gesture behavior is supplied by the interaction layer. */
+/**
+ * Configuration for interaction features. Gesture behavior is supplied by the interaction layer.
+ * @public
+ */
 export interface InteractionConfig {
   /** Active interaction mode; defaults to `auto`. */
   mode?: InteractionMode;
@@ -32,7 +35,12 @@ export interface InteractionConfig {
   /** Marquee interpretation; defaults to item intersection. */
   marquee?: "items" | "dates";
   /** Defaults for inspector-created items. */
-  createDefaults?: { kind: ItemKind; layerId: string };
+  createDefaults?: {
+    /** Item kind for a newly created item. */
+    kind: ItemKind;
+    /** Layer that receives a newly created item. */
+    layerId: string;
+  };
   /** Defaults for painted highlights. */
   paintDefaults?: PaintDefaults;
   /** Double-click action; defaults to `inspect`. */
@@ -47,7 +55,10 @@ export interface InteractionConfig {
   requestId?: () => string;
 }
 
-/** Display configuration for the calendar. */
+/**
+ * Display configuration for the calendar.
+ * @public
+ */
 export interface DisplayConfig {
   /** Lane density; defaults to `compact`. */
   density?: "compact" | "expanded";
@@ -69,7 +80,10 @@ export interface DisplayConfig {
   displayTimeZone?: string;
 }
 
-/** Print configuration. */
+/**
+ * Print configuration.
+ * @public
+ */
 export interface PrintConfig {
   /** Page size; A3 is the only R1 baseline. */
   page?: "A3";
@@ -79,13 +93,22 @@ export interface PrintConfig {
   rowsPerPage?: number;
 }
 
-/** Backwards-compatible display alias. */
+/**
+ * Backwards-compatible display alias.
+ * @public
+ */
 export type YearPlannerDisplay = DisplayConfig;
 
-/** Backwards-compatible print alias. */
+/**
+ * Backwards-compatible print alias.
+ * @public
+ */
 export type YearPlannerPrint = PrintConfig;
 
-/** Property bag for a structural slot. */
+/**
+ * Property bag for a structural slot.
+ * @public
+ */
 export interface YearPlannerSlotProps {
   /** Extra class names. */
   className?: string;
@@ -95,23 +118,41 @@ export interface YearPlannerSlotProps {
   children?: ReactNode;
 }
 
-/** A structural slot component. */
+/**
+ * A structural slot component.
+ * @public
+ */
 export type YearPlannerSlot = ComponentType<YearPlannerSlotProps>;
 
-/** Replaceable structural wrappers. They wrap inner content, not semantics. */
+/**
+ * Replaceable structural wrappers. They wrap inner content, not semantics.
+ * @public
+ */
 export interface YearPlannerComponents {
+  /** Outer planner wrapper. */
   Root?: YearPlannerSlot;
+  /** Header above the grid. */
   Header?: YearPlannerSlot;
+  /** Footer below the grid. */
   Footer?: YearPlannerSlot;
+  /** Month-label cell. */
   MonthLabel?: YearPlannerSlot;
+  /** Weekday header cell. */
   WeekdayHeader?: YearPlannerSlot;
+  /** Day cell wrapper. */
   DayCell?: YearPlannerSlot;
+  /** Item proxy wrapper. */
   ItemFragment?: YearPlannerSlot;
+  /** Inspector aside wrapper. */
   Inspector?: YearPlannerSlot;
+  /** Tooltip wrapper. */
   Tooltip?: YearPlannerSlot;
 }
 
-/** Context passed to `getDateMeta`. */
+/**
+ * Context passed to `getDateMeta`.
+ * @public
+ */
 export interface DateMetaContext {
   /** Whether the date is a weekend slot. */
   isWeekend: boolean;
@@ -121,7 +162,10 @@ export interface DateMetaContext {
   itemIds: readonly string[];
 }
 
-/** Host-provided presentation for one date cell. */
+/**
+ * Host-provided presentation for one date cell.
+ * @public
+ */
 export interface DateMeta {
   /** Marks a holiday without inventing a label or color. */
   holiday?: boolean;
@@ -143,94 +187,183 @@ export interface DateMeta {
   content?: ReactNode;
 }
 
-/** Context passed to `renderCell`. */
+/**
+ * Context passed to `renderCell`.
+ * @public
+ */
 export interface CellRenderContext extends DateMetaContext {
+  /** Calendar date of the cell. */
   date: DateKey;
+  /** Calendar year of the cell. */
   year: number;
+  /** Zero-based month index of the cell. */
   monthIndex: number;
+  /** Zero-based column index in the 37-column row. */
   columnIndex: number;
 }
 
-/** Context passed to `renderItem`. */
+/**
+ * Context passed to `renderItem`.
+ * @public
+ */
 export interface ItemRenderContext {
+  /** Item being rendered or described. */
   item: PlannerItem;
+  /** Ribbon fragment clipped to the current month row. */
   fragment: RibbonFragment;
+  /** Zero-based index of this fragment. */
   fragmentIndex: number;
+  /** Number of fragments for the item in the layout. */
   fragmentCount: number;
+  /** Whether the item is selected. */
   selected: boolean;
+  /** Whether editing is blocked for the item. */
   readOnly: boolean;
 }
 
-/** Context passed to `renderAnnotation`. */
+/**
+ * Context passed to `renderAnnotation`.
+ * @public
+ */
 export interface AnnotationRenderContext {
+  /** Item being rendered or described. */
   item: PlannerItem;
+  /** Ribbon fragment clipped to the current month row. */
   fragment: RibbonFragment;
 }
 
-/** Context passed to `renderOverflow`. */
+/**
+ * Context passed to `renderOverflow`.
+ * @public
+ */
 export interface OverflowRenderContext {
+  /** Month row that owns the context. */
   row: MonthRowLayout;
+  /** Number of items hidden by compact density. */
   hiddenCount: number;
+  /** Items in the current context. */
   items: readonly PlannerItem[];
 }
 
-/** Actions exposed to a custom inspector. */
+/**
+ * Actions exposed to a custom inspector.
+ * @public
+ */
 export interface InspectorActions {
+  /** Closes the inspector. */
   close(): void;
+  /** Moves focus to an item proxy. */
   focusItem(id: string): void;
+  /** Routes a command through the host pipeline. */
   requestCommand(command: PlannerCommand): void;
+  /** Retries the last failed request, when available. */
   retry?(): void;
+  /** Dismisses the current notice, when available. */
   dismiss?(): void;
 }
 
-/** Context passed to `renderInspector`. */
+/**
+ * Context passed to `renderInspector`.
+ * @public
+ */
 export interface InspectorRenderContext {
+  /** Current selection. */
   selection: PlannerSelection;
+  /** Items in the current context. */
   items: readonly PlannerItem[];
+  /** Actions available to the custom body. */
   actions: InspectorActions;
 }
 
-/** Context passed to `renderTooltip`. */
+/**
+ * Context passed to `renderTooltip`.
+ * @public
+ */
 export interface TooltipRenderContext {
+  /** Item being rendered or described. */
   item: PlannerItem;
+  /** Ribbon fragment clipped to the current month row. */
   fragment?: RibbonFragment;
 }
 
-/** Imperative handle exposed by `YearPlanner`. */
+/**
+ * Imperative handle exposed by `YearPlanner`.
+ * @public
+ */
 export interface YearPlannerHandle {
+  /** Shows a group. */
   showGroup(id: string): void;
+  /** Hides a group and its descendants. */
   hideGroup(id: string): void;
+  /** Toggles a group. */
   toggleGroup(id: string): void;
+  /** Shows a layer. */
   showLayer(id: string): void;
+  /** Hides a layer. */
   hideLayer(id: string): void;
+  /** Shows an item. */
   showItem(id: string): void;
+  /** Hides an item. */
   hideItem(id: string): void;
+  /** Shows every group, layer and item. */
   showAll(): void;
+  /** Replaces the filter. */
   setFilter(filter: PlannerFilter): void;
+  /** Selects a date range. */
   selectRange(interval: { startDate: DateKey; endDateExclusive: DateKey }): void;
+  /** Clears the selection. */
   clearSelection(): void;
+  /** Moves focus to an item proxy. */
   focusItem(id: string): void;
+  /** Moves focus to a date cell. */
   focusDate(date: DateKey): void;
+  /** Scrolls a date into view. */
   scrollToDate(date: DateKey): void;
+  /** Changes the interaction mode. */
   setInteractionMode(mode: InteractionMode): void;
+  /** Routes a command through the host pipeline. */
   requestCommand(command: PlannerCommand): void;
+  /** Requests an undo from the host. */
   requestUndo(): void;
+  /** Requests a redo from the host. */
   requestRedo(): void;
+  /** Opens the inspector. */
   openInspector(): void;
+  /** Resolves the effective visibility of an item. */
   getEffectiveVisibility(id: string): {
+    /** Whether the item is effectively visible. */
     visible: boolean;
+    /** Rule that decided the visibility. */
     reason: "visible" | "group" | "layer" | "item" | "filter" | "channel" | "unknown-entity";
   };
 }
 
-/** Public props for `YearPlanner`. */
+/**
+ * Public props for `YearPlanner`.
+ * @public
+ */
 export interface YearPlannerProps {
   /** Display year; required unless `range` is supplied. */
   year?: number;
   /** Context months before/after; defaults to 1/1. */
-  contextMonths?: { before: number; after: number };
+  contextMonths?: {
+    /** Context months before the year; defaults to 1. */
+    before: number;
+    /** Context months after the year; defaults to 1. */
+    after: number;
+  };
   /** Explicit range; wins over `year`. */
-  range?: { start: { year: number; month: number }; monthCount: number };
+  range?: {
+    /** First month of the explicit window. */
+    start: {
+      /** Calendar year of the first month. */
+      year: number;
+      /** Zero-based month index (0 = January). */
+      month: number;
+    };
+    /** Number of months in the window; 12-36. */
+    monthCount: number;
+  };
   /** Year highlighted as current. */
   highlightYear?: number;
   /** Additive layout units; wins over theme geometry. */
@@ -331,10 +464,16 @@ export interface YearPlannerProps {
   showInspector?: boolean;
 }
 
-/** Resolved theme plus the theme hook name. */
+/**
+ * Resolved theme plus the theme hook name.
+ * @public
+ */
 export interface ResolvedTheme {
+  /** Resolved theme tokens. */
   theme: YearPlannerTheme;
+  /** Preset or host theme name. */
   themeName: string;
+  /** CSS variables produced by the theme. */
   cssVars: Record<`--yp-${string}`, string>;
 }
 

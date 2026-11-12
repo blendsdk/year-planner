@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 15:00
-> **Progress**: 33/77 tasks (43%)
+> **Last Updated**: 2026-11-12 15:35
+> **Progress**: 51/77 tasks (66%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -146,7 +146,7 @@ add implementation tests, verify.
 
 ## Phase 3: TSDoc and API reference
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: 248d69e0b1a3f1e5b2f9c2d5e6f7a8b9c0d1e2f3
 > **Lenses**: correctness, api-surface, maintainability
 > **Reasoning**: high — the API report is the reviewed public contract; a wrong member doc is a published statement.
 
@@ -155,39 +155,39 @@ add implementation tests, verify.
 **Reference**: [03-03](03-03-api-reference.md) · ST-13–ST-18 · AR-10–AR-12
 **Objective**: Prove the undocumented entries, disabled release-tag rule, non-fatal TypeDoc validation and missing examples.
 
-- [ ] 3.1.1 [spec-author] Write the report, release-tag, TypeDoc-validation, API-report-gate and example cases with `RD-11-AC-03`, `RD-11-AC-04` — `tests/quality/tsdoc-contract.spec.test.ts`
-- [ ] 3.1.2 Run the new tests and record the red result — `pnpm test:quality`
+- [x] 3.1.1 [spec-author] Write the report, release-tag, TypeDoc-validation, API-report-gate and example cases with `RD-11-AC-03`, `RD-11-AC-04` — `tests/quality/tsdoc-contract.spec.test.ts` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.1.2 Run the new tests and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-12 15:35)
 
 ### Step 3.2: Implementation
 
 **Reference**: [03-03](03-03-api-reference.md) · AR-10–AR-12
 **Objective**: Document every public entry, add the entry-point examples and enable the gates.
 
-- [ ] 3.2.1 Document the core period and interval members — `packages/core/src/period.ts`, `packages/core/src/interval.ts`
-- [ ] 3.2.2 Document `DateParseResult` and `MS_PER_DAY` — `packages/core/src/date.ts`
-- [ ] 3.2.3 Document the core diagnostic members — `packages/core/src/diagnostics.ts`
-- [ ] 3.2.4 Document the core layout members and `ClassicYearLayoutResult` — `packages/core/src/layout/classic-year.ts`
-- [ ] 3.2.5 Document the React render-context members — `packages/react/src/types.ts`
-- [ ] 3.2.6 Document the inspector, theme and resolved-theme members — `packages/react/src/types.ts`, `packages/react/src/theme.ts`
-- [ ] 3.2.7 Document the slot component members — `packages/react/src/types.ts`
-- [ ] 3.2.8 Document the planner handle members — `packages/react/src/types.ts`, `packages/react/src/YearPlanner.tsx`
-- [ ] 3.2.9 Add `@example` to `buildClassicYearLayout` — `packages/core/src/layout/classic-year.ts`
-- [ ] 3.2.10 Add `@example` to `YearPlanner` and `YearPlannerProvider` — `packages/react/src/YearPlanner.tsx`, `packages/react/src/provider.tsx`
-- [ ] 3.2.11 Enable `ae-missing-release-tag` — `packages/core/api-extractor.json`, `packages/react/api-extractor.json`
-- [ ] 3.2.12 Enable TypeDoc `validation.notDocumented`, `invalidLink` and `treatValidationWarningsAsErrors` — `typedoc.core.json`, `typedoc.react.json`
-- [ ] 3.2.13 Regenerate the API reports and TypeDoc, and fix every remaining warning — `packages/*/etc/*.api.md`, `docs/api/**`
+- [x] 3.2.1 Document the core period and interval members — `packages/core/src/period.ts`, `packages/core/src/interval.ts` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.2 Document `DateParseResult` and `MS_PER_DAY` — `packages/core/src/date.ts` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.3 Document the core diagnostic members — `packages/core/src/diagnostics.ts` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.4 Document the core layout members and `ClassicYearLayoutResult` — `packages/core/src/layout/classic-year.ts` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.5 Document the React render-context members — `packages/react/src/types.ts` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.6 Document the inspector, theme and resolved-theme members — `packages/react/src/types.ts`, `packages/react/src/theme.ts` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.7 Document the slot component members — `packages/react/src/types.ts` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.8 Document the planner handle members — `packages/react/src/types.ts`, `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.9 Add `@example` to `buildClassicYearLayout` — `packages/core/src/layout/classic-year.ts` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.10 Add `@example` to `YearPlanner` and `YearPlannerProvider` — `packages/react/src/YearPlanner.tsx`, `packages/react/src/provider.tsx` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.11 Enable `ae-missing-release-tag` — `packages/core/api-extractor.json`, `packages/react/api-extractor.json` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.12 Enable TypeDoc `validation.notDocumented`, `invalidLink` and `treatValidationWarningsAsErrors` — `typedoc.core.json`, `typedoc.react.json` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.2.13 Regenerate the API reports and TypeDoc, and fix every remaining warning — `packages/*/etc/*.api.md`, `docs/api/**` ✅ (completed: 2026-11-12 15:35)
 
 ### Step 3.3: Green, implementation tests and verify
 
-- [ ] 3.3.1 Prove green for ST-13–ST-18 — `pnpm test:quality`
-- [ ] 3.3.2 Prove the API gate and the HTML reference — `pnpm api-report:ci && pnpm docs:build`
-- [ ] 3.3.3 Verify the phase — `pnpm verify`
+- [x] 3.3.1 Prove green for ST-13–ST-18 — `pnpm test:quality` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.3.2 Prove the API gate and the HTML reference — `pnpm api-report:ci && pnpm docs:build` ✅ (completed: 2026-11-12 15:35)
+- [x] 3.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 15:35)
 
 **Deliverables**:
-- [ ] Zero `(undocumented)` entries in both checked-in reports
-- [ ] Release tags reported, examples bound to the named exports
-- [ ] TypeDoc validation is fatal and the build is green
-- [ ] All phase verification passing
+- [x] Zero `(undocumented)` entries in both checked-in reports
+- [x] Release tags reported, examples bound to the named exports
+- [x] TypeDoc validation is fatal and the build is green
+- [x] All phase verification passing
 
 **Test slices**: `core.unit`, `react.unit`, `verification` (task); `packages/*/etc/**` and configs are full-on
 **Task verify**: `pnpm verify` (full gate; AR-30)

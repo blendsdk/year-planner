@@ -33,21 +33,15 @@ import type { VisibilityState } from '@blendsdk/year-planner-core';
 
 // @public
 export interface AnnotationRenderContext {
-    // (undocumented)
     fragment: RibbonFragment;
-    // (undocumented)
     item: PlannerItem;
 }
 
 // @public
 export interface CellRenderContext extends DateMetaContext {
-    // (undocumented)
     columnIndex: number;
-    // (undocumented)
     date: DateKey;
-    // (undocumented)
     monthIndex: number;
-    // (undocumented)
     year: number;
 }
 
@@ -92,25 +86,17 @@ export function getPresetTheme(name: string): YearPlannerTheme | undefined;
 
 // @public
 export interface InspectorActions {
-    // (undocumented)
     close(): void;
-    // (undocumented)
     dismiss?(): void;
-    // (undocumented)
     focusItem(id: string): void;
-    // (undocumented)
     requestCommand(command: PlannerCommand): void;
-    // (undocumented)
     retry?(): void;
 }
 
 // @public
 export interface InspectorRenderContext {
-    // (undocumented)
     actions: InspectorActions;
-    // (undocumented)
     items: readonly PlannerItem[];
-    // (undocumented)
     selection: PlannerSelection;
 }
 
@@ -133,27 +119,18 @@ export interface InteractionConfig {
 
 // @public
 export interface ItemRenderContext {
-    // (undocumented)
     fragment: RibbonFragment;
-    // (undocumented)
     fragmentCount: number;
-    // (undocumented)
     fragmentIndex: number;
-    // (undocumented)
     item: PlannerItem;
-    // (undocumented)
     readOnly: boolean;
-    // (undocumented)
     selected: boolean;
 }
 
 // @public
 export interface OverflowRenderContext {
-    // (undocumented)
     hiddenCount: number;
-    // (undocumented)
     items: readonly PlannerItem[];
-    // (undocumented)
     row: MonthRowLayout;
 }
 
@@ -168,11 +145,8 @@ export interface PrintConfig {
 
 // @public
 export interface ResolvedTheme {
-    // (undocumented)
     cssVars: Record<`--yp-${string}`, string>;
-    // (undocumented)
     theme: YearPlannerTheme;
-    // (undocumented)
     themeName: string;
 }
 
@@ -187,9 +161,7 @@ export function themeToCssVars(theme: YearPlannerTheme): Record<`--yp-${string}`
 
 // @public
 export interface TooltipRenderContext {
-    // (undocumented)
     fragment?: RibbonFragment;
-    // (undocumented)
     item: PlannerItem;
 }
 
@@ -201,23 +173,14 @@ export const YearPlanner: ForwardRefExoticComponent<YearPlannerProps & RefAttrib
 
 // @public
 export interface YearPlannerComponents {
-    // (undocumented)
     DayCell?: YearPlannerSlot;
-    // (undocumented)
     Footer?: YearPlannerSlot;
-    // (undocumented)
     Header?: YearPlannerSlot;
-    // (undocumented)
     Inspector?: YearPlannerSlot;
-    // (undocumented)
     ItemFragment?: YearPlannerSlot;
-    // (undocumented)
     MonthLabel?: YearPlannerSlot;
-    // (undocumented)
     Root?: YearPlannerSlot;
-    // (undocumented)
     Tooltip?: YearPlannerSlot;
-    // (undocumented)
     WeekdayHeader?: YearPlannerSlot;
 }
 
@@ -226,51 +189,31 @@ export type YearPlannerDisplay = DisplayConfig;
 
 // @public
 export interface YearPlannerHandle {
-    // (undocumented)
     clearSelection(): void;
-    // (undocumented)
     focusDate(date: DateKey): void;
-    // (undocumented)
     focusItem(id: string): void;
-    // (undocumented)
     getEffectiveVisibility(id: string): {
         visible: boolean;
         reason: "visible" | "group" | "layer" | "item" | "filter" | "channel" | "unknown-entity";
     };
-    // (undocumented)
     hideGroup(id: string): void;
-    // (undocumented)
     hideItem(id: string): void;
-    // (undocumented)
     hideLayer(id: string): void;
-    // (undocumented)
     openInspector(): void;
-    // (undocumented)
     requestCommand(command: PlannerCommand): void;
-    // (undocumented)
     requestRedo(): void;
-    // (undocumented)
     requestUndo(): void;
-    // (undocumented)
     scrollToDate(date: DateKey): void;
-    // (undocumented)
     selectRange(interval: {
         startDate: DateKey;
         endDateExclusive: DateKey;
     }): void;
-    // (undocumented)
     setFilter(filter: PlannerFilter): void;
-    // (undocumented)
     setInteractionMode(mode: InteractionMode): void;
-    // (undocumented)
     showAll(): void;
-    // (undocumented)
     showGroup(id: string): void;
-    // (undocumented)
     showItem(id: string): void;
-    // (undocumented)
     showLayer(id: string): void;
-    // (undocumented)
     toggleGroup(id: string): void;
 }
 

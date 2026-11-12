@@ -1,4 +1,7 @@
-/** A minimal structural subset of an MUI theme. */
+/**
+ * A minimal structural subset of an MUI theme.
+ * @public
+ */
 export interface MuiLikeTheme {
   palette?: {
     primary?: { main?: string };
@@ -22,6 +25,7 @@ function set(vars: Record<string, string>, name: string, value: string | number 
  *
  * @param theme - MUI theme or palette subset.
  * @returns Planner CSS variables.
+ * @public
  */
 export function muiThemeToCssVars(theme: MuiLikeTheme): Record<`--yp-${string}`, string> {
   const vars: Record<string, string> = {};

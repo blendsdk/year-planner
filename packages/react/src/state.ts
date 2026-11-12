@@ -60,7 +60,10 @@ function useControllable<T>({
   return [value, setValue];
 }
 
-/** Inputs consumed by the planner state hook. */
+/**
+ * Inputs consumed by the planner state hook.
+ * @public
+ */
 export interface PlannerStateInput {
   items?: PlannerItem[];
   defaultItems?: PlannerItem[];
@@ -82,7 +85,10 @@ export interface PlannerStateInput {
   displayTimeZone?: string;
 }
 
-/** State exposed to the view and command pipeline. */
+/**
+ * State exposed to the view and command pipeline.
+ * @public
+ */
 export interface PlannerState {
   items: PlannerItem[];
   model: PlannerModel;
@@ -120,6 +126,7 @@ function initialVisibility(
  *
  * Controlled props always win; defaults are used only in uncontrolled mode.
  * Invalid entities are dropped by `validatePlannerData` and never blank the view.
+ * @public
  */
 export function usePlannerState(input: PlannerStateInput): PlannerState {
   const itemsControlled = input.items !== undefined;

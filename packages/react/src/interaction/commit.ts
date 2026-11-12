@@ -13,10 +13,16 @@ import { type GestureCompletion, intersectMarquee } from "./gesture.js";
 import { type GesturePreview, previewFromCompletion } from "./preview.js";
 import { applyDateClick, applyDateDrag, applyItemClick, applyItemMarquee } from "./selection.js";
 
-/** The planner state fields a completed gesture may read. */
+/**
+ * The planner state fields a completed gesture may read.
+ * @public
+ */
 export type CommitState = Pick<PlannerState, "model" | "visibility" | "filter" | "items">;
 
-/** Inputs needed to turn a completed gesture into selection or a command. */
+/**
+ * Inputs needed to turn a completed gesture into selection or a command.
+ * @public
+ */
 export interface CommitContext {
   selection: PlannerSelection;
   state: CommitState;
@@ -35,7 +41,10 @@ export interface CommitContext {
   onDiagnostic?: ((entry: Diagnostic) => void) | undefined;
 }
 
-/** A command started by a completed gesture. */
+/**
+ * A command started by a completed gesture.
+ * @public
+ */
 export interface GestureCommit {
   /** Preview to keep visible until the request settles. */
   preview?: GesturePreview;
@@ -63,6 +72,7 @@ function focusFailure(
  * the pure policy module. Command completions return a preview and a settlement
  * promise so the interaction layer can keep the proposal visible until the host
  * answers.
+ * @public
  */
 export function commitGesture(
   completion: GestureCompletion,

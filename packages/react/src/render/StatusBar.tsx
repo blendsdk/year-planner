@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
 import type { CommandStatusView } from "../announcements.js";
 
-/** Props for the visible command status bar. */
+/**
+ * Props for the visible command status bar.
+ * @public
+ */
 export interface StatusBarProps {
   /** Current status, or `undefined` when idle. */
   status: CommandStatusView | undefined;
@@ -12,6 +15,7 @@ export interface StatusBarProps {
  *
  * The bar is deliberately not a live region: hidden announcers own speech so a
  * sighted message never causes a duplicate announcement.
+ * @public
  */
 export function StatusBar({ status }: StatusBarProps): ReactNode {
   if (!status) return null;

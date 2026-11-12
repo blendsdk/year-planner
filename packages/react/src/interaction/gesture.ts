@@ -12,19 +12,28 @@ import {
 import type { ViewGeometry } from "../geometry.js";
 import { rangeBetween, type SelectionModifiers } from "./selection.js";
 
-/** A pointer position in client coordinates. */
+/**
+ * A pointer position in client coordinates.
+ * @public
+ */
 export interface GesturePoint {
   clientX: number;
   clientY: number;
 }
 
-/** A point in day-plane design units. */
+/**
+ * A point in day-plane design units.
+ * @public
+ */
 export interface DesignPoint {
   x: number;
   y: number;
 }
 
-/** A rectangle in day-plane design units. */
+/**
+ * A rectangle in day-plane design units.
+ * @public
+ */
 export interface DesignRect {
   left: number;
   top: number;
@@ -32,7 +41,10 @@ export interface DesignRect {
   height: number;
 }
 
-/** Classified pointer-down target. */
+/**
+ * Classified pointer-down target.
+ * @public
+ */
 export type GestureTarget =
   | { kind: "cell"; date: DateKey }
   | {
@@ -52,7 +64,10 @@ export type GestureTarget =
   | { kind: "host-control" }
   | { kind: "none" };
 
-/** Pure context supplied by the view. */
+/**
+ * Pure context supplied by the view.
+ * @public
+ */
 export interface GestureContext {
   /** Active interaction mode. */
   mode: InteractionMode;
@@ -68,7 +83,10 @@ export interface GestureContext {
   isEditable: (itemId: string, action: "move" | "resize") => boolean;
 }
 
-/** Active gesture kinds. */
+/**
+ * Active gesture kinds.
+ * @public
+ */
 export type ActiveGesture =
   | { kind: "select-dates"; anchorDate: DateKey; focusDate: DateKey }
   | { kind: "marquee"; anchor: DesignPoint; current: DesignPoint }
@@ -100,7 +118,10 @@ export type ActiveGesture =
       fallbackDate: DateKey;
     };
 
-/** Finite-state machine state. */
+/**
+ * Finite-state machine state.
+ * @public
+ */
 export type GestureState =
   | { phase: "idle" }
   | {
@@ -123,7 +144,10 @@ export type GestureState =
       lastDate: DateKey;
     };
 
-/** The committed result of a completed gesture. */
+/**
+ * The committed result of a completed gesture.
+ * @public
+ */
 export type GestureCompletion =
   | { kind: "none" }
   | { kind: "click"; target: GestureTarget; modifiers: SelectionModifiers }
@@ -172,7 +196,10 @@ export type GestureCompletion =
       };
     };
 
-/** Returns true when a pointer moved at least the threshold distance. */
+/**
+ * Returns true when a pointer moved at least the threshold distance.
+ * @public
+ */
 export function exceedsThreshold(
   start: GesturePoint,
   current: GesturePoint,
@@ -183,7 +210,10 @@ export function exceedsThreshold(
   return Math.hypot(dx, dy) >= threshold;
 }
 
-/** Builds a normalized rectangle from two design points. */
+/**
+ * Builds a normalized rectangle from two design points.
+ * @public
+ */
 export function designRectBetween(start: DesignPoint, end: DesignPoint): DesignRect {
   return {
     left: Math.min(start.x, end.x),
@@ -193,7 +223,10 @@ export function designRectBetween(start: DesignPoint, end: DesignPoint): DesignR
   };
 }
 
-/** Converts a design rectangle to fixed screen coordinates. */
+/**
+ * Converts a design rectangle to fixed screen coordinates.
+ * @public
+ */
 export function designRectToScreen(
   rect: DesignRect,
   view: ViewGeometry,
@@ -227,6 +260,7 @@ function axisDelta(
  *
  * The result is proportional to how deep the pointer is in the 32 px edge
  * zone and never exceeds 12 px per axis per frame.
+ * @public
  */
 export function autoScrollDelta(input: {
   point: GesturePoint;
@@ -364,7 +398,10 @@ function activate(
   };
 }
 
-/** Starts a pending gesture, or returns idle for an ignored target. */
+/**
+ * Starts a pending gesture, or returns idle for an ignored target.
+ * @public
+ */
 export function beginGesture(input: {
   target: GestureTarget;
   point: GesturePoint;
@@ -389,7 +426,10 @@ export function beginGesture(input: {
   };
 }
 
-/** Advances a pending gesture into active after the threshold, or updates it. */
+/**
+ * Advances a pending gesture into active after the threshold, or updates it.
+ * @public
+ */
 export function moveGesture(input: {
   state: GestureState;
   point: GesturePoint;
@@ -553,7 +593,10 @@ function finishResize(
   };
 }
 
-/** Produces the commit intent; never mutates canonical items. */
+/**
+ * Produces the commit intent; never mutates canonical items.
+ * @public
+ */
 export function endGesture(input: {
   state: GestureState;
   design: DesignPoint;
@@ -614,7 +657,10 @@ export function endGesture(input: {
   }
 }
 
-/** Cancels any gesture and reports the focus to restore. */
+/**
+ * Cancels any gesture and reports the focus to restore.
+ * @public
+ */
 export function cancelGesture(state: GestureState): {
   state: GestureState;
   restore?: { itemId?: string; date?: DateKey };
@@ -638,7 +684,10 @@ export function cancelGesture(state: GestureState): {
   return { state: { phase: "idle" }, restore: { date: state.lastDate } };
 }
 
-/** Returns true when the gesture context changed enough to cancel. */
+/**
+ * Returns true when the gesture context changed enough to cancel.
+ * @public
+ */
 export function gestureContextChanged(
   previous: { signature: string; mode: InteractionMode },
   next: { signature: string; mode: InteractionMode },
@@ -646,7 +695,10 @@ export function gestureContextChanged(
   return previous.signature !== next.signature || previous.mode !== next.mode;
 }
 
-/** Returns visible item IDs whose fragments intersect the design rectangle. */
+/**
+ * Returns visible item IDs whose fragments intersect the design rectangle.
+ * @public
+ */
 export function intersectMarquee(
   ribbons: RibbonLayout,
   rect: DesignRect,

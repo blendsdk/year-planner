@@ -1,6 +1,9 @@
 import type { PlannerSelection } from "../contracts.js";
 
-/** Returns an empty selection with every required list present. */
+/**
+ * Returns an empty selection with every required list present.
+ * @public
+ */
 export function emptySelection(): PlannerSelection {
   return { dates: [], items: [] };
 }
@@ -10,6 +13,7 @@ export function emptySelection(): PlannerSelection {
  *
  * @param selection - Selection to inspect.
  * @returns Deduplicated item IDs; an empty array for `undefined`.
+ * @public
  */
 export function selectionItemIds(selection: PlannerSelection | undefined): string[] {
   if (!selection) return [];

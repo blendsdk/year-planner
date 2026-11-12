@@ -10,7 +10,10 @@ import type {
   YearPlannerComponents,
 } from "../types.js";
 
-/** Props for one month row's cell layer. */
+/**
+ * Props for one month row's cell layer.
+ * @public
+ */
 export interface CellLayerProps {
   row: MonthRowLayout;
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
@@ -37,6 +40,7 @@ export interface CellLayerProps {
 /**
  * Renders dated and blank grid cells. The cell element, ARIA and hit surface are
  * planner-owned; `renderCell` and the `DayCell` slot only add inner content.
+ * @public
  */
 export const CellLayer = memo(function CellLayer({
   row,

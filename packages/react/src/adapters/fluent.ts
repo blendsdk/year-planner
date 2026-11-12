@@ -1,4 +1,7 @@
-/** A minimal structural subset of a Fluent UI v9 theme. */
+/**
+ * A minimal structural subset of a Fluent UI v9 theme.
+ * @public
+ */
 export interface FluentLikeTheme {
   colorNeutralBackground1?: string;
   colorNeutralBackground2?: string;
@@ -30,6 +33,7 @@ function set(vars: Record<string, string>, name: string, value: string | number 
  * ```ts
  * <YearPlanner cssVars={fluentThemeToCssVars(theme)} />
  * ```
+ * @public
  */
 export function fluentThemeToCssVars(theme: FluentLikeTheme): Record<`--yp-${string}`, string> {
   const vars: Record<string, string> = {};

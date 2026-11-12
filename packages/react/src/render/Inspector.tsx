@@ -33,7 +33,10 @@ import type {
 } from "../types.js";
 import { ItemList } from "./ItemList.js";
 
-/** Props for the default inspector. */
+/**
+ * Props for the default inspector.
+ * @public
+ */
 export interface InspectorProps {
   model: PlannerModel;
   visibility: VisibilityState;
@@ -186,6 +189,7 @@ function inspectorPropsEqual(previous: InspectorProps, next: InspectorProps): bo
  * The aside, close button and focus target stay planner-owned; `renderInspector`
  * replaces only the body. The memo skips the 500-item visibility scan while a
  * gesture is active.
+ * @public
  */
 export const Inspector = memo(function Inspector({
   model,
@@ -670,7 +674,10 @@ function DefaultInspectorBody({
   );
 }
 
-/** Renders command feedback and non-blocking notices with retry/dismiss actions. */
+/**
+ * Renders command feedback and non-blocking notices with retry/dismiss actions.
+ * @public
+ */
 export function InspectorFeedback({
   pipeline,
   id,

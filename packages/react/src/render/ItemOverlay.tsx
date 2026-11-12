@@ -20,7 +20,10 @@ import { ItemLayer } from "./ItemLayer.js";
 import { Overflow } from "./Overflow.js";
 import { SelectionPreview } from "./SelectionPreview.js";
 
-/** Props for the item overlay that sits above the ARIA grid. */
+/**
+ * Props for the item overlay that sits above the ARIA grid.
+ * @public
+ */
 export interface ItemOverlayProps {
   layout: { rows: readonly MonthRowLayout[]; headerHeight: number; totalDayWidth: number };
   ribbons: RibbonLayout;
@@ -103,6 +106,7 @@ function itemOverlayPropsEqual(previous: ItemOverlayProps, next: ItemOverlayProp
  * row contract valid while item proxies stay focusable buttons. Each row only
  * receives the previews that intersect it, and unchanged item layers skip
  * rendering during a gesture.
+ * @public
  */
 export const ItemOverlay = memo(function ItemOverlay({
   layout,

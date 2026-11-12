@@ -1,13 +1,22 @@
 import { type Diagnostic, diagnostic } from "../diagnostics.js";
 import type { RibbonLayout, RibbonRow } from "./types.js";
 
-/** The supported print page size. */
+/**
+ * The supported print page size.
+ * @public
+ */
 export type PrintPageSize = "A3";
 
-/** How rows are placed on print pages. */
+/**
+ * How rows are placed on print pages.
+ * @public
+ */
 export type PrintMode = "paginate" | "fit";
 
-/** Print options accepted by `planRibbonPrint`. */
+/**
+ * Print options accepted by `planRibbonPrint`.
+ * @public
+ */
 export interface PrintOptions {
   /** Page size; A3 landscape is the only R1 baseline. */
   page?: PrintPageSize;
@@ -17,7 +26,10 @@ export interface PrintOptions {
   rowsPerPage?: number;
 }
 
-/** One planned print page. */
+/**
+ * One planned print page.
+ * @public
+ */
 export interface PrintPage {
   /** Zero-based page index. */
   index: number;
@@ -31,7 +43,10 @@ export interface PrintPage {
   scale: number;
 }
 
-/** A complete print plan. */
+/**
+ * A complete print plan.
+ * @public
+ */
 export interface PrintPlan {
   /** Page size used by the plan. */
   page: PrintPageSize;
@@ -47,21 +62,46 @@ export interface PrintPlan {
   diagnostics: Diagnostic[];
 }
 
-/** A print plan or a validation failure. */
+/**
+ * A print plan or a validation failure.
+ * @public
+ */
 export type PrintPlanResult =
-  | { ok: true; plan: PrintPlan }
-  | { ok: false; diagnostics: Diagnostic[] };
+  | {
+      /** True when the plan was built. */
+      ok: true;
+      /** Pages and diagnostics for the print tree. */
+      plan: PrintPlan;
+    }
+  | {
+      /** False when print options are invalid. */
+      ok: false;
+      /** Validation diagnostics. */
+      diagnostics: Diagnostic[];
+    };
 
-/** Inner width of an A3 landscape sheet at 96 DPI with 6 mm side margins. */
+/**
+ * Inner width of an A3 landscape sheet at 96 DPI with 6 mm side margins.
+ * @public
+ */
 export const A3_LANDSCAPE_INNER_WIDTH = 1542;
 
-/** Inner height of an A3 landscape sheet at 96 DPI with 6 mm top/bottom margins. */
+/**
+ * Inner height of an A3 landscape sheet at 96 DPI with 6 mm top/bottom margins.
+ * @public
+ */
 export const A3_LANDSCAPE_INNER_HEIGHT = 1077;
 
-/** Design-size date text used by the classic renderer. */
+/**
+ * Design-size date text used by the classic renderer.
+ * @public
+ */
 export const PRINT_DATE_TEXT_PX = 12;
 
-/** Minimum acceptable printed date text size in points. */
+/**
+ * Minimum acceptable printed date text size in points.
+ * @public
+ */
 export const PRINT_MIN_DATE_TEXT_PT = 7;
 
 const DEFAULT_ROWS_PER_PAGE = 14;
@@ -103,6 +143,7 @@ function makePage(ribbon: RibbonLayout, rows: RibbonRow[], index: number): Print
  * @param ribbon - Ribbon output from `buildRibbonLayout`.
  * @param options - Page size, mode and rows per page.
  * @returns A print plan or validation diagnostics.
+ * @public
  */
 export function planRibbonPrint(ribbon: RibbonLayout, options: PrintOptions = {}): PrintPlanResult {
   const page = options.page ?? "A3";

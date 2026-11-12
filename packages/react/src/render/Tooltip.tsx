@@ -3,7 +3,10 @@ import { type CSSProperties, type ReactNode, useId } from "react";
 import type { PlannerFormatters } from "../locale.js";
 import type { TooltipRenderContext, YearPlannerComponents } from "../types.js";
 
-/** A tooltip target and its viewport position. */
+/**
+ * A tooltip target and its viewport position.
+ * @public
+ */
 export interface TooltipState {
   item: PlannerItem;
   fragment: RibbonFragment;
@@ -11,7 +14,10 @@ export interface TooltipState {
   y: number;
 }
 
-/** Props for the owned tooltip overlay. */
+/**
+ * Props for the owned tooltip overlay.
+ * @public
+ */
 export interface TooltipProps {
   state: TooltipState;
   id?: string;
@@ -24,6 +30,7 @@ export interface TooltipProps {
 /**
  * Renders the component-owned tooltip. The surface is fixed-positioned inside
  * the root and is never created for hidden items.
+ * @public
  */
 export function Tooltip({
   state,

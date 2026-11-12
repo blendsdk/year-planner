@@ -13,7 +13,10 @@ import { rowTemplate } from "../geometry.js";
 import type { PlannerFormatters } from "../locale.js";
 import { safeCssColor } from "../safeStyle.js";
 
-/** Props for the hidden print tree. */
+/**
+ * Props for the hidden print tree.
+ * @public
+ */
 export interface PrintPagesProps {
   layout: YearLayout;
   ribbons: RibbonLayout;
@@ -153,6 +156,7 @@ function printRow(
 /**
  * Renders the hidden A3 print tree. Each planned page gets its own uniform scale
  * and a forced page break; the screen view is unaffected.
+ * @public
  */
 export const PrintPages = memo(function PrintPages({
   layout,

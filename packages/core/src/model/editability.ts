@@ -5,10 +5,16 @@ import {
   type VisibilityContext,
 } from "./visibility.js";
 
-/** An edit action checked against the policy and mode. */
+/**
+ * An edit action checked against the policy and mode.
+ * @public
+ */
 export type EditAction = "move" | "resize" | "paint" | "create" | "delete";
 
-/** Why an action is allowed or denied. */
+/**
+ * Why an action is allowed or denied.
+ * @public
+ */
 export type EditabilityReason =
   | "editable"
   | "global-read-only"
@@ -19,7 +25,10 @@ export type EditabilityReason =
   | "interaction-mode"
   | "unknown-entity";
 
-/** Result of an editability check. */
+/**
+ * Result of an editability check.
+ * @public
+ */
 export interface Editability {
   /** Whether the action is allowed. */
   editable: boolean;
@@ -27,7 +36,10 @@ export interface Editability {
   reason: EditabilityReason;
 }
 
-/** Everything needed to resolve editability. */
+/**
+ * Everything needed to resolve editability.
+ * @public
+ */
 export interface EditabilityContext extends VisibilityContext {
   /** Global read-only guardrail. */
   readOnly?: boolean;
@@ -37,7 +49,10 @@ export interface EditabilityContext extends VisibilityContext {
   activeLayerId?: string;
 }
 
-/** A policy with every action resolved. */
+/**
+ * A policy with every action resolved.
+ * @public
+ */
 export type ResolvedLayerPolicy = Required<LayerPolicy>;
 
 const ACTIONS: Array<{
@@ -81,7 +96,10 @@ function groupChain(layerId: string, model: PlannerModel): string[] {
   return chain.reverse();
 }
 
-/** Resolves a layer's effective policy, root group to leaf group to layer. */
+/**
+ * Resolves a layer's effective policy, root group to leaf group to layer.
+ * @public
+ */
 export function getResolvedLayerPolicy(layerId: string, model: PlannerModel): ResolvedLayerPolicy {
   const resolved: ResolvedLayerPolicy = {
     allowMove: true,
@@ -107,7 +125,10 @@ function applyPolicy(target: ResolvedLayerPolicy, policy: LayerPolicy): void {
   }
 }
 
-/** Checks whether an item can be moved, resized or painted. */
+/**
+ * Checks whether an item can be moved, resized or painted.
+ * @public
+ */
 export function getItemEditability(
   itemId: string,
   action: Exclude<EditAction, "create" | "delete">,
@@ -127,7 +148,10 @@ export function getItemEditability(
   return allowed();
 }
 
-/** Checks whether a layer can accept a new item. */
+/**
+ * Checks whether a layer can accept a new item.
+ * @public
+ */
 export function canCreateItem(layerId: string, context: EditabilityContext): Editability {
   const layer = context.model.layers.find((entry) => entry.id === layerId);
   if (!layer) return denied("unknown-entity");
@@ -142,7 +166,10 @@ export function canCreateItem(layerId: string, context: EditabilityContext): Edi
   return allowed();
 }
 
-/** Checks whether an item can be deleted. */
+/**
+ * Checks whether an item can be deleted.
+ * @public
+ */
 export function canDeleteItem(itemId: string, context: EditabilityContext): Editability {
   const item = context.model.items.find((entry) => entry.id === itemId);
   const layer = item ? context.model.layers.find((entry) => entry.id === item.layerId) : undefined;

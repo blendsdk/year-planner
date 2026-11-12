@@ -10,7 +10,10 @@ import type {
 } from "@blendsdk/year-planner-core";
 import type { PlannerState } from "../state.js";
 
-/** Feedback shown for a rejected, timed-out or unapplied command. */
+/**
+ * Feedback shown for a rejected, timed-out or unapplied command.
+ * @public
+ */
 export interface CommandFeedback {
   /** Stable diagnostic code. */
   code: DiagnosticCode;
@@ -24,7 +27,10 @@ export interface CommandFeedback {
   retryable: boolean;
 }
 
-/** Terminal result of a command request. */
+/**
+ * Terminal result of a command request.
+ * @public
+ */
 export type CommandRequestResult =
   | "accepted"
   | "rejected"
@@ -32,7 +38,10 @@ export type CommandRequestResult =
   | "ignored"
   | "confirmation-denied";
 
-/** The last terminal result, used by the command-status announcer. */
+/**
+ * The last terminal result, used by the command-status announcer.
+ * @public
+ */
 export interface CommandSettlement {
   /** Terminal result. */
   result: CommandRequestResult;
@@ -42,7 +51,10 @@ export interface CommandSettlement {
   diagnostics: Diagnostic[];
 }
 
-/** Inputs for the command request pipeline. */
+/**
+ * Inputs for the command request pipeline.
+ * @public
+ */
 export interface CommandPipelineInput {
   /** Planner state that owns items, visibility, filter and selection. */
   state: PlannerState;
@@ -82,7 +94,10 @@ export interface CommandPipelineInput {
   onDiagnostic?: (diagnostic: Diagnostic) => void;
 }
 
-/** Command pipeline state and actions. */
+/**
+ * Command pipeline state and actions.
+ * @public
+ */
 export interface CommandPipeline {
   /** Item IDs with an active command. */
   pendingItemIds: ReadonlySet<string>;
@@ -104,7 +119,10 @@ export interface CommandPipeline {
   requestRedo: () => void;
 }
 
-/** Local replacement set produced by the pure reducer. */
+/**
+ * Local replacement set produced by the pure reducer.
+ * @public
+ */
 export interface LocalCommandResult {
   /** New or changed items. */
   updatedItems: PlannerItem[];

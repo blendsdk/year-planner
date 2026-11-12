@@ -1,7 +1,9 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "name": "@blendsdk/react-year-planner",
-  "entryPoints": ["packages/react/src/index.ts"],
+  "entryPoints": [
+    "packages/react/src/index.ts"
+  ],
   "tsconfig": "packages/react/tsconfig.json",
   "out": "docs/api/react",
   "readme": "none",
@@ -11,5 +13,10 @@
   "categorizeByGroup": true,
   "navigationLinks": {
     "Core package": "../core/index.html"
-  }
+  },
+  "validation": {
+    "notDocumented": true,
+    "invalidLink": true
+  },
+  "treatValidationWarningsAsErrors": true
 }

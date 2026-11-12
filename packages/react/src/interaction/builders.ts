@@ -10,7 +10,10 @@ import {
 } from "@blendsdk/year-planner-core";
 import type { InteractionConfig } from "../types.js";
 
-/** Input for a paint/erase command builder. */
+/**
+ * Input for a paint/erase command builder.
+ * @public
+ */
 export interface BuildPaintInput {
   model: PlannerModel;
   visibility: VisibilityState;
@@ -28,6 +31,7 @@ export interface BuildPaintInput {
  * Expected versions cover the same visible, unlocked, editable items the core
  * paint reducer may change. Returns `undefined` when the layer cannot accept
  * paint.
+ * @public
  */
 export function buildPaintCommand(input: BuildPaintInput): PlannerCommand | undefined {
   const layer = input.model.layers.find((entry) => entry.id === input.layerId);
@@ -71,7 +75,10 @@ export function buildPaintCommand(input: BuildPaintInput): PlannerCommand | unde
   };
 }
 
-/** Input for a create command item builder. */
+/**
+ * Input for a create command item builder.
+ * @public
+ */
 export interface BuildCreateInput {
   interaction: InteractionConfig | undefined;
   activeLayerId: string | undefined;
@@ -85,6 +92,7 @@ export interface BuildCreateInput {
  *
  * `createDefaults.layerId` wins over `activeLayerId`; kind defaults to
  * `activity`. Returns `undefined` when neither layer is available.
+ * @public
  */
 export function buildCreateItem(input: BuildCreateInput): PlannerItem | undefined {
   const layerId = input.interaction?.createDefaults?.layerId ?? input.activeLayerId;
@@ -103,7 +111,10 @@ export function buildCreateItem(input: BuildCreateInput): PlannerItem | undefine
   };
 }
 
-/** Default paint payload for a gesture when the host supplies none. */
+/**
+ * Default paint payload for a gesture when the host supplies none.
+ * @public
+ */
 export function defaultPaintDefaults(interaction: InteractionConfig | undefined): PaintDefaults {
   return interaction?.paintDefaults ?? { kind: "highlight" };
 }

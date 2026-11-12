@@ -5,7 +5,10 @@ import { isValidLocale, isValidTimeZone } from "./locale.js";
 import type { YearPlannerTheme } from "./theme.js";
 import type { DisplayConfig } from "./types.js";
 
-/** Validated display options used by the renderer. */
+/**
+ * Validated display options used by the renderer.
+ * @public
+ */
 export interface ResolvedDisplayOptions {
   density: "compact" | "expanded";
   compactMaxLanes: number;
@@ -28,6 +31,7 @@ function push(
 /**
  * Validates host display options and falls back before any core call that would
  * throw. Returns one diagnostic per invalid option.
+ * @public
  */
 export function resolveDisplayOptions(
   display: DisplayConfig | undefined,

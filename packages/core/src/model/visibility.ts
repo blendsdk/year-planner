@@ -7,7 +7,10 @@ import type {
   VisibilityState,
 } from "./types.js";
 
-/** Why an item is visible or hidden. */
+/**
+ * Why an item is visible or hidden.
+ * @public
+ */
 export type VisibilityReason =
   | "visible"
   | "group"
@@ -17,7 +20,10 @@ export type VisibilityReason =
   | "channel"
   | "unknown-entity";
 
-/** Result of resolving one item's effective visibility. */
+/**
+ * Result of resolving one item's effective visibility.
+ * @public
+ */
 export interface EffectiveVisibility {
   /** Whether the item is effectively visible. */
   visible: boolean;
@@ -25,7 +31,10 @@ export interface EffectiveVisibility {
   reason: VisibilityReason;
 }
 
-/** Everything needed to resolve visibility. */
+/**
+ * Everything needed to resolve visibility.
+ * @public
+ */
 export interface VisibilityContext {
   /** Validated planner model. */
   model: PlannerModel;
@@ -35,23 +44,92 @@ export interface VisibilityContext {
   filter?: PlannerFilter;
 }
 
-/** Visibility state transitions. */
+/**
+ * Visibility state transitions.
+ * @public
+ */
 export type VisibilityAction =
-  | { type: "showItem"; itemId: string }
-  | { type: "hideItem"; itemId: string }
-  | { type: "toggleItem"; itemId: string }
-  | { type: "showLayer"; layerId: string }
-  | { type: "hideLayer"; layerId: string }
-  | { type: "toggleLayer"; layerId: string }
-  | { type: "showGroup"; groupId: string }
-  | { type: "hideGroup"; groupId: string }
-  | { type: "toggleGroup"; groupId: string }
-  | { type: "showChannel"; channel: RenderChannel }
-  | { type: "hideChannel"; channel: RenderChannel }
-  | { type: "toggleChannel"; channel: RenderChannel }
-  | { type: "reset" };
+  | {
+      /** Shows one item. */
+      type: "showItem";
+      /** Item to show. */
+      itemId: string;
+    }
+  | {
+      /** Hides one item. */
+      type: "hideItem";
+      /** Item to hide. */
+      itemId: string;
+    }
+  | {
+      /** Toggles one item. */
+      type: "toggleItem";
+      /** Item to toggle. */
+      itemId: string;
+    }
+  | {
+      /** Shows one layer. */
+      type: "showLayer";
+      /** Layer to show. */
+      layerId: string;
+    }
+  | {
+      /** Hides one layer. */
+      type: "hideLayer";
+      /** Layer to hide. */
+      layerId: string;
+    }
+  | {
+      /** Toggles one layer. */
+      type: "toggleLayer";
+      /** Layer to toggle. */
+      layerId: string;
+    }
+  | {
+      /** Shows one group. */
+      type: "showGroup";
+      /** Group to show. */
+      groupId: string;
+    }
+  | {
+      /** Hides one group and its descendants. */
+      type: "hideGroup";
+      /** Group to hide. */
+      groupId: string;
+    }
+  | {
+      /** Toggles one group. */
+      type: "toggleGroup";
+      /** Group to toggle. */
+      groupId: string;
+    }
+  | {
+      /** Shows one render channel. */
+      type: "showChannel";
+      /** Channel to show. */
+      channel: RenderChannel;
+    }
+  | {
+      /** Hides one render channel. */
+      type: "hideChannel";
+      /** Channel to hide. */
+      channel: RenderChannel;
+    }
+  | {
+      /** Toggles one render channel. */
+      type: "toggleChannel";
+      /** Channel to toggle. */
+      channel: RenderChannel;
+    }
+  | {
+      /** Restores the empty visibility state. */
+      type: "reset";
+    };
 
-/** Options for a serializable visibility preset. */
+/**
+ * Options for a serializable visibility preset.
+ * @public
+ */
 export interface VisibilityPresetOptions {
   /** Group IDs to hide. */
   hideGroupIds?: string[];
@@ -142,7 +220,10 @@ function evaluate(
   return { visible: true, reason: "visible" };
 }
 
-/** Returns one item's effective visibility. */
+/**
+ * Returns one item's effective visibility.
+ * @public
+ */
 export function getEffectiveVisibility(
   itemId: string,
   context: VisibilityContext,
@@ -153,7 +234,10 @@ export function getEffectiveVisibility(
   return evaluate(item, context, ancestry);
 }
 
-/** Resolves visibility for every item in the model. */
+/**
+ * Resolves visibility for every item in the model.
+ * @public
+ */
 export function resolveItemVisibility(
   context: VisibilityContext,
 ): ReadonlyMap<string, EffectiveVisibility> {
@@ -161,18 +245,27 @@ export function resolveItemVisibility(
   return new Map(context.model.items.map((item) => [item.id, evaluate(item, context, ancestry)]));
 }
 
-/** Returns the effectively visible items, in model order. */
+/**
+ * Returns the effectively visible items, in model order.
+ * @public
+ */
 export function visibleItems(context: VisibilityContext): PlannerItem[] {
   const ancestry = buildAncestry(context.model);
   return context.model.items.filter((item) => evaluate(item, context, ancestry).visible);
 }
 
-/** Counts effectively visible items. */
+/**
+ * Counts effectively visible items.
+ * @public
+ */
 export function countVisibleItems(context: VisibilityContext): number {
   return visibleItems(context).length;
 }
 
-/** Returns whether a layer is hidden by its group, itself or its channel. */
+/**
+ * Returns whether a layer is hidden by its group, itself or its channel.
+ * @public
+ */
 export function isLayerEffectivelyHidden(layerId: string, context: VisibilityContext): boolean {
   const ancestry = buildAncestry(context.model);
   const layer = ancestry.layerById.get(layerId);
@@ -184,7 +277,10 @@ export function isLayerEffectivelyHidden(layerId: string, context: VisibilityCon
   return context.visibility.hiddenChannels?.includes(layer.channel) ?? false;
 }
 
-/** Returns a layer's render channel, if the layer exists. */
+/**
+ * Returns a layer's render channel, if the layer exists.
+ * @public
+ */
 export function getLayerChannel(
   layerId: string,
   context: VisibilityContext,
@@ -192,7 +288,10 @@ export function getLayerChannel(
   return context.model.layers.find((entry) => entry.id === layerId)?.channel;
 }
 
-/** Returns a group's tri-state visibility. */
+/**
+ * Returns a group's tri-state visibility.
+ * @public
+ */
 export function getGroupVisibility(
   groupId: string,
   context: VisibilityContext,
@@ -229,7 +328,10 @@ function unique<T>(values: T[]): T[] {
   return [...new Set(values)];
 }
 
-/** Creates an empty visibility preset with every list present. */
+/**
+ * Creates an empty visibility preset with every list present.
+ * @public
+ */
 export function createVisibilityPreset(options: VisibilityPresetOptions = {}): VisibilityState {
   return {
     hiddenGroupIds: unique(options.hideGroupIds ?? []),
@@ -239,7 +341,10 @@ export function createVisibilityPreset(options: VisibilityPresetOptions = {}): V
   };
 }
 
-/** Seeds visibility from `defaultVisible: false` and merges a preset. */
+/**
+ * Seeds visibility from `defaultVisible: false` and merges a preset.
+ * @public
+ */
 export function createInitialVisibility(
   model: PlannerModel,
   preset: VisibilityPresetOptions = {},
@@ -266,7 +371,10 @@ function toggle<T>(list: T[], id: T, visible: boolean): T[] {
   return visible ? unique([...list, id]) : list.filter((entry) => entry !== id);
 }
 
-/** Applies a visibility action without mutating the input state. */
+/**
+ * Applies a visibility action without mutating the input state.
+ * @public
+ */
 export function visibilityReducer(
   context: VisibilityContext,
   state: VisibilityState,
@@ -330,7 +438,10 @@ export function visibilityReducer(
   }
 }
 
-/** Serializes visibility with sorted, deduplicated lists. */
+/**
+ * Serializes visibility with sorted, deduplicated lists.
+ * @public
+ */
 export function serializeVisibility(state: VisibilityState): string {
   return JSON.stringify({
     hiddenGroupIds: unique(state.hiddenGroupIds).sort(),

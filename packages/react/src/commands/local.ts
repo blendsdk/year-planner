@@ -14,12 +14,18 @@ import type { LocalCommandResult } from "./types.js";
 
 let fallbackCounter = 0;
 
-/** Returns a stable new item ID from the host factory or a UUID/fallback. */
+/**
+ * Returns a stable new item ID from the host factory or a UUID/fallback.
+ * @public
+ */
 export function createPlannerId(interaction?: { createId?: () => string }): string {
   return interaction?.createId?.() ?? defaultId();
 }
 
-/** Returns a UUID when available, otherwise a monotonic fallback. */
+/**
+ * Returns a UUID when available, otherwise a monotonic fallback.
+ * @public
+ */
 export function defaultId(): string {
   const cryptoObject = globalThis.crypto;
   if (cryptoObject && typeof cryptoObject.randomUUID === "function") {
@@ -29,29 +35,44 @@ export function defaultId(): string {
   return `yp-${fallbackCounter}`;
 }
 
-/** Returns the item IDs a command must lock while it is pending. */
+/**
+ * Returns the item IDs a command must lock while it is pending.
+ * @public
+ */
 export function commandItemIds(command: PlannerCommand): string[] {
   if (command.type === "create") return [command.item.id];
   if (command.type === "paint") return Object.keys(command.expectedVersions);
   return [command.itemId];
 }
 
-/** Returns true for a half-open all-day period. */
+/**
+ * Returns true for a half-open all-day period.
+ * @public
+ */
 export function isAllDay(period: PlannerPeriod): period is PlannerPeriod & { kind: "all-day" } {
   return period.kind === "all-day";
 }
 
-/** Returns true when the period passes the core date/range validation. */
+/**
+ * Returns true when the period passes the core date/range validation.
+ * @public
+ */
 export function isValidPeriod(period: PlannerPeriod): boolean {
   if (period.kind === "all-day") return validateAllDayPeriod(period).length === 0;
   if (period.kind === "timed") return validateTimedPeriod(period).length === 0;
   return false;
 }
 
-/** Item kinds accepted by a create command. */
+/**
+ * Item kinds accepted by a create command.
+ * @public
+ */
 export const ITEM_KINDS = ["highlight", "activity", "reservation", "annotation"] as const;
 
-/** Finds a layer in a model. */
+/**
+ * Finds a layer in a model.
+ * @public
+ */
 export function layerFor(
   model: { layers: PlannerLayer[] },
   layerId: string | undefined,
@@ -64,6 +85,7 @@ export function layerFor(
  *
  * Unaffected items keep their position. Removed IDs disappear; updated items
  * replace the source at its position, and new items append.
+ * @public
  */
 export function applyHostOutcome(items: PlannerItem[], outcome: CommandOutcome): PlannerItem[] {
   if (!outcome.accepted) return items;
@@ -93,6 +115,7 @@ export function applyHostOutcome(items: PlannerItem[], outcome: CommandOutcome):
  * This is the single reducer used by no-host mode, accepted uncontrolled host
  * responses and the pure paint/erase path. It returns `undefined` when the
  * command cannot be applied (unknown item/layer or a failed paint).
+ * @public
  */
 export function localCommandItems(
   state: PlannerState,

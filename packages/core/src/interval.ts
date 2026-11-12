@@ -1,12 +1,20 @@
 import { compareDateKeys, maxDate, minDate } from "./date.js";
 
-/** A date-only half-open interval. */
+/**
+ * A date-only half-open interval.
+ * @public
+ */
 export interface DateInterval {
+  /** First date in the interval; the date is included. */
   startDate: string;
+  /** Exclusive end date; the interval stops before this date. */
   endDateExclusive: string;
 }
 
-/** Returns whether two half-open intervals overlap. */
+/**
+ * Returns whether two half-open intervals overlap.
+ * @public
+ */
 export function overlaps(a: DateInterval, b: DateInterval): boolean {
   return (
     compareDateKeys(a.startDate, b.endDateExclusive) < 0 &&
@@ -14,7 +22,10 @@ export function overlaps(a: DateInterval, b: DateInterval): boolean {
   );
 }
 
-/** Returns the intersection of two half-open intervals, or null. */
+/**
+ * Returns the intersection of two half-open intervals, or null.
+ * @public
+ */
 export function intersect(a: DateInterval, b: DateInterval): DateInterval | null {
   if (!overlaps(a, b)) return null;
   const startDate = maxDate(a.startDate, b.startDate);
@@ -22,7 +33,10 @@ export function intersect(a: DateInterval, b: DateInterval): DateInterval | null
   return compareDateKeys(startDate, endDateExclusive) < 0 ? { startDate, endDateExclusive } : null;
 }
 
-/** Returns the union of two intervals, merging overlaps but not touches. */
+/**
+ * Returns the union of two intervals, merging overlaps but not touches.
+ * @public
+ */
 export function union(a: DateInterval, b: DateInterval): DateInterval[] {
   if (overlaps(a, b)) {
     return [
@@ -35,7 +49,10 @@ export function union(a: DateInterval, b: DateInterval): DateInterval[] {
   return [a, b];
 }
 
-/** Subtracts `b` from `a`, returning 0, 1 or 2 residual intervals. */
+/**
+ * Subtracts `b` from `a`, returning 0, 1 or 2 residual intervals.
+ * @public
+ */
 export function subtract(a: DateInterval, b: DateInterval): DateInterval[] {
   if (!overlaps(a, b)) return [a];
   const result: DateInterval[] = [];
@@ -48,7 +65,10 @@ export function subtract(a: DateInterval, b: DateInterval): DateInterval[] {
   return result;
 }
 
-/** Merges overlapping (and optionally touching) intervals into a normalized set. */
+/**
+ * Merges overlapping (and optionally touching) intervals into a normalized set.
+ * @public
+ */
 export function mergeAdjacent(periods: DateInterval[], mergeTouching: boolean): DateInterval[] {
   if (periods.length === 0) return [];
   const sorted = [...periods].sort((a, b) => compareDateKeys(a.startDate, b.startDate));
@@ -71,12 +91,18 @@ export function mergeAdjacent(periods: DateInterval[], mergeTouching: boolean): 
   return result;
 }
 
-/** Normalizes a set of intervals, merging overlaps and optionally touches. */
+/**
+ * Normalizes a set of intervals, merging overlaps and optionally touches.
+ * @public
+ */
 export function normalize(periods: DateInterval[], mergeTouching = false): DateInterval[] {
   return mergeAdjacent(periods, mergeTouching);
 }
 
-/** Returns whether a date is inside `[start, endExclusive)`. */
+/**
+ * Returns whether a date is inside `[start, endExclusive)`.
+ * @public
+ */
 export function contains(period: DateInterval, date: string): boolean {
   return (
     compareDateKeys(period.startDate, date) <= 0 &&
@@ -84,7 +110,10 @@ export function contains(period: DateInterval, date: string): boolean {
   );
 }
 
-/** Splits an interval at a date boundary, returning 1 or 2 intervals. */
+/**
+ * Splits an interval at a date boundary, returning 1 or 2 intervals.
+ * @public
+ */
 export function splitAtDateBoundary(period: DateInterval, date: string): DateInterval[] {
   if (
     compareDateKeys(date, period.startDate) <= 0 ||

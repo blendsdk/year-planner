@@ -1,9 +1,15 @@
 import type { PlannerPeriod } from "./period.js";
 
-/** A stable diagnostic emitted by the pure core. */
+/**
+ * A stable diagnostic emitted by the pure core.
+ * @public
+ */
 export type DiagnosticLevel = "error" | "warning" | "info";
 
-/** A stable diagnostic code. */
+/**
+ * A stable diagnostic code.
+ * @public
+ */
 export type DiagnosticCode =
   | "INVALID_DATE"
   | "UNSUPPORTED_YEAR"
@@ -93,25 +99,43 @@ const DIAGNOSTIC_CODES: readonly DiagnosticCode[] = [
 
 const DIAGNOSTIC_CODE_SET: ReadonlySet<string> = new Set(DIAGNOSTIC_CODES);
 
-/** Returns true when a runtime value is a known diagnostic code. */
+/**
+ * Returns true when a runtime value is a known diagnostic code.
+ * @public
+ */
 export function isDiagnosticCode(value: unknown): value is DiagnosticCode {
   return typeof value === "string" && DIAGNOSTIC_CODE_SET.has(value);
 }
 
-/** A typed diagnostic. */
+/**
+ * A typed diagnostic.
+ * @public
+ */
 export interface Diagnostic {
+  /** Stable diagnostic code used for programmatic handling. */
   code: DiagnosticCode;
+  /** Severity used by the inspector and host diagnostics. */
   level: DiagnosticLevel;
+  /** Human-readable message shown to end users. */
   message: string;
+  /** Item IDs the diagnostic refers to, when known. */
   itemIds?: string[];
+  /** Resource IDs the diagnostic refers to, when known. */
   resourceIds?: string[];
+  /** Periods the diagnostic refers to, when known. */
   periods?: PlannerPeriod[];
 }
 
-/** Builds a diagnostic with the default error level. */
+/**
+ * Builds a diagnostic with the default error level.
+ * @public
+ */
 export function diagnostic(
+  /** Stable diagnostic code used for programmatic handling. */
   code: DiagnosticCode,
+  /** Human-readable message shown to end users. */
   message: string,
+  /** Severity used by the inspector and host diagnostics. */
   level: DiagnosticLevel = "error",
 ): Diagnostic {
   return { code, level, message };

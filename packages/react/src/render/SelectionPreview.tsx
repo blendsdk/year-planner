@@ -2,10 +2,16 @@ import type { MonthRowLayout, SelectionDateRange } from "@blendsdk/year-planner-
 import type { CSSProperties, ReactNode } from "react";
 import { projectPreviewRangesForRow } from "../interaction/preview.js";
 
-/** Preview layer variants rendered by a month row. */
+/**
+ * Preview layer variants rendered by a month row.
+ * @public
+ */
 export type PreviewVariant = "selection" | "selection-preview" | "gesture-preview";
 
-/** Props for one row's selection or gesture preview layer. */
+/**
+ * Props for one row's selection or gesture preview layer.
+ * @public
+ */
 export interface SelectionPreviewProps {
   ranges: readonly SelectionDateRange[];
   row: MonthRowLayout;
@@ -26,6 +32,7 @@ export interface SelectionPreviewProps {
  *
  * Previews are decorative and never intercept pointer events; the planner-owned
  * cells and proxies remain the hit surface.
+ * @public
  */
 export function SelectionPreview({
   ranges,

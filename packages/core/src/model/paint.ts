@@ -6,7 +6,10 @@ import { structuralEqual } from "./equality.js";
 import type { PlannerAnnotationStyle, PlannerItem, PlannerLayer } from "./types.js";
 import { getEffectiveVisibility, isLayerEffectivelyHidden } from "./visibility.js";
 
-/** Defaults used when paint creates or merges a highlight. */
+/**
+ * Defaults used when paint creates or merges a highlight.
+ * @public
+ */
 export interface PaintDefaults {
   /** Paint always creates highlight items. */
   kind: "highlight";
@@ -28,7 +31,10 @@ export interface PaintDefaults {
   annotation?: PlannerAnnotationStyle;
 }
 
-/** Everything needed to run a paint or erase operation. */
+/**
+ * Everything needed to run a paint or erase operation.
+ * @public
+ */
 export interface PaintContext extends EditabilityContext {
   /** Layer that accepts the paint or erase. */
   activeLayerId: string;
@@ -38,7 +44,10 @@ export interface PaintContext extends EditabilityContext {
   expectedVersions?: Record<string, number>;
 }
 
-/** Result of a paint or erase operation. */
+/**
+ * Result of a paint or erase operation.
+ * @public
+ */
 export interface PaintResult {
   /** True when the operation was applied. */
   ok: boolean;
@@ -209,7 +218,10 @@ function prepare(
   return { ok: true, affected };
 }
 
-/** Applies a paint-union operation over an all-day range. */
+/**
+ * Applies a paint-union operation over an all-day range.
+ * @public
+ */
 export function paintItems(
   context: PaintContext,
   layerId: string,
@@ -233,7 +245,10 @@ export function paintItems(
   };
 }
 
-/** Applies an erase operation over an all-day range. */
+/**
+ * Applies an erase operation over an all-day range.
+ * @public
+ */
 export function eraseItems(
   context: PaintContext,
   layerId: string,

@@ -6,6 +6,7 @@ import type { DateKey, MonthRowLayout, YearLayout } from "@blendsdk/year-planner
  * @param layout - Built classic year layout.
  * @param date - ISO date key.
  * @returns The containing row, or `undefined` outside the window.
+ * @public
  */
 export function rowForDate(layout: YearLayout, date: DateKey): MonthRowLayout | undefined {
   return layout.rows.find((row) => date >= row.firstDate && date < row.endDateExclusive);
@@ -22,6 +23,7 @@ export function rowForDate(layout: YearLayout, date: DateKey): MonthRowLayout | 
  * @param edge - `start` for Home, `end` for End.
  * @param isDisabled - Host disabled-date predicate.
  * @returns The edge date, or `undefined` when the row has no enabled date.
+ * @public
  */
 export function rowEdgeDate(
   layout: YearLayout,

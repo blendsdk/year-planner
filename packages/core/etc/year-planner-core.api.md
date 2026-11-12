@@ -15,11 +15,8 @@ export function addDays(date: DateKey, days: number): DateKey;
 
 // @public
 export interface AllDayPeriod {
-    // (undocumented)
     endDateExclusive: string;
-    // (undocumented)
     kind: "all-day";
-    // (undocumented)
     startDate: string;
 }
 
@@ -47,14 +44,11 @@ export function clampToRow(row: MonthRowLayout, date: string): string;
 
 // @public
 export interface ClassicYearLayoutOptions {
-    // (undocumented)
     contextMonths?: {
         before: number;
         after: number;
     };
-    // (undocumented)
     highlightYear?: number;
-    // (undocumented)
     range?: {
         start: {
             year: number;
@@ -62,13 +56,11 @@ export interface ClassicYearLayoutOptions {
         };
         monthCount: number;
     };
-    // (undocumented)
     units?: Partial<ClassicYearUnits>;
-    // (undocumented)
     year?: number;
 }
 
-// @public (undocumented)
+// @public
 export type ClassicYearLayoutResult = {
     ok: true;
     layout: YearLayout;
@@ -79,15 +71,10 @@ export type ClassicYearLayoutResult = {
 
 // @public
 export interface ClassicYearUnits {
-    // (undocumented)
     headerHeight: number;
-    // (undocumented)
     monthBand: number;
-    // (undocumented)
     rowHeight: number;
-    // (undocumented)
     weekday: number;
-    // (undocumented)
     weekend: number;
 }
 
@@ -129,16 +116,14 @@ export function createVisibilityPreset(options?: VisibilityPresetOptions): Visib
 
 // @public
 export interface DateInterval {
-    // (undocumented)
     endDateExclusive: string;
-    // (undocumented)
     startDate: string;
 }
 
 // @public
 export type DateKey = string;
 
-// @public (undocumented)
+// @public
 export type DateParseResult = {
     ok: true;
     date: DateKey;
@@ -152,17 +137,11 @@ export function dateToColumn(row: MonthRowLayout, date: string): number;
 
 // @public
 export interface DayColumnLayout {
-    // (undocumented)
     columnIndex: number;
-    // (undocumented)
     date?: string;
-    // (undocumented)
     isContextMonth: boolean;
-    // (undocumented)
     isWeekend: boolean;
-    // (undocumented)
     width: number;
-    // (undocumented)
     x: number;
 }
 
@@ -174,22 +153,19 @@ export function daysInMonth(year: number, month: number): number;
 
 // @public
 export interface Diagnostic {
-    // (undocumented)
     code: DiagnosticCode;
-    // (undocumented)
     itemIds?: string[];
-    // (undocumented)
     level: DiagnosticLevel;
-    // (undocumented)
     message: string;
-    // (undocumented)
     periods?: PlannerPeriod[];
-    // (undocumented)
     resourceIds?: string[];
 }
 
 // @public
-export function diagnostic(code: DiagnosticCode, message: string, level?: DiagnosticLevel): Diagnostic;
+export function diagnostic(
+code: DiagnosticCode,
+message: string,
+level?: DiagnosticLevel): Diagnostic;
 
 // @public
 export type DiagnosticCode = "INVALID_DATE" | "UNSUPPORTED_YEAR" | "INVALID_RANGE" | "INVALID_INSTANT" | "INVALID_TIMEZONE" | "TIMED_PROJECTION_FAILED" | "INVALID_MONTH" | "INVALID_MONTH_COUNT" | "INVALID_CONTEXT_MONTHS" | "UNSUPPORTED_VIEW_YEAR" | "MISSING_RANGE" | "DUPLICATE_ID" | "UNKNOWN_REFERENCE" | "GROUP_CYCLE" | "INVALID_GROUP" | "INVALID_ITEM" | "INVALID_VERSION" | "INVALID_ANNOTATION" | "INVALID_STYLE" | "INVALID_LAYER" | "INVALID_RESOURCE" | "NOT_EDITABLE" | "INVALID_PAINT_TARGET" | "INVALID_PAINT_CHANNEL" | "STALE_VERSION" | "INVALID_PRINT_OPTIONS" | "PRINT_FIT_TOO_SMALL" | "READ_ONLY" | "CONFIRMATION_UNAVAILABLE" | "COMMAND_TIMEOUT" | "COMMAND_ABORTED" | "ACCEPTED_NOT_APPLIED" | "CAPACITY_EXCEEDED" | "HOST_REJECTED" | "VALIDATION_ERROR" | "STALE_REVISION" | "UNDO_UNAVAILABLE" | "INVALID_COMMAND" | "INVALID_LOCALE" | "TIMED_EDITING_UNSUPPORTED" | "INVALID_RENDERER_OPTION";
@@ -344,33 +320,21 @@ export function minDate(a: DateKey, b: DateKey): DateKey;
 
 // @public
 export interface MonthRowLayout {
-    // (undocumented)
     columns: DayColumnLayout[];
-    // (undocumented)
     daysInMonth: number;
-    // (undocumented)
     endDateExclusive: string;
-    // (undocumented)
     firstColumn: number;
-    // (undocumented)
     firstDate: string;
-    // (undocumented)
     height: number;
-    // (undocumented)
     kind: "context" | "current";
-    // (undocumented)
     monthIndex: number;
-    // (undocumented)
     prefixWidths: number[];
-    // (undocumented)
     rowId: string;
-    // (undocumented)
     rowIndex: number;
-    // (undocumented)
     year: number;
 }
 
-// @public (undocumented)
+// @public
 export const MS_PER_DAY = 86400000;
 
 // @public
@@ -732,13 +696,9 @@ export function subtractDays(date: DateKey, days: number): DateKey;
 
 // @public
 export interface TimedPeriod {
-    // (undocumented)
     endExclusive: InstantISO;
-    // (undocumented)
     kind: "timed";
-    // (undocumented)
     start: InstantISO;
-    // (undocumented)
     timeZone: string;
 }
 
@@ -846,23 +806,14 @@ export function visibleItems(context: VisibilityContext): PlannerItem[];
 
 // @public
 export interface YearLayout {
-    // (undocumented)
     bodyHeight: number;
-    // (undocumented)
     footerHeight: number;
-    // (undocumented)
     headerHeight: number;
-    // (undocumented)
     highlightYear: number;
-    // (undocumented)
     monthBandWidth: number;
-    // (undocumented)
     rowHeight: number;
-    // (undocumented)
     rows: MonthRowLayout[];
-    // (undocumented)
     signature: string;
-    // (undocumented)
     totalDayWidth: number;
 }
 

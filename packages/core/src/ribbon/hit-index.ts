@@ -1,6 +1,9 @@
 import type { RibbonLayout } from "./types.js";
 
-/** One fragment's absolute hit bounds. */
+/**
+ * One fragment's absolute hit bounds.
+ * @public
+ */
 export interface RibbonHitEntry {
   /** Fragment identity. */
   fragmentId: string;
@@ -18,7 +21,10 @@ export interface RibbonHitEntry {
   height: number;
 }
 
-/** Lookup tables for fragment and item hit-testing. */
+/**
+ * Lookup tables for fragment and item hit-testing.
+ * @public
+ */
 export interface RibbonHitIndex {
   /** Entries sorted by y, lane and x. */
   entries: RibbonHitEntry[];
@@ -36,6 +42,7 @@ export interface RibbonHitIndex {
  *
  * @param ribbon - Ribbon output from `buildRibbonLayout`.
  * @returns Entries plus fragment and item lookup maps.
+ * @public
  */
 export function createRibbonHitIndex(ribbon: RibbonLayout): RibbonHitIndex {
   const rows = new Map(ribbon.rows.map((row) => [row.rowId, row]));
@@ -81,6 +88,7 @@ export function createRibbonHitIndex(ribbon: RibbonLayout): RibbonHitIndex {
  * @param x - Day-plane x coordinate.
  * @param y - Absolute y coordinate.
  * @returns The matching entry, or `undefined`.
+ * @public
  */
 export function hitTestRibbon(
   index: RibbonHitIndex,

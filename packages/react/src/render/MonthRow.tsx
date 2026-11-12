@@ -17,7 +17,10 @@ import type {
 import { CellLayer } from "./CellLayer.js";
 import { SelectionPreview } from "./SelectionPreview.js";
 
-/** Props for one interactive month row. */
+/**
+ * Props for one interactive month row.
+ * @public
+ */
 export interface MonthRowProps {
   row: MonthRowLayout;
   ribbonRow: RibbonRow;
@@ -77,6 +80,7 @@ function monthRowPropsEqual(previous: MonthRowProps, next: MonthRowProps): boole
  * Renders one month row with bands, date cells and selection previews. Item
  * fragments live in the overlay sibling so the ARIA row owns only grid cells.
  * Rows whose previews did not change skip rendering during a gesture.
+ * @public
  */
 export const MonthRow = memo(function MonthRow({
   row,

@@ -1,13 +1,22 @@
 import type { Diagnostic } from "../diagnostics.js";
 import type { PlannerPeriod } from "../period.js";
 
-/** The render plane a layer belongs to. */
+/**
+ * The render plane a layer belongs to.
+ * @public
+ */
 export type RenderChannel = "background" | "highlight" | "ribbon" | "annotation" | "foreground";
 
-/** The semantic kind of a planner item. */
+/**
+ * The semantic kind of a planner item.
+ * @public
+ */
 export type ItemKind = "highlight" | "activity" | "reservation" | "annotation";
 
-/** The global interaction mode. */
+/**
+ * The global interaction mode.
+ * @public
+ */
 export type InteractionMode =
   | "inspect"
   | "select"
@@ -18,7 +27,10 @@ export type InteractionMode =
   | "resize"
   | "auto";
 
-/** Per-action edit permissions for a layer or group. */
+/**
+ * Per-action edit permissions for a layer or group.
+ * @public
+ */
 export interface LayerPolicy {
   /** Whether items may be moved. */
   allowMove?: boolean;
@@ -32,7 +44,10 @@ export interface LayerPolicy {
   allowDelete?: boolean;
 }
 
-/** A named group of layers, optionally nested under another group. */
+/**
+ * A named group of layers, optionally nested under another group.
+ * @public
+ */
 export interface LayerGroup {
   /** Stable group identifier, unique among groups. */
   id: string;
@@ -46,7 +61,10 @@ export interface LayerGroup {
   policy?: LayerPolicy;
 }
 
-/** A visual layer on one render channel. */
+/**
+ * A visual layer on one render channel.
+ * @public
+ */
 export interface PlannerLayer {
   /** Stable layer identifier, unique among layers. */
   id: string;
@@ -78,7 +96,10 @@ export interface PlannerLayer {
   pattern?: "solid" | "hatch" | "dots";
 }
 
-/** A resource reference attached to an item. */
+/**
+ * A resource reference attached to an item.
+ * @public
+ */
 export interface Assignment {
   /** Identifier of the referenced resource. */
   resourceId: string;
@@ -88,7 +109,10 @@ export interface Assignment {
   quantity?: number;
 }
 
-/** A bookable resource. R1 has no capacity engine. */
+/**
+ * A bookable resource. R1 has no capacity engine.
+ * @public
+ */
 export interface Resource {
   /** Stable resource identifier, unique among resources. */
   id: string;
@@ -97,12 +121,20 @@ export interface Resource {
   /** Host-defined resource type, such as `person` or `room`. */
   type: string;
   /** Optional host-owned capacity metadata. */
-  capacity?: { quantity: number; unit: string };
+  capacity?: {
+    /** Optional capacity quantity. */
+    quantity: number;
+    /** Host-defined capacity unit, such as `seats`. */
+    unit: string;
+  };
   /** Optional IANA time zone for the resource. */
   timeZone?: string;
 }
 
-/** Optional annotation presentation data. */
+/**
+ * Optional annotation presentation data.
+ * @public
+ */
 export interface PlannerAnnotationStyle {
   /** Short badge label, such as `OH`. */
   label?: string;
@@ -112,7 +144,10 @@ export interface PlannerAnnotationStyle {
   priority?: number;
 }
 
-/** One canonical planner item. */
+/**
+ * One canonical planner item.
+ * @public
+ */
 export interface PlannerItem {
   /** Stable item identifier, unique among items and annotations. */
   id: string;
@@ -148,7 +183,10 @@ export interface PlannerItem {
   metadata?: unknown;
 }
 
-/** Host-side item filter. */
+/**
+ * Host-side item filter.
+ * @public
+ */
 export interface PlannerFilter {
   /** Allowlist of layer IDs; empty or absent means all layers. */
   layerIds?: string[];
@@ -160,7 +198,10 @@ export interface PlannerFilter {
   search?: string;
 }
 
-/** Serialized visibility flags. Hidden always wins over local show. */
+/**
+ * Serialized visibility flags. Hidden always wins over local show.
+ * @public
+ */
 export interface VisibilityState {
   /** IDs of hidden groups; a hidden group hides every descendant. */
   hiddenGroupIds: string[];
@@ -172,7 +213,10 @@ export interface VisibilityState {
   hiddenChannels?: RenderChannel[];
 }
 
-/** The canonical, validated planner model. */
+/**
+ * The canonical, validated planner model.
+ * @public
+ */
 export interface PlannerModel {
   /** Valid layer groups. */
   groups: LayerGroup[];
@@ -184,7 +228,10 @@ export interface PlannerModel {
   resources: Resource[];
 }
 
-/** Raw host input accepted by the validator. */
+/**
+ * Raw host input accepted by the validator.
+ * @public
+ */
 export interface PlannerDataInput {
   /** Items to validate. */
   items?: PlannerItem[];
@@ -198,7 +245,10 @@ export interface PlannerDataInput {
   annotations?: PlannerItem[];
 }
 
-/** Result of validating host data. The model never contains invalid entities. */
+/**
+ * Result of validating host data. The model never contains invalid entities.
+ * @public
+ */
 export interface PlannerDataValidation {
   /** True when no error-level diagnostic was produced. */
   ok: boolean;
@@ -208,7 +258,10 @@ export interface PlannerDataValidation {
   diagnostics: Diagnostic[];
 }
 
-/** Options for validating planner data. */
+/**
+ * Options for validating planner data.
+ * @public
+ */
 export interface ValidatePlannerDataOptions {
   /** IANA zone used to validate and project timed periods; defaults to UTC. */
   displayTimeZone?: string;

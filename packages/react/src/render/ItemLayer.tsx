@@ -26,7 +26,10 @@ import type {
 } from "../types.js";
 import { Tooltip, type TooltipState } from "./Tooltip.js";
 
-/** Props for the item/fragment layer of one month row. */
+/**
+ * Props for the item/fragment layer of one month row.
+ * @public
+ */
 export interface ItemLayerProps {
   row: RibbonRow;
   layers: ReadonlyMap<string, PlannerLayer>;
@@ -71,6 +74,7 @@ function itemLabel(item: PlannerItem): string {
  * Backdrop channels never take focus or pointer events. Ribbon, annotation and
  * foreground fragments expose a focusable proxy; ribbon and foreground
  * fragments also expose sibling resize handles.
+ * @public
  */
 export const ItemLayer = memo(function ItemLayer({
   row,

@@ -2,7 +2,10 @@ import type { DateKey } from "../date.js";
 import type { PlannerItem, RenderChannel } from "../model/types.js";
 import type { PlannerPeriod } from "../period.js";
 
-/** One item fragment clipped to a month row. */
+/**
+ * One item fragment clipped to a month row.
+ * @public
+ */
 export interface RibbonFragment {
   /** Stable identity within one ribbon layout. */
   fragmentId: string;
@@ -40,7 +43,10 @@ export interface RibbonFragment {
   channel: RenderChannel;
 }
 
-/** One item represented in a compact overflow list. */
+/**
+ * One item represented in a compact overflow list.
+ * @public
+ */
 export interface RibbonOverflowEntry {
   /** Canonical item identity. */
   itemId: string;
@@ -50,7 +56,10 @@ export interface RibbonOverflowEntry {
   period: PlannerPeriod;
 }
 
-/** One month row with its fragments and lane metrics. */
+/**
+ * One month row with its fragments and lane metrics.
+ * @public
+ */
 export interface RibbonRow {
   /** Month row identity. */
   rowId: string;
@@ -72,7 +81,10 @@ export interface RibbonRow {
   fragments: RibbonFragment[];
 }
 
-/** Renderer-agnostic ribbon output for a whole year layout. */
+/**
+ * Renderer-agnostic ribbon output for a whole year layout.
+ * @public
+ */
 export interface RibbonLayout {
   /** Month rows in layout order. */
   rows: RibbonRow[];
@@ -102,7 +114,10 @@ export interface RibbonLayout {
   signature: string;
 }
 
-/** Options for building ribbons. */
+/**
+ * Options for building ribbons.
+ * @public
+ */
 export interface RibbonOptions {
   /** Compact or expanded lane visibility; defaults to compact. */
   density?: "compact" | "expanded";
@@ -116,7 +131,10 @@ export interface RibbonOptions {
   displayTimeZone?: string;
 }
 
-/** Internal candidate used by the lane allocator. */
+/**
+ * Internal candidate used by the lane allocator.
+ * @public
+ */
 export interface LaneCandidate {
   /** Fragment being placed. */
   fragment: RibbonFragment;

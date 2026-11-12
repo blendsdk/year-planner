@@ -87,6 +87,12 @@ function isKnownDate(layout: { rows: { columns: { date?: string }[] }[] }, date:
  * Controlled props win over defaults. Pointer, keyboard and touch gestures,
  * the inspector and the imperative handle all use the shared request pipeline;
  * rollback and stale-response handling belong to the command lifecycle slice.
+ *
+ * @example
+ * ```tsx
+ * <YearPlanner year={2027} items={items} layers={layers} activeLayerId="bookings" />
+ * ```
+ * @public
  */
 export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
   function YearPlanner(props, ref) {

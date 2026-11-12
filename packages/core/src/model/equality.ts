@@ -15,6 +15,7 @@
  * ```ts
  * structuralEqual({ a: 1, b: [2] }, { b: [2], a: 1 }); // true
  * ```
+ * @public
  */
 export function structuralEqual(left: unknown, right: unknown): boolean {
   if (Object.is(left, right)) return true;
@@ -28,7 +29,10 @@ export function structuralEqual(left: unknown, right: unknown): boolean {
   return [...keys].every((key) => structuralEqual(left[key], right[key]));
 }
 
-/** Returns whether a value is a plain object. */
+/**
+ * Returns whether a value is a plain object.
+ * @public
+ */
 export function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (typeof value !== "object" || value === null) return false;
   const prototype = Object.getPrototypeOf(value);

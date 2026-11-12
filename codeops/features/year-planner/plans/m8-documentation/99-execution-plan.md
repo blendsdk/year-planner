@@ -64,9 +64,9 @@ add implementation tests, verify.
 **Reference**: [03-01](03-01-guide-set.md) · AR-3–AR-5, AR-13, AR-14, AR-19, AR-26, AR-28, AR-29
 **Objective**: Create the topic pages, split the overloaded guide, add the index, the quickstart, the deferred list and the architecture diagram.
 
-- [ ] 1.2.1 Add the documentation index and fourteen-topic map — `docs/README.md`
-- [ ] 1.2.2 Add getting-started with install, first render, CSS, controlled selection/visibility, print, SSR, Storybook (171-story count) and ESM-only — `docs/getting-started.md`
-- [ ] 1.2.3 Add the controlled-API guide with the four controlled/uncontrolled pairs — `docs/controlled-api.md`
+- [~] 1.2.1 Add the documentation index and fourteen-topic map — `docs/README.md` ⏳ (implemented: 2026-11-12 14:40)
+- [~] 1.2.2 Add getting-started with install, first render, CSS, controlled selection/visibility, print, SSR, Storybook (171-story count) and ESM-only — `docs/getting-started.md` ⏳ (implemented: 2026-11-12 14:42)
+- [~] 1.2.3 Add the controlled-API guide with the four controlled/uncontrolled pairs — `docs/controlled-api.md` ⏳ (implemented: 2026-11-12 14:44)
 - [ ] 1.2.4 Add the visibility guide with group → layer → item → filter → channel precedence — `docs/visibility.md`
 - [ ] 1.2.5 Move the theming section and add Fluent UI v9 and MUI copy-paste examples — `docs/theming.md`
 - [ ] 1.2.6 Move the items/overflow/slots sections and add the holiday recipe — `docs/customization.md`

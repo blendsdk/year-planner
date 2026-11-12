@@ -55,6 +55,9 @@ export declare function readPackageManifests(root: string): {
   react: ReleaseManifest;
 };
 
+/** Lists pending changeset markdown files. */
+export declare function pendingChangesets(root: string): string[];
+
 /** Validates that both packages share one version. */
 export declare function validateVersions(manifests: {
   core: ReleaseManifest;

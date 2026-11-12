@@ -4,6 +4,7 @@ import {
   buildReleaseNotes,
   changelogSection,
   inspectSourceMaps,
+  pendingChangesets,
   validatePackedManifest,
   validatePublishedIntegrity,
   validateSourceMap,
@@ -50,6 +51,10 @@ describe("release manifest helper failure modes", () => {
     expect(inspectSourceMaps("/definitely/missing/directory").join("\n")).toContain(
       "does not exist",
     );
+  });
+
+  it("reports pending changesets", () => {
+    expect(pendingChangesets(new URL("../../", import.meta.url).pathname)).toEqual([]);
   });
 
   it("rejects a published version with different content and accepts an identical one", () => {

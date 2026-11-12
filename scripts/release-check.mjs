@@ -7,6 +7,7 @@ import {
   changelogSection,
   inspectSourceMaps,
   inspectTarball,
+  pendingChangesets,
   readPackageManifests,
   validatePackedManifest,
   validateTarballPaths,
@@ -69,6 +70,10 @@ export function checkRelease(root) {
     if (!changelogSection(readFileSync(join(root, path), "utf8"), manifests[key].version)) {
       errors.push(`${path} has no ## ${manifests[key].version} section`);
     }
+  }
+  const changesets = pendingChangesets(root);
+  if (changesets.length > 0) {
+    errors.push(`pending changesets: ${changesets.join(", ")}; run pnpm version-packages`);
   }
   for (const directory of ["packages/core/dist", "packages/react/dist"]) {
     if (!existsSync(join(root, directory))) errors.push(`${directory} is missing; run pnpm build`);

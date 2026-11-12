@@ -203,6 +203,25 @@ export function readPackageManifests(root) {
 }
 
 /**
+ * Lists pending changeset markdown files.
+ *
+ * A release must be cut from a version commit that already consumed every
+ * changeset; a leftover file would make the next version bump wrong.
+ *
+ * @param root - Repository root.
+ * @returns Pending changeset file names, sorted.
+ * @example
+ * pendingChangesets("/repo") // []
+ */
+export function pendingChangesets(root) {
+  const directory = join(root, ".changeset");
+  if (!existsSync(directory)) return [];
+  return readdirSync(directory)
+    .filter((name) => name.endsWith(".md"))
+    .sort();
+}
+
+/**
  * Validates that both packages share one version and have changelog headings.
  *
  * @param manifests - Result of `readPackageManifests`.

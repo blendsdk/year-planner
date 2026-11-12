@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 20:50
-> **Progress**: 41/55 tasks (75%)
+> **Last Updated**: 2026-11-12 20:55
+> **Progress**: 48/55 tasks (87%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -190,31 +190,31 @@ implementation tests, verify.
 
 ## Phase 4: Release dry run and owner-action evidence
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: f329a5b (Phase 3 end)
 > **Lenses**: correctness, security
 > **Reasoning**: high — this phase proves the real tarballs and records exactly which release steps remain owner-only.
 
 ### Step 4.1: Dry run
 
-- [ ] 4.1.1 Run the full release dry run — `pnpm release:publish --dry-run --allow-dirty`
-- [ ] 4.1.2 Inspect both packed manifests, tarball path lists, source maps and the npm dry-run allowlist — `pnpm release:check`
+- [x] 4.1.1 Run the full release dry run — `pnpm release:publish --dry-run --allow-dirty` ✅ (completed: 2026-11-12 20:55)
+- [x] 4.1.2 Inspect both packed manifests, tarball path lists, source maps and the npm dry-run allowlist — `pnpm release:check` ✅ (completed: 2026-11-12 20:55)
 
 ### Step 4.2: Owner-action evidence
 
-- [ ] 4.2.1 Record the branch-protection 403, missing environment and disabled security settings — `docs/releasing.md`
-- [ ] 4.2.2 Verify the changeset status check behavior — `pnpm changeset status --since=origin/main`
-- [ ] 4.2.3 Verify the registry smoke script shape without publishing — `bash -n scripts/clean-consumer.sh`
+- [x] 4.2.1 Record the branch-protection 403, missing environment and disabled security settings — `docs/releasing.md` ✅ (completed: 2026-11-12 20:55)
+- [x] 4.2.2 Verify the changeset status check behavior — `pnpm changeset status --since=origin/main` ✅ (completed: 2026-11-12 20:55)
+- [x] 4.2.3 Verify the registry smoke script shape without publishing — `bash -n scripts/clean-consumer.sh` ✅ (completed: 2026-11-12 20:55)
 
 ### Step 4.3: Verify
 
-- [ ] 4.3.1 Run the fast gate — `pnpm verify`
-- [ ] 4.3.2 Confirm no upload or visibility change occurred — `git status --short`, `gh repo view`
+- [x] 4.3.1 Run the fast gate — `pnpm verify` ✅ (completed: 2026-11-12 20:55)
+- [x] 4.3.2 Confirm no upload or visibility change occurred — `git status --short`, `gh repo view` ✅ (completed: 2026-11-12 20:55)
 
 **Deliverables**:
-- [ ] Dry-run tarball evidence with no upload
-- [ ] Recorded owner-only release actions
-- [ ] Fast gate passing
-- [ ] No repository visibility or registry change
+- [x] Dry-run tarball evidence with no upload
+- [x] Recorded owner-only release actions
+- [x] Fast gate passing
+- [x] No repository visibility or registry change
 
 **Test slices**: `verification` (task)
 **Task verify**: `pnpm verify` (full gate)

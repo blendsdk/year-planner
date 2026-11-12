@@ -111,6 +111,23 @@ third-party runtime code, so no package ships it.
 - Record the incident in `docs/test-report.md` when it affects published
   behavior.
 
+## Current owner-action state (2026-11-12)
+
+The implementation environment has no npm credentials and the repository is
+private. These are the verified states to re-check at release time:
+
+| Item | Current state |
+| ---- | ------------- |
+| Repository visibility | private |
+| Branch protection | unavailable (HTTP 403 on the current plan) |
+| `npm-production` environment | not created |
+| Private vulnerability reporting | not enabled |
+| Dependabot security alerts | disabled |
+| npm authentication | not authenticated |
+
+Run the setup steps above as the maintainer; do not treat the plan's dry-run
+evidence as a live publication.
+
 ## Branch protection
 
 `node scripts/apply-branch-protection.mjs --check` reports the current state.

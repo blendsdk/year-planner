@@ -9,6 +9,7 @@ import {
   changelogSection,
   inspectSourceMaps,
   inspectTarball,
+  pendingChangesets,
   readPackageManifests,
   validatePackedManifest,
   validatePublishedIntegrity,
@@ -238,6 +239,10 @@ function publishGithubRelease(root, version, options) {
 export function release(root, options) {
   requireCleanTree(options);
   const manifests = readPackageManifests(root);
+  const changesets = pendingChangesets(root);
+  if (changesets.length > 0) {
+    throw new Error(`pending changesets: ${changesets.join(", ")}; run pnpm version-packages`);
+  }
   validateRelease(root, manifests);
   let tarballs = options.packs
     ? {
@@ -262,9 +267,13 @@ export function release(root, options) {
     published.push(manifests.react.name);
   }
   publishGithubRelease(root, manifests.core.version, options);
-  console.log(
-    `release ${manifests.core.version}: ${published.length > 0 ? published.join(", ") : "nothing to publish"}`,
-  );
+  if (options.dryRun) {
+    console.log(`release ${manifests.core.version}: dry-run validated core and React`);
+  } else {
+    console.log(
+      `release ${manifests.core.version}: ${published.length > 0 ? published.join(", ") : "nothing to publish"}`,
+    );
+  }
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {

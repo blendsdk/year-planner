@@ -236,3 +236,16 @@
 | RD-11-AC-11 | RD-11 | 11 | proven | `tests/quality/storybook-contract.spec.test.ts` | `RD-11-AC-11: uses the 2017 classic-yellow A3 paginate fixture` | Print story |
 | RD-11-AC-12 | RD-11 | 12 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-12: asset provenance` | Published assets |
 | RD-11-AC-13 | RD-11 | 13 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-13: documentation security` | Synthetic data and examples |
+| RD-12-AC-01 | RD-12 | 1 | proven | `tests/quality/release-metadata.spec.test.ts` | `RD-12-AC-01: lockstep release group` | Fixed group and identical 0.2.0 version |
+| RD-12-AC-02 | RD-12 | 2 | partial |  |  | Workflow and pack path proven; first OIDC publish is release-time |
+| RD-12-AC-03 | RD-12 | 3 | proven | `tests/quality/release-pack.spec.test.ts` | `RD-12-AC-03: exact internal dependency` | Packed manifest pins the exact core version |
+| RD-12-AC-04 | RD-12 | 4 | partial |  |  | Registry smoke script proven; live npm install is release-time |
+| RD-12-AC-05 | RD-12 | 5 | partial |  |  | Release-notes builder proven; live GitHub release is release-time |
+| RD-12-AC-06 | RD-12 | 6 | partial |  |  | Protection script proven; apply requires a public repo and second reviewer |
+| RD-12-AC-07 | RD-12 | 7 | proven | `tests/quality/release-governance.spec.test.ts` | `RD-12-AC-07: review ownership` | CODEOWNERS, templates and community links |
+| RD-12-AC-08 | RD-12 | 8 | proven | `tests/quality/release-governance.spec.test.ts` | `RD-12-AC-08: support policy` | Best-effort support, no SLA |
+| RD-12-AC-09 | RD-12 | 9 | proven | `tests/quality/release-governance.spec.test.ts` | `RD-12-AC-09: release checklist` | Checklist covers the required gates |
+| RD-12-AC-10 | RD-12 | 10 | partial |  |  | Visibility/license checklist proven; the owner changes visibility at release |
+| RD-12-AC-11 | RD-12 | 11 | proven | `tests/quality/release-metadata.spec.test.ts` | `RD-12-AC-11: package metadata and changelogs` | Metadata, files and pinned actions |
+| RD-12-AC-12 | RD-12 | 12 | proven | `tests/quality/release-governance.spec.test.ts` | `RD-12-AC-12: dependency audit` | Audit gate and grouped updates |
+| RD-12-AC-13 | RD-12 | 13 | proven | `tests/quality/release-workflow.spec.test.ts` | `RD-12-AC-13: uses no token secret or registry credential` | OIDC only, least privilege, no secrets |

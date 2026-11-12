@@ -78,7 +78,7 @@ describe("RD-12-AC-02: manual main-only release", () => {
     expect(smoke).not.toContain("id-token");
   });
 
-  it("uses no token secret or registry credential", () => {
+  it("RD-12-AC-13: uses no token secret or registry credential", () => {
     const workflow = read(".github/workflows/release.yml");
     for (const forbidden of [
       "secrets.",

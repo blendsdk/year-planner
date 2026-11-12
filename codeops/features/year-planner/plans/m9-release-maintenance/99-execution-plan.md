@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 20:55
-> **Progress**: 48/55 tasks (87%)
+> **Last Updated**: 2026-11-12 21:05
+> **Progress**: 53/55 tasks (96%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -224,7 +224,7 @@ implementation tests, verify.
 
 ## Phase 5: Traceability, evidence and final gate
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: 956f681 (Phase 4 end)
 > **Lenses**: correctness, maintainability
 > **Reasoning**: high — the milestone closes only when every AC has an honest status.
 
@@ -233,14 +233,14 @@ implementation tests, verify.
 **Reference**: [03-03](03-03-governance-support.md) · ST-26 · AR-22, AR-29
 **Objective**: Add the RD-12 rows and extend the checker through RD-12.
 
-- [ ] 5.1.1 Add RD-12-AC-01..13 rows with explicit `proven`/`partial` status and blank title/file for partial rows — `codeops/features/year-planner/requirements/00-traceability.md`
-- [ ] 5.1.2 Extend the traceability test and CLI default through RD-12; update the expected count to 183 — `tests/quality/traceability.spec.test.ts`, `scripts/check-traceability.mjs`, `scripts/lib/traceability.mjs`
-- [ ] 5.1.3 Prove the matrix — `node scripts/check-traceability.mjs --through 12`
+- [x] 5.1.1 Add RD-12-AC-01..13 rows with explicit `proven`/`partial` status and blank title/file for partial rows — `codeops/features/year-planner/requirements/00-traceability.md` ✅ (completed: 2026-11-12 21:05)
+- [x] 5.1.2 Extend the traceability test and CLI default through RD-12; update the expected count to 183 — `tests/quality/traceability.spec.test.ts`, `scripts/check-traceability.mjs`, `scripts/lib/traceability.mjs` ✅ (completed: 2026-11-12 21:05)
+- [x] 5.1.3 Prove the matrix — `node scripts/check-traceability.mjs --through 12` ✅ (completed: 2026-11-12 21:05)
 
 ### Step 5.2: Evidence
 
-- [ ] 5.2.1 Record the RD-12 evidence, dry-run results and release-time manual steps; update the hard-coded report expectations — `docs/test-report.md`, `tests/quality/ci-contract.spec.test.ts`
-- [ ] 5.2.2 Update the roadmap to the plan and final stage — `codeops/features/year-planner/00-roadmap.md`
+- [x] 5.2.1 Record the RD-12 evidence, dry-run results and release-time manual steps; update the hard-coded report expectations — `docs/test-report.md`, `tests/quality/ci-contract.spec.test.ts` ✅ (completed: 2026-11-12 21:05)
+- [x] 5.2.2 Update the roadmap to the plan and final stage — `codeops/features/year-planner/00-roadmap.md` ✅ (completed: 2026-11-12 21:05)
 
 ### Step 5.3: Final gate
 

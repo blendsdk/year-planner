@@ -1,4 +1,4 @@
-# Test Report — Year Planner for React (RD-01 through RD-11)
+# Test Report — Year Planner for React (RD-01 through RD-12)
 
 > **Date**: 2026-11-12
 > **Scope**: M1 foundation/temporal core/classic grid; M2 layers, visibility,
@@ -9,11 +9,15 @@
 > accepted-not-applied handling; RD-09 accessibility semantics, focus, live
 > regions, contrast and axe evidence; RD-10 traceability, browser/visual/print
 > matrices, timezone and SSR evidence, performance budgets, issue #3
-> optimization, security/privacy gates, dependency audit and CI evidence
+> optimization, security/privacy gates, dependency audit and CI evidence;
+> RD-11 documentation, Storybook and API reference; RD-12 release versioning,
+> OIDC automation, package metadata, governance and the release checklist
 > **Workflow**: CodeOps (`exec-plan`), plans `m1-foundation-core`,
 > `m2-layers-ribbons`, `m3-react-view`, `m4-interaction-engine`,
-> `m5-controlled-commands`, `m6-accessibility` and `m7-quality-gates`
-> **Verdict**: **PASS** for RD-01 through RD-10. The manual NVDA/VoiceOver audit
+> `m5-controlled-commands`, `m6-accessibility`, `m7-quality-gates`,
+> `m8-documentation` and `m9-release-maintenance`
+> **Verdict**: **PASS** for RD-01 through RD-12, with the release-time owner
+> actions recorded in `docs/releasing.md`. The manual NVDA/VoiceOver audit
 > remains parked; no WCAG conformance claim is made.
 
 ---
@@ -60,10 +64,10 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
-| Quality tests | **93 passed** (traceability, public API, coverage, size, CI, package, license, audit and environment contracts) |
+| Quality tests | **183 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
-| Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build |
+| Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
 | Storybook | **PASS** — static build succeeds; **174 stories across 12 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
@@ -300,6 +304,64 @@ fallback is **Vite 7.3.8 + Vitest 4.1.12**, recorded in plan AR #15 and
 requirements AR #79. Vite 8 / Vitest 5 remain the target on compatible hardware.
 React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes the critical
 `tinypool` advisories; the two remaining moderate advisories are development-only.
+
+
+## RD-12 — Release, versioning and maintenance
+
+> **Date**: 2026-11-12
+> **Scope**: lockstep `0.2.0`, package metadata and changelogs, the human
+> release PR, the manual OIDC release workflow, governance/support documents
+> and the release checklist.
+> **Verdict**: release automation and evidence are complete; the first live
+> publication, repository visibility change, environment creation and branch
+> protection remain maintainer actions.
+
+### Commands and results
+
+| Command | Result |
+| ------- | ------ |
+| `pnpm verify` | PASS — 220 core, 508 React, 183 quality tests |
+| `pnpm release:check` | PASS — versions, changelogs, tarballs, source maps and `npm pack --dry-run` |
+| `pnpm release:publish --dry-run --allow-dirty` | PASS — core then React packed, validated and published in npm dry-run mode; no upload |
+| `node scripts/apply-branch-protection.mjs --record` | PASS (exit 0) — records the private-repo HTTP 403 and the missing second reviewer |
+| `pnpm changeset status --since=origin/main` | PASS — no pending changesets; the release tree is versioned |
+| `bash -n scripts/clean-consumer.sh` | PASS — registry and packed modes parse |
+
+### What changed
+
+- Both packages are at `0.2.0` with generated changelogs, package READMEs,
+  checked-in LICENSE copies and complete publish metadata.
+- `scripts/release-check.mjs` validates versions, changelogs, tarballs, source
+  maps, the npm dry-run allowlist and pending changesets.
+- `scripts/release-publish.mjs` packs with pnpm, verifies the exact core
+  dependency, compares published integrity, publishes core before React with
+  npm provenance, and creates one `v<version>` GitHub release.
+- `.github/workflows/release.yml` is manual, main-only and environment-guarded;
+  its build job has no `id-token`, and its publish job installs nothing.
+- Every workflow action is pinned to a full commit SHA; PRs get an
+  informational `changeset status` check.
+- `SUPPORT.md`, an expanded `SECURITY.md`, path-specific `CODEOWNERS`, grouped
+  Dependabot updates and `docs/releasing.md` cover governance and support.
+- `scripts/apply-branch-protection.mjs` checks/applies the required checks,
+  one approval, no direct pushes and the second-reviewer prerequisite.
+
+### Release-time owner actions
+
+- Run `npm login`, `pnpm release:publish --bootstrap --skip-github-release` for
+  `0.2.0`, configure the npm trusted publisher, then publish `0.2.1` through
+  the workflow within the two-day validation window.
+- Enable private vulnerability reporting, Dependabot alerts and Pages; create
+  the `npm-production` environment; make the repository public; add a second
+  reviewer; apply branch protection.
+- The first OIDC release produces the provenance attestation; the `0.2.0`
+  bootstrap does not.
+
+### Known gaps
+
+- The live npm publication and the GitHub release were not executed in this
+  environment (no npm authentication, private repository).
+- Branch protection is unavailable on the current private plan.
+- The manual NVDA/VoiceOver audit remains parked; no WCAG conformance claim.
 
 ## Repository state
 

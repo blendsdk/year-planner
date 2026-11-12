@@ -2,16 +2,28 @@
 
 ## Supported versions
 
-The project is pre-alpha. Security fixes are applied to the current development
-line only until a stable release exists.
+The current `0.x` line is supported. Security fixes are applied to the latest
+minor; older pre-1.0 minors are best effort until a stable release exists.
 
 ## Reporting a vulnerability
 
 Please use GitHub's **private vulnerability reporting** for this repository.
 Do not open a public issue for a suspected vulnerability.
 
-Include the affected version, a reproduction, and the impact you observed. We
-will acknowledge the report as soon as practical and coordinate disclosure.
+Include the affected version, a reproduction, and the impact you observed.
+
+## Response process
+
+| Stage | Commitment |
+| ----- | ---------- |
+| Acknowledgement | Within 3 business days |
+| Triage | Within 10 business days; severity and affected versions confirmed |
+| Fix | Critical and high issues are prioritized; a patched release is prepared privately |
+| Disclosure | Coordinated, normally within 90 days or an agreed date; credit is offered |
+| Dependency updates | Dependabot alerts plus `pnpm audit --audit-level high`; high or critical findings block a release |
+
+We will keep the reporter informed through the private report and coordinate a
+public advisory after a fix is available.
 
 ## Scope
 
@@ -23,3 +35,9 @@ correctness.
 The component must not leak hidden item details through the DOM, accessibility
 tree, tooltips, diagnostics, inspector or print output. Visibility is
 presentation, not authorization.
+
+## Dependency updates
+
+Dependabot proposes grouped minor and patch updates weekly. High and critical
+advisories are fixed before a release; the release checklist runs
+`pnpm audit --audit-level high`.

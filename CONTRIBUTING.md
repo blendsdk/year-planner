@@ -71,3 +71,9 @@ private data in examples or test fixtures. Report security issues according to
 
 By participating, you agree to follow the
 [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+## Support and releases
+
+Community support is best effort with no SLA; see [SUPPORT.md](./SUPPORT.md).
+The release procedure, versioning and rollback steps are in
+[docs/releasing.md](./docs/releasing.md). Public API changes need a changeset.

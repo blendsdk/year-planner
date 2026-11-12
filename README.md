@@ -184,6 +184,15 @@ pnpm storybook       # interactive component site
 pnpm run docs        # API Extractor reports + TypeDoc HTML under docs/api
 ```
 
+## Community
+
+- [Contributing](./CONTRIBUTING.md) — development workflow and the DCO.
+- [Code of Conduct](./CODE_OF_CONDUCT.md) — the expected community behavior.
+- [Security policy](./SECURITY.md) — private reporting and the response process.
+- [Support](./SUPPORT.md) — best-effort community support, no SLA.
+- [Release process](./docs/releasing.md) — versioning, bootstrap, publish and rollback.
+- [Open an issue](https://github.com/blendsdk/year-planner/issues/new/choose).
+
 ## License
 
 MIT. See [LICENSE](./LICENSE). Contributions are accepted under the Developer

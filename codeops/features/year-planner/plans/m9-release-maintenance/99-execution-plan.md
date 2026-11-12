@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 20:44
-> **Progress**: 28/55 tasks (51%)
+> **Last Updated**: 2026-11-12 20:50
+> **Progress**: 41/55 tasks (75%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -143,7 +143,7 @@ implementation tests, verify.
 
 ## Phase 3: Governance and support
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: 00b4265 (Phase 2 end)
 > **Lenses**: security, correctness
 > **Reasoning**: high — branch protection, disclosure and support promises are public commitments.
 
@@ -152,35 +152,35 @@ implementation tests, verify.
 **Reference**: [03-03](03-03-governance-support.md) · ST-18–ST-25, ST-27 · AR-8–AR-11, AR-16–AR-20
 **Objective**: Prove CODEOWNERS, support, security response, branch protection, checklist and audit gate are incomplete.
 
-- [ ] 3.1.1 [spec-author] Write the governance, support, security, CODEOWNERS, checklist and audit cases with `RD-12-AC-06`–`RD-12-AC-10`, `RD-12-AC-12` — `tests/quality/release-governance.spec.test.ts`
-- [ ] 3.1.2 Run the new tests and record the red result — `pnpm test:quality`
+- [x] 3.1.1 [spec-author] Write the governance, support, security, CODEOWNERS, checklist and audit cases with `RD-12-AC-06`–`RD-12-AC-10`, `RD-12-AC-12` — `tests/quality/release-governance.spec.test.ts` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.1.2 Run the new tests and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-12 20:50)
 
 ### Step 3.2: Implementation
 
 **Reference**: [03-03](03-03-governance-support.md) · AR-8–AR-11, AR-16–AR-20, AR-27
 **Objective**: Add the governance files, protection script, dependency updates and release checklist.
 
-- [ ] 3.2.1 Add path-specific review ownership — `.github/CODEOWNERS`
-- [ ] 3.2.2 Add the best-effort support policy — `SUPPORT.md`
-- [ ] 3.2.3 Expand the vulnerability response process — `SECURITY.md`
-- [ ] 3.2.4 Add the idempotent branch-protection script with the reviewer prerequisite — `scripts/apply-branch-protection.mjs`, `scripts/apply-branch-protection.d.mts`
-- [ ] 3.2.5 Add grouped Dependabot updates — `.github/dependabot.yml`
-- [ ] 3.2.6 Add the pre-release, visibility/license, owner-setup, post-release and rollback sections — `docs/releasing.md`
-- [ ] 3.2.7 Link the community and release documents — `README.md`, `CONTRIBUTING.md`
-- [ ] 3.2.8 Review `DEFERRED.md` and the README limitations against the release scope — `DEFERRED.md`, `README.md`
+- [x] 3.2.1 Add path-specific review ownership — `.github/CODEOWNERS` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.2.2 Add the best-effort support policy — `SUPPORT.md` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.2.3 Expand the vulnerability response process — `SECURITY.md` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.2.4 Add the idempotent branch-protection script with the reviewer prerequisite — `scripts/apply-branch-protection.mjs`, `scripts/apply-branch-protection.d.mts` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.2.5 Add grouped Dependabot updates — `.github/dependabot.yml` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.2.6 Add the pre-release, visibility/license, owner-setup, post-release and rollback sections — `docs/releasing.md` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.2.7 Link the community and release documents — `README.md`, `CONTRIBUTING.md` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.2.8 Review `DEFERRED.md` and the README limitations against the release scope — `DEFERRED.md`, `README.md` ✅ (completed: 2026-11-12 20:50)
 
 ### Step 3.3: Green, implementation tests and verify
 
-- [ ] 3.3.1 Prove green for ST-18–ST-25 and ST-27 — `pnpm test:quality`
-- [ ] 3.3.2 Record the branch-protection plan and reviewer constraints — `node scripts/apply-branch-protection.mjs --record`
-- [ ] 3.3.3 Verify the phase — `pnpm verify`
+- [x] 3.3.1 Prove green for ST-18–ST-25 and ST-27 — `pnpm test:quality` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.3.2 Record the branch-protection plan and reviewer constraints — `node scripts/apply-branch-protection.mjs --record` ✅ (completed: 2026-11-12 20:50)
+- [x] 3.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 20:50)
 
 **Deliverables**:
-- [ ] Path-specific CODEOWNERS, support policy and expanded security process
-- [ ] Branch-protection script and recorded 403/reviewer constraints
-- [ ] Dependabot and complete release checklist
-- [ ] Community links from the README
-- [ ] All phase verification passing
+- [x] Path-specific CODEOWNERS, support policy and expanded security process
+- [x] Branch-protection script and recorded 403/reviewer constraints
+- [x] Dependabot and complete release checklist
+- [x] Community links from the README
+- [x] All phase verification passing
 
 **Test slices**: `verification` (task); workflows and docs are full-on
 **Task verify**: `pnpm verify` (full gate)

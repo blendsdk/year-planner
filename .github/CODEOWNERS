@@ -1,1 +1,6 @@
 * @blendsdk
+/packages/                          @blendsdk
+/.github/workflows/                 @blendsdk
+/.changeset/                        @blendsdk
+/SECURITY.md                        @blendsdk
+/docs/releasing.md                  @blendsdk

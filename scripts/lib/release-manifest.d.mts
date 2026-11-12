@@ -42,6 +42,13 @@ export declare function changelogSection(changelog: string, version: string): st
 /** Builds the GitHub release body. */
 export declare function buildReleaseNotes(input: ReleaseNotesInput): string;
 
+/** Compares a published integrity with the locally packed tarball. */
+export declare function validatePublishedIntegrity(
+  published: string | undefined,
+  local: string,
+  label: string,
+): string[];
+
 /** Reads both package manifests from a repository root. */
 export declare function readPackageManifests(root: string): {
   core: ReleaseManifest;

@@ -1,18 +1,74 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Consumer proof for the packed tarballs or the published registry packages.
+#
+#   bash scripts/clean-consumer.sh            # packed tarballs (pre-release)
+#   bash scripts/clean-consumer.sh --registry # exact published versions (post-release)
+#
+# The registry mode waits for propagation, installs the exact package versions
+# from npm and runs the same typecheck and production Vite build.
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+MODE="packed"
+if [ "${1:-}" = "--registry" ]; then
+  MODE="registry"
+elif [ -n "${1:-}" ]; then
+  echo "usage: $0 [--registry]" >&2
+  exit 2
+fi
+
 TMP="$(mktemp -d "${TMPDIR:-/tmp}/year-planner-consumer.XXXXXX")"
 trap 'rm -rf "$TMP"' EXIT
 
-mkdir -p "$TMP/packs" "$TMP/app/src"
-(cd "$ROOT/packages/core" && pnpm pack --pack-destination "$TMP/packs" >/dev/null)
-(cd "$ROOT/packages/react" && pnpm pack --pack-destination "$TMP/packs" >/dev/null)
+mkdir -p "$TMP/app/src"
 
-CORE_PACK="$(find "$TMP/packs" -name 'blendsdk-year-planner-core-*.tgz' -print -quit)"
-REACT_PACK="$(find "$TMP/packs" -name 'blendsdk-react-year-planner-*.tgz' -print -quit)"
-test -n "$CORE_PACK"
-test -n "$REACT_PACK"
+CORE_VERSION="$(node -p "require('$ROOT/packages/core/package.json').version")"
+REACT_VERSION="$(node -p "require('$ROOT/packages/react/package.json').version")"
+
+if [ "$MODE" = "packed" ]; then
+  mkdir -p "$TMP/packs"
+  (cd "$ROOT/packages/core" && pnpm pack --pack-destination "$TMP/packs" >/dev/null)
+  (cd "$ROOT/packages/react" && pnpm pack --pack-destination "$TMP/packs" >/dev/null)
+  CORE_PACK="$(find "$TMP/packs" -name 'blendsdk-year-planner-core-*.tgz' -print -quit)"
+  REACT_PACK="$(find "$TMP/packs" -name 'blendsdk-react-year-planner-*.tgz' -print -quit)"
+  test -n "$CORE_PACK"
+  test -n "$REACT_PACK"
+  CORE_DEP="file:${CORE_PACK}"
+  REACT_DEP="file:${REACT_PACK}"
+  OVERRIDES=""
+else
+  echo "waiting for @blendsdk/year-planner-core@$CORE_VERSION on npm"
+  for attempt in $(seq 1 12); do
+    if npm view "@blendsdk/year-planner-core@$CORE_VERSION" version >/dev/null 2>&1; then
+      break
+    fi
+    if [ "$attempt" -eq 12 ]; then
+      echo "registry did not expose @blendsdk/year-planner-core@$CORE_VERSION" >&2
+      exit 1
+    fi
+    sleep 5
+  done
+  echo "waiting for @blendsdk/react-year-planner@$REACT_VERSION on npm"
+  for attempt in $(seq 1 12); do
+    if npm view "@blendsdk/react-year-planner@$REACT_VERSION" version >/dev/null 2>&1; then
+      break
+    fi
+    if [ "$attempt" -eq 12 ]; then
+      echo "registry did not expose @blendsdk/react-year-planner@$REACT_VERSION" >&2
+      exit 1
+    fi
+    sleep 5
+  done
+  CORE_DEP="$CORE_VERSION"
+  REACT_DEP="$REACT_VERSION"
+  OVERRIDES=$(cat <<JSON
+  ,"overrides": {
+    "@blendsdk/year-planner-core": "$CORE_VERSION"
+  }
+JSON
+)
+fi
 
 cat >"$TMP/app/package.json" <<JSON
 {
@@ -20,8 +76,8 @@ cat >"$TMP/app/package.json" <<JSON
   "private": true,
   "type": "module",
   "dependencies": {
-    "@blendsdk/year-planner-core": "file:${CORE_PACK}",
-    "@blendsdk/react-year-planner": "file:${REACT_PACK}",
+    "@blendsdk/year-planner-core": "$CORE_DEP",
+    "@blendsdk/react-year-planner": "$REACT_DEP",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
@@ -31,10 +87,7 @@ cat >"$TMP/app/package.json" <<JSON
     "@vitejs/plugin-react": "5.2.0",
     "typescript": "6.0.3",
     "vite": "7.3.8"
-  },
-  "overrides": {
-    "@blendsdk/year-planner-core": "file:${CORE_PACK}"
-  }
+  }$OVERRIDES
 }
 JSON
 
@@ -82,7 +135,6 @@ cat >"$TMP/app/src/styles.d.ts" <<'DTS'
 declare module "*.css";
 DTS
 
-
 cat >"$TMP/app/tsconfig.json" <<'JSON'
 {
   "compilerOptions": {
@@ -104,4 +156,4 @@ npm install --no-audit --no-fund >/dev/null
 ./node_modules/.bin/tsc --noEmit
 ./node_modules/.bin/vite build >/dev/null
 test -f dist/index.html
-echo "PASS clean consumer: packed types, CSS import and production build"
+echo "PASS clean consumer ($MODE): types, CSS import and production build"

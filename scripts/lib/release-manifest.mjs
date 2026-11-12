@@ -170,6 +170,24 @@ export function buildReleaseNotes(input) {
 }
 
 /**
+ * Compares a published integrity with the locally packed tarball.
+ *
+ * @param published - Integrity reported by `npm view`, if the version exists.
+ * @param local - SRI integrity of the local tarball.
+ * @param label - Package name and version for the error message.
+ * @returns Error messages; an empty array means the content matches or is new.
+ * @example
+ * validatePublishedIntegrity(undefined, "sha512-abc", "pkg@1.0.0")
+ */
+export function validatePublishedIntegrity(published, local, label) {
+  if (published === undefined) return [];
+  if (published !== local) {
+    return [`${label} is already published with a different integrity; bump the version`];
+  }
+  return [];
+}
+
+/**
  * Reads both package manifests from a repository root.
  *
  * @param root - Repository root.

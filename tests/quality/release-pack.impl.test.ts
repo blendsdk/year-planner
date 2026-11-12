@@ -5,9 +5,11 @@ import {
   changelogSection,
   inspectSourceMaps,
   validatePackedManifest,
+  validatePublishedIntegrity,
   validateSourceMap,
   validateTarballPaths,
 } from "../../scripts/lib/release-manifest.mjs";
+import { parseReleaseFlags } from "../../scripts/release-publish.mjs";
 
 /**
  * Failure modes and documentation surface for the shared release helpers.
@@ -48,6 +50,24 @@ describe("release manifest helper failure modes", () => {
     expect(inspectSourceMaps("/definitely/missing/directory").join("\n")).toContain(
       "does not exist",
     );
+  });
+
+  it("rejects a published version with different content and accepts an identical one", () => {
+    expect(validatePublishedIntegrity(undefined, "sha512-a", "pkg@1.0.0")).toEqual([]);
+    expect(validatePublishedIntegrity("sha512-a", "sha512-a", "pkg@1.0.0")).toEqual([]);
+    expect(validatePublishedIntegrity("sha512-a", "sha512-b", "pkg@1.0.0").join("\n")).toContain(
+      "different integrity",
+    );
+  });
+
+  it("rejects unsafe release flag combinations", () => {
+    expect(() => parseReleaseFlags(["--allow-dirty"])).toThrow(/dry-run/);
+    expect(() => parseReleaseFlags(["--skip-github-release"])).toThrow(/bootstrap/);
+    expect(() => parseReleaseFlags(["--bootstrap", "--dry-run"])).toThrow(/cannot be combined/);
+    expect(parseReleaseFlags(["--bootstrap", "--skip-github-release"])).toMatchObject({
+      bootstrap: true,
+      skipGithubRelease: true,
+    });
   });
 
   it("returns an empty section for a missing changelog heading", () => {

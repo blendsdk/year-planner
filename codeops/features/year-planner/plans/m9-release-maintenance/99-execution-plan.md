@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 20:36
-> **Progress**: 13/55 tasks (24%)
+> **Last Updated**: 2026-11-12 20:44
+> **Progress**: 28/55 tasks (51%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -94,7 +94,7 @@ implementation tests, verify.
 
 ## Phase 2: Release automation
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: acca2f3 (Phase 1 end)
 > **Lenses**: correctness, security
 > **Reasoning**: high — a bad workflow or publish order can publish the wrong artifact with credentials.
 
@@ -103,37 +103,37 @@ implementation tests, verify.
 **Reference**: [03-02](03-02-release-automation.md) · ST-9–ST-17 · AR-3–AR-7, AR-19, AR-23, AR-24
 **Objective**: Prove the release procedure, workflow, publish script and bootstrap documentation are missing.
 
-- [ ] 2.1.1 [spec-author] Write the release-PR, workflow, main-guard, OIDC, permission and pinning cases with `RD-12-AC-02`, `RD-12-AC-13` — `tests/quality/release-workflow.spec.test.ts`
-- [ ] 2.1.2 [spec-author] Write the publish-order, integrity, release-notes and bootstrap cases with `RD-12-AC-02`, `RD-12-AC-05` — `tests/quality/release-workflow.spec.test.ts`
-- [ ] 2.1.3 Run the new tests and record the red result — `pnpm test:quality`
+- [x] 2.1.1 [spec-author] Write the release-PR, workflow, main-guard, OIDC, permission and pinning cases with `RD-12-AC-02`, `RD-12-AC-13` — `tests/quality/release-workflow.spec.test.ts` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.1.2 [spec-author] Write the publish-order, integrity, release-notes and bootstrap cases with `RD-12-AC-02`, `RD-12-AC-05` — `tests/quality/release-workflow.spec.test.ts` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.1.3 Run the new tests and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-12 20:44)
 
 ### Step 2.2: Implementation
 
 **Reference**: [03-02](03-02-release-automation.md) · AR-3–AR-7, AR-19, AR-23, AR-24
 **Objective**: Add the publish/check scripts, the guarded workflow, the pinned actions, the changeset job and the release guide.
 
-- [ ] 2.2.1 Add the pack, validate, publish and release script — `scripts/release-publish.mjs`, `scripts/release-publish.d.mts`
-- [ ] 2.2.2 Add the release readiness checker — `scripts/release-check.mjs`, `scripts/release-check.d.mts`
-- [ ] 2.2.3 Add the manual, environment-guarded release workflow with separate build and publish jobs — `.github/workflows/release.yml`
-- [ ] 2.2.4 Add `release:check`, `release:publish`, `release:smoke`, the `verify` hook and `release-packs/` to the ignore list — `package.json`, `.gitignore`
-- [ ] 2.2.5 Pin every action to a full commit SHA — `.github/workflows/ci.yml`, `.github/workflows/pages.yml`, `.github/workflows/release.yml`
-- [ ] 2.2.6 Add the informational `changeset status` job with `fetch-depth: 0` — `.github/workflows/ci.yml`
-- [ ] 2.2.7 Add `--registry` to the consumer smoke with a bounded retry — `scripts/clean-consumer.sh`
-- [ ] 2.2.8 Add the release-PR, bootstrap, publish and rollback guide — `docs/releasing.md`
+- [x] 2.2.1 Add the pack, validate, publish and release script — `scripts/release-publish.mjs`, `scripts/release-publish.d.mts` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.2.2 Add the release readiness checker — `scripts/release-check.mjs`, `scripts/release-check.d.mts` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.2.3 Add the manual, environment-guarded release workflow with separate build and publish jobs — `.github/workflows/release.yml` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.2.4 Add `release:check`, `release:publish`, `release:smoke`, the `verify` hook and `release-packs/` to the ignore list — `package.json`, `.gitignore` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.2.5 Pin every action to a full commit SHA — `.github/workflows/ci.yml`, `.github/workflows/pages.yml`, `.github/workflows/release.yml` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.2.6 Add the informational `changeset status` job with `fetch-depth: 0` — `.github/workflows/ci.yml` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.2.7 Add `--registry` to the consumer smoke with a bounded retry — `scripts/clean-consumer.sh` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.2.8 Add the release-PR, bootstrap, publish and rollback guide — `docs/releasing.md` ✅ (completed: 2026-11-12 20:44)
 
 ### Step 2.3: Green, implementation tests and verify
 
-- [ ] 2.3.1 Prove green for ST-9–ST-17 — `pnpm test:quality`
-- [ ] 2.3.2 Add integrity-mismatch and flag-guard cases — `tests/quality/release-pack.impl.test.ts`
-- [ ] 2.3.3 Prove the real build and pack path without publishing — `pnpm release:publish --dry-run --allow-dirty`
-- [ ] 2.3.4 Verify the phase — `pnpm verify`
+- [x] 2.3.1 Prove green for ST-9–ST-17 — `pnpm test:quality` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.3.2 Add integrity-mismatch and flag-guard cases — `tests/quality/release-pack.impl.test.ts` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.3.3 Prove the real build and pack path without publishing — `pnpm release:publish --dry-run --allow-dirty` ✅ (completed: 2026-11-12 20:44)
+- [x] 2.3.4 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 20:44)
 
 **Deliverables**:
-- [ ] Manual release workflow with OIDC, main guard and split build/publish
-- [ ] Publish/check scripts with shared validation
-- [ ] Every action pinned to a commit SHA
-- [ ] Release guide and registry smoke present
-- [ ] All phase verification passing
+- [x] Manual release workflow with OIDC, main guard and split build/publish
+- [x] Publish/check scripts with shared validation
+- [x] Every action pinned to a commit SHA
+- [x] Release guide and registry smoke present
+- [x] All phase verification passing
 
 **Test slices**: `verification` (task); workflows and scripts are full-on
 **Task verify**: `pnpm verify` (full gate)

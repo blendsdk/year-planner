@@ -53,3 +53,6 @@ pnpm-debug.log*
 docs/api/
 packages/*/temp/
 spike/renderer/dist/
+
+# Release tarballs and notes
+release-packs/

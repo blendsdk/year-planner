@@ -51,6 +51,27 @@ jobs:
             playwright-report/
           retention-days: 14
 
+  docs-site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.9.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm docs:site
+      - run: pnpm docs:site -- --check-only
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docs-site
+          path: storybook-static
+          retention-days: 14
+
   dco:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'

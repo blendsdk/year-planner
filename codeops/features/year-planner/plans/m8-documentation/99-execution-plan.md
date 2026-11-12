@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 15:35
-> **Progress**: 51/77 tasks (66%)
+> **Last Updated**: 2026-11-12 16:10
+> **Progress**: 63/77 tasks (82%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -197,7 +197,7 @@ add implementation tests, verify.
 
 ## Phase 4: Docs site and workflows
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: cdb214e8c01795c2a6ea586afb857067e94664eb
 > **Lenses**: correctness, security, maintainability
 > **Reasoning**: high — a bad artifact path or an unguarded deploy job publishes the wrong content or publishes early.
 
@@ -206,33 +206,33 @@ add implementation tests, verify.
 **Reference**: [03-04](03-04-docs-site.md) · ST-19–ST-21 · AR-2, AR-8, AR-9, AR-25
 **Objective**: Prove the artifact build, script flags, Pages workflow and PR job are missing.
 
-- [ ] 4.1.1 [spec-author] Write the script, workflow, permission, guard and PR-job cases with `RD-11-AC-05`, `RD-11-AC-06` — `tests/quality/docs-site-contract.spec.test.ts`
-- [ ] 4.1.2 Run the new tests and record the red result — `pnpm test:quality`
+- [x] 4.1.1 [spec-author] Write the script, workflow, permission, guard and PR-job cases with `RD-11-AC-05`, `RD-11-AC-06` — `tests/quality/docs-site-contract.spec.test.ts` ✅ (completed: 2026-11-12 16:10)
+- [x] 4.1.2 Run the new tests and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-12 16:10)
 
 ### Step 4.2: Implementation
 
 **Reference**: [03-04](03-04-docs-site.md) · AR-2, AR-8, AR-9, AR-24, AR-25
 **Objective**: Assemble and verify the artifact, expose `docs:site`, add the PR job and the guarded Pages workflow.
 
-- [ ] 4.2.1 Implement the build/copy/verify script with `--root` and `--check-only` — `scripts/build-docs-site.mjs`
-- [ ] 4.2.2 Add the script type declarations — `scripts/build-docs-site.d.mts`
-- [ ] 4.2.3 Build Storybook into the repo-root `storybook-static/` — `apps/storybook/package.json`
-- [ ] 4.2.4 Add the `docs:site` script — `package.json`
-- [ ] 4.2.5 Add the build/upload/guarded-deploy workflow — `.github/workflows/pages.yml`
-- [ ] 4.2.6 Add the PR `docs-site` build/verify job — `.github/workflows/ci.yml`
-- [ ] 4.2.7 Document the release-time Pages enable step — `docs/README.md`
+- [x] 4.2.1 Implement the build/copy/verify script with `--root` and `--check-only` — `scripts/build-docs-site.mjs` ✅ (completed: 2026-11-12 16:10)
+- [x] 4.2.2 Add the script type declarations — `scripts/build-docs-site.d.mts` ✅ (completed: 2026-11-12 16:10)
+- [x] 4.2.3 Build Storybook into the repo-root `storybook-static/` — `apps/storybook/package.json` ✅ (completed: 2026-11-12 16:10)
+- [x] 4.2.4 Add the `docs:site` script — `package.json` ✅ (completed: 2026-11-12 16:10)
+- [x] 4.2.5 Add the build/upload/guarded-deploy workflow — `.github/workflows/pages.yml` ✅ (completed: 2026-11-12 16:10)
+- [x] 4.2.6 Add the PR `docs-site` build/verify job — `.github/workflows/ci.yml` ✅ (completed: 2026-11-12 16:10)
+- [x] 4.2.7 Document the release-time Pages enable step — `docs/README.md` ✅ (completed: 2026-11-12 16:10)
 
 ### Step 4.3: Green, implementation tests and verify
 
-- [ ] 4.3.1 Prove green for ST-19–ST-21, build the artifact and check it — `pnpm test:quality && pnpm docs:site && pnpm docs:site -- --check-only`
-- [ ] 4.3.2 Write the missing-API, wrong-root and broken-link failure cases — `tests/quality/docs-site.impl.test.ts`
-- [ ] 4.3.3 Verify the phase — `pnpm verify`
+- [x] 4.3.1 Prove green for ST-19–ST-21, build the artifact and check it — `pnpm test:quality && pnpm docs:site && pnpm docs:site -- --check-only` ✅ (completed: 2026-11-12 16:10)
+- [x] 4.3.2 Write the missing-API, wrong-root and broken-link failure cases — `tests/quality/docs-site.impl.test.ts` ✅ (completed: 2026-11-12 16:10)
+- [x] 4.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 16:10)
 
 **Deliverables**:
-- [ ] `storybook-static/` contains Storybook at `/` and TypeDoc at `/api`
-- [ ] Relative assets and landing links resolve; `--check-only` works on a built artifact
-- [ ] PR job builds and verifies the artifact; deploy is manual and `main`-only
-- [ ] All phase verification passing
+- [x] `storybook-static/` contains Storybook at `/` and TypeDoc at `/api`
+- [x] Relative assets and landing links resolve; `--check-only` works on a built artifact
+- [x] PR job builds and verifies the artifact; deploy is manual and `main`-only
+- [x] All phase verification passing
 
 **Test slices**: `verification` (task) via the docs-site contract; `scripts/**`, `package.json` and `.github/**` are full-on
 **Task verify**: `pnpm verify` (full gate; AR-30)

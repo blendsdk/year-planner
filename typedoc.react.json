@@ -11,9 +11,6 @@
   "excludePrivate": true,
   "excludeInternal": true,
   "categorizeByGroup": true,
-  "navigationLinks": {
-    "Core package": "../core/index.html"
-  },
   "validation": {
     "notDocumented": true,
     "invalidLink": true

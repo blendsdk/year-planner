@@ -2,7 +2,7 @@
 
 The planner never treats a pointer drop as persisted truth. Every edit is a
 typed command that the host can validate, accept, reject, time out or apply
-later. This guide describes the host contract added in RD-08.
+later. This guide describes the host command contract.
 
 ## Two modes, one pipeline
 
@@ -263,5 +263,5 @@ count hidden items; a read-only flag is still not proof of authorization.
 ## Related
 
 - [Interaction guide](interaction.md)
-- [React view](react-view.md)
+- [Controlled API](controlled-api.md)
 - [Security](security.md)

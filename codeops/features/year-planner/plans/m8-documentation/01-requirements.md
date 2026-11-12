@@ -43,7 +43,7 @@
 | Quickstart install | Packed-tarball path until RD-12 publishes | AR-5, AR-26 |
 | Honesty rules | Measured status, named misses, no conformance claim | AR-14, AR-18 |
 | Traceability | RD-11 rows (partial first), checker and CLI through RD-11 | AR-16, AR-31 |
-| Contract tests | Four spec + two impl files under `tests/quality/` | AR-17 |
+| Contract tests | Five spec + two impl files under `tests/quality/` | AR-17, AR-32 |
 | Task verification | Full gate for full-on paths; phase baseline tree | AR-30 |
 
 ## Acceptance Criteria

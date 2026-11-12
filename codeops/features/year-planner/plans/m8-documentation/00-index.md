@@ -44,7 +44,7 @@ GitHub Pages deployment, and no new performance or accessibility measurement.
 **Approved complexity:** None beyond RD-mandated machinery. The Pages workflow
 and the `docs-site` CI job are the publication path named in RD-11; Storybook 10
 already provides the viewport, so no addon is added. The docs-site script reuses
-the existing build, Storybook, TypeDoc and Node toolchain; the four contract files
+the existing build, Storybook, TypeDoc and Node toolchain; the five contract files
 and two implementation files reuse the existing `tests/quality` project.
 
 ## Document Index
@@ -96,7 +96,7 @@ Storybook 10 emits relative asset URLs; no base-path environment variable is nee
 | Honesty | Measured status, named misses, no conformance claim | AR-14, AR-18 |
 | Traceability | RD-11 rows (partial first), checker and CLI through RD-11 | AR-16, AR-31 |
 | Task gates | Full gate at task level where the map is full-on | AR-30 |
-| Test placement | Four spec + two impl files under `tests/quality` | AR-17 |
+| Test placement | Five spec + two impl files under `tests/quality` | AR-17, AR-32 |
 
 ## Specialist Agents
 
@@ -139,5 +139,6 @@ is proposed._
 | `tests/quality/storybook-contract.spec.test.ts` | Story coverage, addon and base-path contract |
 | `tests/quality/tsdoc-contract.spec.test.ts` | API report, release tag and `@example` contract |
 | `tests/quality/docs-site-contract.spec.test.ts` | Artifact, base-path and Pages workflow contract |
+| `tests/quality/demo-contract.spec.test.ts` | Demo routes and evidence report |
 | `tests/quality/docs-site.impl.test.ts` | Docs-site script failure modes |
 | `tests/quality/docs-contract.impl.test.ts` | Markdown link-extractor edge cases |

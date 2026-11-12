@@ -32,6 +32,7 @@ the `verification` slice. The new files need no map edit.
 | Slice | Tier | Test Files | Sources | Depends On | Gate |
 | ----- | ---- | ---------- | ------- | ---------- | ---- |
 | `verification` | task | `tests/quality/docs-contract.spec.test.ts` | `README.md`, `DEFERRED.md`, `docs/**` | `core.unit`, `react.unit` | task |
+| `verification` | task | `tests/quality/demo-contract.spec.test.ts` | `apps/demo/**`, `docs/test-report.md` | `core.unit`, `react.unit` | task |
 | `verification` | task | `tests/quality/storybook-contract.spec.test.ts` | `apps/storybook/**` | `core.unit`, `react.unit` | task |
 | `verification` | task | `tests/quality/tsdoc-contract.spec.test.ts` | `packages/*/src/**`, `packages/*/etc/**` | `core.unit`, `react.unit` | task |
 | `verification` | task | `tests/quality/docs-site-contract.spec.test.ts` | `scripts/build-docs-site.mjs`, workflows | `core.unit`, `react.unit` | task |
@@ -108,7 +109,8 @@ instead of claiming a fast slice.
 
 | Test File | ST Cases Covered | Component |
 | --------- | ---------------- | --------- |
-| `tests/quality/docs-contract.spec.test.ts` | ST-1–ST-8, ST-24, ST-25, ST-27–ST-29 | Guide set, demo docs, report and assets |
+| `tests/quality/docs-contract.spec.test.ts` | ST-1–ST-8, ST-28, ST-29 | Guide set, assets and example security |
+| `tests/quality/demo-contract.spec.test.ts` | ST-24, ST-25, ST-27 | Demo routes and evidence report |
 | `tests/quality/storybook-contract.spec.test.ts` | ST-9–ST-12 | Storybook |
 | `tests/quality/tsdoc-contract.spec.test.ts` | ST-13–ST-18 | API reference |
 | `tests/quality/docs-site-contract.spec.test.ts` | ST-19–ST-21 | Docs site and workflows |

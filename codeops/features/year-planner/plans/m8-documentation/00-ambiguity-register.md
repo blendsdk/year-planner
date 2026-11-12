@@ -1,6 +1,6 @@
 # Ambiguity Register: Documentation, Storybook and API Reference
 
-> **Status**: ✅ GATE PASSED — 31 resolved, 0 open
+> **Status**: ✅ GATE PASSED — 32 resolved, 0 open (one runtime addition)
 > **Last Updated**: 2026-11-12 14:10
 > **Policy**: `--auto-design` active — eligible technical decisions delegated; scope, publication and honesty decisions inherited from the user's RD-11 directive, the RD itself and the prior RD-09/RD-10 rulings
 
@@ -22,7 +22,7 @@
 | AR-14 | Security & compliance | How the docs stay honest about accessibility and performance | Repeat the RD-09/RD-10 evidence / claim conformance / omit status | **State the measured status and the known misses; make no conformance claim.** A short denylist covers positive conformance phrases; "targets WCAG 2.2 AA" and truthful negations stay allowed. The contract normalizes markdown emphasis before checking `Conformance claim: none`. | ✅ Resolved — inherited RD-09/RD-10 decisions |
 | AR-15 | UX & presentation | Whether the demo needs a new page for the RD-11 states | New demo app / new route / visible navigation over the existing routes | **Keep the routes; render a shared navigation on every route and document the routes.** The security/hidden-data route joins the navigation because it is the visibility proof. No second demo app. | ✅ Resolved — delegated |
 | AR-16 | Integration points | How RD-11 joins the traceability contract | Leave it for RD-12 / add rows now / waive | **Add RD-11-AC-01..13 rows, extend the test and the CLI default through RD-11, and annotate the existing demo E2E tests.** Rows start `partial` and become `proven` after the titles land. | ✅ Resolved — delegated |
-| AR-17 | Technical unknowns | Where the documentation contract tests live | Six files under `tests/quality/` / E2E only / a new runner | **Four spec files and two implementation files under `tests/quality/`**: docs, Storybook, TSDoc, docs-site, plus docs-contract impl and docs-site impl. No new runner. | ✅ Resolved — delegated |
+| AR-17 | Technical unknowns | Where the documentation contract tests live | Seven files under `tests/quality/` / E2E only / a new runner | **Five spec files and two implementation files under `tests/quality/`**: docs, Storybook, TSDoc, docs-site and demo, plus docs-contract impl and docs-site impl. No new runner. | ✅ Resolved — delegated |
 | AR-18 | Non-functional gaps | The manual NVDA/VoiceOver audit is still parked | Run it / keep it parked and state it / block RD-11 | **Keep it parked and name it in `docs/accessibility.md` and `docs/limitations.md`.** No WCAG conformance claim. | ✅ Resolved — inherited RD-09 decision |
 | AR-19 | UX & presentation | Story counts in the docs drift from the real set | Hard-code a count / omit counts / compute and assert the count | **Compute the count and assert it in every document that states one:** `README.md`, `docs/getting-started.md` and `docs/test-report.md`. The current set is 171 stories across 12 files; PRT-01 and the wrapper stories raise it. | ✅ Resolved — delegated |
 | AR-20 | Data & state | Whether the guides introduce new measurements | Re-run benchmarks / reuse the RD-10 evidence / omit numbers | **Reuse the checked-in RD-10 evidence.** No new measurement in a documentation milestone. | ✅ Resolved — delegated |
@@ -37,6 +37,7 @@
 | AR-29 | Security & compliance | The docs security scan must not flag truthful security prose | Scan all text / scan fenced code only / allowlist the page | **Scan fenced code blocks only** for `dangerouslySetInnerHTML`, `innerHTML` and `__html`; use an explicit asset allowlist for generated Storybook/TypeDoc assets; assert `_reference/` is absent. | ✅ Resolved — delegated |
 | AR-30 | Non-functional gaps | The task gate falls back to the full suite for `apps/**`, `scripts/**`, `package.json`, lockfiles, configs and API reports | Narrow the map / accept the full gate / claim a scoped run | **Accept the full gate at task level for Phases 2–5 and say so.** `--baseline <phase-tree>` keeps committed task changes in view; no map weakening. | ✅ Resolved — delegated |
 | AR-31 | Ordering & sequencing | Phase 5 extends traceability before the RD-11 rows and titles exist | Extend last / use partial rows / tolerate a red task gate | **Add the rows as `partial` first, then annotate titles, then flip them to `proven`.** The checker skips title proof for partial rows, so every task gate stays honest. | ✅ Resolved — delegated |
+| AR-32 | Technical unknowns (runtime) | The Phase 5 demo/report cases shared `docs-contract.spec.test.ts` with the Phase 1 guide cases, so the Phase 1 contract could never be green | Keep one file and tolerate red / split the Phase 5 cases / skip them until Phase 5 | **Split ST-24/25/27 into `tests/quality/demo-contract.spec.test.ts`, created in Phase 5.** The Phase 1 file then owns only the guide, deferred, honesty, count, asset and security cases and can verify green. | ✅ Resolved — delegated (runtime) |
 
 ## Resolution Notes
 

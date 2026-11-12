@@ -149,7 +149,7 @@ between layers/resources, second demo, CJS/UMD and commercial support.
 
 ## Testing Requirements
 
-- `tests/quality/docs-contract.spec.test.ts` owns ST-1 through ST-8, ST-24, ST-25 and ST-27 through ST-29.
+- `tests/quality/docs-contract.spec.test.ts` owns ST-1 through ST-8, ST-28 and ST-29; the demo and report cases live in `demo-contract.spec.test.ts` from Phase 5.
 - Link resolution, topic coverage, quickstart shape, `DEFERRED.md` completeness
   and honesty checks run in the existing `test:quality` project.
 - No new runner, dependency or snapshot.

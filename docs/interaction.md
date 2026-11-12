@@ -1,7 +1,8 @@
 # Interaction Guide
 
-> **Scope**: RD-07 — pointer, keyboard and touch interaction
+> **Scope**: pointer, keyboard and touch interaction
 > **Status**: Implemented for the classic year view
+> **Related**: [documentation index](README.md) · [keyboard and screen-reader map](accessibility.md) · [controlled API](controlled-api.md)
 
 ## Modes
 
@@ -135,5 +136,6 @@ severity, versions, accepted-not-applied detection, rollback and retry — is in
   or resources are deferred from R1.
 - Timed items are read-only in the classic view.
 - Annotation items render but are host-owned for edits.
-- Full screen-reader announcements and WCAG conformance are covered by the
-  accessibility milestone.
+- Automated semantics, focus and announcements are covered in
+  [accessibility.md](accessibility.md). The manual NVDA/VoiceOver audit is parked
+  and no WCAG conformance claim is made.

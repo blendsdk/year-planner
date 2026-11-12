@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 14:34
-> **Progress**: 3/77 tasks (4%)
+> **Last Updated**: 2026-11-12 14:55
+> **Progress**: 24/77 tasks (31%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -64,30 +64,30 @@ add implementation tests, verify.
 **Reference**: [03-01](03-01-guide-set.md) · AR-3–AR-5, AR-13, AR-14, AR-19, AR-26, AR-28, AR-29
 **Objective**: Create the topic pages, split the overloaded guide, add the index, the quickstart, the deferred list and the architecture diagram.
 
-- [~] 1.2.1 Add the documentation index and fourteen-topic map — `docs/README.md` ⏳ (implemented: 2026-11-12 14:40)
-- [~] 1.2.2 Add getting-started with install, first render, CSS, controlled selection/visibility, print, SSR, Storybook (171-story count) and ESM-only — `docs/getting-started.md` ⏳ (implemented: 2026-11-12 14:42)
-- [~] 1.2.3 Add the controlled-API guide with the four controlled/uncontrolled pairs — `docs/controlled-api.md` ⏳ (implemented: 2026-11-12 14:44)
-- [ ] 1.2.4 Add the visibility guide with group → layer → item → filter → channel precedence — `docs/visibility.md`
-- [ ] 1.2.5 Move the theming section and add Fluent UI v9 and MUI copy-paste examples — `docs/theming.md`
-- [ ] 1.2.6 Move the items/overflow/slots sections and add the holiday recipe — `docs/customization.md`
-- [ ] 1.2.7 Move the inspector section and add the tooltip contract — `docs/inspector-tooltip.md`
-- [ ] 1.2.8 Add the dynamic-months guide (`year`, `range`, `contextMonths`, 12–36, units, density, zoom) — `docs/dynamic-months.md`
-- [ ] 1.2.9 Move the print section and document A3 paginate/fit and PRT-01 — `docs/print.md`
-- [ ] 1.2.10 Add the performance-status guide with the measured misses, `Conformance claim: none` and the report link — `docs/performance.md`
-- [ ] 1.2.11 Add the limitations guide and link `DEFERRED.md` — `docs/limitations.md`
-- [ ] 1.2.12 Add the migration and versioning guide — `docs/migration.md`
-- [ ] 1.2.13 Add the FAQ with at least eight question/answer pairs — `docs/faq.md`
-- [ ] 1.2.14 Add the checked-in Mermaid architecture diagram — `docs/architecture.md`
-- [ ] 1.2.15 Remove the split source guide and update its inbound links — `docs/react-view.md`, `README.md`, `docs/commands.md`
-- [ ] 1.2.16 Rewrite the README quickstart with the honest packed-install note, doc links and story count — `README.md`
-- [ ] 1.2.17 Add the 23-item deferred-capability list — `DEFERRED.md`
-- [ ] 1.2.18 Add the selection/keyboard cross-links, the parked-audit link and the corrected WCAG wording — `docs/interaction.md`, `docs/accessibility.md`
+- [x] 1.2.1 Add the documentation index and fourteen-topic map — `docs/README.md` ⏳ (implemented: 2026-11-12 14:40) ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.2 Add getting-started with install, first render, CSS, controlled selection/visibility, print, SSR, Storybook (171-story count) and ESM-only — `docs/getting-started.md` ⏳ (implemented: 2026-11-12 14:42) ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.3 Add the controlled-API guide with the four controlled/uncontrolled pairs — `docs/controlled-api.md` ⏳ (implemented: 2026-11-12 14:44) ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.4 Add the visibility guide with group → layer → item → filter → channel precedence — `docs/visibility.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.5 Move the theming section and add Fluent UI v9 and MUI copy-paste examples — `docs/theming.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.6 Move the items/overflow/slots sections and add the holiday recipe — `docs/customization.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.7 Move the inspector section and add the tooltip contract — `docs/inspector-tooltip.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.8 Add the dynamic-months guide (`year`, `range`, `contextMonths`, 12–36, units, density, zoom) — `docs/dynamic-months.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.9 Move the print section and document A3 paginate/fit and PRT-01 — `docs/print.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.10 Add the performance-status guide with the measured misses, `Conformance claim: none` and the report link — `docs/performance.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.11 Add the limitations guide and link `DEFERRED.md` — `docs/limitations.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.12 Add the migration and versioning guide — `docs/migration.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.13 Add the FAQ with at least eight question/answer pairs — `docs/faq.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.14 Add the checked-in Mermaid architecture diagram — `docs/architecture.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.15 Remove the split source guide and update its inbound links — `docs/react-view.md`, `README.md`, `docs/commands.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.16 Rewrite the README quickstart with the honest packed-install note, doc links and story count — `README.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.17 Add the 23-item deferred-capability list — `DEFERRED.md` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.2.18 Add the selection/keyboard cross-links, the parked-audit link and the corrected WCAG wording — `docs/interaction.md`, `docs/accessibility.md` ✅ (completed: 2026-11-12 14:50)
 
 ### Step 1.3: Green, implementation tests and verify
 
-- [ ] 1.3.1 Prove green for ST-1–ST-8, ST-28 and ST-29 — `pnpm test:quality`
-- [ ] 1.3.2 Add markdown-link extractor edge cases (fences, anchors, external URLs, `DEFERRED.md`) — `tests/quality/docs-contract.impl.test.ts`
-- [ ] 1.3.3 Verify the phase — `pnpm verify`
+- [x] 1.3.1 Prove green for ST-1–ST-8, ST-28 and ST-29 — `pnpm test:quality` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.3.2 Add markdown-link extractor edge cases (fences, anchors, external URLs, `DEFERRED.md`) — `tests/quality/docs-contract.impl.test.ts` ✅ (completed: 2026-11-12 14:50)
+- [x] 1.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 14:55)
 
 **Deliverables**:
 - [ ] All fourteen topics have an owning page with the required headings
@@ -251,7 +251,7 @@ add implementation tests, verify.
 **Reference**: [03-05](03-05-demo-evidence.md) · ST-24–ST-27 · AR-15, AR-16, AR-20, AR-31
 **Objective**: Prove the shared demo navigation, evidence section and RD-11 traceability rows are missing.
 
-- [ ] 5.1.1 [spec-author] Write the shared-navigation, route-doc and report cases with `RD-11-AC-08`, `RD-11-AC-10` — `tests/quality/docs-contract.spec.test.ts`
+- [ ] 5.1.1 [spec-author] Write the shared-navigation, route-doc and report cases with `RD-11-AC-08`, `RD-11-AC-10` — `tests/quality/demo-contract.spec.test.ts`
 - [ ] 5.1.2 Extend the traceability test through RD-11 (the CLI default changes in 5.2.5) — `tests/quality/traceability.spec.test.ts`
 - [ ] 5.1.3 Run the new tests and record the red result — `pnpm test:quality`
 

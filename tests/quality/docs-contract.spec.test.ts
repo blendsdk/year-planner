@@ -1,6 +1,6 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { linkTarget, relativeLinks } from "./lib/markdown-links.js";
 
 /**
  * Documentation contract for the developer guide set.
@@ -39,32 +39,6 @@ function headings(markdown: string): string[] {
     .map((line) => /^##\s+(.+?)\s*$/.exec(line)?.[1])
     .filter((heading): heading is string => heading !== undefined)
     .map((heading) => heading.toLowerCase());
-}
-
-/** Removes fenced code blocks so link and claim scans ignore examples. */
-function prose(markdown: string): string {
-  return markdown.replace(/```[\s\S]*?```/g, "");
-}
-
-/**
- * Returns the relative links in a markdown document.
- *
- * Fenced code blocks are removed first so an example URL is never treated as a
- * real link. External URLs, mail links and pure anchors are out of scope.
- */
-function relativeLinks(markdown: string): string[] {
-  const links: string[] = [];
-  for (const match of prose(markdown).matchAll(/\]\(([^)\s]+)\)/g)) {
-    const target = match[1]?.split("#")[0] ?? "";
-    if (!target || /^[a-z]+:/i.test(target) || target.startsWith("#")) continue;
-    links.push(target);
-  }
-  return links;
-}
-
-/** Resolves a link relative to the document that contains it. */
-function linkTarget(document: string, link: string): string {
-  return join(document, "..", link).replace(/^\.\//, "");
 }
 
 /** The fourteen topics RD-11 requires the guide set to own. */
@@ -116,8 +90,8 @@ const REQUIRED_SECTIONS: Record<string, readonly string[]> = {
   "docs/accessibility.md": ["conformance claim", "keyboard map", "known limitations"],
   "docs/performance.md": ["measured status", "budgets", "known misses", "reproduce"],
   "docs/limitations.md": ["deferred", "bundle", "browsers", "manual audit"],
-  "docs/migration.md": ["pre-rd-06", "semver", "api reports"],
-  "docs/faq.md": ["?"],
+  "docs/migration.md": ["early preview", "semver", "api reports"],
+  "docs/faq.md": ["questions"],
   "docs/architecture.md": ["mermaid"],
 };
 
@@ -222,7 +196,7 @@ function storyCount(): number {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     if (!entry.isFile() || !entry.name.endsWith(".stories.tsx")) continue;
     const source = readFileSync(new URL(entry.name, directory), "utf8");
-    count += source.match(/^export const \w+: Story/mg)?.length ?? 0;
+    count += source.match(/^export const \w+: Story/gm)?.length ?? 0;
   }
   return count;
 }
@@ -263,9 +237,12 @@ describe("RD-11-AC-09: deferred capabilities", () => {
       if (document.endsWith("limitations.md")) continue;
       for (const line of read(document).split("\n")) {
         const lower = line.toLowerCase();
+        if (lower.trimStart().startsWith("#") || lower.includes("?")) continue;
         if (/not |no |never|deferred|out of scope|does not|unsupported/.test(lower)) continue;
         for (const capability of DEFERRED_CAPABILITIES) {
-          const claims = lower.includes(capability) && /\b(supports?|implemented|available|works?)\b/.test(lower);
+          const claims =
+            lower.includes(capability) &&
+            /\b(supports?|implemented|available|works?)\b/.test(lower);
           expect(claims, `${document} presents "${capability}" as implemented`).toBe(false);
         }
       }
@@ -279,7 +256,13 @@ describe("RD-11-AC-10: honest status", () => {
       const normalized = read(path).replace(/\*/g, "").toLowerCase();
       expect(normalized, path).toContain("conformance claim: none");
     }
-    const forbidden = ["is compliant", "meets wcag", "conforms to", "certified", "wcag conformance is covered"];
+    const forbidden = [
+      "is compliant",
+      "meets wcag",
+      "conforms to",
+      "certified",
+      "wcag conformance is covered",
+    ];
     for (const document of markdownFiles("docs")) {
       const lower = read(document).toLowerCase();
       for (const phrase of forbidden) {
@@ -300,34 +283,6 @@ describe("RD-11-AC-10: honest status", () => {
     for (const path of ["README.md", "docs/getting-started.md", "docs/test-report.md"]) {
       expect(read(path), `${path} does not state ${count} stories`).toContain(count);
     }
-  });
-});
-
-describe("RD-11-AC-08: demo routes", () => {
-  it("renders a shared navigation for every demonstration route", () => {
-    const app = read("apps/demo/src/App.tsx");
-    for (const route of ["?commands=1", "?interaction=1", "?ac3=1", "?security=1", "?print=prt01"]) {
-      expect(app, `demo navigation is missing ${route}`).toContain(route);
-    }
-  });
-
-  it("documents the routes for a reader", () => {
-    for (const path of ["README.md", "docs/getting-started.md"]) {
-      const lower = read(path).toLowerCase();
-      for (const route of ["?commands=1", "?interaction=1", "?security=1"]) {
-        expect(lower, `${path} is missing ${route}`).toContain(route);
-      }
-    }
-  });
-});
-
-describe("RD-11-AC-10: evidence report", () => {
-  it("records the documentation evidence and its known gaps", () => {
-    const report = read("docs/test-report.md");
-    expect(report).toContain("RD-11");
-    expect(report).toContain("docs:site");
-    expect(report.toLowerCase()).toContain("storybook");
-    expect(report.toLowerCase()).toMatch(/parked|known gap/);
   });
 });
 

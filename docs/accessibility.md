@@ -1,8 +1,13 @@
 # Accessibility Guide
 
-> **Scope**: RD-09 — semantics, focus, keyboard, announcements, contrast and evidence
+> **Scope**: semantics, focus, keyboard, announcements, contrast and evidence
 > **Status**: Implemented; automated evidence green; manual NVDA/VoiceOver audit parked
 > **Conformance claim**: none. A WCAG 2.2 AA statement is published only after the manual audit.
+
+## Conformance claim
+
+None. The automated evidence is green, but the manual NVDA/VoiceOver audit is
+parked; a WCAG 2.2 AA statement is published only after that audit.
 
 ## What is covered
 
@@ -142,10 +147,14 @@ version and date in [test-report.md](test-report.md).
 
 ## Known limitations
 
-- Item proxies are outside grid navigation; the item list is the parallel path required by RD-09.
+- The manual NVDA/VoiceOver audit is parked; no WCAG conformance claim is made.
+  The measured boundaries are listed in [limitations.md](limitations.md).
+- Item proxies are outside grid navigation; the item list is the parallel path required by the
+  keyboard model.
 - Compact item proxies are 24 px high; hosts that override `laneHeight` below 24 px take ownership
   of target size.
 - `renderItem` content inside a proxy is host-owned and must not add interactive controls. The
   planner warns in development and the axe matrix checks for nesting.
-- A full HTML validator is not installed; AC14’s nested-control risk is covered by axe
+- A full HTML validator is not installed; the nested-control risk is covered by axe
   `nested-interactive` and a DOM scan.
+- Deferred capabilities are listed in [DEFERRED.md](../DEFERRED.md).

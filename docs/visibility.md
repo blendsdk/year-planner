@@ -36,9 +36,9 @@ const visibility: VisibilityState = {
 
 ## Layers
 
-A layer optionally belongs to a group and chooses a render channel:
-`ribbon`, `foreground`, `background`, `highlight` or `annotation`. Hiding a layer hides its items but keeps
-the layer available in the host's controls.
+A layer optionally belongs to a group and chooses a render channel: `ribbon`,
+`foreground`, `background`, `highlight` or `annotation`. Hiding a layer hides its
+items but keeps the layer available in the host's controls.
 
 ## Items
 

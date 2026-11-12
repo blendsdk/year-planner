@@ -13,11 +13,11 @@ build the workspace and install the packed tarballs:
 ```bash
 pnpm install --frozen-lockfile
 pnpm build
-pnpm --filter @blendsdk/year-planner-core pack
+pnpm --filter @blendsdk/year-planner-core pack --pack-destination ./packs
 pnpm --filter @blendsdk/react-year-planner pack --pack-destination ./packs
 ```
 
-Install the two `.tgz` files together with React 19 and React DOM 19. The React
+Install the two `.tgz` files from `./packs` together with React 19 and React DOM 19. The React
 package depends on `@blendsdk/year-planner-core@0.1.0`, which is not on a
 registry yet, so add a pnpm `overrides` entry that maps
 `@blendsdk/year-planner-core` to the core tarball (the same pattern as

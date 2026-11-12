@@ -118,9 +118,8 @@ The full contract, including retries and rollback, is in
   onChangeRequest={async (command) => {
     // applyLocally is a host helper that turns a command into the next items.
     const nextItems = applyLocally(items, command);
-    const nextRevision = String(revision + 1);
+    const nextRevision = String(nextItems.length);
     setItems(nextItems);
-    setRevision(nextRevision);
     return { accepted: true, revision: nextRevision, updatedItems: nextItems };
   }}
   year={2027}

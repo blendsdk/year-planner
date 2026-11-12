@@ -26,3 +26,18 @@
 | RV-019 | 1 | OBSERVATION | README/routes | fixed |
 | RV-020 | 1 | OBSERVATION | docs/performance | fixed |
 | RV-021 | 1 | OBSERVATION | docs/visibility | fixed |
+
+### Phase 1 re-review residuals
+
+| Finding | Phase | Severity | Area | Ruling |
+| ------- | ----- | -------- | ---- | ------ |
+| RV-R-001 | 1 | MINOR | docs/publication | fixed |
+| RV-R-002 | 1 | MINOR | docs/performance | fixed |
+| RV-R-003 | 1 | MINOR | docs/getting-started | fixed |
+| RV-R-004 | 1 | MINOR | docs-contract/security | fixed |
+| RV-R-005 | 1 | MINOR | 99-execution-plan | fixed |
+| RV-R-006 | 1 | OBSERVATION | docs-contract/anchors | fixed |
+| RV-R-007 | 1 | OBSERVATION | docs-contract/impl | fixed |
+| RV-R-008 | 1 | OBSERVATION | docs/controlled-api | fixed |
+| RV-R-009 | 1 | OBSERVATION | README/performance | fixed |
+| RV-R-010 | 1 | OBSERVATION | docs/wrapping | fixed |

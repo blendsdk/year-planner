@@ -13,7 +13,7 @@ that host; they are not a cross-device promise.
 | -------- | ---------- | --------- | ------ | ------ |
 | Drag 500 items, compact | 33.4 ms | **16.7 ms** | 16.7 ms | pass |
 | Drag 2,000 items, compact | 300 ms | **16.8 ms** | 16.7 ms | within one frame |
-| Drag 10,000 items, compact (10 steps) | 8,916 ms | **66.6 ms** | 16.7 ms | fail (above the 2× ceiling) |
+| Drag 10,000 items, compact (10 steps) | 8,916 ms | **66.6 ms** | 500 ms stress ceiling | miss (stress case) |
 | Drag 36 months, 500 items | 100 ms | **16.7 ms** | 16.7 ms | pass |
 | Development drag, 500 items | 416.6 ms | **16.7 ms** | report only | improved |
 | Overflow open/close, 10,000 items | 115.3 ms | 118.3 ms | 100 ms | miss |

@@ -178,7 +178,7 @@ pnpm verify:full     # adds Playwright, timezones, audit, performance evidence, 
 pnpm test:quality    # traceability, public API, coverage, size, CI and license contracts
 pnpm test:timezones  # date suite under UTC, Pacific/Kiritimati and America/Los_Angeles
 pnpm test:audit      # no high or critical dependency advisories
-pnpm test:perf       # performance report; PERF_STRICT=1 gates the issue #3 oracle
+pnpm test:perf       # performance report; PERF_STRICT=1 gates the drag-latency oracle
 pnpm bench           # layout and browser benchmarks; --enforce gates the 2x ceiling
 pnpm storybook       # interactive component site
 pnpm run docs        # API Extractor reports + TypeDoc HTML under docs/api

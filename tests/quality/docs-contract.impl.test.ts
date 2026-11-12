@@ -30,8 +30,10 @@ describe("documentation link extractor", () => {
     expect(linkTarget("docs/guide.md", "theming.md")).toBe("docs/theming.md");
   });
 
-  it("ignores root-absolute links and reference-style links", () => {
-    expect(relativeLinks("[api](/api/index.html) and [ref][target]")).toEqual([]);
+  it("ignores root-absolute links and still finds inline links beside reference links", () => {
+    expect(relativeLinks("[api](/api/index.html) [ref][target] [real](real.md)")).toEqual([
+      "real.md",
+    ]);
   });
 
   it("reads a title-bearing link as its path", () => {

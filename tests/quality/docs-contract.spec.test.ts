@@ -332,8 +332,6 @@ describe("RD-11-AC-13: documentation security", () => {
   it("uses synthetic data and no raw HTML injection in examples", () => {
     const forbidden = ["dangerouslySetInnerHTML", "innerHTML", "__html"];
     for (const document of ["README.md", ...markdownFiles("docs")]) {
-      // The security page may quote an unsafe pattern while explaining why it is banned.
-      if (document.endsWith("security.md")) continue;
       const blocks = codeBlocks(read(document));
       for (const block of blocks) {
         for (const token of forbidden) {

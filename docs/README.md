@@ -11,7 +11,7 @@ planning. This page is the entry point for the developer guides.
 | Controlled API | [controlled-api.md](controlled-api.md) |
 | Visibility semantics | [visibility.md](visibility.md) |
 | Selection and keyboard | [interaction.md](interaction.md) (keyboard map: [accessibility.md](accessibility.md)) |
-| Theming | [theming.md](theming.md) |
+| Theming | [theming.md](theming.md#css-variables) |
 | Customization and holidays | [customization.md](customization.md) |
 | Inspector and tooltip | [inspector-tooltip.md](inspector-tooltip.md) |
 | Dynamic months | [dynamic-months.md](dynamic-months.md) |
@@ -41,14 +41,14 @@ repository documentation and are not copied into the published artifact.
 
 ## Publishing the site
 
-The release pipeline builds and uploads `storybook-static/` and publishes only
-through a manual `workflow_dispatch` run with `deploy: true` from `main`. Before
-the first release:
+The docs-site workflow, added with the release pipeline, builds and uploads
+`storybook-static/` and publishes only through a manual `workflow_dispatch` run
+with `deploy: true` from `main`. Before the first release:
 
 1. Open the repository settings and enable GitHub Pages with **GitHub Actions**
    as the source.
 2. Confirm the repository plan supports Pages.
-3. Run the **Docs site** workflow on `main` with `deploy: true`.
+3. Run the **Docs site** workflow on `main` with `deploy: true` once it is added.
 
 The build does not depend on a stored secret; the deploy job uses the GitHub
 OIDC token and the `github-pages` environment.

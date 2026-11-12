@@ -40,13 +40,15 @@ host is available on the project. No WCAG conformance claim is made. See
 
 ## Performance
 
-The initial render, the 10,000-item drag and the 10,000-item overflow open/close miss their budgets. The numbers
+The initial render, the 10,000-item drag and the 10,000-item overflow
+open/close miss their budgets. The numbers
 describe the reference host only. See [performance.md](performance.md).
 
 ## Publication
 
-The packages are not on a public registry, and the documentation site is built
-and uploaded but not published until the release step enables GitHub Pages.
+The packages are not on a public registry. The documentation site will be built
+and uploaded by the release pipeline but is not published until the release step
+enables GitHub Pages.
 Storybook 10 provides the viewport in core; the legacy
 `@storybook/addon-viewport` package is not used.
 

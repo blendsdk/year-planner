@@ -31,7 +31,8 @@ workflow uses the GitHub Pages actions.
 | Build Storybook into the repo root | `apps/storybook/package.json` |
 | Build on push, upload, guarded deploy | `.github/workflows/pages.yml` |
 | Build and verify on pull requests | `.github/workflows/ci.yml` |
-| Document the release-time enable step | `docs/README.md` |
+| Document the release-time enable step and local commands | `docs/README.md` |
+| Drop the broken TypeDoc cross-package nav links; the `/api` landing page owns cross-links | `typedoc.core.json`, `typedoc.react.json` |
 
 ## Implementation Details
 

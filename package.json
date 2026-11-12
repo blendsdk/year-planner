@@ -26,7 +26,7 @@
     "storybook:build": "pnpm --filter @blendsdk/year-planner-storybook build",
     "api-report": "pnpm build && pnpm --filter @blendsdk/year-planner-core api-report && pnpm --filter @blendsdk/react-year-planner api-report",
     "pack:check": "pnpm -r pack:check",
-    "verify": "pnpm test:toolchain && pnpm typecheck && pnpm typecheck:tools && pnpm lint && pnpm test && pnpm test:quality && pnpm test:licenses && pnpm build && pnpm api-report:ci && pnpm test:size && pnpm storybook:build && pnpm docs:build && pnpm pack:check",
+    "verify": "pnpm test:toolchain && pnpm typecheck && pnpm typecheck:tools && pnpm lint && pnpm test && pnpm test:quality && pnpm test:licenses && pnpm build && pnpm api-report:ci && pnpm test:size && pnpm docs:site && pnpm pack:check",
     "verify:full": "pnpm verify && pnpm test:e2e && pnpm test:timezones && pnpm test:audit && pnpm test:perf && pnpm bench && pnpm test:consumer",
     "api-report:ci": "pnpm build && pnpm --filter @blendsdk/year-planner-core api-report:ci && pnpm --filter @blendsdk/react-year-planner api-report:ci",
     "docs": "pnpm api-report && pnpm docs:build",

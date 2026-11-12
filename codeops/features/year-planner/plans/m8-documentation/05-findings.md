@@ -73,3 +73,21 @@
 | RV-014 | 3 | MINOR | tsdoc/print-plan | fixed |
 | RV-015 | 3 | MINOR | tsdoc/param-tags | fixed |
 | RV-016 | 3 | MINOR | tsdoc/default-units | fixed |
+
+### Phase 4 review
+
+| Finding | Phase | Severity | Area | Ruling |
+| ------- | ----- | -------- | ---- | ------ |
+| RV-001 | 4 | MAJOR | verify/artifact | fixed |
+| RV-002 | 4 | MINOR | docs-site-contract/guard | fixed |
+| RV-003 | 4 | MINOR | docs-site/crawl | fixed |
+| RV-004 | 4 | MINOR | docs/publishing | fixed |
+| RV-005 | 4 | OBSERVATION | typedoc/navigation | accepted (recorded) |
+| SA-001 | 4 | LOW | docs-site/root | fixed |
+| SA-002 | 4 | LOW | docs-site/traversal | fixed |
+| SA-003 | 4 | LOW | docs-site-contract/structure | fixed |
+| SA-004 | 4 | LOW | docs-site/stale-api | fixed |
+| SA-005 | 4 | INFO | workflows/action-pins | accepted |
+| SA-006 | 4 | INFO | docs-site/absolute-urls | fixed |
+| SA-007 | 4 | INFO | workflows/concurrency | fixed |
+| SA-008 | 4 | INFO | ci/artifact-always | fixed |

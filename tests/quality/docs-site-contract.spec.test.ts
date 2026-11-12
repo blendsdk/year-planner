@@ -62,7 +62,10 @@ describe("RD-11-AC-06: Pages workflow", () => {
     const workflow = read(PAGES);
     expect(workflow).toContain("workflow_dispatch");
     expect(workflow).toContain("deploy:");
-    expect(workflow).toContain("github.ref == 'refs/heads/main'");
+    expect(workflow).toContain("needs: build");
+    expect(workflow).toContain(
+      "if: github.event_name == 'workflow_dispatch' && inputs.deploy && github.ref == 'refs/heads/main'",
+    );
     expect(workflow).toContain("path: storybook-static");
     expect(workflow).toContain("environment:");
     expect(workflow).toContain("github-pages");

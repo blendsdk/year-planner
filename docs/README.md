@@ -48,10 +48,20 @@ with `deploy: true` from `main`. Before the first release:
 1. Open the repository settings and enable GitHub Pages with **GitHub Actions**
    as the source.
 2. Confirm the repository plan supports Pages.
-3. Run the **Docs site** workflow on `main` with `deploy: true` once it is added.
+3. Run the **Docs site** workflow on `main` with `deploy: true`.
 
 The build does not depend on a stored secret; the deploy job uses the GitHub
 OIDC token and the `github-pages` environment.
+
+## Building the site locally
+
+```bash
+pnpm docs:site              # package build, Storybook, TypeDoc, copy, verify
+pnpm docs:site -- --check-only  # verify the last build without rebuilding
+```
+
+`pnpm storybook:build` clears `storybook-static/`; run `pnpm docs:site` when the
+API tree must be present.
 
 ## Package status
 

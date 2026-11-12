@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, readdirSync, readFileSync, rmSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 /**
@@ -46,20 +46,25 @@ function countFiles(directory) {
 }
 
 /** Walks a bounded set of generated HTML pages and checks relative links. */
-function checkHtmlTree(directory, errors, budget = { remaining: 40 }) {
+function checkHtmlTree(directory, errors, bound, budget = { remaining: 250 }) {
   if (!existsSync(directory) || budget.remaining <= 0) return;
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     if (budget.remaining <= 0) return;
     const path = join(directory, entry.name);
     if (entry.isDirectory()) {
       if (entry.name === "assets") continue;
-      checkHtmlTree(path, errors, budget);
+      checkHtmlTree(path, errors, bound, budget);
       continue;
     }
     if (!entry.name.endsWith(".html")) continue;
     budget.remaining -= 1;
     for (const url of collectRelativeUrls(readFileSync(path, "utf8"))) {
-      if (!existsSync(join(directory, url))) {
+      const resolved = resolve(directory, url);
+      if (resolved !== resolve(bound) && !resolved.startsWith(`${resolve(bound)}${sep}`)) {
+        errors.push(`${path} references an escaping path ${url}`);
+        continue;
+      }
+      if (!existsSync(resolved)) {
         errors.push(`${path} references missing ${url}`);
       }
     }
@@ -84,7 +89,11 @@ export function verifyArtifact(root) {
   for (const page of ["index.html", "iframe.html"]) {
     const file = join(artifact, page);
     if (!existsSync(file)) continue;
-    for (const url of collectRelativeUrls(readFileSync(file, "utf8"))) {
+    const html = readFileSync(file, "utf8");
+    for (const match of html.matchAll(/(?:src|href)="(\/[^"]*)"/g)) {
+      errors.push(`${page} uses a root-absolute URL ${match[1] ?? ""}`);
+    }
+    for (const url of collectRelativeUrls(html)) {
       if (!existsSync(join(artifact, url))) errors.push(`${page} references missing ${url}`);
     }
   }
@@ -96,7 +105,8 @@ export function verifyArtifact(root) {
       }
     }
   }
-  checkHtmlTree(join(artifact, "api"), errors);
+  checkHtmlTree(join(artifact, "api", "core"), errors, artifact);
+  checkHtmlTree(join(artifact, "api", "react"), errors, artifact);
   return errors;
 }
 
@@ -123,7 +133,13 @@ function run(command, args, root) {
 export function buildDocsSite(root, checkOnly) {
   const artifact = join(root, "storybook-static");
   if (!checkOnly) {
+    const manifest = join(root, "package.json");
+    if (!existsSync(manifest)) throw new Error(`--root has no package.json: ${root}`);
+    const pkg = JSON.parse(readFileSync(manifest, "utf8"));
+    if (pkg.name !== "year-planner")
+      throw new Error(`--root is not the year-planner repository: ${root}`);
     rmSync(artifact, { recursive: true, force: true });
+    rmSync(join(root, "docs/api"), { recursive: true, force: true });
     run("pnpm", ["build"], root);
     run("pnpm", ["storybook:build"], root);
     run("pnpm", ["docs:build"], root);

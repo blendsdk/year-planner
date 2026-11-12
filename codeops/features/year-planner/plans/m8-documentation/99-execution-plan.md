@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 14:10
-> **Progress**: 0/77 tasks (0%)
+> **Last Updated**: 2026-11-12 14:25
+> **Progress**: 1/77 tasks (1%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -46,7 +46,7 @@ add implementation tests, verify.
 
 ## Phase 1: Guide set and README quickstart
 
-> **Phase baseline tree**: recorded at phase start by the exec-plan skill.
+> **Phase baseline tree**: 92af13a8d66ff2215ab92f0528c0129b7256c4a2
 > **Lenses**: correctness, maintainability
 > **Reasoning**: high — a guide that states the wrong precedence or an unmeasured claim becomes a product statement.
 
@@ -55,7 +55,7 @@ add implementation tests, verify.
 **Reference**: [03-01](03-01-guide-set.md) · ST-1–ST-8, ST-28, ST-29 · AR-3–AR-5, AR-13, AR-14, AR-19, AR-26, AR-29
 **Objective**: Prove the guide set, quickstart, deferred list, honesty rules and assets are incomplete.
 
-- [ ] 1.1.1 [spec-author] Write the topic-map, required-heading, page-existence and link-resolution cases with `RD-11-AC-07` — `tests/quality/docs-contract.spec.test.ts`
+- [x] 1.1.1 [spec-author] Write the topic-map, required-heading, page-existence and link-resolution cases with `RD-11-AC-07` — `tests/quality/docs-contract.spec.test.ts` ✅ (completed: 2026-11-12 14:25)
 - [ ] 1.1.2 [spec-author] Write the quickstart, `DEFERRED.md`, honesty, story-count, asset and security cases with `RD-11-AC-09`, `RD-11-AC-10`, `RD-11-AC-12`, `RD-11-AC-13` — `tests/quality/docs-contract.spec.test.ts`
 - [ ] 1.1.3 Run the new tests and record the red result — `pnpm test:quality`
 

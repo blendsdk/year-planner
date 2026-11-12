@@ -146,7 +146,7 @@ export const prt01Items: PlannerItem[] = [
   item("prt01-booking", "bookings", "2017-02-06", "2017-02-10", {
     title: "PRT-01 booking",
   }),
-  item("prt01-holiday", "notes", "2017-02-01", "2017-02-02", {
+  item("prt01-annotation", "notes", "2017-02-01", "2017-02-02", {
     title: "PRT-01 holiday",
     kind: "annotation",
     annotation: { label: "OH", background: "#ffd166", priority: 2 },

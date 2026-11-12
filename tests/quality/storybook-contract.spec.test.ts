@@ -52,6 +52,10 @@ const REQUIRED_STORIES: Array<{ title: string; export: string }> = [
   { title: "Year Planner/03 Items, Annotations and Overflow", export: "CrossYearBooking" },
   { title: "Year Planner/03 Items, Annotations and Overflow", export: "ThreeOverlappingLanes" },
   { title: "Year Planner/03 Items, Annotations and Overflow", export: "CompactOverflow" },
+  { title: "Year Planner/03 Items, Annotations and Overflow", export: "NoItems" },
+  { title: "Year Planner/03 Items, Annotations and Overflow", export: "HiddenLayer" },
+  { title: "Year Planner/03 Items, Annotations and Overflow", export: "HiddenGroup" },
+  { title: "Year Planner/07 State and Filtering", export: "HiddenChannel" },
   { title: "Year Planner/07 State and Filtering", export: "ControlledVisibility" },
   { title: "Year Planner/07 State and Filtering", export: "HiddenGroupByDefault" },
   { title: "Year Planner/07 State and Filtering", export: "HiddenItemByDefault" },
@@ -113,23 +117,38 @@ describe("RD-11-AC-02: design-system wrappers", () => {
     const adapters = storyFiles().find((file) => file.name === "Adapters.stories.tsx");
     expect(adapters).toBeDefined();
     const source = adapters?.source ?? "";
-    for (const name of ["FluentWrapper", "MuiWrapper"]) {
-      expect(source, `missing ${name}`).toContain(`export const ${name}: Story`);
+    const wrappers = [
+      { name: "FluentWrapper", adapter: "fluentThemeToCssVars" },
+      { name: "MuiWrapper", adapter: "muiThemeToCssVars" },
+    ];
+    for (const wrapper of wrappers) {
+      const start = source.indexOf(`export const ${wrapper.name}: Story`);
+      expect(start, `missing ${wrapper.name}`).toBeGreaterThanOrEqual(0);
+      const block = source.slice(start, source.indexOf("export const", start + 1));
+      expect(block, `${wrapper.name} does not use the provider`).toContain("YearPlannerProvider");
+      expect(block, `${wrapper.name} does not pass adapter cssVars`).toContain(
+        `cssVars={${wrapper.adapter}(`,
+      );
     }
-    expect(source).toContain("fluentThemeToCssVars");
-    expect(source).toContain("muiThemeToCssVars");
-    expect(source).toContain("YearPlannerProvider");
   });
 });
 
 describe("RD-11-AC-02: built-in viewport", () => {
   it("configures named viewports without the legacy addon", () => {
     const preview = readFileSync(new URL("apps/storybook/.storybook/preview.ts", ROOT), "utf8");
-    expect(preview).toContain("viewport");
-    expect(preview).toContain("options");
+    const start = preview.indexOf("viewport");
+    expect(start, "viewport parameters are missing").toBeGreaterThanOrEqual(0);
+    const block = preview.slice(start, start + 600);
+    for (const name of ["mobile", "tablet", "desktop"]) {
+      expect(block, `viewport ${name} is missing`).toContain(name);
+    }
     const manifest = JSON.parse(
       readFileSync(new URL("apps/storybook/package.json", ROOT), "utf8"),
-    ) as { devDependencies?: Record<string, string> };
+    ) as {
+      devDependencies?: Record<string, string>;
+      dependencies?: Record<string, string>;
+    };
     expect(manifest.devDependencies?.["@storybook/addon-viewport"]).toBeUndefined();
+    expect(manifest.dependencies?.["@storybook/addon-viewport"]).toBeUndefined();
   });
 });

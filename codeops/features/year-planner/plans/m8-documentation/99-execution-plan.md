@@ -133,10 +133,10 @@ add implementation tests, verify.
 - [x] 2.3.2 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 15:00)
 
 **Deliverables**:
-- [ ] PRT-01 2017-yellow print story present and named
-- [ ] Fluent/MUI provider wrapper stories present
-- [ ] Built-in viewport configured; no addon dependency added
-- [ ] All phase verification passing
+- [x] PRT-01 2017-yellow print story present and named
+- [x] Fluent/MUI provider wrapper stories present
+- [x] Built-in viewport configured; no addon dependency added
+- [x] All phase verification passing
 
 **Test slices**: `verification` (task) via the Storybook contract; `apps/**` is full-on
 **Task verify**: `pnpm verify` (full gate; AR-30)

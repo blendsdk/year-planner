@@ -41,3 +41,14 @@
 | RV-R-008 | 1 | OBSERVATION | docs/controlled-api | fixed |
 | RV-R-009 | 1 | OBSERVATION | README/performance | fixed |
 | RV-R-010 | 1 | OBSERVATION | docs/wrapping | fixed |
+
+### Phase 2 review
+
+| Finding | Phase | Severity | Area | Ruling |
+| ------- | ----- | -------- | ---- | ------ |
+| RV-022 | 2 | MAJOR | storybook/jsx-transform | fixed |
+| RV-023 | 2 | MAJOR | storybook-contract/wrappers | fixed |
+| RV-024 | 2 | MINOR | storybook-contract/viewport | fixed |
+| RV-025 | 2 | MINOR | storybook-contract/manifest | fixed |
+| RV-026 | 2 | OBSERVATION | storybook/fixture-id | fixed |
+| RV-027 | 2 | MINOR | 99-execution-plan | fixed |

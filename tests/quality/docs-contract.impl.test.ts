@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { linkTarget, relativeLinks } from "./lib/markdown-links.js";
+import { anchoredLinks, headingAnchors, linkTarget, relativeLinks } from "./markdown-links.js";
 
 /**
  * Edge cases for the markdown link extractor used by the documentation
@@ -28,5 +28,23 @@ describe("documentation link extractor", () => {
   it("resolves a parent-relative link from a nested document", () => {
     expect(linkTarget("docs/guide.md", "../README.md")).toBe("README.md");
     expect(linkTarget("docs/guide.md", "theming.md")).toBe("docs/theming.md");
+  });
+
+  it("ignores root-absolute links and reference-style links", () => {
+    expect(relativeLinks("[api](/api/index.html) and [ref][target]")).toEqual([]);
+  });
+
+  it("reads a title-bearing link as its path", () => {
+    expect(relativeLinks('[guide](guide.md "The guide")')).toEqual(["guide.md"]);
+  });
+
+  it("rejects a target that escapes the repository", () => {
+    expect(() => linkTarget("docs/guide.md", "../../../outside.md")).toThrow(/escapes/);
+  });
+
+  it("extracts heading anchors and anchored links", () => {
+    const markdown = "## Getting started\n\nSee [theming](theming.md#colour-tokens).";
+    expect(headingAnchors(markdown)).toEqual(new Set(["getting-started"]));
+    expect(anchoredLinks(markdown)).toEqual([{ path: "theming.md", anchor: "colour-tokens" }]);
   });
 });

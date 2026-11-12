@@ -34,16 +34,16 @@ planning. This page is the entry point for the developer guides.
 
 ## Published sites
 
-The Storybook site is the live component catalogue; the generated TypeDoc
-reference is served at `/api/`. Both are built from this repository. The markdown
-guides on this page are the repository documentation and are not copied into the
-published artifact.
+The Storybook site is the published component catalogue; the generated TypeDoc
+reference is served at `/api/`. Both are built from this repository when the
+release pipeline enables the docs site. The markdown guides on this page are the
+repository documentation and are not copied into the published artifact.
 
 ## Publishing the site
 
-The Pages workflow builds and uploads `storybook-static/` on every push to
-`main`. It publishes only through a manual `workflow_dispatch` run with
-`deploy: true` from `main`. Before the first release:
+The release pipeline builds and uploads `storybook-static/` and publishes only
+through a manual `workflow_dispatch` run with `deploy: true` from `main`. Before
+the first release:
 
 1. Open the repository settings and enable GitHub Pages with **GitHub Actions**
    as the source.

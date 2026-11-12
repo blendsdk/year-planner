@@ -121,6 +121,7 @@ Run `pnpm dev` and open the demo:
 | `?ac3=1` | Real Fluent UI v9 and MUI buttons in a cell and inspector |
 | `?security=1` | A hidden item that must not reach the DOM or inspector |
 | `?print=prt01` | The 2017 classic-yellow print sample |
+| `?bench=1` | Layout and browser benchmark host |
 
 ## Packages
 
@@ -180,7 +181,6 @@ pnpm test:audit      # no high or critical dependency advisories
 pnpm test:perf       # performance report; PERF_STRICT=1 gates the issue #3 oracle
 pnpm bench           # layout and browser benchmarks; --enforce gates the 2x ceiling
 pnpm storybook       # interactive component site
-pnpm docs:site       # Storybook + TypeDoc artifact under storybook-static/
 pnpm run docs        # API Extractor reports + TypeDoc HTML under docs/api
 ```
 

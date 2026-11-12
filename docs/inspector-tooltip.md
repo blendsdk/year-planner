@@ -24,9 +24,17 @@ close button remain, so focus and dismissal stay consistent.
   renderInspector={({ items, selection, actions }) => (
     <div>
       <p>{items.length} selected</p>
-      <button type="button" onClick={() => actions.requestCommand({ kind: "delete", itemIds: selection.items })}>
-        Delete
-      </button>
+      {items.map((item) => (
+        <button
+          key={item.id}
+          type="button"
+          onClick={() =>
+            actions.requestCommand({ type: "delete", itemId: item.id, expectedVersion: item.version })
+          }
+        >
+          Delete {item.title}
+        </button>
+      ))}
     </div>
   )}
 />

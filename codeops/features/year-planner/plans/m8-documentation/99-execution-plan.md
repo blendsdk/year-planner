@@ -90,14 +90,14 @@ add implementation tests, verify.
 - [x] 1.3.3 Verify the phase — `pnpm verify` ✅ (completed: 2026-11-12 14:55)
 
 **Deliverables**:
-- [ ] All fourteen topics have an owning page with the required headings
-- [ ] README quickstart is complete and honest about the unpublished install
-- [ ] `DEFERRED.md` lists all 23 deferred capabilities
-- [ ] Architecture diagram and the SSR/ESM content are preserved
-- [ ] All phase verification passing
+- [x] All fourteen topics have an owning page with the required headings
+- [x] README quickstart is complete and honest about the unpublished install
+- [x] `DEFERRED.md` lists all 23 deferred capabilities
+- [x] Architecture diagram and the SSR/ESM content are preserved
+- [x] All phase verification passing
 
 **Test slices**: `verification` (task) via the docs contract
-**Task verify**: `pnpm verify` (docs-only changes plus the unknown `DEFERRED.md` path fall back to the fast full gate; 220 core + 508 React + 93 quality tests observed, 2026-11-12)
+**Task verify**: `pnpm verify` (docs-only changes plus the unknown `DEFERRED.md` path fall back to the fast full gate; 220 core + 508 React + 107 quality tests observed, 2026-11-12)
 **Verify (gate)**: `pnpm verify`
 
 ---

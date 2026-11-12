@@ -71,8 +71,9 @@ import { fluentThemeToCssVars } from "@blendsdk/react-year-planner/adapters/flue
 </FluentProvider>;
 ```
 
-The same `cssVars` can be applied through `YearPlannerProvider` when the host
-wants one theme for several planners.
+`YearPlannerProvider` accepts theme tokens, not the adapter CSS-variable map. To
+theme several planners, pass the same `cssVars` to each planner, or map the
+adapter tokens into a `Partial<YearPlannerTheme>` and pass that as `theme`.
 
 ## MUI
 

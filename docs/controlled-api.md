@@ -114,11 +114,14 @@ The full contract, including retries and rollback, is in
 ```tsx
 <YearPlanner
   items={items}
-  validateChange={(command) => ({ permitted: true, diagnostics: [] })}
+  validateChange={() => ({ permitted: true, diagnostics: [] })}
   onChangeRequest={async (command) => {
-    const nextItems = applyCommand(items, command);
+    // applyLocally is a host helper that turns a command into the next items.
+    const nextItems = applyLocally(items, command);
+    const nextRevision = String(revision + 1);
     setItems(nextItems);
-    return { status: "accepted", nextItems, diagnostics: [] };
+    setRevision(nextRevision);
+    return { accepted: true, revision: nextRevision, updatedItems: nextItems };
   }}
   year={2027}
 />;

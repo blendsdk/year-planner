@@ -10,9 +10,10 @@ render, and uses explicit `en-US` and `UTC` defaults. Render it on the server wi
 
 ### Why 37 day columns?
 
-The classic layout reserves a fixed 37-column day grid so every month row aligns
-regardless of the weekday a month starts on. The extra context columns keep the
-grid stable across 12–36 month windows and make cross-month ribbons contiguous.
+Each month row always draws 37 day columns: up to six leading blanks for the
+weekday offset plus at most 31 days. The fixed width keeps every month row aligned
+regardless of the weekday the month starts on; it is not related to the number of
+context months.
 
 ### How do I hide an item without deleting it?
 

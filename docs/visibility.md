@@ -17,8 +17,8 @@ The effective visibility is evaluated in this order:
 5. A hidden render channel removes that channel entirely.
 
 Later rules narrow the view; they never re-show something hidden by an earlier
-rule. `getEffectiveVisibility(id)` returns the resolved state for one item when
-the host needs to mirror it.
+rule. `ref.current.getEffectiveVisibility(id)` returns the resolved state for one item;
+the core equivalent is `getEffectiveVisibility(id, context)`.
 
 ## Groups
 
@@ -36,8 +36,8 @@ const visibility: VisibilityState = {
 
 ## Layers
 
-Layers belong to a group and choose a render channel: `ribbon`, `foreground`,
-`background`, `annotation` or `preview`. Hiding a layer hides its items but keeps
+A layer optionally belongs to a group and chooses a render channel:
+`ribbon`, `foreground`, `background`, `highlight` or `annotation`. Hiding a layer hides its items but keeps
 the layer available in the host's controls.
 
 ## Items
@@ -52,7 +52,7 @@ never exposes its title, id, metadata or timing.
 filter is not a hide: clearing it restores the item. Filters apply after the
 explicit hides and before channel rules.
 
-```ts
+```tsx
 <YearPlanner filter={{ layerIds: ["bookings"], search: "winter" }} year={2027} />;
 ```
 

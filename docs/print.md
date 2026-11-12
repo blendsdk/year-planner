@@ -39,9 +39,9 @@ fit. When the date text would fall below 7 pt, the planner reports the
 
 PRT-01 is the reference 2017 classic-yellow print sample: one A3 page with the
 booking `2017-02-06` → `2017-02-10` and the holiday annotation `2017-02-01` →
-`2017-02-02`. Storybook contains the exact story
-`Year Planner/06 Print Planning/Prt01TwoThousandSeventeen`; the Playwright print
-matrix asserts the page size and content with `pdfinfo` and `pdftotext`.
+`2017-02-02`. The print story set lives under `Year Planner/06 Print Planning`;
+the Playwright print matrix asserts the page size and content with `pdfinfo` and
+`pdftotext`.
 
 ## print CSS
 

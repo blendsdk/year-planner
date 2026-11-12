@@ -13,12 +13,12 @@ that host; they are not a cross-device promise.
 | -------- | ---------- | --------- | ------ | ------ |
 | Drag 500 items, compact | 33.4 ms | **16.7 ms** | 16.7 ms | pass |
 | Drag 2,000 items, compact | 300 ms | **16.8 ms** | 16.7 ms | within one frame |
-| Drag 10,000 items, compact (10 steps) | 8,916 ms | **66.6 ms** | 16.7 ms | recorded stress miss |
+| Drag 10,000 items, compact (10 steps) | 8,916 ms | **66.6 ms** | 16.7 ms | fail (above the 2× ceiling) |
 | Drag 36 months, 500 items | 100 ms | **16.7 ms** | 16.7 ms | pass |
 | Development drag, 500 items | 416.6 ms | **16.7 ms** | report only | improved |
 | Overflow open/close, 10,000 items | 115.3 ms | 118.3 ms | 100 ms | miss |
-| Initial render, 500/2k/10k items | 414–50,458 ms | still above 150 ms | 150 ms | miss |
-| Initial render, 12/14/18/24/36 months | 401–543 ms | still above 150 ms | 150 ms | miss |
+| Initial render, 500/2k/10k items | 414–50,458 ms | still above 150 ms | 150 ms | fail |
+| Initial render, 12/14/18/24/36 months | 401–543 ms | still above 150 ms | 150 ms | fail |
 
 The 10,000-item drag records 10 steps because the 14 GiB reference host cannot
 complete 60 steps reliably; every report prints `n` beside the p95 so the
@@ -30,8 +30,8 @@ reduced sample is visible.
   tolerance.
 - `pnpm test:perf` reports every budget and fails on a harness error or a 2×
   regression.
-- `PERF_STRICT=1 pnpm test:perf` gates the interaction budgets and the issue #3
-  oracle.
+- `PERF_STRICT=1 pnpm test:perf` gates the interaction budgets and the recorded
+  drag-latency oracle.
 - `pnpm bench --enforce` gates the 2× regression ceiling; the 10,000-item drag
   keeps a 500 ms stress ceiling.
 
@@ -39,8 +39,8 @@ reduced sample is visible.
 
 The initial render budget (150 ms) is not met at any tested item count. The
 10,000-item overflow open/close is about 118 ms against the 100 ms budget. Both
-are measured and recorded, not hidden; the issue #3 work targeted interaction
-responsiveness, not first paint.
+are measured and recorded, not hidden; the optimization work targeted interaction
+responsiveness, not first paint. The full evidence is in the test report.
 
 ## Reproduce
 

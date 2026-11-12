@@ -14,13 +14,15 @@ build the workspace and install the packed tarballs:
 pnpm install --frozen-lockfile
 pnpm build
 pnpm --filter @blendsdk/year-planner-core pack
-pnpm --filter @blendsdk/react-year-planner pack
+pnpm --filter @blendsdk/react-year-planner pack --pack-destination ./packs
 ```
 
-Install the two `.tgz` files together with React 19 and React DOM 19. The
-clean-consumer script (`scripts/clean-consumer.sh`) performs the same packed
-install in CI. Do not use a registry install instruction before the packages are
-published.
+Install the two `.tgz` files together with React 19 and React DOM 19. The React
+package depends on `@blendsdk/year-planner-core@0.1.0`, which is not on a
+registry yet, so add a pnpm `overrides` entry that maps
+`@blendsdk/year-planner-core` to the core tarball (the same pattern as
+`scripts/clean-consumer.sh`). Do not use a registry install instruction before
+the packages are published.
 
 ## Render a 14-month view
 

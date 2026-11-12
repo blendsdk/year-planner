@@ -40,7 +40,7 @@ host is available on the project. No WCAG conformance claim is made. See
 
 ## Performance
 
-The initial render and the 10,000-item overflow miss their budgets. The numbers
+The initial render, the 10,000-item drag and the 10,000-item overflow open/close miss their budgets. The numbers
 describe the reference host only. See [performance.md](performance.md).
 
 ## Publication

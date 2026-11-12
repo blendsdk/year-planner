@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { linkTarget, relativeLinks } from "./lib/markdown-links.js";
+import { anchoredLinks, headingAnchors, linkTarget, relativeLinks } from "./markdown-links.js";
 
 /**
  * Documentation contract for the developer guide set.
@@ -149,6 +149,14 @@ describe("RD-11-AC-07: documentation index", () => {
         const target = linkTarget(document, link);
         expect(exists(target), `${document} links to missing ${target}`).toBe(true);
       }
+      for (const { path, anchor } of anchoredLinks(read(document))) {
+        const target = linkTarget(document, path);
+        expect(exists(target), `${document} links to missing ${target}`).toBe(true);
+        expect(
+          headingAnchors(read(target)).has(anchor.toLowerCase()),
+          `${document} links to missing #${anchor} in ${target}`,
+        ).toBe(true);
+      }
     }
   });
 });
@@ -189,16 +197,18 @@ function codeBlocks(markdown: string): Array<{ language: string; body: string }>
   return blocks;
 }
 
-/** Counts the story exports across the Storybook story files. */
-function storyCount(): number {
+/** Counts the story exports and story files under the Storybook stories directory. */
+function storyInventory(): { stories: number; files: number } {
   const directory = new URL("apps/storybook/stories/", ROOT);
-  let count = 0;
+  let stories = 0;
+  let files = 0;
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     if (!entry.isFile() || !entry.name.endsWith(".stories.tsx")) continue;
     const source = readFileSync(new URL(entry.name, directory), "utf8");
-    count += source.match(/^export const \w+: Story/gm)?.length ?? 0;
+    stories += source.match(/^export const \w+: Story/gm)?.length ?? 0;
+    files += 1;
   }
-  return count;
+  return { stories, files };
 }
 
 describe("RD-11-AC-07: README quickstart", () => {
@@ -279,12 +289,32 @@ describe("RD-11-AC-10: honest status", () => {
   });
 
   it("keeps the story count in sync with the story files", () => {
-    const count = String(storyCount());
+    const { stories, files } = storyInventory();
+    const phrase = new RegExp(`\\b${stories} stories across ${files} files\\b`);
     for (const path of ["README.md", "docs/getting-started.md", "docs/test-report.md"]) {
-      expect(read(path), `${path} does not state ${count} stories`).toContain(count);
+      expect(
+        read(path),
+        `${path} does not state "${stories} stories across ${files} files"`,
+      ).toMatch(phrase);
     }
   });
 });
+
+/** Lists binary asset paths under a directory, excluding generated API output. */
+function binaryAssets(directory: string): string[] {
+  if (!exists(directory)) return [];
+  const found: string[] = [];
+  for (const entry of readdirSync(new URL(directory, ROOT), { withFileTypes: true })) {
+    if (entry.name === "api" || entry.name === "storybook-static") continue;
+    const path = `${directory}/${entry.name}`;
+    if (entry.isDirectory()) {
+      found.push(...binaryAssets(path));
+    } else if (/\.(png|jpe?g|gif|webp|pdf|svg)$/i.test(entry.name)) {
+      found.push(path);
+    }
+  }
+  return found;
+}
 
 describe("RD-11-AC-12: asset provenance", () => {
   it("publishes no source photos or reference material", () => {
@@ -293,6 +323,8 @@ describe("RD-11-AC-12: asset provenance", () => {
     for (const document of markdownFiles("docs")) {
       expect(read(document)).not.toContain("_reference/");
     }
+    expect(binaryAssets("docs"), "unexpected binary under docs").toEqual([]);
+    expect(binaryAssets("apps/storybook/stories"), "unexpected binary under stories").toEqual([]);
   });
 });
 
@@ -300,6 +332,8 @@ describe("RD-11-AC-13: documentation security", () => {
   it("uses synthetic data and no raw HTML injection in examples", () => {
     const forbidden = ["dangerouslySetInnerHTML", "innerHTML", "__html"];
     for (const document of ["README.md", ...markdownFiles("docs")]) {
+      // The security page may quote an unsafe pattern while explaining why it is banned.
+      if (document.endsWith("security.md")) continue;
       const blocks = codeBlocks(read(document));
       for (const block of blocks) {
         for (const token of forbidden) {

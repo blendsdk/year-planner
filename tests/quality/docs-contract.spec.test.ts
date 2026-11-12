@@ -178,3 +178,182 @@ describe("RD-11-AC-07: documentation index", () => {
     }
   });
 });
+
+/** The deferred capabilities RD-11 requires the public documentation to name. */
+const DEFERRED_CAPABILITIES = [
+  "resource timeline",
+  "recurrence",
+  "scenarios",
+  "dependencies",
+  "split/merge",
+  "batch multi-move",
+  "data provider",
+  "controlled-host undo",
+  "timed editing",
+  "rtl",
+  "week start",
+  "aggregated density",
+  "svg/pdf export",
+  "optimizer",
+  "full headless composition",
+  "shadow dom",
+  "milestones",
+  "parent/child",
+  "non-gregorian",
+  "drag between layers",
+  "second demo",
+  "cjs/umd",
+  "commercial support",
+] as const;
+
+/** Extracts fenced code blocks with their language tag. */
+function codeBlocks(markdown: string): Array<{ language: string; body: string }> {
+  const blocks: Array<{ language: string; body: string }> = [];
+  for (const match of markdown.matchAll(/```([^\n]*)\n([\s\S]*?)```/g)) {
+    blocks.push({ language: (match[1] ?? "").trim(), body: match[2] ?? "" });
+  }
+  return blocks;
+}
+
+/** Counts the story exports across the Storybook story files. */
+function storyCount(): number {
+  const directory = new URL("apps/storybook/stories/", ROOT);
+  let count = 0;
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith(".stories.tsx")) continue;
+    const source = readFileSync(new URL(entry.name, directory), "utf8");
+    count += source.match(/^export const \w+: Story/mg)?.length ?? 0;
+  }
+  return count;
+}
+
+describe("RD-11-AC-07: README quickstart", () => {
+  it("contains one complete controlled example with a print action", () => {
+    const readme = read("README.md");
+    const block = codeBlocks(readme).find((candidate) => candidate.body.includes("YearPlanner"));
+    expect(block, "README has no YearPlanner example").toBeDefined();
+    const body = block?.body ?? "";
+    for (const token of [
+      "@blendsdk/react-year-planner",
+      "styles.css",
+      "PlannerItem",
+      "useState",
+      "selection",
+      "onSelectionChange",
+      "visibility",
+      "onVisibilityChange",
+      "window.print",
+    ]) {
+      expect(body, `quickstart is missing ${token}`).toContain(token);
+    }
+    expect(body).toMatch(/year=\{?20\d\d\}?|year:\s*20\d\d/);
+    expect(readme.toLowerCase()).toMatch(/not (yet )?published|packed tarball|packed install/);
+  });
+});
+
+describe("RD-11-AC-09: deferred capabilities", () => {
+  it("lists every deferred capability and does not present one as implemented", () => {
+    expect(exists("DEFERRED.md")).toBe(true);
+    const deferred = read("DEFERRED.md").toLowerCase();
+    for (const capability of DEFERRED_CAPABILITIES) {
+      expect(deferred, `DEFERRED.md is missing ${capability}`).toContain(capability);
+    }
+
+    for (const document of markdownFiles("docs")) {
+      if (document.endsWith("limitations.md")) continue;
+      for (const line of read(document).split("\n")) {
+        const lower = line.toLowerCase();
+        if (/not |no |never|deferred|out of scope|does not|unsupported/.test(lower)) continue;
+        for (const capability of DEFERRED_CAPABILITIES) {
+          const claims = lower.includes(capability) && /\b(supports?|implemented|available|works?)\b/.test(lower);
+          expect(claims, `${document} presents "${capability}" as implemented`).toBe(false);
+        }
+      }
+    }
+  });
+});
+
+describe("RD-11-AC-10: honest status", () => {
+  it("states the conformance position without a positive claim", () => {
+    for (const path of ["docs/accessibility.md", "docs/performance.md"]) {
+      const normalized = read(path).replace(/\*/g, "").toLowerCase();
+      expect(normalized, path).toContain("conformance claim: none");
+    }
+    const forbidden = ["is compliant", "meets wcag", "conforms to", "certified", "wcag conformance is covered"];
+    for (const document of markdownFiles("docs")) {
+      const lower = read(document).toLowerCase();
+      for (const phrase of forbidden) {
+        expect(lower.includes(phrase), `${document} contains "${phrase}"`).toBe(false);
+      }
+    }
+  });
+
+  it("names the measured performance misses and links the evidence", () => {
+    const performance = read("docs/performance.md");
+    expect(performance.toLowerCase()).toContain("initial render");
+    expect(performance.toLowerCase()).toMatch(/10[,. ]?000|10k/);
+    expect(performance).toContain("test-report.md");
+  });
+
+  it("keeps the story count in sync with the story files", () => {
+    const count = String(storyCount());
+    for (const path of ["README.md", "docs/getting-started.md", "docs/test-report.md"]) {
+      expect(read(path), `${path} does not state ${count} stories`).toContain(count);
+    }
+  });
+});
+
+describe("RD-11-AC-08: demo routes", () => {
+  it("renders a shared navigation for every demonstration route", () => {
+    const app = read("apps/demo/src/App.tsx");
+    for (const route of ["?commands=1", "?interaction=1", "?ac3=1", "?security=1", "?print=prt01"]) {
+      expect(app, `demo navigation is missing ${route}`).toContain(route);
+    }
+  });
+
+  it("documents the routes for a reader", () => {
+    for (const path of ["README.md", "docs/getting-started.md"]) {
+      const lower = read(path).toLowerCase();
+      for (const route of ["?commands=1", "?interaction=1", "?security=1"]) {
+        expect(lower, `${path} is missing ${route}`).toContain(route);
+      }
+    }
+  });
+});
+
+describe("RD-11-AC-10: evidence report", () => {
+  it("records the documentation evidence and its known gaps", () => {
+    const report = read("docs/test-report.md");
+    expect(report).toContain("RD-11");
+    expect(report).toContain("docs:site");
+    expect(report.toLowerCase()).toContain("storybook");
+    expect(report.toLowerCase()).toMatch(/parked|known gap/);
+  });
+});
+
+describe("RD-11-AC-12: asset provenance", () => {
+  it("publishes no source photos or reference material", () => {
+    expect(exists("_reference")).toBe(false);
+    expect(exists("reference/original-images")).toBe(false);
+    for (const document of markdownFiles("docs")) {
+      expect(read(document)).not.toContain("_reference/");
+    }
+  });
+});
+
+describe("RD-11-AC-13: documentation security", () => {
+  it("uses synthetic data and no raw HTML injection in examples", () => {
+    const forbidden = ["dangerouslySetInnerHTML", "innerHTML", "__html"];
+    for (const document of ["README.md", ...markdownFiles("docs")]) {
+      const blocks = codeBlocks(read(document));
+      for (const block of blocks) {
+        for (const token of forbidden) {
+          expect(block.body.includes(token), `${document} example uses ${token}`).toBe(false);
+        }
+      }
+      const text = read(document);
+      expect(text).not.toContain("TOPSECRET-");
+      expect(text).not.toContain("attacker.example");
+    }
+  });
+});

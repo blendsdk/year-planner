@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-12 14:25
-> **Progress**: 1/77 tasks (1%)
+> **Last Updated**: 2026-11-12 14:30
+> **Progress**: 2/77 tasks (3%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -56,7 +56,7 @@ add implementation tests, verify.
 **Objective**: Prove the guide set, quickstart, deferred list, honesty rules and assets are incomplete.
 
 - [x] 1.1.1 [spec-author] Write the topic-map, required-heading, page-existence and link-resolution cases with `RD-11-AC-07` — `tests/quality/docs-contract.spec.test.ts` ✅ (completed: 2026-11-12 14:25)
-- [ ] 1.1.2 [spec-author] Write the quickstart, `DEFERRED.md`, honesty, story-count, asset and security cases with `RD-11-AC-09`, `RD-11-AC-10`, `RD-11-AC-12`, `RD-11-AC-13` — `tests/quality/docs-contract.spec.test.ts`
+- [x] 1.1.2 [spec-author] Write the quickstart, `DEFERRED.md`, honesty, story-count, asset and security cases with `RD-11-AC-09`, `RD-11-AC-10`, `RD-11-AC-12`, `RD-11-AC-13` — `tests/quality/docs-contract.spec.test.ts` ✅ (completed: 2026-11-12 14:30)
 - [ ] 1.1.3 Run the new tests and record the red result — `pnpm test:quality`
 
 ### Step 1.2: Implementation

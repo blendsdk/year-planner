@@ -3,6 +3,23 @@ import { describe, expect, it } from "vitest";
 import { parseReleaseFlags } from "../../scripts/release-publish.mjs";
 
 /**
+ * Parses flags with `CI` unset.
+ *
+ * The parser rejects `--bootstrap` in CI by design. This helper keeps the
+ * bootstrap contract testable without depending on the machine's CI variable.
+ */
+function parseOutsideCi(argv: string[]): ReturnType<typeof parseReleaseFlags> {
+  const previous = process.env.CI;
+  delete process.env.CI;
+  try {
+    return parseReleaseFlags(argv);
+  } finally {
+    if (previous === undefined) delete process.env.CI;
+    else process.env.CI = previous;
+  }
+}
+
+/**
  * Release workflow contract.
  *
  * The release path is configuration and command shape: a human release PR, a
@@ -115,7 +132,7 @@ describe("RD-12-AC-02: publish script", () => {
     expect(parseReleaseFlags(["--packs", "release-packs"]).packs).toMatch(/release-packs$/);
     expect(() => parseReleaseFlags(["--allow-dirty"])).toThrow(/dry-run/);
     expect(() => parseReleaseFlags(["--skip-github-release"])).toThrow(/bootstrap/);
-    expect(parseReleaseFlags(["--bootstrap", "--skip-github-release"])).toMatchObject({
+    expect(parseOutsideCi(["--bootstrap", "--skip-github-release"])).toMatchObject({
       bootstrap: true,
       skipGithubRelease: true,
     });

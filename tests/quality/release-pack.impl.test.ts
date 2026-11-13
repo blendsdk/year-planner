@@ -17,6 +17,23 @@ import {
 import { parseReleaseFlags } from "../../scripts/release-publish.mjs";
 
 /**
+ * Parses flags with `CI` unset.
+ *
+ * The parser rejects `--bootstrap` in CI by design. This helper keeps the
+ * bootstrap contract testable without depending on the machine's CI variable.
+ */
+function parseOutsideCi(argv: string[]): ReturnType<typeof parseReleaseFlags> {
+  const previous = process.env.CI;
+  delete process.env.CI;
+  try {
+    return parseReleaseFlags(argv);
+  } finally {
+    if (previous === undefined) delete process.env.CI;
+    else process.env.CI = previous;
+  }
+}
+
+/**
  * Failure modes and documentation surface for the shared release helpers.
  *
  * The specification contract proves the rules; these cases pin the negative
@@ -103,7 +120,7 @@ describe("release manifest helper failure modes", () => {
     expect(() => parseReleaseFlags(["--skip-github-release"])).toThrow(/bootstrap/);
     expect(() => parseReleaseFlags(["--packs", "--dry-run"])).toThrow(/directory/);
     expect(() => parseReleaseFlags(["--bootstrap", "--dry-run"])).toThrow(/cannot be combined/);
-    expect(parseReleaseFlags(["--bootstrap", "--skip-github-release"])).toMatchObject({
+    expect(parseOutsideCi(["--bootstrap", "--skip-github-release"])).toMatchObject({
       bootstrap: true,
       skipGithubRelease: true,
     });

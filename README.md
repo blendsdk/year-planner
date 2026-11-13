@@ -1,26 +1,41 @@
-# Year Planner for React
+<p align="center">
+  <img src="docs/public/logo.svg" width="76" alt="Year Planner logo" />
+</p>
 
-An open-source React component for long-range annual planning.
+<h1 align="center">Year Planner for React</h1>
 
-The first release targets a classic **14-month, Saturday-first, 37-column year
-grid** — December of the previous year, January–December of the current year,
-and January of the next year — with:
+<p align="center">
+  <strong>Plan a whole year in one component.</strong><br />
+  A 12–36 month, 37-column planning grid for construction, logistics, staffing
+  and every team that plans a year at a glance.
+</p>
 
-- continuous interval ribbons that cross month rows;
-- overlapping layers and deterministic visual lanes;
-- date-range selection, marquee, painting, erasing, moves and resizes;
-- custom annotations, holidays, cells and item content;
-- themeable CSS, A3 print support and a controlled integration API.
+<p align="center">
+  <a href="https://github.com/blendsdk/year-planner/actions/workflows/ci.yml"><img src="https://github.com/blendsdk/year-planner/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://blendsdk.github.io/year-planner/"><img src="https://img.shields.io/badge/docs-live-1d4e89" alt="Documentation" /></a>
+  <a href="https://blendsdk.github.io/year-planner/storybook/"><img src="https://img.shields.io/badge/Storybook-catalogue-2a9d8f" alt="Storybook" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-f6bd60" alt="MIT" /></a>
+</p>
 
-> **Status: pre-alpha.** The packages are **not published to a public registry**
-> yet. Install the packed tarballs from this repository until the release
-> milestone publishes them. APIs, styles and package names may change before
-> the first release.
+<img src="docs/public/screenshots/readme-hero.png" alt="Northwind Construction's 2027 plan in the Year Planner" width="100%" />
+
+## Why Year Planner
+
+| | |
+| --- | --- |
+| **12–36 months, 37 columns** — a classic Saturday-first year grid with context months, ISO week numbers and continuous ribbons across month rows. | **Fit to the host** — columns scale horizontally and rows choose a 24 px lane budget, so a 14-month view fits a laptop without shrinking hit targets. |
+| **Built for 2,000 items** — one projection per model, a max-end lane index and row-scoped selection keep clicks fast. | **CSS-variable theming** — five presets, host token overrides and optional Fluent UI v9 and MUI adapters. |
+| **Accessible by default** — a roving grid, live-region announcements, 24 px targets, reduced-motion support and automated axe coverage. | **A3 print output** — a hidden print tree paginates a 12–36 month window into one to three A3 landscape pages. |
+
+| Fit to the host | Host-owned context menu |
+| --- | --- |
+| ![The full year fitted to a 1440 × 900 host](docs/public/screenshots/readme-fit.png) | ![Right-click actions on a construction project](docs/public/screenshots/readme-menu.png) |
 
 ## Quickstart
 
-The example renders a 14-month view from static data, imports the stylesheet,
-keeps selection and visibility in controlled state, and prints an A3 page.
+> **Status**: `0.3.0` is prepared but **not yet published** to npm. Use the
+> packed-tarball install in the [getting-started guide](docs/getting-started.md)
+> until the registry release. The API below is the intended published API.
 
 ```tsx
 import { useState } from "react";
@@ -34,21 +49,21 @@ import { YearPlanner } from "@blendsdk/react-year-planner";
 import "@blendsdk/react-year-planner/styles.css";
 
 const layers: PlannerLayer[] = [
-  { id: "bookings", name: "Bookings", channel: "ribbon", color: "#1d4e89", label: "B" },
+  { id: "build", name: "New build", channel: "ribbon", color: "#1d4e89" },
 ];
 
 const items: PlannerItem[] = [
   {
-    id: "winter",
+    id: "riverside",
     kind: "activity",
-    layerId: "bookings",
-    period: { kind: "all-day", startDate: "2027-01-28", endDateExclusive: "2027-02-07" },
-    title: "Winter booking",
+    layerId: "build",
+    period: { kind: "all-day", startDate: "2027-02-02", endDateExclusive: "2027-05-29" },
+    title: "Riverside offices",
     version: 1,
   },
 ];
 
-export function PlanningPage() {
+export function Plan() {
   const [selection, setSelection] = useState<PlannerSelection>({ dates: [], items: [] });
   const [visibility, setVisibility] = useState<VisibilityState>({
     hiddenGroupIds: [],
@@ -59,149 +74,95 @@ export function PlanningPage() {
   return (
     <>
       <button type="button" onClick={() => window.print()}>
-        Print
+        Print A3
       </button>
-      <YearPlanner
-        year={2027}
-        items={items}
-        layers={layers}
-        activeLayerId="bookings"
-        selection={selection}
-        onSelectionChange={setSelection}
-        visibility={visibility}
-        onVisibilityChange={setVisibility}
-      />
+      <div style={{ height: 680, minHeight: 0 }}>
+        <YearPlanner
+          year={2027}
+          layers={layers}
+          defaultItems={items}
+          selection={selection}
+          onSelectionChange={setSelection}
+          visibility={visibility}
+          onVisibilityChange={setVisibility}
+        />
+      </div>
     </>
   );
 }
 ```
 
-The packages are unpublished; build the workspace and install the packed
-tarballs together with React 19 and React DOM 19. The clean-consumer script
-(`pnpm test:consumer`) performs the same packed install in CI. Start with
-[docs/getting-started.md](docs/getting-started.md) for the full walkthrough.
+Give the planner a bounded parent; it measures that region for the fit. See
+[Sizing and fit](https://blendsdk.github.io/year-planner/getting-started.html#sizing-and-fit).
 
 ## Documentation
 
-The [documentation index](docs/README.md) maps every guide:
+| | |
+| --- | --- |
+| **[Website](https://blendsdk.github.io/year-planner/)** | Home, guide, tutorials, how-tos and examples |
+| **[Getting started](https://blendsdk.github.io/year-planner/getting-started.html)** | Install, render, select and print |
+| **[Tutorials](https://blendsdk.github.io/year-planner/tutorials/first-planner.html)** | First planner, controlled commands, theming and print |
+| **[Examples](https://blendsdk.github.io/year-planner/examples/)** | Full demo, themes, print and design systems |
+| **[Storybook](https://blendsdk.github.io/year-planner/storybook/)** | **184 stories across 16 files**, including the full demo |
+| **[API reference](https://blendsdk.github.io/year-planner/api/)** | Generated TypeDoc for both packages |
+| [Repository guides](docs/README.md) | Architecture, performance, security, test report and ADRs |
 
-| Area | Guide |
-| ---- | ----- |
-| Getting started | [docs/getting-started.md](docs/getting-started.md) |
-| Controlled API | [docs/controlled-api.md](docs/controlled-api.md) |
-| Visibility | [docs/visibility.md](docs/visibility.md) |
-| Interaction and keyboard | [docs/interaction.md](docs/interaction.md) |
-| Theming | [docs/theming.md](docs/theming.md) |
-| Customization and holidays | [docs/customization.md](docs/customization.md) |
-| Inspector and tooltip | [docs/inspector-tooltip.md](docs/inspector-tooltip.md) |
-| Dynamic months | [docs/dynamic-months.md](docs/dynamic-months.md) |
-| Print | [docs/print.md](docs/print.md) |
-| Accessibility status | [docs/accessibility.md](docs/accessibility.md) |
-| Performance status | [docs/performance.md](docs/performance.md) |
-| Limitations | [docs/limitations.md](docs/limitations.md) |
-| Migration | [docs/migration.md](docs/migration.md) |
-| FAQ | [docs/faq.md](docs/faq.md) |
-
-The documentation site is built with VitePress. It hosts the guide, tutorials,
-examples and the component catalogue: Storybook is at `/storybook/` (**184 stories across 16 files**) and the generated TypeDoc reference is at `/api/`.
-It is published at `https://blendsdk.github.io/year-planner/` using GitHub
-Pages and GitHub Actions. There is no custom domain.
-
-```bash
-pnpm docs:dev      # VitePress at http://localhost:5173/year-planner/
-pnpm docs:site     # combined VitePress + Storybook + TypeDoc artifact
-```
-
-The renderer decision is in
-[ADR 0001](docs/adr/0001-renderer-strategy.md); the CSP contract is in
-[docs/security.md](docs/security.md), and the full test evidence is in
-[docs/test-report.md](docs/test-report.md).
+The public full demo is a working construction plan: double-click a date to
+allocate a project, right-click a bar to edit or delete it, and reload to see
+the plan restored from browser storage.
 
 ## Demo routes
 
-Run `pnpm dev` and open the demo:
-
-| Route | Demonstrates |
-| ----- | ------------ |
-| `?` | Overview with controlled selection and visibility |
-| `?commands=1` | Controlled items, validation rejection and rollback |
-| `?interaction=1` | Selection, marquee, paint/erase, move and resize |
-| `?ac3=1` | Real Fluent UI v9 and MUI buttons in a cell and inspector |
-| `?security=1` | A hidden item that must not reach the DOM or inspector |
-| `?print=prt01` | The 2017 classic-yellow print sample |
-| `?bench=1` | Layout and browser benchmark host |
+Run `pnpm dev` for the private demo app. It supports `?commands=1`,
+`?interaction=1`, `?security=1`, `?ac3=1` and `?print=prt01` for the controlled
+commands, interaction, hidden-data, design-system and print samples.
 
 ## Packages
 
 | Package | Purpose |
 | --- | --- |
-| `@blendsdk/year-planner-core` | Pure TypeScript dates, intervals, layout geometry, visibility and commands. No React, no DOM. |
-| `@blendsdk/react-year-planner` | React view, interaction layer, render slots, themes and styles. |
+| `@blendsdk/year-planner-core` | Dates, layout, ribbons, hit index and print planning |
+| `@blendsdk/react-year-planner` | React 19 component, interaction engine, renderer and adapters |
 
-Both packages are **ESM-only**: `"type": "module"`, an `import`-only export map
-and an ES Vite build. Fluent UI v9 and MUI token adapters are available at
-`@blendsdk/react-year-planner/adapters/fluent` and
-`@blendsdk/react-year-planner/adapters/mui` without adding either design system
-as a dependency.
-
-## Scope of the first release
-
-- Date-only intervals with half-open semantics.
-- 12–36 month windows; the 14-month classic view is the default preset.
-- Layers, groups, visibility and custom render channels.
-- Continuous ribbons, overlaps, lane allocation and compact overflow.
-- Select, multi-select, paint, erase, create, move, resize, cancel, undo/redo.
-- Keyboard access, custom render slots, annotations and theming.
-- Print A3 baseline; Storybook examples and generated API reference.
-- Controlled `items` props; a mock validation/rollback example.
-
-## Explicitly deferred
-
-Resource timeline, recurrence, scenarios, dependencies, split/merge, batch
-multi-move, data providers, controlled-host undo, timed-event editing, RTL,
-configurable week start, aggregated density, SVG/PDF export, an optimizer, full
-headless composition, Shadow DOM, milestones, parent/child activities,
-non-Gregorian calendars, drag between layers/resources, a second demo, CJS/UMD
-and commercial support. The full list with reasons is in
-[DEFERRED.md](DEFERRED.md). None of these is stubbed or presented as implemented.
-
-## Documentation mandate
-
-Every public component, prop combination, state and edge case gets a Storybook
-story. Prefer more stories over fewer: themes, window sizes, zoom, locale,
-items, annotations, channels, overflow, inspector states, slots, print modes,
-controlled states, filters, read-only and error states are all part of the
-documented surface. Stories are part of the definition of done, not an optional
-extra.
+- **ESM only**, Node `>=20.19`, React 19 peer dependency.
+- **MIT licensed**; contributions use the Developer Certificate of Origin.
+- The packages are prepared at `0.3.0`; the first npm publication is pending.
 
 ## Development
 
-The repository layout, requirements, plans and architecture decisions live under
-`codeops/`.
-
 ```bash
-pnpm install
-pnpm verify          # fast gate: typecheck, lint, coverage, quality, licenses, build, API report, size, Storybook, TypeDoc, pack
-pnpm verify:full     # adds Playwright, timezones, audit, performance evidence, benchmarks and the clean-consumer install
-pnpm test:quality    # traceability, public API, coverage, size, CI and license contracts
-pnpm test:timezones  # date suite under UTC, Pacific/Kiritimati and America/Los_Angeles
-pnpm test:audit      # no high or critical dependency advisories
-pnpm test:perf       # performance report; PERF_STRICT=1 gates the drag-latency oracle
-pnpm bench           # layout and browser benchmarks; --enforce gates the 2x ceiling
-pnpm storybook       # interactive component site
-pnpm run docs        # API Extractor reports + TypeDoc HTML under docs/api
+pnpm install --frozen-lockfile
+pnpm verify          # fast gate: typecheck, lint, unit, component, quality, build, docs
+pnpm verify:full     # release gate: adds browser, timezone, audit, performance and consumer
+pnpm storybook       # Storybook, opening on the full demo
+pnpm docs:dev        # VitePress at http://localhost:5173/year-planner/
+pnpm docs:site       # combined VitePress + Storybook + TypeDoc artifact
 ```
 
-## Community
+The site is designed for GitHub Pages at
+`https://blendsdk.github.io/year-planner/`; there is no custom domain.
 
-- [Contributing](./CONTRIBUTING.md) — development workflow and the DCO.
-- [Code of Conduct](./CODE_OF_CONDUCT.md) — the expected community behavior.
-- [Security policy](./SECURITY.md) — private reporting and the response process.
-- [Support](./SUPPORT.md) — best-effort community support, no SLA.
-- [Release process](./docs/releasing.md) — versioning, bootstrap, publish and rollback.
-- [Open an issue](https://github.com/blendsdk/year-planner/issues/new/choose).
+## Status and limits
+
+The renderer, command pipeline, accessibility semantics and print matrix are
+covered by automated tests. The manual NVDA/VoiceOver audit remains parked, so
+the project makes no WCAG conformance claim. The 10,000-item case is a
+documented stress case, not the supported target. See
+[Limitations](docs/limitations.md), [Accessibility](docs/accessibility.md),
+[Performance](docs/performance.md), [Security](docs/security.md) and the
+[Test report](docs/test-report.md).
+
+## Contributing
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md), follow the
+[Code of Conduct](CODE_OF_CONDUCT.md), and sign off every commit (`git commit -s`).
+Security reports belong in [SECURITY.md](SECURITY.md), not public issues.
+[Open an issue or feature request](https://github.com/blendsdk/year-planner/issues/new/choose),
+read [SUPPORT.md](SUPPORT.md), or see the [release guide](docs/releasing.md).
+See [DEFERRED.md](DEFERRED.md) for capabilities that are explicitly not in this
+release.
 
 ## License
 
-MIT. See [LICENSE](./LICENSE). Contributions are accepted under the Developer
-Certificate of Origin; see [CONTRIBUTING.md](./CONTRIBUTING.md).
+[MIT](LICENSE). Third-party notices are in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

@@ -717,3 +717,16 @@ attestation. The registry now carries:
 
 `0.3.1` is the first provenance-signed release and validates the trusted
 publisher configuration.
+
+### 0.3.1 provenance release
+
+Release workflow run `43523190129` completed on 2026-11-13: verify, build,
+publish, registry smoke and documentation dispatch all passed.
+
+| Check | Result |
+| --- | --- |
+| npm versions | `0.3.1` at `latest` for all three packages |
+| Provenance | `dist.attestations.provenance.predicateType` is `https://slsa.dev/provenance/v1` for core, React and languages |
+| Registry smoke | `pnpm release:smoke` passed against the exact `0.3.1` versions |
+| GitHub release | `v0.3.1` published with all three package links |
+| Documentation | Pages deployment succeeded; the live site states `0.3.1` |

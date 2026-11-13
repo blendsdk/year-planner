@@ -139,7 +139,7 @@ describe these restricted releases as open source or re-label earlier releases.
 - Record the incident in `docs/test-report.md` when it affects published
   behavior.
 
-## Current owner-action state (2026-11-13)
+## Current owner-action state (2026-11-14)
 
 The maintainer account `blendjs` is authenticated for local bootstrap
 publishing. CI publishes with OIDC trusted publishing and stores no npm token.
@@ -152,11 +152,12 @@ publishing. CI publishes with OIDC trusted publishing and stores no npm token.
 | Private vulnerability reporting | not enabled |
 | Dependabot security alerts | disabled |
 | npm authentication | `blendjs` (local bootstrap) |
-| npm packages | `0.3.0` published (bootstrap, no provenance) |
-| Trusted publishers | configured for all three packages via `release.yml` and `npm-production` |
+| npm packages | `0.3.1` published with provenance; `0.3.0` was the bootstrap |
+| Trusted publishers | configured and validated by the `0.3.1` release |
 
-Re-check the remaining owner actions before the next release; do not treat the
-bootstrap publication as provenance evidence.
+Re-check the remaining owner actions before the next release. The `0.3.1`
+publish validated the trusted-publisher configuration and produced SLSA
+provenance attestations for all three packages.
 
 ## Branch protection
 

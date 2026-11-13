@@ -43,22 +43,19 @@ The documentation site is one GitHub Pages artifact:
 | `/year-planner/api/` | The generated TypeDoc reference |
 
 This is a project site, so the base path is `/year-planner/`. There is no
-custom domain. The build accepts `DOCS_BASE_PATH=/` when one is added later.
+custom domain. The repository is public, Pages is enabled with **GitHub
+Actions**, and the site is live at
+`https://blendsdk.github.io/year-planner/`. The build accepts `DOCS_BASE_PATH=/`
+when a custom domain is added later.
 
 ## Publishing the site
 
-The docs-site workflow builds the combined artifact and publishes only through
-a manual `workflow_dispatch` run with `deploy: true` from `main`. Before the
-first release:
-
-1. Make the repository public, or confirm the plan supports Pages on a private
-   repository.
-2. Enable GitHub Pages with **GitHub Actions** as the source.
-3. Run the **Docs site** workflow on `main` with `deploy: true`.
-
-The build does not depend on a stored secret; the deploy job uses the GitHub
-OIDC token and the `github-pages` environment. The uploaded artifact is
-`docs/.vitepress/dist`.
+The docs-site workflow builds the combined artifact. Pushing to `main` builds
+and uploads it; publication stays a manual `workflow_dispatch` run with
+`deploy: true` from `main`. The one-time setup is complete: the repository is
+public, Pages uses **GitHub Actions**, and the `github-pages` environment is
+configured. The build does not depend on a stored secret; the deploy job uses
+the GitHub OIDC token. The uploaded artifact is `docs/.vitepress/dist`.
 
 ## Building the site locally
 

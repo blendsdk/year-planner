@@ -558,10 +558,17 @@ includes 184 stories and the generated API tree.
 
 ### Deployment status
 
-The artifact is built and verified in CI. The repository is private and GitHub
-Pages is not enabled, so the site is **not published** yet. Enabling Pages on a
-public repository and running the Docs site workflow with `deploy: true` is an
-owner action; no custom domain is assumed.
+The artifact is built and verified in CI. The repository is public, Pages is
+enabled with **GitHub Actions**, and the site is published at
+**https://blendsdk.github.io/year-planner/** with no custom domain. The deploy
+workflow run [43428872169](https://github.com/blendsdk/year-planner/actions/runs/43428872169)
+completed successfully.
+
+Live checks on 2026-11-13: the home, `/storybook/iframe.html?id=full-demo--full-demo`,
+`/examples/full-demo.html`, `/stories.html` and `/api/index.html` return 200; the
+manager opens the full demo by default; the full demo page and the Storybook
+preview render the grid and the Northwind brand; the story index shows 184
+stories.
 
 ## Full construction demo (post-release)
 
@@ -604,6 +611,8 @@ The demo is a working application, not a mock:
 | GitHub Pages | Enabled with **GitHub Actions** as the source |
 | Site URL | `https://blendsdk.github.io/year-planner/` (no custom domain) |
 | Artifact | `docs/.vitepress/dist` (VitePress + `/storybook/` + `/api/`) |
+| Deployment | [Docs site run 43428872169](https://github.com/blendsdk/year-planner/actions/runs/43428872169) — build and deploy succeeded |
+| Live full demo | Create, reload persistence, context delete and reset all returned true in the browser check |
 
 The owner explicitly requested no full `verify:full` for this change and no
-custom domain. The Pages deployment is the final publication step.
+custom domain. The Pages deployment is live.

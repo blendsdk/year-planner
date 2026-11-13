@@ -104,8 +104,8 @@ The [documentation index](docs/README.md) maps every guide:
 
 The documentation site is built with VitePress. It hosts the guide, tutorials,
 examples and the component catalogue: Storybook is at `/storybook/` (**184 stories across 16 files**) and the generated TypeDoc reference is at `/api/`.
-It is designed for `https://blendsdk.github.io/year-planner/`; Pages must be
-enabled before it is public.
+It is published at `https://blendsdk.github.io/year-planner/` using GitHub
+Pages and GitHub Actions. There is no custom domain.
 
 ```bash
 pnpm docs:dev      # VitePress at http://localhost:5173/year-planner/

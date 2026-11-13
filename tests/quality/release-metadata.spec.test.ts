@@ -158,7 +158,9 @@ describe("RD-12-AC-11: package metadata and changelogs", () => {
     expect(exports).toContain("./zh-TW");
     expect(exports.length).toBeGreaterThan(40);
     expect(languages.sideEffects).toBe(false);
-    expect(languages.peerDependencies?.["@blendsdk/react-year-planner"]).toBe("^0.3.0");
+    expect(languages.peerDependencies?.["@blendsdk/react-year-planner"]).toBe(
+      `^${json<Manifest>(REACT).version}`,
+    );
   });
 
   it("ships palette attribution with the React package", () => {

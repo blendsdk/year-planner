@@ -1,6 +1,6 @@
 {
   "name": "@blendsdk/year-planner-languages",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "license": "SEE LICENSE IN LICENSE",
   "description": "Complete left-to-right UI translations for Year Planner for React",
@@ -209,7 +209,7 @@
     "pack:check": "publint && attw --pack . --profile esm-only"
   },
   "peerDependencies": {
-    "@blendsdk/react-year-planner": "^0.3.0"
+    "@blendsdk/react-year-planner": "^0.3.1"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",

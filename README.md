@@ -33,9 +33,9 @@
 
 ## Quickstart
 
-> **Status**: `0.3.0` is prepared but **not yet published** to npm. Use the
-> packed-tarball install in the [getting-started guide](docs/getting-started.md)
-> until the registry release. The API below is the intended published API.
+> **Status**: `0.3.1` is the current npm release, published with provenance.
+> Install it with `pnpm add @blendsdk/react-year-planner`. The API below is the
+> published API.
 
 ```tsx
 import { useState } from "react";
@@ -145,7 +145,7 @@ localization samples.
 
 - **ESM only**, Node `>=20.19`, React 19 peer dependency.
 - **Source-available, free for internal use**; see the [licensing guide](docs/licensing.md).
-- The packages are prepared at `0.3.0`; the first npm publication is pending.
+- The packages are published at `0.3.1`; `0.3.0` was the unprovenanced bootstrap.
 
 ## Development
 
@@ -163,7 +163,7 @@ The site is designed for GitHub Pages at
 
 ## Status
 
-Pre-release: `0.3.0` is prepared but not yet on npm. The manual screen-reader
+Release: `0.3.1` is published to npm with provenance. The manual screen-reader
 audit is pending, so there is no WCAG conformance claim. See
 [Limitations](docs/limitations.md) for supported sizes and known gaps.
 

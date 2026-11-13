@@ -59,7 +59,7 @@ describe("site structure", () => {
     expect(home).toContain("Plan the whole year in one component");
     expect(home).toContain("/screenshots/full-demo-hero.png");
     expect(home).toContain("/screenshots/full-demo.png");
-    expect(home.toLowerCase()).toContain("not yet published");
+    expect(home.toLowerCase()).toContain("published to npm with provenance");
     expect(exists("docs/public/screenshots/year-grid.png")).toBe(true);
     expect(exists("docs/public/logo.svg")).toBe(true);
   });

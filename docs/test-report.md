@@ -695,3 +695,25 @@ docs artifacts on isolated local ports:
 The five jobs pass independently, so the CI matrix can run them concurrently.
 The full matrix is about 2.5 minutes of wall-clock time instead of about 16
 minutes in one job.
+
+## First npm publication (0.3.0 bootstrap)
+
+The three packages were published to npm on 2026-11-13. This was the one-time
+bootstrap: npm cannot generate provenance for a local publish, so `0.3.0` has no
+attestation. The registry now carries:
+
+| Package | Version | Integrity |
+| --- | --- | --- |
+| `@blendsdk/year-planner-core` | `0.3.0` | `sha512-ZXNtZCm74kYDfca4CyIXdlM8c1/YLDEF+NMfh3eV4ejL4sW8Fn1CBo3J0Betgvahwkb/asHItvPMM4qAP3EGPQ==` |
+| `@blendsdk/react-year-planner` | `0.3.0` | `sha512-YnAzsqJpgKgVXJg5yxMyGEKyUohxTDeSBZ3V6V1M90OCEIGRqHCTBu2HCSmFyuCiz0/bEsKeZqDA08vEOftHQA==` |
+| `@blendsdk/year-planner-languages` | `0.3.0` | `sha512-5h+YFkPc2icb2UwPARHW6QGH3lCjOqhx8JOLr1l+syX3IFnKHvJHbUE9P5nC1k4VwLo6MrDWTWaMrZM15CDnLA==` |
+
+| Check | Result |
+| --- | --- |
+| `pnpm release:smoke` (registry) | **PASS** — clean install, typecheck, CSS import and production build of all three exact versions |
+| Trusted publishers | **Configured** for all three packages: `release.yml`, repository `blendsdk/year-planner`, environment `npm-production`, publish and stage-publish permissions |
+| `npm-production` environment | Created with reviewer `blendsdk` and a `main`-only deployment policy |
+| Local npm cache | A stale negative cache briefly reported core as 404; a clean-cache install and the registry smoke passed |
+
+`0.3.1` is the first provenance-signed release and validates the trusted
+publisher configuration.

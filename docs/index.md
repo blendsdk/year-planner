@@ -74,9 +74,8 @@ export function Plan() {
 ```
 
 <div class="hero-note">
-  <strong>Status:</strong> the 0.3.0 packages are prepared but not yet published
-  to npm. The getting-started guide shows the packed-tarball path until the
-  registry release is complete.
+  <strong>Status:</strong> 0.3.1 is published to npm with provenance. Install it
+  with <code>pnpm add @blendsdk/react-year-planner</code>.
 </div>
 
 ## Explore

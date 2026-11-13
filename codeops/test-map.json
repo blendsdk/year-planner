@@ -264,7 +264,8 @@
         "tests/e2e/mobile.spec.ts",
         "tests/e2e/fit.spec.ts",
         "tests/e2e/storybook.spec.ts",
-        "tests/e2e/site.spec.ts"
+        "tests/e2e/site.spec.ts",
+        "tests/e2e/full-demo.spec.ts"
       ],
       "run": {
         "command": [

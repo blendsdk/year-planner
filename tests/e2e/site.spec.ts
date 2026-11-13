@@ -25,7 +25,7 @@ test.describe("GitHub Pages site", () => {
     await page.goto(`${SITE}/`);
     await expect(page).toHaveTitle(/Year Planner for React/);
     await expect(page.getByText("Plan the whole year in one component")).toBeVisible();
-    const hero = page.locator('img[src*="year-grid"]').first();
+    const hero = page.locator('img[src*="full-demo-hero"]').first();
     await expect(hero).toBeVisible();
     expect(
       await hero.evaluate((image) => image instanceof HTMLImageElement && image.naturalWidth > 0),
@@ -65,9 +65,21 @@ test.describe("GitHub Pages site", () => {
     await expect(story.getByRole("grid")).toBeVisible({ timeout: 30_000 });
   });
 
+  test("the full construction demo page embeds its story", async ({ page }) => {
+    await page.goto(`${SITE}/examples/full-demo.html`);
+    await expect(page.getByRole("heading", { name: "Full construction demo" })).toBeVisible();
+    const frame = page.locator(".story-frame iframe").first();
+    await expect
+      .poll(() => frame.evaluate((element) => (element as HTMLIFrameElement).src))
+      .toContain("/year-planner/storybook/iframe.html?id=full-demo--full-demo");
+    const story = page.frameLocator(".story-frame iframe").first();
+    await expect(story.getByRole("grid")).toBeVisible({ timeout: 30_000 });
+    await expect(story.getByText("Northwind Construction")).toBeVisible();
+  });
+
   test("the story index and the TypeDoc reference are served", async ({ page }) => {
     await page.goto(`${SITE}/stories.html`);
-    await expect(page.getByText(/183 stories in the catalogue/)).toBeVisible();
+    await expect(page.getByText(/184 stories in the catalogue/)).toBeVisible();
     await expect(page.getByRole("link", { name: "Context Menu" }).first()).toBeVisible();
 
     await page.goto(`${SITE}/api/index.html`);

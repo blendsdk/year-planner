@@ -5,6 +5,7 @@ Everything below runs the real component; nothing is a mock.
 
 | Example | What it shows |
 | --- | --- |
+| [Full construction demo](./full-demo.md) | A working 2027 construction plan with localStorage, allocation and context actions |
 | [Interactive demo](./interactive.md) | Fit-to-host grid, selection, context menu and hover tooltips |
 | [Themes](./themes.md) | Five presets, token overrides and dark surfaces |
 | [Print](./print.md) | A3 pagination, fit-one-page and the print theme |

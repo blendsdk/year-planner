@@ -68,7 +68,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
-| Storybook | **PASS** — static build succeeds; **183 stories across 15 files** |
+| Storybook | **PASS** — static build succeeds; **184 stories across 16 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
 | Bundle size | **React entry + CSS 44.40 kB gzip / 60 kB**; **total 67.64 kB gzip / 68 kB** (core, React, adapters and CSS) |
@@ -84,7 +84,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
   demo has a `play` function.
 - **Demos/Event Log** shows timestamped selection, command and context-menu
   callbacks beside the planner.
-- Every one of the **183 stories across 15 files** has a story-level
+- Every one of the **184 stories across 16 files** has a story-level
   description; the Reference catalogue remains intact.
 - The Fluent UI and MUI context-menu examples are host-owned and dev-only.
 
@@ -483,7 +483,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
   are deduped; touch keeps the native long-press; Fluent and MUI examples are
   host-owned.
 - **Demos.** Storybook opens with Demos: select, move, resize, paint, keyboard
-  and context menu, plus a timestamped event log. All 183 stories have a
+  and context menu, plus a timestamped event log. All 184 stories have a
   story-level description. The context-menu stories run in a bounded shell so
   the full 14-month view and the host menu are visible in one laptop viewport;
   the Demos story renders its own menu instead of hiding the feedback below the
@@ -530,14 +530,14 @@ The documentation site is one artifact built by `pnpm docs:site`:
 
 The build sets the VitePress base and the Storybook production base, copies
 both into `docs/.vitepress/dist`, and verifies every local link and asset
-against the project base. `pnpm docs:site` reported **417 files**; the artifact
-includes 183 stories and the generated API tree.
+against the project base. `pnpm docs:site` reported **423 files**; the artifact
+includes 184 stories and the generated API tree.
 
 ### Commands and results
 
 | Command | Result |
 | --- | --- |
-| `pnpm docs:site` | PASS — VitePress + Storybook + TypeDoc under `/year-planner/`; 417 files; links checked |
+| `pnpm docs:site` | PASS — VitePress + Storybook + TypeDoc under `/year-planner/`; 423 files; links checked |
 | `pnpm docs:site -- --check-only` | PASS — the last artifact verifies without a rebuild |
 | `playwright test tests/e2e/site.spec.ts --project=chromium` | PASS — home/guide/tutorial, interactive story iframe, Storybook manager, story index and API under the real base |
 | `pnpm verify:full` | PASS — 163 E2E passed / 56 skipped; timezone 226 × 3; performance 10 passed / 1 skipped; benchmark 11 passed / 11 skipped; clean consumer PASS |
@@ -562,3 +562,48 @@ The artifact is built and verified in CI. The repository is private and GitHub
 Pages is not enabled, so the site is **not published** yet. Enabling Pages on a
 public repository and running the Docs site workflow with `deploy: true` is an
 owner action; no custom domain is assumed.
+
+## Full construction demo (post-release)
+
+> **Date**: 2026-11-13
+> **Scope**: Northwind Construction's 2027 plan, the Storybook landing story and
+> the VitePress example page.
+
+The demo is a working application, not a mock:
+
+- Eight seed projects across three crews and three project types, plus four
+  milestone annotations. Each project carries client, crew and budget metadata.
+- Double-click a date to open the allocation dialog; the start is the clicked
+  day and the end date is inclusive. Right-click a project to edit, duplicate,
+  mark complete or delete it.
+- The host renders a details panel, KPI strip, search/status filter, layout
+  switch (all lanes or fit to screen), undo/redo, reset, A3 print and a theme
+  switch.
+- The plan is stored in `localStorage` under `year-planner.full-demo.v1`,
+  versioned and validated on load. Reset clears it. The story intentionally has
+  no play function so Storybook does not write before the user acts.
+- Storybook opens on the full demo; the manager redirects a bare catalogue load
+  to `full-demo--full-demo`. The site links to `/examples/full-demo.html`.
+
+### Commands and results (targeted; no full verify)
+
+| Command | Result |
+| --- | --- |
+| `pnpm lint` | PASS |
+| `pnpm test:quality` | PASS — 211 contracts, including 184 stories across 16 files |
+| `pnpm storybook:build` | PASS — 184 stories across 16 files |
+| `pnpm docs:site` | PASS — VitePress + Storybook + TypeDoc; 423 files; links checked under `/year-planner/` |
+| `playwright test tests/e2e/full-demo.spec.ts tests/e2e/site.spec.ts --project=chromium` | PASS — 10 checks: Storybook landing, allocate/persist, context delete/undo/reset, filter/layout, site home/guide, full-demo iframe, manager, story index and API |
+| `pnpm verify:full` | Not run for this post-release demo. The last full gate passed at `314f893`; this change is Storybook/VitePress/docs/test only, so the owner asked to skip the full gate. |
+
+### Repository and Pages
+
+| Check | Result |
+| --- | --- |
+| Repository visibility | **PUBLIC** via `gh repo edit --visibility public` |
+| GitHub Pages | Enabled with **GitHub Actions** as the source |
+| Site URL | `https://blendsdk.github.io/year-planner/` (no custom domain) |
+| Artifact | `docs/.vitepress/dist` (VitePress + `/storybook/` + `/api/`) |
+
+The owner explicitly requested no full `verify:full` for this change and no
+custom domain. The Pages deployment is the final publication step.

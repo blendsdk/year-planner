@@ -42,7 +42,7 @@ export default defineConfig({
           "A 12–36 month, 37-column year planning grid for React, with fit-to-host geometry, CSS-variable theming and A3 print output.",
       },
     ],
-    ["meta", { property: "og:image", content: `${site}${base}screenshots/year-grid.png` }],
+    ["meta", { property: "og:image", content: `${site}${base}screenshots/full-demo.png` }],
     ["meta", { name: "twitter:card", content: "summary_large_image" }],
   ],
   themeConfig: {
@@ -87,6 +87,7 @@ export default defineConfig({
           text: "Examples",
           items: [
             { text: "All examples", link: "/examples/" },
+            { text: "Full construction demo", link: "/examples/full-demo" },
             { text: "Interactive demo", link: "/examples/interactive" },
             { text: "Themes", link: "/examples/themes" },
             { text: "Print", link: "/examples/print" },

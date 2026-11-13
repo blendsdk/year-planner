@@ -57,7 +57,8 @@ describe("site structure", () => {
     const home = read("docs/index.md");
     expect(home).toContain("layout: home");
     expect(home).toContain("Plan the whole year in one component");
-    expect(home).toContain("/screenshots/year-grid.png");
+    expect(home).toContain("/screenshots/full-demo-hero.png");
+    expect(home).toContain("/screenshots/full-demo.png");
     expect(home.toLowerCase()).toContain("not yet published");
     expect(exists("docs/public/screenshots/year-grid.png")).toBe(true);
     expect(exists("docs/public/logo.svg")).toBe(true);
@@ -77,7 +78,7 @@ describe("tutorials and how-tos", () => {
     }
   });
 
-  it("covers fit, context menus and custom inspectors", () => {
+  it("covers fit, context menus, custom inspectors and the full demo", () => {
     for (const path of [
       "docs/how-to/fit-to-host.md",
       "docs/how-to/context-menu.md",
@@ -86,6 +87,15 @@ describe("tutorials and how-tos", () => {
       expect(exists(path), `missing ${path}`).toBe(true);
       expect(read(path)).toMatch(/^# /);
     }
+    const demoPage = read("docs/examples/full-demo.md");
+    expect(demoPage).toContain('story="full-demo--full-demo"');
+    expect(demoPage.toLowerCase()).toContain("localstorage");
+    expect(exists("apps/storybook/stories/FullDemo.stories.tsx")).toBe(true);
+    const story = read("apps/storybook/stories/FullDemo.stories.tsx");
+    expect(story).toContain('title: "Full Demo"');
+    // Storybook runs play functions on load; the demo must not write storage
+    // before the user acts.
+    expect(story).not.toContain("play:");
   });
 });
 

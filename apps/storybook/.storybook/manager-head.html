@@ -1,0 +1,11 @@
+<script>
+  // Open the construction demo when Storybook is launched without a story.
+  // The check keeps deep links, story titles and the manager's own routing
+  // intact; only the bare catalogue entry point is redirected.
+  (() => {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has("path")) {
+      window.location.replace(`${window.location.pathname}?path=/story/full-demo--full-demo`);
+    }
+  })();
+</script>

@@ -8,7 +8,7 @@ const preview: Preview = {
     options: {
       // Demos first: the first-run experience shows what the planner does.
       storySort: {
-        order: ["Demos", "Year Planner", "Classic Year"],
+        order: ["Full Demo", "Demos", "Year Planner", "Classic Year"],
       },
     },
     viewport: {

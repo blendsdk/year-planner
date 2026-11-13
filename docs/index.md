@@ -6,12 +6,12 @@ hero:
   text: Plan the whole year in one component
   tagline: A 12–36 month, 37-column planning grid for construction, logistics, staffing and every team that plans a year at a glance.
   image:
-    src: /screenshots/year-grid-hero.png
-    alt: The Year Planner grid showing projects across a full year
+    src: /screenshots/full-demo-hero.png
+    alt: The Northwind Construction plan in the Year Planner
   actions:
     - theme: brand
-      text: Open the interactive demo
-      link: /examples/interactive
+      text: Open the full demo
+      link: /examples/full-demo
     - theme: alt
       text: Get started
       link: /getting-started
@@ -44,7 +44,11 @@ December, and January of the next year. The component can widen to 36 months
 without changing the renderer: the month rows are data, not a hard-coded
 calendar.
 
-<img class="screenshot" src="/screenshots/year-grid.png" alt="The Year Planner grid fitted to a laptop viewport" />
+<img class="screenshot" src="/screenshots/full-demo.png" alt="Northwind Construction's 2027 plan in the Year Planner" />
+
+The [full construction demo](./examples/full-demo.md) is a working application:
+double-click a date to allocate a project, right-click a bar to edit or delete
+it, and reload the page to see the plan restored from browser storage.
 
 ## Start with one component
 

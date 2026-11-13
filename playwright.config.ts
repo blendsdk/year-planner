@@ -2,6 +2,14 @@ import { defineConfig, devices } from "@playwright/test";
 
 const demoPort = Number(process.env.PLAYWRIGHT_DEMO_PORT ?? 4173);
 const demoUrl = `http://127.0.0.1:${demoPort}`;
+/**
+ * JSON report destination.
+ *
+ * The sharded runner sets `PLAYWRIGHT_JSON_FILE` per shard so parallel jobs do
+ * not overwrite one another. Playwright's own environment override is ignored
+ * when the reporter declares an `outputFile`, so the path is read here.
+ */
+const jsonReport = process.env.PLAYWRIGHT_JSON_FILE ?? "test-results/playwright.json";
 
 /**
  * End-to-end browser matrix.
@@ -19,7 +27,7 @@ export default defineConfig({
   retries: 0,
   reporter: [
     ["list"],
-    ["json", { outputFile: "test-results/playwright.json" }],
+    ["json", { outputFile: jsonReport }],
     ["html", { open: "never" }],
   ],
   use: {

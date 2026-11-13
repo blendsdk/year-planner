@@ -55,41 +55,41 @@ test.describe("RD-09-AC-07/15 / RD-10-AC-07: axe matrix", () => {
 
   test("material-teal compact", async ({ page }) => {
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     await scanPlanner(page, "material-teal compact");
   });
 
   test("fluent-marigold compact", async ({ page }) => {
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
-    await page.locator("select").nth(1).selectOption("fluent-marigold");
+    await page.getByTestId("year").selectOption("2027");
+    await page.getByTestId("theme").selectOption("fluent-marigold");
     await scanPlanner(page, "fluent-marigold compact");
   });
 
   test("high-contrast compact", async ({ page }) => {
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
-    await page.locator("select").nth(1).selectOption("high-contrast");
+    await page.getByTestId("year").selectOption("2027");
+    await page.getByTestId("theme").selectOption("high-contrast");
     await scanPlanner(page, "high-contrast compact");
   });
 
   test("print compact", async ({ page }) => {
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
-    await page.locator("select").nth(1).selectOption("print");
+    await page.getByTestId("year").selectOption("2027");
+    await page.getByTestId("theme").selectOption("print");
     await scanPlanner(page, "print compact");
   });
 
   test("expanded density", async ({ page }) => {
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     await page.getByTestId("density").selectOption("expanded");
     await scanPlanner(page, "expanded density");
   });
 
   test("open overflow dialog", async ({ page }) => {
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     await page.locator('[data-yp-part="overflow-button"]').first().click();
     await expect(page.locator('[data-yp-part="overflow-popover"]')).toBeVisible();
     await scanPlanner(page, "overflow dialog");
@@ -106,7 +106,7 @@ test.describe("RD-09-AC-07/15 / RD-10-AC-07: axe matrix", () => {
 
   test("AC3 design-system buttons", async ({ page }) => {
     await page.goto("/?ac3=1");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     await expect(page.getByRole("button", { name: "Fluent cell button" })).toBeVisible();
     await scanPlanner(page, "AC3 design-system fixtures");
   });
@@ -114,8 +114,8 @@ test.describe("RD-09-AC-07/15 / RD-10-AC-07: axe matrix", () => {
   test("36-month window", async ({ page }) => {
     test.setTimeout(120_000);
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
-    await page.locator("select").nth(2).selectOption("36");
+    await page.getByTestId("year").selectOption("2027");
+    await page.getByTestId("months").selectOption("36");
     await expect(page.locator("[data-row-id]")).toHaveCount(36);
     await scanPlanner(page, "36-month window");
   });
@@ -143,7 +143,7 @@ test.describe("RD-09-AC-01/02/05/11/14: keyboard evidence", () => {
 
   test("keeps one tab stop per composite", async ({ page }) => {
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     expect(await page.locator('[role="gridcell"][tabindex="0"]').count()).toBe(1);
     expect(await page.locator('[data-yp-part="item-proxy"][tabindex="0"]').count()).toBe(1);
     await page.locator('[data-date="2027-04-01"]').focus();

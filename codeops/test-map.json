@@ -77,7 +77,8 @@
       "packages/languages/LICENSE",
       "packages/languages/CHANGELOG.md",
       "typedoc.languages.json",
-      "packages/react/THIRD_PARTY_NOTICES.md"
+      "packages/react/THIRD_PARTY_NOTICES.md",
+      "playwright.ci.config.ts"
     ],
     "ignorePaths": [
       {
@@ -157,12 +158,16 @@
     "acceptance": {
       "mode": "automated",
       "groups": [
+        "e2e.grid",
         "e2e.visual",
         "e2e.print",
         "e2e.interaction",
+        "e2e.touch",
+        "e2e.mobile",
         "e2e.commands",
         "e2e.accessibility",
         "e2e.security",
+        "e2e.docs",
         "perf.bench"
       ]
     }
@@ -284,28 +289,19 @@
       ]
     },
     {
-      "id": "e2e.visual",
+      "id": "e2e.grid",
       "slice": "verification",
       "tier": "release",
       "sources": [
         "packages/core/src/layout/**",
         "packages/core/src/ribbon/**",
-        "packages/react/src/render/**",
-        "packages/react/src/theme.ts",
-        "packages/react/src/styles.css",
         "packages/react/src/YearPlanner.tsx",
-        "packages/react/src/fit.ts",
-        "packages/react/src/useHostFit.ts",
-        "apps/storybook/**"
+        "packages/react/src/locale.ts",
+        "packages/react/src/messages.ts",
+        "packages/react/src/styles.css"
       ],
       "tests": [
         "tests/e2e/classic-year.spec.ts",
-        "tests/e2e/quality-visual.spec.ts",
-        "tests/e2e/mobile.spec.ts",
-        "tests/e2e/fit.spec.ts",
-        "tests/e2e/storybook.spec.ts",
-        "tests/e2e/site.spec.ts",
-        "tests/e2e/full-demo.spec.ts",
         "tests/e2e/i18n.spec.ts"
       ],
       "run": {
@@ -317,7 +313,38 @@
           "{tests}"
         ]
       },
-      "durationSec": 180,
+      "durationSec": 90,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.visual",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/react/src/render/**",
+        "packages/react/src/theme.ts",
+        "packages/react/src/styles.css",
+        "packages/react/src/fit.ts",
+        "packages/react/src/useHostFit.ts"
+      ],
+      "tests": [
+        "tests/e2e/quality-visual.spec.ts",
+        "tests/e2e/fit.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 150,
       "parallelSafe": false,
       "dependsOn": [
         "core.unit",
@@ -345,7 +372,7 @@
           "{tests}"
         ]
       },
-      "durationSec": 90,
+      "durationSec": 120,
       "parallelSafe": false,
       "dependsOn": [
         "core.unit",
@@ -364,7 +391,6 @@
       ],
       "tests": [
         "tests/e2e/interaction.spec.ts",
-        "tests/e2e/interaction-touch.spec.ts",
         "tests/e2e/context-menu.spec.ts"
       ],
       "run": {
@@ -376,7 +402,61 @@
           "{tests}"
         ]
       },
-      "durationSec": 150,
+      "durationSec": 100,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.touch",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/react/src/interaction/**"
+      ],
+      "tests": [
+        "tests/e2e/interaction-touch.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 40,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.mobile",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "packages/react/src/fit.ts",
+        "packages/react/src/useHostFit.ts",
+        "packages/react/src/styles.css"
+      ],
+      "tests": [
+        "tests/e2e/mobile.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 30,
       "parallelSafe": false,
       "dependsOn": [
         "core.unit",
@@ -405,7 +485,7 @@
           "{tests}"
         ]
       },
-      "durationSec": 100,
+      "durationSec": 80,
       "parallelSafe": false,
       "dependsOn": [
         "core.unit",
@@ -454,6 +534,35 @@
       ],
       "tests": [
         "tests/e2e/security.spec.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "{tests}"
+        ]
+      },
+      "durationSec": 60,
+      "parallelSafe": false,
+      "dependsOn": [
+        "core.unit",
+        "react.unit"
+      ]
+    },
+    {
+      "id": "e2e.docs",
+      "slice": "verification",
+      "tier": "release",
+      "sources": [
+        "apps/storybook/**",
+        "apps/demo/**"
+      ],
+      "tests": [
+        "tests/e2e/storybook.spec.ts",
+        "tests/e2e/site.spec.ts",
+        "tests/e2e/full-demo.spec.ts"
       ],
       "run": {
         "command": [

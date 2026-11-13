@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "defaultWorkers": 2,
+  "chromiumShards": 2,
+  "groups": {
+    "e2e.grid": {
+      "projects": ["chromium", "firefox", "webkit"],
+      "durationSec": 90,
+      "workersByProject": { "chromium": 1 }
+    },
+    "e2e.visual": {
+      "projects": ["chromium", "firefox", "webkit"],
+      "durationSec": 150
+    },
+    "e2e.print": {
+      "projects": ["chromium"],
+      "durationSec": 120,
+      "poppler": true,
+      "workers": 1
+    },
+    "e2e.interaction": {
+      "projects": ["chromium", "firefox", "webkit"],
+      "durationSec": 100
+    },
+    "e2e.touch": {
+      "projects": ["touch-chromium"],
+      "durationSec": 40
+    },
+    "e2e.mobile": {
+      "projects": ["mobile-chromium", "mobile-webkit"],
+      "durationSec": 30
+    },
+    "e2e.commands": {
+      "projects": ["chromium", "firefox", "webkit"],
+      "durationSec": 80
+    },
+    "e2e.accessibility": {
+      "projects": ["chromium"],
+      "durationSec": 160
+    },
+    "e2e.security": {
+      "projects": ["chromium", "firefox", "webkit"],
+      "durationSec": 60
+    },
+    "e2e.docs": {
+      "projects": ["chromium", "firefox", "webkit"],
+      "durationSec": 60
+    }
+  },
+  "browserInstall": {
+    "chromium": ["chromium"],
+    "firefox": ["firefox"],
+    "webkit": ["webkit"],
+    "touch-chromium": ["chromium"],
+    "mobile-chromium": ["chromium"],
+    "mobile-webkit": ["webkit"]
+  }
+}

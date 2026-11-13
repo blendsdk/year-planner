@@ -19,8 +19,8 @@ test.describe("M1 classic year grid", () => {
     await page.goto("/?fit=none");
     await page.addStyleTag({ content: ".yp-inspector { display: none !important; }" });
     await expect(page.locator(".yp-inspector")).toBeHidden();
-    await page.locator("select").nth(0).selectOption("2017");
-    await page.locator("select").nth(1).selectOption("fluent-marigold");
+    await page.getByTestId("year").selectOption("2017");
+    await page.getByTestId("theme").selectOption("fluent-marigold");
     await expect(page.locator("[data-row-id]")).toHaveCount(14);
     await expect(page.locator(".yp-theme-fluent-marigold")).toBeVisible();
     await expect(page.locator(".yp-root")).toHaveScreenshot("classic-2017-marigold.png", {
@@ -50,8 +50,8 @@ test.describe("M1 classic year grid", () => {
 test.describe("RD-06 items, inspector and print", () => {
   test("renders ribbons, an annotation and inspector details @visual", async ({ page }) => {
     await page.goto("/?fit=none");
-    await page.locator("select").nth(0).selectOption("2027");
-    await page.locator("select").nth(1).selectOption("material-teal");
+    await page.getByTestId("year").selectOption("2027");
+    await page.getByTestId("theme").selectOption("material-teal");
     await expect(
       page.locator('[data-yp-part="item-fragment"][data-item-id="booking"]'),
     ).toHaveCount(2);
@@ -79,7 +79,7 @@ test.describe("RD-06 items, inspector and print", () => {
 
   test("opens the overflow popover and a tooltip", async ({ page }) => {
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     const overflow = page.locator('[data-yp-part="overflow-button"]').first();
     const count = Number(((await overflow.textContent()) ?? "+0").replace("+", ""));
     await overflow.click();
@@ -97,9 +97,9 @@ test.describe("RD-06 items, inspector and print", () => {
   }) => {
     test.skip(browserName !== "chromium", "PDF generation is Chromium-only");
     await page.goto("/");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     await page.setViewportSize({ width: 1600, height: 1400 });
-    await page.locator("select").nth(2).selectOption("24");
+    await page.getByTestId("months").selectOption("24");
     await page.emulateMedia({ media: "print" });
     await expect(page.locator('[data-yp-part="print-page"]')).toHaveCount(2);
     await page.pdf({
@@ -111,7 +111,7 @@ test.describe("RD-06 items, inspector and print", () => {
     expectA3Pdf("test-results/rd06-24-months-a3.pdf", 2);
 
     await page.emulateMedia({ media: "screen" });
-    await page.locator("select").nth(2).selectOption("36");
+    await page.getByTestId("months").selectOption("36");
     await page.emulateMedia({ media: "print" });
     await expect(page.locator('[data-yp-part="print-page"]')).toHaveCount(3);
     await page.pdf({
@@ -125,7 +125,7 @@ test.describe("RD-06 items, inspector and print", () => {
 
   test("keeps zoomed geometry inside a scrollable viewport", async ({ page }) => {
     await page.goto("/?fit=none");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     const zoom = page.locator('input[type="range"]');
     await zoom.fill("1.5");
     const row = page.locator('[data-row-id="2027-02"]');
@@ -154,7 +154,7 @@ test.describe("RD-06 items, inspector and print", () => {
       });
     });
     await page.goto("/?security=1");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     await expect(page.getByRole("grid")).toBeVisible();
     await expect(page.locator('[data-yp-part="item-fragment"]').first()).toBeVisible();
     await expect(page.locator('[data-item-id="security-probe"]').first()).not.toHaveAttribute(
@@ -168,7 +168,7 @@ test.describe("RD-06 items, inspector and print", () => {
 test.describe("AC3 design-system fixtures", () => {
   test("renders real Fluent UI v9 and MUI buttons in cells and the inspector", async ({ page }) => {
     await page.goto("/?ac3=1");
-    await page.locator("select").nth(0).selectOption("2027");
+    await page.getByTestId("year").selectOption("2027");
     await expect(page.getByRole("button", { name: "Fluent cell button" })).toBeVisible();
     await expect(page.getByRole("button", { name: "MUI cell button" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Fluent inspector button" })).toBeVisible();

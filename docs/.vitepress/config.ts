@@ -118,6 +118,7 @@ export default defineConfig({
             { text: "Architecture", link: "/architecture" },
             { text: "Benchmarks", link: "/benchmarks/rd13-baseline" },
             { text: "Test report", link: "/test-report" },
+            { text: "Browser tests", link: "/browser-tests" },
             { text: "ADRs", link: "/adr/0001-renderer-strategy" },
             { text: "Documentation map", link: "/README" },
           ],

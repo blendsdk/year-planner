@@ -19,6 +19,7 @@ planning. This page is the entry point for the developer guides.
 | Dynamic months | [dynamic-months.md](dynamic-months.md) |
 | Print | [print.md](print.md) |
 | Accessibility status | [accessibility.md](accessibility.md) |
+| Browser test selection and sharding | [browser-tests.md](browser-tests.md) |
 | Performance status | [performance.md](performance.md) |
 | Limitations | [limitations.md](limitations.md) |
 | Migration | [migration.md](migration.md) |

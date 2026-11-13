@@ -13,6 +13,7 @@
     "tests/perf/**/*.ts",
     "vitest.quality.config.ts",
     "playwright.config.ts",
+    "playwright.ci.config.ts",
     "playwright.bench.config.ts"
   ]
 }

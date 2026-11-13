@@ -60,23 +60,23 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | React tests | **542 passed** (51 files) |
 | Core coverage | **97.58% lines, 95.78% branches, 99.50% functions** |
 | React coverage | **94.58% lines, 86.09% branches, 95.29% functions** |
-| Playwright | **172 passed, 74 skipped** (PDF and axe are Chromium-only; forced-colors is Chromium-only; touch is Chromium-only; one pending-preview timing test is quarantined on all desktop engines) |
+| Playwright | **172 passed, 74 skipped** (PDF and axe are Chromium-only; forced-colors is Chromium-only; touch is Chromium-only; one pending-preview timing test is quarantined on all desktop engines). The full matrix now runs as five independent shards |
 | Browsers | Chromium, Firefox, WebKit, Pixel 5 Chromium, iPhone 13 WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
 | A3 print boundaries | **15/28/29 months** print 2/2/3 pages; 12/14/18/24/36 verified |
-| Quality tests | **219 passed** (traceability, public API, coverage, size, CSS minifier, CI, package, license, audit, environment and release contracts) |
+| Quality tests | **252 passed** (traceability, public API, coverage, size, CSS minifier, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current, including palette attribution |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
 | Storybook | **PASS** — static build succeeds; **186 stories across 16 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core`, `docs/api/react` and `docs/api/languages` generated |
-| Docs site | **PASS** — classic layout, licence, localization and theme pages build |
+| Docs site | **PASS** — classic layout, licence, localization, browser-test and theme pages build (501 files) |
 | Bundle size | **React entry + CSS 46.35 kB gzip / 60 kB**; **total 69.59 kB gzip / 72 kB** (core, React, adapters and CSS, including the English fallback). **Languages 86.95 kB gzip / 95 kB** for all 45 catalogues; largest single language 2.22 kB / 8 kB |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
-| CI | `verify`, `browsers`, `security`, `performance` and `dco` jobs configured; browser evidence and benchmark artifacts uploaded |
+| CI | `verify`, `browser-plan`, `browser-build`, sharded `browsers`, `security`, `performance` and `dco` jobs configured; browser evidence and benchmark artifacts uploaded |
 | Browser versions | Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright 1.65.0) |
 | Timezones | **226 core tests pass under each of UTC, Pacific/Kiritimati and America/Los_Angeles** (678 runs total; final gate) |
 
@@ -659,3 +659,22 @@ full runs:
 The full `verify:full` gate was not run locally for this feature; CI keeps the
 authoritative full gate. The catalogue completeness test fails when a locale
 misses a key, a placeholder or a plural category.
+
+## Browser test selection and sharding (0.3.0)
+
+The browser suite is grouped into ten feature groups, selected from the test
+map, and packed into five independent CI shards. A local ledger reuses a
+passing spec and browser pair only when its complete input fingerprint is
+unchanged. See [Browser tests](browser-tests.md).
+
+| Command | Result |
+| --- | --- |
+| `node scripts/browser-shards.mjs plan --gate release` | PASS — 38 units, 5 shards; largest estimate 230 s |
+| `node scripts/browser-shards.mjs plan --gate task --paths packages/react/src/locale.ts` | PASS — 1 group, 6 units, 4 shards |
+| `node scripts/browser-shards.mjs plan --gate task --paths docs/faq.md` | PASS — mode `none`, no browser work |
+| `node scripts/browser-shards.mjs plan --gate task --paths package.json` | PASS — mode `full`, every browser group |
+| `node scripts/browser-shards.mjs plan --gate task --paths new-file.txt` | PASS — fail-closed full selection for an unknown path |
+| `pnpm test:e2e:affected --paths packages/react/src/locale.ts` | PASS — 6/6 units, Chromium, Firefox and WebKit |
+| repeat `test:e2e:affected` | PASS — 6 cached, 0 executed |
+| `node scripts/browser-shards.mjs run --shard chromium-2 --ci` | PASS — static artifacts served by `playwright.ci.config.ts` |
+| `pnpm test:quality` | PASS — 252 contracts, including 33 browser-plan checks |

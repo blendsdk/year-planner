@@ -133,6 +133,10 @@
       {
         "glob": "SUPPORT.md",
         "reason": "Support policy documentation."
+      },
+      {
+        "glob": ".vitepress/cache/**",
+        "reason": "VitePress dependency cache written at the repository root."
       }
     ],
     "caseSensitive": true,
@@ -259,7 +263,8 @@
         "tests/e2e/quality-visual.spec.ts",
         "tests/e2e/mobile.spec.ts",
         "tests/e2e/fit.spec.ts",
-        "tests/e2e/storybook.spec.ts"
+        "tests/e2e/storybook.spec.ts",
+        "tests/e2e/site.spec.ts"
       ],
       "run": {
         "command": [

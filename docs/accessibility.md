@@ -157,4 +157,4 @@ version and date in [test-report.md](test-report.md).
   planner warns in development and the axe matrix checks for nesting.
 - A full HTML validator is not installed; the nested-control risk is covered by axe
   `nested-interactive` and a DOM scan.
-- Deferred capabilities are listed in [DEFERRED.md](../DEFERRED.md).
+- Deferred capabilities are listed in [DEFERRED.md](https://github.com/blendsdk/year-planner/blob/main/DEFERRED.md).

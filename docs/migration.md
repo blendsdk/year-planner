@@ -18,7 +18,7 @@ following compatibility rules:
 The `0.3.0` release changes the default geometry: `display.fit` defaults to
 `"contain"`, so the planner fits its bounded host region instead of rendering at
 the fixed 55/40/70/90 design units. Give the planner a bounded parent, or set
-`display={{ fit: "none" }}` to keep the previous explicit-size behaviour. The
+<code v-pre>display={{ fit: "none" }}</code> to keep the previous explicit-size behaviour. The
 previous behaviour is otherwise unchanged; print still uses the A3 matrix.
 
 A host migrating from the preview should replace a hand-built theme object with

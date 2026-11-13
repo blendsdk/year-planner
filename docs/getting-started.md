@@ -151,7 +151,7 @@ used and the page scrolls. A zero-size host (a hidden tab) keeps the last valid
 geometry. If the 24 px column floor or the one-lane vertical budget still does
 not fit, `.yp-viewport` scrolls; content is never clipped.
 
-Set `display={{ fit: "none" }}` to keep the explicit design-unit geometry. In
+Set <code v-pre>display={{ fit: "none" }}</code> to keep the explicit design-unit geometry. In
 fit mode `display.zoom` scales columns only and is clamped to the 24 px floor;
 vertical geometry is fit-driven. `density: "expanded"` is a non-fit preference:
 in fit mode the lane budget wins and extra items go to the existing overflow
@@ -168,8 +168,8 @@ and focus return.
 ## Print
 
 Call `window.print()` when the planner is on the page. The component renders a
-hidden A3 print tree. `print={{ mode: "paginate" }}` produces one to three pages
-for a 12–36 month window; `print={{ mode: "fit" }}` scales one page and reports a
+hidden A3 print tree. <code v-pre>print={{ mode: "paginate" }}</code> produces one to three pages
+for a 12–36 month window; <code v-pre>print={{ mode: "fit" }}</code> scales one page and reports a
 diagnostic when the date text would fall below 7 pt. See [print.md](print.md).
 
 ```tsx

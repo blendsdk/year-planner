@@ -3,26 +3,48 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 /**
  * Serves one built static site for the browser checks.
  *
- * The Storybook gate needs the static build (`storybook-static`), because the
- * Storybook dev server and the built site export the same story URLs. Playwright
- * starts this server; the script fails with a clear message when the build is
- * missing instead of serving an empty directory.
+ * The Storybook and VitePress gates need the built artifacts, because both use
+ * absolute asset paths under the GitHub Pages project base. Playwright starts
+ * this server; the script fails with a clear message when the build is missing
+ * instead of serving an empty directory.
  *
- * Usage: `node scripts/serve-static.mjs <directory> <port>`
+ * Usage: `node scripts/serve-static.mjs <directory> <port> [--base /path/]`
  */
 import { createServer } from "node:http";
 import { extname, join, resolve, sep } from "node:path";
 
-const [directory, portText] = process.argv.slice(2);
+const args = process.argv.slice(2);
+const positional = [];
+let base = "/";
+for (let index = 0; index < args.length; index += 1) {
+  const token = args[index];
+  if (token === "--base") {
+    const value = args[index + 1];
+    if (!value) {
+      console.error("serve-static: --base needs a path");
+      process.exit(2);
+    }
+    base = value;
+    index += 1;
+  } else {
+    positional.push(token);
+  }
+}
+
+const [directory, portText] = positional;
 const port = Number(portText);
 if (!directory || !Number.isInteger(port) || port <= 0) {
-  console.error("usage: node scripts/serve-static.mjs <directory> <port>");
+  console.error("usage: node scripts/serve-static.mjs <directory> <port> [--base /path/]");
   process.exit(2);
 }
 
+// Normalise the public base: leading slash, no trailing slash except `/`.
+base = `/${base.replace(/^\/+|\/+$/g, "")}`;
+if (base === "/") base = "";
+
 const root = resolve(directory);
 if (!existsSync(join(root, "index.html"))) {
-  console.error(`serve-static: ${root} has no index.html; run \`pnpm storybook:build\` first.`);
+  console.error(`serve-static: ${root} has no index.html; build the site first.`);
   process.exit(1);
 }
 
@@ -46,13 +68,23 @@ const MIME = new Map([
 
 const server = createServer((request, response) => {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
-  let path;
+  let pathname;
   try {
-    path = decodeURIComponent(url.pathname);
+    pathname = decodeURIComponent(url.pathname);
   } catch {
     response.writeHead(400).end("bad request");
     return;
   }
+
+  if (base && pathname === base) {
+    response.writeHead(301, { location: `${base}/` }).end();
+    return;
+  }
+  if (base && !pathname.startsWith(`${base}/`)) {
+    response.writeHead(404).end("not found");
+    return;
+  }
+  const path = base ? pathname.slice(base.length) : pathname;
   const requested = resolve(join(root, path));
   // Reject path traversal outside the served directory.
   if (requested !== root && !requested.startsWith(root + sep)) {
@@ -61,8 +93,9 @@ const server = createServer((request, response) => {
   }
   let file = requested;
   if (!existsSync(file) || statSync(file).isDirectory()) {
-    // Storybook routes live in the query string; unknown paths get the shell.
-    file = join(root, "index.html");
+    // A bare directory gets its index; an unknown route gets the shell.
+    const index = join(requested, "index.html");
+    file = existsSync(index) ? index : join(root, "index.html");
   }
   try {
     response.writeHead(200, {
@@ -76,5 +109,5 @@ const server = createServer((request, response) => {
 });
 
 server.listen(port, "127.0.0.1", () => {
-  console.log(`serve-static: ${root} on http://127.0.0.1:${port}`);
+  console.log(`serve-static: ${root}${base || "/"} on http://127.0.0.1:${port}${base}/`);
 });

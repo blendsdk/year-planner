@@ -4,8 +4,8 @@
 > **Product source**: `d65f93a` (the Phase 0 planning commit; product code unchanged from `d8c9fa9`)
 > **Host**: Intel 4 vCPU, 15 GiB RAM, Linux x64, Node 24.21.0, Chromium 158.0.8127.18
 > **Mode**: production demo build, Chromium headless, cache disabled, one fresh context per scenario
-> **Raw data**: [rd13-baseline.json](rd13-baseline.json)
-> **Screenshots**: [plan evidence](../../codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/)
+> **Raw data**: [rd13-baseline.json](https://github.com/blendsdk/year-planner/blob/main/docs/benchmarks/rd13-baseline.json)
+> **Screenshots**: [plan evidence](https://github.com/blendsdk/year-planner/tree/main/codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline)
 
 ## Initial render
 
@@ -80,10 +80,10 @@ resolves every item in one pass. Phase 1 task 1.2.1 uses it.
 
 | Screenshot | Observation |
 | ---------- | ----------- |
-| [demo-1280x800.png](../../codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/demo-1280x800.png) | The default demo shows only Dec–May (6 of 14 months) before the viewport ends; the page scrolls. The month labels are 18 px, bold and left-aligned. |
-| [bench-1280x800.png](../../codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/bench-1280x800.png) | The 2,000 px grid is clipped on the right and shows about 8 of 14 months vertically. |
-| [bench-1440x900.png](../../codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/bench-1440x900.png) | Still clipped on both axes; no fit. |
-| [bench-1024x768.png](../../codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/bench-1024x768.png) | About 6 months visible; the grid extends beyond both axes. |
+| [demo-1280x800.png](https://github.com/blendsdk/year-planner/blob/main/codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/demo-1280x800.png) | The default demo shows only Dec–May (6 of 14 months) before the viewport ends; the page scrolls. The month labels are 18 px, bold and left-aligned. |
+| [bench-1280x800.png](https://github.com/blendsdk/year-planner/blob/main/codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/bench-1280x800.png) | The 2,000 px grid is clipped on the right and shows about 8 of 14 months vertically. |
+| [bench-1440x900.png](https://github.com/blendsdk/year-planner/blob/main/codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/bench-1440x900.png) | Still clipped on both axes; no fit. |
+| [bench-1024x768.png](https://github.com/blendsdk/year-planner/blob/main/codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/bench-1024x768.png) | About 6 months visible; the grid extends beyond both axes. |
 
 The three full-page screenshots (`*-full.png` in the same evidence directory) show the complete 14-month
 planner. The visual baseline confirms the arithmetic: the fit must be
@@ -173,7 +173,7 @@ The two-dimensional fit landed after the performance work. It is measured by
 | 1024 × 768 | 12 months | dense | 1 | 24 px floor | none | none |
 
 The three screenshots are in
-[the plan evidence](../../codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/fit-1280x800.png)
+[the plan evidence](https://github.com/blendsdk/year-planner/blob/main/codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/fit-1280x800.png)
 (`fit-1280x800.png`, `fit-1440x900.png`, `fit-1024x768.png`). The benchmark
 route pins `fit: "none"` so the Phase 0/Phase 1 numbers stay comparable. Print
 uses its own comfortable geometry and is unaffected.

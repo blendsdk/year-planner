@@ -32,11 +32,19 @@ export default defineConfig({
       timeout: 120_000,
     },
     {
-      // The Storybook demo checks run against the built site. `pnpm verify`
-      // builds it before `pnpm test:e2e`, and the CI browsers job runs
-      // `pnpm storybook:build`; a missing build fails with a clear message.
-      command: "node scripts/serve-static.mjs storybook-static 4176",
-      url: "http://127.0.0.1:4176/iframe.html",
+      // The Storybook demo checks run against the built catalogue under the
+      // GitHub Pages subpath. `pnpm verify` builds it before `pnpm test:e2e`.
+      command:
+        "node scripts/serve-static.mjs storybook-static 4176 --base /year-planner/storybook",
+      url: "http://127.0.0.1:4176/year-planner/storybook/iframe.html",
+      reuseExistingServer: true,
+      timeout: 30_000,
+    },
+    {
+      // The combined VitePress + Storybook + API artifact, served at the same
+      // project base as GitHub Pages. `pnpm verify` builds it before E2E.
+      command: "node scripts/serve-static.mjs docs/.vitepress/dist 4177 --base /year-planner",
+      url: "http://127.0.0.1:4177/year-planner/",
       reuseExistingServer: true,
       timeout: 30_000,
     },

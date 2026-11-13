@@ -30,38 +30,48 @@ planning. This page is the entry point for the developer guides.
 - [Test report](test-report.md) — commands, counts, browser matrix and known gaps.
 - [Benchmarks](benchmarks/rd10-after.md) — measured layout and browser performance.
 - [ADR 0001](adr/0001-renderer-strategy.md) — the HTML/CSS renderer decision.
-- [Deferred capabilities](../DEFERRED.md) — what R1 does not implement.
+- [Deferred capabilities](https://github.com/blendsdk/year-planner/blob/main/DEFERRED.md) — what R1 does not implement.
 
 ## Published sites
 
-The Storybook site is the published component catalogue; the generated TypeDoc
-reference is served at `/api/`. Both are built from this repository when the
-release pipeline enables the docs site. The markdown guides on this page are the
-repository documentation and are not copied into the published artifact.
+The documentation site is one GitHub Pages artifact:
+
+| Path | Content |
+| --- | --- |
+| `/year-planner/` | VitePress home, guide, tutorials, how-tos and examples |
+| `/year-planner/storybook/` | The static Storybook catalogue |
+| `/year-planner/api/` | The generated TypeDoc reference |
+
+This is a project site, so the base path is `/year-planner/`. There is no
+custom domain. The build accepts `DOCS_BASE_PATH=/` when one is added later.
 
 ## Publishing the site
 
-The docs-site workflow, added with the release pipeline, builds and uploads
-`storybook-static/` and publishes only through a manual `workflow_dispatch` run
-with `deploy: true` from `main`. Before the first release:
+The docs-site workflow builds the combined artifact and publishes only through
+a manual `workflow_dispatch` run with `deploy: true` from `main`. Before the
+first release:
 
-1. Open the repository settings and enable GitHub Pages with **GitHub Actions**
-   as the source.
-2. Confirm the repository plan supports Pages.
+1. Make the repository public, or confirm the plan supports Pages on a private
+   repository.
+2. Enable GitHub Pages with **GitHub Actions** as the source.
 3. Run the **Docs site** workflow on `main` with `deploy: true`.
 
 The build does not depend on a stored secret; the deploy job uses the GitHub
-OIDC token and the `github-pages` environment.
+OIDC token and the `github-pages` environment. The uploaded artifact is
+`docs/.vitepress/dist`.
 
 ## Building the site locally
 
 ```bash
-pnpm docs:site              # package build, Storybook, TypeDoc, copy, verify
-pnpm docs:site -- --check-only  # verify the last build without rebuilding
+pnpm docs:dev                  # VitePress at /year-planner/
+pnpm docs:site                 # packages, Storybook, TypeDoc, VitePress, copy, verify
+pnpm docs:site -- --check-only # verify the last build without rebuilding
+pnpm docs:preview              # preview the last VitePress build
 ```
 
-`pnpm storybook:build` clears `storybook-static/`; run `pnpm docs:site` when the
-API tree must be present.
+The VitePress dev server proxies `/year-planner/storybook` to a Storybook dev
+server on `http://localhost:6006`, so the live examples work while you edit
+either side. Run `pnpm storybook` in another terminal.
 
 ## Package status
 

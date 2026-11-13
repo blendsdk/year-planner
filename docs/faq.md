@@ -17,7 +17,7 @@ context months.
 
 ### How do I hide an item without deleting it?
 
-Pass `visibility={{ hiddenGroupIds, hiddenLayerIds, hiddenItemIds }}` or the
+Pass <code v-pre>visibility={{ hiddenGroupIds, hiddenLayerIds, hiddenItemIds }}</code> or the
 uncontrolled `defaultVisibility`. A hidden item disappears from the grid, the
 inspector, the overflow list and print. See [visibility.md](visibility.md).
 
@@ -36,12 +36,12 @@ content. `renderInspector` can render real design-system buttons.
 
 ### Does the component support recurrence or dependencies?
 
-Not in R1. Those capabilities are listed in [DEFERRED.md](../DEFERRED.md) and are
+Not in R1. Those capabilities are listed in [DEFERRED.md](https://github.com/blendsdk/year-planner/blob/main/DEFERRED.md) and are
 not stubbed. Use a host-side expansion into concrete items if you need them now.
 
 ### How do I print an A3 page?
 
-Set `print={{ page: "A3", mode: "paginate" }}` or `mode: "fit"`, then call
+Set <code v-pre>print={{ page: "A3", mode: "paginate" }}</code> or `mode: "fit"`, then call
 `window.print()`. Hide host chrome in `@media print`. See [print.md](print.md).
 
 ### Can I use Fluent UI v9 or MUI?

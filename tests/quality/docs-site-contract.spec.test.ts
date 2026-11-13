@@ -46,10 +46,39 @@ describe("RD-11-AC-06: docs-site command", () => {
       "pnpm build",
       "docs:build",
       "storybook-static",
+      "docs/.vitepress/dist",
+      "storybook/iframe.html",
+      "vitepress",
       "api",
     ]) {
       expect(script, `script is missing ${token}`).toContain(token);
     }
+  });
+
+  it("RD-11-AC-06: builds the VitePress site under the Pages base", () => {
+    const config = read("docs/.vitepress/config.ts");
+    for (const token of ["/year-planner/", "DOCS_BASE_PATH", "srcExclude", "sitemap"]) {
+      expect(config, `VitePress config is missing ${token}`).toContain(token);
+    }
+    expect(read("docs/.vitepress/theme/components/StoryFrame.vue")).toContain(
+      "/storybook/iframe.html",
+    );
+    expect(exists("docs/index.md")).toBe(true);
+    expect(exists("docs/tutorials/first-planner.md")).toBe(true);
+    expect(exists("docs/how-to/fit-to-host.md")).toBe(true);
+    expect(exists("docs/public/logo.svg")).toBe(true);
+    expect(exists("docs/public/screenshots/year-grid.png")).toBe(true);
+  });
+
+  it("RD-11-AC-06: runs the combined artifact through a subpath browser check", () => {
+    expect(exists("tests/e2e/site.spec.ts")).toBe(true);
+    const spec = read("tests/e2e/site.spec.ts");
+    for (const token of ["/year-planner", "/storybook/iframe.html", "/api/index.html"]) {
+      expect(spec, `site spec is missing ${token}`).toContain(token);
+    }
+    const config = read("playwright.config.ts");
+    expect(config).toContain("docs/.vitepress/dist");
+    expect(config).toContain("--base /year-planner");
   });
 });
 
@@ -79,7 +108,7 @@ describe("RD-11-AC-06: Pages workflow", () => {
     expect(workflow).toContain(
       "if: github.event_name == 'workflow_dispatch' && inputs.deploy && github.ref == 'refs/heads/main'",
     );
-    expect(workflow).toContain("path: storybook-static");
+    expect(workflow).toContain("path: docs/.vitepress/dist");
     expect(workflow).toContain("environment:");
     expect(workflow).toContain("github-pages");
   });

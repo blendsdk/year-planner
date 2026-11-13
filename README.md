@@ -102,8 +102,16 @@ The [documentation index](docs/README.md) maps every guide:
 | Migration | [docs/migration.md](docs/migration.md) |
 | FAQ | [docs/faq.md](docs/faq.md) |
 
-Storybook is the component catalogue (**183 stories across 15 files**); the
-generated TypeDoc reference is served at `/api/` when the docs site is built.
+The documentation site is built with VitePress. It hosts the guide, tutorials,
+examples and the component catalogue: Storybook is at `/storybook/` (**183 stories across 15 files**) and the generated TypeDoc reference is at `/api/`.
+It is designed for `https://blendsdk.github.io/year-planner/`; Pages must be
+enabled before it is public.
+
+```bash
+pnpm docs:dev      # VitePress at http://localhost:5173/year-planner/
+pnpm docs:site     # combined VitePress + Storybook + TypeDoc artifact
+```
+
 The renderer decision is in
 [ADR 0001](docs/adr/0001-renderer-strategy.md); the CSP contract is in
 [docs/security.md](docs/security.md), and the full test evidence is in

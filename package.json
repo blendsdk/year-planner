@@ -36,6 +36,8 @@
     "docs": "pnpm api-report && pnpm docs:build",
     "test:coverage": "pnpm test",
     "docs:build": "typedoc --options typedoc.core.json && typedoc --options typedoc.react.json && cp docs/api-index.html docs/api/index.html",
+    "docs:dev": "vitepress dev docs",
+    "docs:preview": "vitepress preview docs",
     "docs:site": "node scripts/build-docs-site.mjs",
     "test:a11y": "playwright test tests/e2e/accessibility.spec.ts",
     "test:mobile": "playwright test tests/e2e/mobile.spec.ts",
@@ -58,6 +60,7 @@
     "turbo": "2.11.10",
     "typedoc": "0.28.20",
     "typescript": "6.0.3",
+    "vitepress": "^1.6.4",
     "vitest": "4.1.12"
   }
 }

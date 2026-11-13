@@ -4,7 +4,7 @@
 > **Gate**: RD-05/RD-06 renderer evidence gate (requirements AR #11, #12, #36, #57)
 > **Verdict**: **PASSED WITH NOTES** — HTML/CSS is the canonical renderer; SVG remains an optional internal shape/selection plane. No public renderer switch.
 > **Evidence harness**: `spike/renderer/` (`pnpm build && pnpm measure`)
-> **Raw measurements**: [`spike/renderer/evidence/measurements.json`](../spike/renderer/evidence/measurements.json)
+> **Raw measurements**: [`spike/renderer/evidence/measurements.json`](https://github.com/blendsdk/year-planner/blob/main/spike/renderer/evidence/measurements.json)
 
 ---
 

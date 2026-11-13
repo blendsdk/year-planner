@@ -8,7 +8,7 @@ hidden in print too.
 
 ## paginate
 
-`print={{ page: "A3", mode: "paginate" }}` produces one to three A3 landscape
+<code v-pre>print={{ page: "A3", mode: "paginate" }}</code> produces one to three A3 landscape
 pages:
 
 | Window | Pages |
@@ -27,7 +27,7 @@ overrides the row split when a host needs a different page rhythm.
 
 ## fit
 
-`print={{ page: "A3", mode: "fit" }}` renders one page and scales all rows to
+<code v-pre>print={{ page: "A3", mode: "fit" }}</code> renders one page and scales all rows to
 fit. When the date text would fall below 7 pt, the planner reports the
 `PRINT_FIT_TOO_SMALL` diagnostic instead of printing unreadable text.
 

@@ -78,7 +78,9 @@ Run these steps once, after the license and asset review above:
    `gh api -X PUT repos/blendsdk/year-planner/vulnerability-alerts`.
 3. Change visibility only after private vulnerability reporting is enabled:
    `gh repo edit blendsdk/year-planner --visibility public --accept-visibility-change-consequences`.
-4. Enable GitHub Pages with **GitHub Actions** as the source.
+4. Enable GitHub Pages with **GitHub Actions** as the source. The Docs site
+   workflow uploads `docs/.vitepress/dist`: VitePress at `/year-planner/`,
+   Storybook at `/year-planner/storybook/` and TypeDoc at `/year-planner/api/`.
 5. Create the `npm-production` environment with required reviewers and a
    `main` deployment-branch policy (Settings → Environments).
 6. Configure the npm trusted publisher for both packages (see the bootstrap

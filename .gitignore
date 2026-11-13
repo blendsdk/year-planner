@@ -49,8 +49,11 @@ reference/legacy-reconstruction/
 npm-debug.log*
 pnpm-debug.log*
 
-# Generated API documentation and tool temp files
+# Generated API documentation and site output
 docs/api/
+.vitepress/cache/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
 packages/*/temp/
 spike/renderer/dist/
 

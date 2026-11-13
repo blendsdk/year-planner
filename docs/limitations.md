@@ -1,7 +1,7 @@
 # Limitations
 
 > **Scope**: what R1 does not implement, and the honest boundaries of the
-> evidence. The full list is in [DEFERRED.md](../DEFERRED.md).
+> evidence. The full list is in [DEFERRED.md](https://github.com/blendsdk/year-planner/blob/main/DEFERRED.md).
 
 ## Deferred capabilities
 

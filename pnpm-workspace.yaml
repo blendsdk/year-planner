@@ -23,3 +23,5 @@ minimumReleaseAgeExclude:
   - vite@7.3.8 || 8.3.7
 allowBuilds:
   esbuild: true
+overrides:
+  "vitepress>vite": 6.4.6

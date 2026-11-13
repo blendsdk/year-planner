@@ -64,7 +64,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
-| Quality tests | **198 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
+| Quality tests | **211 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
@@ -451,7 +451,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 | Command | Result |
 | ------- | ------ |
 | `pnpm test` | PASS — 226 core, 535 React tests |
-| `pnpm test:quality` | PASS — 198 contracts, including 193 traceability rows |
+| `pnpm test:quality` | PASS — 211 contracts, including 193 traceability rows |
 | `PERF_STRICT=1 playwright ... RD-13-AC-03` | PASS — initial render 242.0 / 346.4 ms p95; click 32.5 / 59.6 ms p95; drag work 4.9 ms/frame, input delay 14.2 ms |
 | `playwright test tests/e2e/fit.spec.ts` | PASS — 1280 × 800, 1440 × 900, 1024 × 768; 24 px cells and ribbon proxies |
 | `playwright test tests/e2e/context-menu.spec.ts` | PASS — pointer item request, selection, keyboard date request, one request per key |
@@ -460,7 +460,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 | `pnpm docs:site -- --check-only` | PASS — 249 files; Storybook at `/`, TypeDoc at `/api` |
 | `pnpm release:check` | PASS — lockstep `0.3.0` versions, changelogs, tarballs and source maps |
 | `pnpm release:publish --dry-run --allow-dirty` | PASS — core then React packed and validated in npm dry-run mode |
-| `pnpm verify:full` | PASS — 158 E2E passed / 46 skipped; timezone 226 × 3; audit PASS; performance 10 passed / 1 skipped; benchmark 11 passed / 11 skipped plus the report; clean packed consumer PASS |
+| `pnpm verify:full` | PASS — 163 E2E passed / 56 skipped; timezone 226 × 3; audit PASS (two moderate dev-only advisories); performance 10 passed / 1 skipped; benchmark 11 passed / 11 skipped plus the report; clean packed consumer PASS |
 
 ### What changed
 
@@ -513,3 +513,52 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 - The original 150 ms initial-render and 50 ms click values remain the
   post-`0.3.0` row-windowing goal.
 - The 10,000-item overflow timing remains a documented stress miss.
+
+## Documentation website (VitePress)
+
+> **Date**: 2026-11-13
+> **Host**: GitHub Pages project site, no custom domain
+> **Base path**: `/year-planner/`
+
+The documentation site is one artifact built by `pnpm docs:site`:
+
+| Path | Content |
+| --- | --- |
+| `/year-planner/` | VitePress home, guide, tutorials, how-tos and examples |
+| `/year-planner/storybook/` | Static Storybook catalogue |
+| `/year-planner/api/` | TypeDoc reference |
+
+The build sets the VitePress base and the Storybook production base, copies
+both into `docs/.vitepress/dist`, and verifies every local link and asset
+against the project base. `pnpm docs:site` reported **417 files**; the artifact
+includes 183 stories and the generated API tree.
+
+### Commands and results
+
+| Command | Result |
+| --- | --- |
+| `pnpm docs:site` | PASS — VitePress + Storybook + TypeDoc under `/year-planner/`; 417 files; links checked |
+| `pnpm docs:site -- --check-only` | PASS — the last artifact verifies without a rebuild |
+| `playwright test tests/e2e/site.spec.ts --project=chromium` | PASS — home/guide/tutorial, interactive story iframe, Storybook manager, story index and API under the real base |
+| `pnpm verify:full` | PASS — 163 E2E passed / 56 skipped; timezone 226 × 3; performance 10 passed / 1 skipped; benchmark 11 passed / 11 skipped; clean consumer PASS |
+| `playwright test tests/e2e/storybook.spec.ts --project=chromium` | PASS — the Storybook stories also work at `/year-planner/storybook/` |
+| `pnpm test:quality` | PASS — 211 contracts |
+
+### Content
+
+- Home with a real fitted-year screenshot, feature grid, honest npm status and
+  links to the guide, tutorials, examples, Storybook and API.
+- Tutorials: first planner, controlled commands, theming/adapters, A3 print.
+- How-tos: fit to a host, host-owned context menu, custom inspector.
+- Examples: live interactive stories, themes, print and design-system adapters.
+- Story index generated from `storybook-static/index.json`, so it cannot drift
+  from the built catalogue.
+- Existing guides are the site's guide pages; links that escaped `docs/` point
+  to GitHub.
+
+### Deployment status
+
+The artifact is built and verified in CI. The repository is private and GitHub
+Pages is not enabled, so the site is **not published** yet. Enabling Pages on a
+public repository and running the Docs site workflow with `deploy: true` is an
+owner action; no custom domain is assumed.

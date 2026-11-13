@@ -305,7 +305,15 @@ function binaryAssets(directory: string): string[] {
   if (!exists(directory)) return [];
   const found: string[] = [];
   for (const entry of readdirSync(new URL(directory, ROOT), { withFileTypes: true })) {
-    if (entry.name === "api" || entry.name === "storybook-static") continue;
+    // Generated API output and the public site assets are produced artifacts,
+    // not source photos or reference material.
+    if (
+      entry.name === "api" ||
+      entry.name === "storybook-static" ||
+      entry.name === "public" ||
+      entry.name === ".vitepress"
+    )
+      continue;
     const path = `${directory}/${entry.name}`;
     if (entry.isDirectory()) {
       found.push(...binaryAssets(path));

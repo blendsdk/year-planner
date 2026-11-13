@@ -177,6 +177,20 @@ describe("RD-13-AC-07: story-level descriptions and demos", () => {
     expect(eventLog?.source).toContain("play: async");
   });
 
+  it("RD-13-AC-06: keeps Fluent and MUI context-menu examples", () => {
+    const story = storyFiles().find((file) => file.name === "ContextMenu.stories.tsx");
+    const source = story?.source ?? "";
+    for (const token of [
+      "FluentMenu",
+      "MuiMenu",
+      "onContextMenuRequest",
+      "restoreFocus",
+      "webLightTheme",
+    ]) {
+      expect(source, `context-menu story is missing ${token}`).toContain(token);
+    }
+  });
+
   it("sorts Demos before the reference catalogue", () => {
     const preview = readFileSync(new URL("apps/storybook/.storybook/preview.ts", ROOT), "utf8");
     const start = preview.indexOf("storySort");

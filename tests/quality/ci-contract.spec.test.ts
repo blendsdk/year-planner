@@ -58,12 +58,30 @@ describe("RD-10-AC-01: release gate evidence", () => {
       "benchmarks/rd10-baseline",
       "A3 print",
       "226 core tests pass",
-      "Quality tests | **195 passed**",
+      "Quality tests | **197 passed**",
       "44.40 kB",
       "67.64 kB",
       "PASS** for RD-01 through RD-12",
     ]) {
       expect(report, field).toContain(field);
+    }
+  });
+});
+
+describe("RD-13-AC-09: release gate", () => {
+  it("runs the full browser, timezone, audit, performance and consumer gates", () => {
+    const manifest = JSON.parse(read("package.json")) as { scripts?: Record<string, string> };
+    const full = manifest.scripts?.["verify:full"] ?? "";
+    for (const script of [
+      "pnpm verify",
+      "pnpm test:e2e",
+      "pnpm test:timezones",
+      "pnpm test:audit",
+      "pnpm test:perf",
+      "pnpm bench",
+      "pnpm test:consumer",
+    ]) {
+      expect(full, `verify:full is missing ${script}`).toContain(script);
     }
   });
 });

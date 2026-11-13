@@ -65,7 +65,7 @@ describe("RD-13-AC-04: header typography tokens", () => {
   });
 });
 
-describe("RD-13-AC-01/02/10: fit contract", () => {
+describe("RD-13-AC-10: fit contract", () => {
   it("exposes fit with contain as the default", () => {
     expect(types).toContain('fit?: "none" | "contain"');
     expect(types).toContain("defaults to `contain`");

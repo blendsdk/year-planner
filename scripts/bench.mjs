@@ -130,7 +130,7 @@ function renderMarkdown(report) {
     const parameters = Object.entries(entry.parameters ?? {})
       .map(([key, value]) => `${key}=${String(value)}`)
       .join(", ");
-    const samples = entry.frames ?? entry;
+    const samples = entry.frames ?? entry.work ?? entry;
     lines.push(
       `| ${entry.scenario} | ${parameters} | ${samples.n ?? "—"} | ${fixed(
         samples.p50,
@@ -204,12 +204,16 @@ if (missingScenarios.length && !reportOnly) {
 }
 
 for (const entry of results) {
-  const samples = entry.frames ?? entry;
+  const samples = entry.frames ?? entry.work ?? entry;
   if (!Number.isFinite(samples.p95)) {
     console.error(`Result ${entry.scenario} has no p95 value`);
     process.exit(1);
   }
-  entry.status = statusFor(samples.p95, entry.budget);
+  // CPU-throttled rows are diagnostics, not gate failures.
+  entry.status =
+    Number(entry.parameters?.throttle ?? 1) > 1
+      ? "diagnostic"
+      : statusFor(samples.p95, entry.budget);
 }
 
 /** Stress scenarios use an explicit ceiling instead of the 60 Hz budget. */
@@ -223,7 +227,8 @@ function enforcingCeiling(entry) {
 
 const failures = results.filter((entry) => {
   if (entry.project === "bench-dev" || entry.scenario === "issue3-dev") return false;
-  const samples = entry.frames ?? entry;
+  if (Number(entry.parameters?.throttle ?? 1) > 1) return false;
+  const samples = entry.frames ?? entry.work ?? entry;
   return Number(samples.p95) > enforcingCeiling(entry);
 });
 const reportRunId = runIds.size === 1 ? [...runIds][0] : RUN_ID;
@@ -245,7 +250,7 @@ console.log(
 );
 if (failures.length) {
   for (const entry of failures) {
-    const samples = entry.frames ?? entry;
+    const samples = entry.frames ?? entry.work ?? entry;
     console.error(
       `${enforce ? "FAIL" : "RECORDED"} ${entry.scenario}: p95 ${fixed(
         samples.p95,

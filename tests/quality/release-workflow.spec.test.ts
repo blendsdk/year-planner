@@ -132,7 +132,7 @@ describe("RD-12-AC-02: bootstrap", () => {
       "Trusted Publisher",
       "release.yml",
       "npm-production",
-      "0.2.1",
+      "0.3.1",
       "two days",
     ]) {
       expect(guide, `bootstrap guide is missing ${token}`).toContain(token);

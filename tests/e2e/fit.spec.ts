@@ -79,7 +79,7 @@ async function readMetrics(page: import("@playwright/test").Page): Promise<FitMe
   });
 }
 
-test.describe("RD-13-AC-01/02: host-region fit", () => {
+test.describe("RD-13-AC-01 / RD-13-AC-02: host-region fit", () => {
   for (const size of CASES) {
     test(`fits ${size.width} x ${size.height} with ${size.months} months @visual`, async ({
       page,

@@ -12,10 +12,12 @@ async function touchDrag(page: Page, from: string, to: string) {
   const start = await cell(page, from).boundingBox();
   const end = await cell(page, to).boundingBox();
   if (!start || !end) throw new Error(`missing cell ${from} or ${to}`);
+  // Aim below the 24 px item lane so the drag starts on the date cell, not on
+  // an item proxy or resize handle.
   await touchDragPoints(
     page,
-    { x: start.x + start.width / 2, y: start.y + start.height / 2 },
-    { x: end.x + end.width / 2, y: end.y + end.height / 2 },
+    { x: start.x + start.width / 2, y: start.y + start.height - 8 },
+    { x: end.x + end.width / 2, y: end.y + end.height - 8 },
   );
 }
 

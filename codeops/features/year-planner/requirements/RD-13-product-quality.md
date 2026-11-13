@@ -297,37 +297,37 @@ interface YearPlannerProps {
 
 ## Acceptance Criteria
 
-1. [ ] At a **1280 × 800** host region, the 14-month classic view fits without
+1. [x] At a **1280 × 800** host region, the 14-month classic view fits without
    page or component scroll, shows one visible ribbon lane per month, and every
    interactive date cell and ribbon item proxy is at least 24 × 24 CSS px.
    Annotation chips keep their compact 14 px design height (documented in
    `docs/limitations.md`).
-2. [ ] At **1024 × 768**, the 12-month view fits or scrolls inside the
+2. [x] At **1024 × 768**, the 12-month view fits or scrolls inside the
    component; no cell or item proxy is below 24 × 24 CSS px and no content is
    clipped.
-3. [ ] Unthrottled production-build measurements meet: 500-item initial render
+3. [x] Unthrottled production-build measurements meet: 500-item initial render
    p95 ≤400 ms, 2,000-item initial render p95 ≤550 ms, 2,000-item drag
    main-thread work per frame ≤8 ms with input-delay p95 ≤16.7 ms, and
    click-to-select work p95 ≤60 ms at 500 items and ≤80 ms at 2,000 items. The
    4× CPU-throttled initial-render and drag results are recorded as
    diagnostics.
-4. [ ] Month and year labels are centred; day-name and month-name sizes are
+4. [x] Month and year labels are centred; day-name and month-name sizes are
    reduced; header and cell font sizes are CSS variables declared in the theme
    root with no hard-coded header sizes left in the stylesheet.
-5. [ ] `onContextMenuRequest` fires for date, item and annotation targets from
+5. [x] `onContextMenuRequest` fires for date, item and annotation targets from
    pointer and keyboard input; no handler preserves the native menu; right-click
    selects an item without starting a gesture.
-6. [ ] Fluent UI and MUI context-menu examples exist in Storybook and the docs
+6. [x] Fluent UI and MUI context-menu examples exist in Storybook and the docs
    explain host-owned focus return.
-7. [ ] Storybook has a Demos section with at least six `play` stories, an
+7. [x] Storybook has a Demos section with at least six `play` stories, an
    event-log playground, and a one-line description on every story; the state
    catalogue still renders.
 8. [ ] `0.3.0` is the first published version; `0.2.0` is not published; the
    release, migration and test-report documents record the `0.3.0` / `0.3.1`
    bootstrap and provenance sequence.
-9. [ ] `pnpm verify:full` passes, including the existing browser, print,
+9. [x] `pnpm verify:full` passes, including the existing browser, print,
    accessibility, timezone, performance and clean-consumer gates.
-10. [ ] No vanilla, canvas, WebGL or Web Component renderer is introduced; no
+10. [x] No vanilla, canvas, WebGL or Web Component renderer is introduced; no
     new runtime dependency is added; no cell or item proxy drops below the
     24 px floor; the 37-column model and the no-auto-month-reduction rule are
     unchanged.

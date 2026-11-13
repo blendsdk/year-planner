@@ -15,6 +15,12 @@
       `pnpm docs:site -- --check-only` passes.
 - [ ] The print sample renders (PRT-01 and the A3 page counts).
 - [ ] The browser/React matrix is green for the supported React 19 line.
+- [ ] The fit evidence at 1280 × 800 and 1024 × 768 is current
+      (`tests/e2e/fit.spec.ts`).
+- [ ] The performance evidence is current (`docs/benchmarks/rd13-baseline.md`)
+      and the strict RD-13 suite passes.
+- [ ] The context-menu demo and the six Demos play stories are present and
+      Storybook builds with Demos first.
 - [ ] `DEFERRED.md` and the README limitations still match the release.
 - [ ] `docs/renderer-spike.md` and `docs/adr/0001-renderer-strategy.md` are
       current.
@@ -30,14 +36,14 @@
 4. Commit with `git commit -s` so the commit carries
    `Signed-off-by: <name> <email>`, then open a pull request. Every CI job,
    including the DCO (`dco`) check, runs because the PR is human-authored.
-5. Merge after review and a green gate. The first `0.2.0` version is already
-   committed; this procedure starts at `0.2.1`.
+5. Merge after review and a green gate. The first published version is
+   `0.3.0`; this procedure starts at `0.3.0`.
 
 Do not use the Changesets GitHub action. This repository cannot create or approve PRs
 with the default workflow token on its current plan, and a token-created PR
 would not trigger CI.
 
-## Bootstrap the first packages (0.2.0 only)
+## Bootstrap the first packages (0.3.0 only)
 
 npm cannot configure a trusted publisher for a package that does not exist.
 The first publication is a one-time manual step:
@@ -47,7 +53,7 @@ npm login   # MFA; no token is written to the repository
 pnpm release:publish --bootstrap --skip-github-release
 ```
 
-This publishes `0.2.0` core then React without provenance and without a GitHub
+This publishes `0.3.0` core then React without provenance and without a GitHub
 release. Then, on npmjs.com for **each** package:
 
 1. Open **Settings → Trusted Publisher → GitHub Actions**.
@@ -57,9 +63,10 @@ release. Then, on npmjs.com for **each** package:
 5. Allowed action: `npm publish`.
 
 A new trusted publisher expires if it is not validated within two days. Create
-an `0.2.1` patch changeset immediately, merge its release PR and run the
-release workflow within that window. `0.2.1` is the first announced,
-provenance-signed release; `0.2.0` is the bootstrap.
+a `0.3.1` patch changeset immediately, merge its release PR and run the
+release workflow within that window. `0.3.1` is the first announced,
+provenance-signed release; `0.3.0` is the bootstrap. `0.2.0` is never
+published.
 
 ## Visibility, license and one-time owner setup
 
@@ -111,7 +118,7 @@ third-party runtime code, so no package ships it.
 - Record the incident in `docs/test-report.md` when it affects published
   behavior.
 
-## Current owner-action state (2026-11-12)
+## Current owner-action state (2026-11-13)
 
 The implementation environment has no npm credentials and the repository is
 private. These are the verified states to re-check at release time:

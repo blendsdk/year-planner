@@ -225,14 +225,14 @@ describe("RD-10-AC-02: traceability title rules", () => {
 });
 
 describe("RD-10-AC-02: repository traceability", () => {
-  it("defaults through RD-12", () => {
+  it("defaults through RD-13", () => {
     const result = checkTraceability(process.cwd());
     expect(result.ok).toBe(true);
-    expect(result.expected).toHaveLength(183);
+    expect(result.expected).toHaveLength(193);
   });
 
-  it("covers RD-01 through RD-12", () => {
-    const result = checkTraceability(process.cwd(), { through: 12 });
+  it("covers RD-01 through RD-13", () => {
+    const result = checkTraceability(process.cwd(), { through: 13 });
     expect(result.ok).toBe(true);
     expect(result.missingMatrix).toEqual([]);
     expect(result.missingTitle).toEqual([]);

@@ -139,14 +139,14 @@ drag work is profile-derived over 60 frames. `PERF_STRICT=1` passed 3/3.
 
 | Scenario | Phase 0 p95 | Phase 1 p95 | Phase 1 p50 | Target | Status |
 | -------- | ----------- | ----------- | ----------- | ------ | ------ |
-| Initial render, 500 items, 1× | 426.3 ms | **347.9 ms** | 226.6 ms | ≤400 ms | pass |
-| Initial render, 2,000 items, 1× | 2,042.2 ms | **426.2 ms** | 378.2 ms | ≤550 ms | pass |
+| Initial render, 500 items, 1× | 426.3 ms | **242.0 ms** | 193.9 ms | ≤400 ms | pass |
+| Initial render, 2,000 items, 1× | 2,042.2 ms | **346.4 ms** | 318.7 ms | ≤550 ms | pass |
 | Initial render, 500 items, 4× | 1,789.3 ms | 1,020.8 ms | 845.3 ms | diagnostic | recorded |
 | Initial render, 2,000 items, 4× | 7,926.4 ms | 1,562.5 ms | 1,439.8 ms | diagnostic | recorded |
-| Drag work/frame, 2,000 items, 1× | 22.53 ms | **3.84 ms** | — | ≤8 ms | pass |
-| Drag input delay, 2,000 items, 1× | 16.1 ms | **15.5 ms** | — | ≤16.7 ms | pass |
-| Click work, 500 items, 1× | 95.3 ms | **40.2 ms** | 26.5 ms | ≤60 ms | pass |
-| Click work, 2,000 items, 1× | 675.1 ms | **68.8 ms** | 45.7 ms | ≤80 ms | pass |
+| Drag work/frame, 2,000 items, 1× | 22.53 ms | **4.9 ms** | — | ≤8 ms | pass |
+| Drag input delay, 2,000 items, 1× | 16.1 ms | **14.2 ms** | — | ≤16.7 ms | pass |
+| Click work, 500 items, 1× | 95.3 ms | **32.5 ms** | 23.5 ms | ≤60 ms | pass |
+| Click work, 2,000 items, 1× | 675.1 ms | **59.6 ms** | 39.8 ms | ≤80 ms | pass |
 
 DOM size after the fix is **5,348** nodes at 500 items and **7,794** at 2,000
 items (Phase 0: 7,854 and 17,850). The inspector's item list starts collapsed
@@ -160,3 +160,20 @@ fragments and 332 / 723 proxies, plus browser layout. Reaching 150 ms requires
 row windowing; it is not reachable by removing more algorithmic work. The gate
 was revised to the measured, stable values above and the original 150 ms / 50 ms
 values remain the post-`0.3.0` row-windowing goal (AR-40).
+
+## Fit after
+
+The two-dimensional fit landed after the performance work. It is measured by
+`tests/e2e/fit.spec.ts` on the same reference host:
+
+| Host region | Window | Profile | Visible lanes | Cell minimum | Page scroll | Component scroll |
+| ----------- | ------ | ------- | ------------- | ------------ | ----------- | ---------------- |
+| 1280 × 800 | 14 months | comfortable | 1 | 25.6 × 51.9 px | none | none |
+| 1440 × 900 | 14 months | comfortable | 1 | 28.8 × 59.1 px | none | none |
+| 1024 × 768 | 12 months | dense | 1 | 24 px floor | none | none |
+
+The three screenshots are in
+[the plan evidence](../../codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/fit-1280x800.png)
+(`fit-1280x800.png`, `fit-1440x900.png`, `fit-1024x768.png`). The benchmark
+route pins `fit: "none"` so the Phase 0/Phase 1 numbers stay comparable. Print
+uses its own comfortable geometry and is unaffected.

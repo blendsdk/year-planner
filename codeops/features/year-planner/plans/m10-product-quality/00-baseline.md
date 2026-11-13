@@ -67,14 +67,14 @@ RD-13 run passes every gate on 2026-11-13:
 
 | Metric | Phase 0 | Phase 1 | Target | Status |
 | ------ | ------- | ------- | ------ | ------ |
-| Initial render, 500 items, 1× p95 | 426.3 ms | **347.9 ms** (p50 226.6) | ≤400 ms | Pass |
-| Initial render, 2,000 items, 1× p95 | 2,042.2 ms | **426.2 ms** (p50 378.2) | ≤550 ms | Pass |
+| Initial render, 500 items, 1× p95 | 426.3 ms | **242.0 ms** (p50 193.9) | ≤400 ms | Pass |
+| Initial render, 2,000 items, 1× p95 | 2,042.2 ms | **346.4 ms** (p50 318.7) | ≤550 ms | Pass |
 | Initial render, 500 items, 4× p95 | 1,789.3 ms | 1,020.8 ms | Diagnostic | Recorded |
 | Initial render, 2,000 items, 4× p95 | 7,926.4 ms | 1,562.5 ms | Diagnostic | Recorded |
-| Drag work/frame, 2,000 items | 22.53 ms | **3.84 ms** | ≤8 ms | Pass |
-| Drag input delay, 2,000 items | 16.1 ms | **15.5 ms** | ≤16.7 ms | Pass |
-| Click work p95, 500 items | 95.3 ms | **40.2 ms** (p50 26.5) | ≤60 ms | Pass |
-| Click work p95, 2,000 items | 675.1 ms | **68.8 ms** (p50 45.7) | ≤80 ms | Pass |
+| Drag work/frame, 2,000 items | 22.53 ms | **4.9 ms** | ≤8 ms | Pass |
+| Drag input delay, 2,000 items | 16.1 ms | **14.2 ms** | ≤16.7 ms | Pass |
+| Click work p95, 500 items | 95.3 ms | **32.5 ms** (p50 23.5) | ≤60 ms | Pass |
+| Click work p95, 2,000 items | 675.1 ms | **59.6 ms** (p50 39.8) | ≤80 ms | Pass |
 
 DOM size fell from 7,854 to **5,348** nodes at 500 items and from 17,850 to
 **7,794** at 2,000 items. The installed budget moved from 65 to 66 kB in
@@ -83,3 +83,11 @@ entries on request. The remaining initial-render cost is the grid itself: 518
 cells, 447/1,190 item fragments, 332/723 proxies and browser layout. Reaching
 the original 150 ms value needs row windowing, which is a separate structural
 milestone rather than a further algorithmic fix.
+
+## Issue #4 ruling
+
+Issue #4 ("Add auto-fit/responsive sizing for the year grid") is resolved by
+the `display.fit: "contain"` contract. It was closed on 2026-11-13 with the fit
+evidence link (`docs/getting-started.md` §Sizing and fit,
+`docs/benchmarks/rd13-baseline.md` §Fit after, `tests/e2e/fit.spec.ts`). No
+separate re-scope ruling is needed.

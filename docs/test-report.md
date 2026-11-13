@@ -64,7 +64,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
-| Quality tests | **195 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
+| Quality tests | **197 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
@@ -340,7 +340,8 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 
 ### What changed
 
-- Both packages are at `0.2.0` with generated changelogs, package READMEs,
+- Both packages are at `0.2.0` in the RD-12 record; RD-13 moves them to
+  `0.3.0`, the first published version. They have generated changelogs, package READMEs,
   checked-in LICENSE copies and complete publish metadata.
 - `scripts/release-check.mjs` validates versions, changelogs, tarballs, source
   maps and the npm dry-run allowlist; `release:publish` refuses pending
@@ -360,13 +361,13 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 ### Release-time owner actions
 
 - Run `npm login`, `pnpm release:publish --bootstrap --skip-github-release` for
-  `0.2.0`, configure the npm trusted publisher, then publish `0.2.1` through
+  `0.3.0`, configure the npm trusted publisher, then publish `0.3.1` through
   the workflow within the two-day validation window.
 - Enable private vulnerability reporting, Dependabot alerts and Pages; create
   the `npm-production` environment; make the repository public; add a second
   reviewer; apply branch protection.
-- The first OIDC release produces the provenance attestation; the `0.2.0`
-  bootstrap does not.
+- The first OIDC release produces the provenance attestation; the `0.3.0`
+  bootstrap does not, and `0.2.0` is never published.
 
 ### Known gaps
 
@@ -435,3 +436,75 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 - No versioned docs and no Storybook MDX guide pages in R1; the guides are
   repository markdown and the published site is Storybook plus TypeDoc.
 - No live Pages deployment.
+
+## RD-13 — Product quality
+
+> **Date**: 2026-11-13
+> **Scope**: supported-size performance, two-dimensional host fit, header
+> typography, the host-owned context-menu contract, the Storybook Demos group
+> and the `0.3.0` release preparation.
+> **Verdict**: implementation and evidence complete; the live `0.3.0`
+> publication and repository setup remain maintainer actions.
+
+### Results
+
+| Command | Result |
+| ------- | ------ |
+| `pnpm test` | PASS — 226 core, 535 React tests |
+| `pnpm test:quality` | PASS — 197 contracts, including 193 traceability rows |
+| `PERF_STRICT=1 playwright ... RD-13-AC-03` | PASS — initial render 242.0 / 346.4 ms p95; click 32.5 / 59.6 ms p95; drag work 4.9 ms/frame, input delay 14.2 ms |
+| `playwright test tests/e2e/fit.spec.ts` | PASS — 1280 × 800, 1440 × 900, 1024 × 768; 24 px cells and ribbon proxies |
+| `playwright test tests/e2e/context-menu.spec.ts` | PASS — pointer item request, selection, keyboard date request, one request per key |
+| `pnpm storybook:build` | PASS — 183 stories across 15 files, six Demos play stories and the event log |
+| `pnpm docs:site -- --check-only` | PASS — 249 files; Storybook at `/`, TypeDoc at `/api` |
+| `pnpm release:check` | PASS — lockstep `0.3.0` versions, changelogs, tarballs and source maps |
+| `pnpm release:publish --dry-run --allow-dirty` | PASS — core then React packed and validated in npm dry-run mode |
+| `pnpm verify:full` | PASS — 155 E2E passed; timezone 226 × 3; performance 10 passed; benchmark 11 passed plus the report; clean packed consumer PASS |
+
+### What changed
+
+- **Performance.** Visibility is resolved once per model, items are projected
+  once, lanes use a max-end index, the date index is set-backed and a date click
+  re-renders one month row. The large inspector item list starts collapsed. The
+  supported 2,000-item data size meets the revised 400 / 550 ms initial-render,
+  60 / 80 ms click, 8 ms drag-work and 16.7 ms input-delay gates.
+- **Fit.** `display.fit` defaults to `"contain"` and measures a bounded host
+  region. Columns scale to a 24 px floor; the vertical budget chooses one to
+  three 24 px lanes and scrolls internally when the floor is reached. A 14-month
+  view fits 1280 × 800 with one lane; the benchmark route pins `fit: "none"` so
+  performance numbers stay comparable.
+- **Typography.** The month label is centred with a short month and two-digit
+  year. Header and cell sizes come from root CSS variables (heading 11 px,
+  month 13 px); print typography is unchanged.
+- **Context menu.** `onContextMenuRequest` reports date, item and annotation
+  targets with the pointer day, coordinates and a `restoreFocus` closure.
+  Right-click selects an unselected item without a gesture; keyboard requests
+  are deduped; touch keeps the native long-press; Fluent and MUI examples are
+  host-owned.
+- **Demos.** Storybook opens with Demos: select, move, resize, paint, keyboard
+  and context menu, plus a timestamped event log. All 183 stories have a
+  story-level description.
+- **Release.** Both packages are `0.3.0`. `docs/releasing.md` records the
+  `0.3.0` bootstrap and the `0.3.1` provenance sequence; `0.2.0` is never
+  published. RD-13 AC8 stays `partial` until the owner records the registry
+  attestation.
+
+### Release-time owner actions
+
+- Run the `0.3.0` bootstrap, configure the npm trusted publisher for both
+  packages and publish `0.3.1` within the two-day validation window.
+- Make the repository public, enable Pages and private vulnerability reporting,
+  create the `npm-production` environment, add a second reviewer and apply
+  branch protection.
+- Record `npm view @blendsdk/year-planner-core versions` (and the React package)
+  proving `0.2.0` was never published, then mark AC8 `proven`.
+- The manual NVDA/VoiceOver audit remains parked; no WCAG conformance claim is
+  made.
+
+### Known gaps
+
+- Annotation chips keep their 14 px design height; the 24 px floor covers date
+  cells and ribbon item proxies.
+- The original 150 ms initial-render and 50 ms click values remain the
+  post-`0.3.0` row-windowing goal.
+- The 10,000-item overflow timing remains a documented stress miss.

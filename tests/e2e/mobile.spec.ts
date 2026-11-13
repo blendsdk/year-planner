@@ -12,7 +12,7 @@ test.describe("RD-10-AC-04: mobile smoke", () => {
     await expect(page.getByRole("grid")).toBeVisible();
     await expect(page.locator("[data-row-id]")).toHaveCount(14);
 
-    const cell = page.locator('[role="gridcell"][data-date="2027-01-28"]');
+    const cell = page.locator('[role="gridcell"][data-date="2027-01-15"]');
     await cell.tap();
     await expect(cell).toHaveAttribute("aria-selected", "true");
 

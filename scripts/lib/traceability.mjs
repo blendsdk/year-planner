@@ -282,7 +282,7 @@ function collectIds(title, target) {
  * matrix incrementally. `options.fixture` replaces disk reads for unit tests.
  */
 export function checkTraceability(root, options = {}) {
-  const through = options.through ?? 12;
+  const through = options.through ?? 13;
   const fixture = options.fixture;
   const requirementsDir = join(root, "codeops/features/year-planner/requirements");
   const matrixPath = join(requirementsDir, "00-traceability.md");

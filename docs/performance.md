@@ -11,20 +11,20 @@ that host; they are not a cross-device promise.
 
 | Scenario | Before p95 | After p95 | Budget | Status |
 | -------- | ---------- | --------- | ------ | ------ |
-| Initial render, 500 items, 1× | 426.3 ms | **347.9 ms** (p50 226.6) | 400 ms | pass |
-| Initial render, 2,000 items, 1× | 2,042.2 ms | **426.2 ms** (p50 378.2) | 550 ms | pass |
+| Initial render, 500 items, 1× | 426.3 ms | **242.0 ms** (p50 193.9) | 400 ms | pass |
+| Initial render, 2,000 items, 1× | 2,042.2 ms | **346.4 ms** (p50 318.7) | 550 ms | pass |
 | Initial render, 500 items, 4× CPU | 1,789.3 ms | 1,020.8 ms | diagnostic | recorded |
 | Initial render, 2,000 items, 4× CPU | 7,926.4 ms | 1,562.5 ms | diagnostic | recorded |
-| Drag main-thread work/frame, 2,000 items | 22.53 ms | **3.84 ms** | 8 ms | pass |
-| Drag input delay, 2,000 items | 16.1 ms | **15.5 ms** | 16.7 ms | pass |
+| Drag main-thread work/frame, 2,000 items | 22.53 ms | **4.9 ms** | 8 ms | pass |
+| Drag input delay, 2,000 items | 16.1 ms | **14.2 ms** | 16.7 ms | pass |
 | Drag 500 items, compact | 33.4 ms | **16.7 ms** | 16.7 ms | pass |
 | Drag 2,000 items, compact | 300 ms | **16.8 ms** | 16.7 ms | within one frame |
 | Drag 10,000 items, compact (10 steps) | 8,916 ms | **66.6 ms** | 500 ms stress ceiling | miss (stress case) |
 | Drag 36 months, 500 items | 100 ms | **16.7 ms** | 16.7 ms | pass |
 | Development drag, 500 items | 416.6 ms | **16.7 ms** | report only | improved |
 | Overflow open/close, 10,000 items | 115.3 ms | 118.3 ms | 100 ms | miss |
-| Click-to-select, 500 items | 95.3 ms | **40.2 ms** (p50 26.5) | 60 ms | pass |
-| Click-to-select, 2,000 items | 675.1 ms | **68.8 ms** (p50 45.7) | 80 ms | pass |
+| Click-to-select, 500 items | 95.3 ms | **32.5 ms** (p50 23.5) | 60 ms | pass |
+| Click-to-select, 2,000 items | 675.1 ms | **59.6 ms** (p50 39.8) | 80 ms | pass |
 
 The 10,000-item drag records 10 steps because the 14 GiB reference host cannot
 complete 60 steps reliably; every report prints `n` beside the p95 so the
@@ -57,7 +57,7 @@ accessibility proxies. The measured p50 is 222 ms at 500 items and 373 ms at
 The acceptance targets were therefore revised to 400 ms / 550 ms initial render
 and 60 ms / 80 ms click, with the original 150 ms / 50 ms values kept as the
 post-`0.3.0` row-windowing goal. The decision is recorded as AR-40 in the plan's
-ambiguity register. A date click is now 2.3× faster at 500 items and 10× faster
+ambiguity register. A date click is now 2.9× faster at 500 items and 11× faster
 at 2,000 items than the RD-10 baseline; a drag does four times less main-thread
 work per frame.
 

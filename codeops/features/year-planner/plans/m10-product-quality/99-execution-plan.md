@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-13 03:36
-> **Progress**: 67/77 tasks (87%)
+> **Last Updated**: 2026-11-13 04:00
+> **Progress**: 77/77 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -110,14 +110,14 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 
 ### Step 1.3: Green, implementation tests and verify
 
-- [x] 1.3.1 Prove the unthrottled targets green and record the throttled diagnostics — `PERF_STRICT=1 pnpm test:perf` ✅ (completed: 2026-11-13 02:20) — strict RD-13 suite 3/3 passed: initial 347.9 / 426.2 ms, click 40.2 / 68.8 ms, drag work 3.84 ms / input 15.5 ms
+- [x] 1.3.1 Prove the unthrottled targets green and record the throttled diagnostics — `PERF_STRICT=1 pnpm test:perf` ✅ (completed: 2026-11-13 02:20) — strict RD-13 suite 3/3 passed; final gate: initial 242.0 / 346.4 ms, click 32.5 / 59.6 ms, drag work 4.9 ms / input 14.2 ms
 - [x] 1.3.2 Add implementation edge cases (dense row, empty model, 2,000 items) — `packages/core/src/ribbon/fragments.impl.test.ts`, `lanes.impl.test.ts` ✅ (completed: 2026-11-13 01:30)
 - [x] 1.3.3 Verify the phase — `pnpm verify` plus `pnpm test:perf` and `node "$CODEOPS_PLUGIN_ROOT/bin/codeops-test.mjs" check --strict` ✅ (completed: 2026-11-13 02:20)
 
 **Deliverables**:
-- [x] Unthrottled initial render p95 ≤400 ms at 500 items and ≤550 ms at 2,000 items (measured 347.9 / 426.2 ms)
-- [x] 2,000-item drag main-thread work per frame ≤8 ms; input delay ≤16.7 ms (measured 3.84 / 15.5 ms)
-- [x] Click-to-select work p95 ≤60 ms at 500 items and ≤80 ms at 2,000 items (measured 40.2 / 68.8 ms)
+- [x] Unthrottled initial render p95 ≤400 ms at 500 items and ≤550 ms at 2,000 items (measured 242.0 / 346.4 ms)
+- [x] 2,000-item drag main-thread work per frame ≤8 ms; input delay ≤16.7 ms (measured 4.9 / 14.2 ms)
+- [x] Click-to-select work p95 ≤60 ms at 500 items and ≤80 ms at 2,000 items (measured 32.5 / 59.6 ms)
 - [x] Benchmark harness records CPU throttle, click latency and work per frame
 - [x] All phase verification passing
 
@@ -283,30 +283,30 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 **Reference**: [07](07-testing-strategy.md) · ST-31–ST-35, ST-38 · AR-2, AR-25, AR-27, AR-39
 **Objective**: Add RD-13 rows and extend the checker through RD-13.
 
-- [ ] 5.1.1 Add RD-13-AC-01..10 rows with explicit `proven`/`partial` status; AC8 is `partial` pending the registry attestation — `codeops/features/year-planner/requirements/00-traceability.md`
-- [ ] 5.1.2 Extend the traceability test and CLI default through RD-13; update the expected count to 193 — `tests/quality/traceability.spec.test.ts`, `scripts/check-traceability.mjs`, `scripts/lib/traceability.mjs`
-- [ ] 5.1.3 Prove the matrix — `node scripts/check-traceability.mjs --through 13`
+- [x] 5.1.1 Add RD-13-AC-01..10 rows with explicit `proven`/`partial` status; AC8 is `partial` pending the registry attestation — `codeops/features/year-planner/requirements/00-traceability.md` ✅ (completed: 2026-11-13 04:00)
+- [x] 5.1.2 Extend the traceability test and CLI default through RD-13; update the expected count to 193 — `tests/quality/traceability.spec.test.ts`, `scripts/check-traceability.mjs`, `scripts/lib/traceability.mjs` ✅ (completed: 2026-11-13 04:00)
+- [x] 5.1.3 Prove the matrix — `node scripts/check-traceability.mjs --through 13` ✅ (completed: 2026-11-13 04:00)
 
 ### Step 5.2: Release and evidence
 
-- [ ] 5.2.1 Update performance, release, migration, test-report and limitation docs for `0.3.0`, and update `release-workflow.spec.test.ts` from `0.2.1` to `0.3.1` — `docs/performance.md`, `docs/releasing.md`, `docs/migration.md`, `docs/test-report.md`, `docs/limitations.md`, `tests/quality/release-workflow.spec.test.ts`
-- [ ] 5.2.2 Add a **minor** changeset for the fixed group, run `pnpm version-packages`, and assert the result is `0.3.0` — `.changeset/`, `packages/*/package.json`, `packages/*/CHANGELOG.md`
-- [ ] 5.2.3 Close issue #4 with the fit evidence link and record the ruling — issue tracker, `00-baseline.md`
-- [ ] 5.2.4 Update the roadmap to `Executing` and then `Done` — `codeops/features/year-planner/00-roadmap.md`
+- [x] 5.2.1 Update performance, release, migration, test-report and limitation docs for `0.3.0`, and update `release-workflow.spec.test.ts` from `0.2.1` to `0.3.1` — `docs/performance.md`, `docs/releasing.md`, `docs/migration.md`, `docs/test-report.md`, `docs/limitations.md`, `tests/quality/release-workflow.spec.test.ts` ✅ (completed: 2026-11-13 04:00)
+- [x] 5.2.2 Add a **minor** changeset for the fixed group, run `pnpm version-packages`, and assert the result is `0.3.0` — `.changeset/`, `packages/*/package.json`, `packages/*/CHANGELOG.md` ✅ (completed: 2026-11-13 04:00)
+- [x] 5.2.3 Close issue #4 with the fit evidence link and record the ruling — issue tracker, `00-baseline.md` ✅ (completed: 2026-11-13 04:00)
+- [x] 5.2.4 Update the roadmap to `Executing` and then `Done` — `codeops/features/year-planner/00-roadmap.md` ✅ (completed: 2026-11-13 04:00)
 
 ### Step 5.3: Final gate
 
-- [ ] 5.3.1 Run the release gate — `pnpm verify:full`
-- [ ] 5.3.2 Prove release readiness and the docs artifact — `pnpm release:check`, `pnpm release:publish --dry-run --allow-dirty`, `pnpm docs:site -- --check-only`
-- [ ] 5.3.3 Record the after-run performance numbers and the final evidence — `docs/benchmarks/rd13-baseline.json`, `docs/benchmarks/rd13-baseline.md`, `docs/test-report.md`
+- [x] 5.3.1 Run the release gate — `pnpm verify:full` ✅ (completed: 2026-11-13 04:00)
+- [x] 5.3.2 Prove release readiness and the docs artifact — `pnpm release:check`, `pnpm release:publish --dry-run --allow-dirty`, `pnpm docs:site -- --check-only` ✅ (completed: 2026-11-13 04:00)
+- [x] 5.3.3 Record the after-run performance numbers and the final evidence — `docs/benchmarks/rd13-baseline.json`, `docs/benchmarks/rd13-baseline.md`, `docs/test-report.md` ✅ (completed: 2026-11-13 04:00)
 
 **Deliverables**:
-- [ ] Ten RD-13 rows with honest statuses (AC8 `partial`)
-- [ ] Checker and CLI through RD-13 (193 criteria)
-- [ ] `0.3.0` version and changelog
-- [ ] Issue #4 closed with evidence
-- [ ] Updated release and performance evidence
-- [ ] Full release gate passing
+- [x] Ten RD-13 rows with honest statuses (AC8 `partial`)
+- [x] Checker and CLI through RD-13 (193 criteria)
+- [x] `0.3.0` version and changelog
+- [x] Issue #4 closed with evidence
+- [x] Updated release and performance evidence
+- [x] Full release gate passing
 
 **Test slices**: `core.unit`, `react.unit`, `verification` (task); final gate release
 **Task verify**: `pnpm verify` + `pnpm release:check`

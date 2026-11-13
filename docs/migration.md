@@ -33,9 +33,10 @@ dynamic `import()` or bundle the component with an ESM-aware tool.
 
 ## Semver
 
-The first public release is the `0.2.x` line. `0.2.0` is the bootstrap
-publication that creates the npm packages; `0.2.1` is the first
-provenance-signed release. Both share the same API.
+The first public release is the `0.3.x` line. `0.3.0` is the bootstrap
+publication that creates the npm packages; `0.3.1` is the first
+provenance-signed release. `0.2.0` is never published. Both `0.3.x` releases
+share the same API.
 
 Once the packages are published, they follow semantic versioning:
 

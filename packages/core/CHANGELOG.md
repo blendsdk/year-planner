@@ -1,5 +1,15 @@
 # @blendsdk/year-planner-core
 
+## 0.3.0
+
+### Minor Changes
+
+- Fit the classic grid to its host region with a 24 px interaction floor, centre
+  and calm the header typography, and add a host-owned context-menu contract. Add
+  the Demos Storybook group, the event-log playground and story-level
+  descriptions for the whole catalogue. The supported data size is 2,000 items;
+  the 0.3.0 bootstrap is the first published version.
+
 ## 0.2.0
 
 ### Minor Changes

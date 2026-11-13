@@ -1527,7 +1527,7 @@
   "durationSeconds": 124,
   "afterPhase1": {
     "rd13-click-2000-1x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-click",
       "project": "bench-preview",
       "parameters": {
@@ -1537,15 +1537,15 @@
       },
       "work": {
         "n": 20,
-        "p50": 45.699999928474426,
-        "p95": 68.79999995231628,
-        "max": 81.70000004768372
+        "p50": 39.799999952316284,
+        "p95": 59.60000002384186,
+        "max": 65.39999997615814
       },
       "budget": 80,
       "status": "pass"
     },
     "rd13-click-2000-4x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-click",
       "project": "bench-preview",
       "parameters": {
@@ -1555,15 +1555,15 @@
       },
       "work": {
         "n": 20,
-        "p50": 174.60000002384186,
-        "p95": 222.10000002384186,
-        "max": 230.90000009536743
+        "p50": 161.89999997615814,
+        "p95": 183.10000002384186,
+        "max": 199.09999990463257
       },
       "budget": 80,
       "status": "diagnostic"
     },
     "rd13-click-500-1x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-click",
       "project": "bench-preview",
       "parameters": {
@@ -1573,15 +1573,15 @@
       },
       "work": {
         "n": 20,
-        "p50": 26.5,
-        "p95": 40.199999928474426,
-        "max": 48.10000002384186
+        "p50": 23.5,
+        "p95": 32.5,
+        "max": 42.800000071525574
       },
       "budget": 60,
       "status": "pass"
     },
     "rd13-click-500-4x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-click",
       "project": "bench-preview",
       "parameters": {
@@ -1591,15 +1591,15 @@
       },
       "work": {
         "n": 20,
-        "p50": 93.20000004768372,
-        "p95": 120.10000002384186,
-        "max": 131.29999995231628
+        "p50": 84.60000002384186,
+        "p95": 97.59999990463257,
+        "max": 113.79999995231628
       },
       "budget": 60,
       "status": "diagnostic"
     },
     "rd13-drag-2000-1x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-drag",
       "project": "bench-preview",
       "parameters": {
@@ -1610,19 +1610,19 @@
       "frames": {
         "n": 134,
         "p50": 16.699999999999818,
-        "p95": 16.799999999999955,
-        "max": 16.800000000000182
+        "p95": 16.700000000000273,
+        "max": 16.799999999999955
       },
       "inputDelays": {
         "n": 61,
-        "p50": 13.699999928474426,
-        "p95": 15.5,
-        "max": 23.600000023841858
+        "p50": 12.699999928474426,
+        "p95": 14.200000047683716,
+        "max": 14.5
       },
       "longTasks": 1,
-      "longTaskMax": 81,
-      "workPerFrameMs": 3.843283582089552,
-      "profilePath": "test-results/bench/profiles/unassigned-rd13-drag-2000-1x.cpuprofile",
+      "longTaskMax": 82,
+      "workPerFrameMs": 4.902985074626866,
+      "profilePath": "test-results/bench/profiles/2026-11-13T03:28:57.844Z-rd13-drag-2000-1x.cpuprofile",
       "budgets": {
         "workPerFrame": 8,
         "inputDelay": 16.7
@@ -1630,7 +1630,7 @@
       "status": "pass"
     },
     "rd13-drag-2000-4x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-drag",
       "project": "bench-preview",
       "parameters": {
@@ -1639,21 +1639,21 @@
         "throttle": 4
       },
       "frames": {
-        "n": 156,
+        "n": 150,
         "p50": 16.699999999999818,
-        "p95": 49.90000000000009,
-        "max": 50.09999999999991
+        "p95": 33.30000000000018,
+        "max": 50
       },
       "inputDelays": {
         "n": 61,
-        "p50": 9.899999976158142,
-        "p95": 16.199999928474426,
-        "max": 27.100000023841858
+        "p50": 13.299999952316284,
+        "p95": 15,
+        "max": 26.5
       },
-      "longTasks": 16,
-      "longTaskMax": 272,
-      "workPerFrameMs": 11.647435897435898,
-      "profilePath": "test-results/bench/profiles/unassigned-rd13-drag-2000-4x.cpuprofile",
+      "longTasks": 7,
+      "longTaskMax": 277,
+      "workPerFrameMs": 12.246666666666666,
+      "profilePath": "test-results/bench/profiles/2026-11-13T03:28:57.844Z-rd13-drag-2000-4x.cpuprofile",
       "budgets": {
         "workPerFrame": 8,
         "inputDelay": 16.7
@@ -1661,7 +1661,7 @@
       "status": "diagnostic"
     },
     "rd13-initial-2000-1x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-initial-render",
       "project": "bench-preview",
       "parameters": {
@@ -1670,15 +1670,15 @@
         "throttle": 1
       },
       "n": 20,
-      "p50": 378.2000000476837,
-      "p95": 426.2000000476837,
-      "max": 430.10000002384186,
-      "domNodes": 7794,
-      "budget": 500,
+      "p50": 318.6999999284744,
+      "p95": 346.39999997615814,
+      "max": 415.1999999284744,
+      "domNodes": 7795,
+      "budget": 550,
       "status": "pass"
     },
     "rd13-initial-2000-4x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-initial-render",
       "project": "bench-preview",
       "parameters": {
@@ -1687,15 +1687,15 @@
         "throttle": 4
       },
       "n": 20,
-      "p50": 1439.7999999523163,
-      "p95": 1562.5,
-      "max": 1820.8999999761581,
-      "domNodes": 7794,
-      "budget": 500,
+      "p50": 1305.6000000238419,
+      "p95": 1435.1000000238419,
+      "max": 1462.8000000715256,
+      "domNodes": 7795,
+      "budget": 550,
       "status": "diagnostic"
     },
     "rd13-initial-500-1x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-initial-render",
       "project": "bench-preview",
       "parameters": {
@@ -1704,15 +1704,15 @@
         "throttle": 1
       },
       "n": 20,
-      "p50": 226.60000002384186,
-      "p95": 347.90000009536743,
-      "max": 452,
-      "domNodes": 5348,
-      "budget": 350,
+      "p50": 193.89999997615814,
+      "p95": 242,
+      "max": 282,
+      "domNodes": 5349,
+      "budget": 400,
       "status": "pass"
     },
     "rd13-initial-500-4x": {
-      "runId": "unassigned",
+      "runId": "2026-11-13T03:28:57.844Z",
       "scenario": "rd13-initial-render",
       "project": "bench-preview",
       "parameters": {
@@ -1721,13 +1721,13 @@
         "throttle": 4
       },
       "n": 20,
-      "p50": 845.2999999523163,
-      "p95": 1020.8000000715256,
-      "max": 1095.2000000476837,
-      "domNodes": 5348,
-      "budget": 350,
+      "p50": 796.7000000476837,
+      "p95": 897.1000000238419,
+      "max": 918.3999999761581,
+      "domNodes": 5349,
+      "budget": 400,
       "status": "diagnostic"
     }
   },
-  "afterPhase1CapturedAt": "2026-11-13T02:20:00.000Z"
+  "afterPhase1CapturedAt": "2026-11-13T03:55:00.000Z"
 }

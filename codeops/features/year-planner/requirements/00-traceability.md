@@ -249,3 +249,13 @@
 | RD-12-AC-11 | RD-12 | 11 | proven | `tests/quality/release-metadata.spec.test.ts` | `RD-12-AC-11: package metadata and changelogs` | Metadata/files; action pins proven in `release-workflow.spec.test.ts` |
 | RD-12-AC-12 | RD-12 | 12 | proven | `tests/quality/release-governance.spec.test.ts` | `RD-12-AC-12: dependency audit` | Audit gate and grouped updates |
 | RD-12-AC-13 | RD-12 | 13 | proven | `tests/quality/release-workflow.spec.test.ts` | `RD-12-AC-13: uses no token secret or registry credential` | OIDC only, least privilege, no secrets |
+| RD-13-AC-01 | RD-13 | 1 | proven | `tests/e2e/fit.spec.ts` | `RD-13-AC-01 / RD-13-AC-02: host-region fit` | 1280 x 800 / 14 months fits with one lane and 24 px cells |
+| RD-13-AC-02 | RD-13 | 2 | proven | `tests/e2e/fit.spec.ts` | `RD-13-AC-01 / RD-13-AC-02: host-region fit` | 1024 x 768 / 12 months fits or scrolls internally |
+| RD-13-AC-03 | RD-13 | 3 | proven | `tests/perf/bench.spec.ts` | `RD-13-AC-03: product-quality performance` | Strict initial 400/550 ms, click 60/80 ms, drag 8 ms / 16.7 ms |
+| RD-13-AC-04 | RD-13 | 4 | proven | `tests/quality/fit-contract.spec.test.ts` | `RD-13-AC-04: header typography tokens` | Centred labels, root tokens, no hard-coded header sizes |
+| RD-13-AC-05 | RD-13 | 5 | proven | `packages/react/src/context-menu.spec.test.tsx` | `RD-13-AC-05: context-menu targets` | Date/item/annotation, pointer and keyboard, no gesture |
+| RD-13-AC-06 | RD-13 | 6 | proven | `tests/quality/storybook-contract.spec.test.ts` | `RD-13-AC-06: keeps Fluent and MUI context-menu examples` | Host-owned Fluent and MUI menus |
+| RD-13-AC-07 | RD-13 | 7 | proven | `tests/quality/storybook-contract.spec.test.ts` | `RD-13-AC-07: story-level descriptions and demos` | Six Demos play stories, event log, all stories described |
+| RD-13-AC-08 | RD-13 | 8 | partial |  |  | 0.3.0 bootstrap documents and version proven; live registry attestation is release-time |
+| RD-13-AC-09 | RD-13 | 9 | proven | `tests/quality/ci-contract.spec.test.ts` | `RD-13-AC-09: release gate` | verify:full runs browser, timezone, audit, performance and consumer gates |
+| RD-13-AC-10 | RD-13 | 10 | proven | `tests/quality/fit-contract.spec.test.ts` | `RD-13-AC-10: fit contract` | No renderer rewrite, 24 px floor, 37 columns, no month reduction |

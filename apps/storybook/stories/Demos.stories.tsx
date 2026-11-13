@@ -1,7 +1,9 @@
 import { type PlannerContextMenuRequest, YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { expect, fireEvent, userEvent, within } from "storybook/test";
+import { describeContextTarget } from "./context-menu-demo";
+import { DemoShell } from "./DemoShell";
 import { baseItems, groups, layers, resources } from "./fixtures";
 
 const meta = {
@@ -138,39 +140,172 @@ export const KeyboardNavigation: Story = {
   },
 };
 
+/** Entries the demo host offers for every request. */
+const CONTEXT_ACTIONS = ["New item here", "Hide layer", "Delete"] as const;
+
+/** Keeps the demo menu inside the viewport. */
+function menuPosition(x: number, y: number): { left: number; top: number } {
+  if (typeof window === "undefined") return { left: x, top: y };
+  return {
+    left: Math.min(x, Math.max(8, window.innerWidth - 214)),
+    top: Math.min(y, Math.max(8, window.innerHeight - 174)),
+  };
+}
+
+/**
+ * Host-owned context-menu demo.
+ *
+ * The planner reports what was right-clicked; this component is the host. It
+ * renders its own menu at the pointer, closes on an action or Escape, and
+ * returns focus through `request.restoreFocus`. Nothing here ships with the
+ * package: the host owns the menu, the styling and the actions.
+ */
+function ContextMenuDemo(): ReactNode {
+  const [request, setRequest] = useState<PlannerContextMenuRequest>();
+  const [status, setStatus] = useState("No request yet");
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const close = (action: string): void => {
+    request?.restoreFocus();
+    setStatus(`${action} · focus restored`);
+    setRequest(undefined);
+  };
+
+  // Move focus into the menu so Escape and the arrow-free menu items work.
+  useEffect(() => {
+    if (!request) return;
+    menuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus();
+  }, [request]);
+
+  // A click outside dismisses the menu and returns focus to the target.
+  useEffect(() => {
+    if (!request) return;
+    const onPointerDown = (event: PointerEvent): void => {
+      if (
+        menuRef.current &&
+        event.target instanceof Node &&
+        !menuRef.current.contains(event.target)
+      ) {
+        request.restoreFocus();
+        setStatus("Dismissed · focus restored");
+        setRequest(undefined);
+      }
+    };
+    window.addEventListener("pointerdown", onPointerDown, true);
+    return () => window.removeEventListener("pointerdown", onPointerDown, true);
+  }, [request]);
+
+  const position = request ? menuPosition(request.clientX, request.clientY) : { left: 0, top: 0 };
+
+  return (
+    <DemoShell
+      title="Context menu demo"
+      hint="Right-click a date cell or a ribbon item. This menu is rendered by the host, not the planner."
+      status={status}
+    >
+      <YearPlanner
+        year={2027}
+        groups={groups}
+        layers={layers}
+        resources={resources}
+        defaultItems={baseItems}
+        activeLayerId="highlight"
+        showInspector={false}
+        display={{ theme: "classic-blue", showISOWeekNumbers: true }}
+        onContextMenuRequest={(next) => {
+          setRequest(next);
+          setStatus(`${describeContextTarget(next.target)} · ${next.source}`);
+        }}
+      />
+      {request && (
+        <div
+          ref={menuRef}
+          role="menu"
+          aria-label="Host-owned context menu"
+          data-testid="demo-menu"
+          style={{
+            position: "fixed",
+            left: position.left,
+            top: position.top,
+            zIndex: 20,
+            minWidth: 190,
+            padding: 4,
+            border: "1px solid #71818b",
+            borderRadius: 6,
+            background: "#ffffff",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.18)",
+            fontSize: 13,
+          }}
+          onKeyDown={(event) => {
+            if (event.key !== "Escape") return;
+            event.preventDefault();
+            close("Dismissed");
+          }}
+        >
+          <div
+            role="presentation"
+            style={{
+              padding: "4px 8px",
+              borderBottom: "1px solid #d9e2e8",
+              color: "#4a5a63",
+              fontSize: 11,
+            }}
+          >
+            {describeContextTarget(request.target)}
+          </div>
+          {CONTEXT_ACTIONS.map((action) => (
+            <button
+              key={action}
+              type="button"
+              role="menuitem"
+              onClick={() => close(action)}
+              style={{
+                display: "block",
+                width: "100%",
+                padding: "6px 8px",
+                border: 0,
+                background: "transparent",
+                textAlign: "left",
+                font: "inherit",
+                cursor: "pointer",
+              }}
+            >
+              {action}
+            </button>
+          ))}
+        </div>
+      )}
+    </DemoShell>
+  );
+}
+
 /** Raises a host-owned context-menu request from a right-click. */
 export const ContextMenu: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Right-click an item to raise a host-owned request; the demo shows the payload.",
+        story:
+          "Right-click a date cell or a ribbon item. The planner raises a host-owned request; this demo renders its own menu and returns focus when it closes.",
       },
     },
   },
-  render: () => {
-    const [request, setRequest] = useState<PlannerContextMenuRequest>();
-    return (
-      <div>
-        <YearPlanner
-          year={2027}
-          groups={groups}
-          layers={layers}
-          resources={resources}
-          defaultItems={baseItems}
-          activeLayerId="highlight"
-          display={{ theme: "classic-blue", showISOWeekNumbers: true }}
-          onContextMenuRequest={setRequest}
-        />
-        <output data-testid="demo-context" style={{ display: "block", marginTop: 8 }}>
-          {request ? `${request.target.kind}:${request.source}` : "No request yet"}
-        </output>
-      </div>
-    );
-  },
+  render: () => <ContextMenuDemo />,
   play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
     fireEvent.contextMenu(proxy(canvasElement, "booking"));
-    await expect(within(canvasElement).getByTestId("demo-context")).toHaveTextContent(
-      "item:pointer",
+    const menu = await canvas.findByRole("menu");
+    await expect(menu).toBeVisible();
+    await expect(menu).toHaveTextContent("item booking");
+    await userEvent.click(within(menu).getByRole("menuitem", { name: "Hide layer" }));
+    await expect(canvas.queryByRole("menu")).toBeNull();
+    await expect(canvas.getByTestId("demo-status")).toHaveTextContent(
+      "Hide layer · focus restored",
     );
+
+    fireEvent.contextMenu(cell(canvasElement, "2027-03-20"));
+    const dateMenu = await canvas.findByRole("menu");
+    await expect(dateMenu).toHaveTextContent("date 2027-03-20");
+    await userEvent.keyboard("{Escape}");
+    await expect(canvas.queryByRole("menu")).toBeNull();
   },
 };

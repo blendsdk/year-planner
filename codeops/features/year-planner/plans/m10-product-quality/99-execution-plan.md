@@ -342,3 +342,22 @@ the final APIs. Phase 5 needs every contract green.
 6. ✅ Traceability covers RD-13 (193 criteria; AC8 documented as `partial`)
 7. ✅ The roadmap is `13 / 13 (100%)` with RD-13 Done
 8. ✅ Post-completion project re-analysis (handled by the exec-plan skill)
+
+## Post-completion: context-menu demo hardening
+
+After the milestone closed, the ContextMenu stories were checked in a real
+browser. The component contract worked, but `Demos → Context Menu` rendered no
+menu and put its only status line below the grid (y ≈ 1993 in an 800 px
+viewport), so a reader saw nothing. The Storybook host was also content-sized,
+so the fit never filled the canvas.
+
+The fix adds a bounded `DemoShell`, a visible host-owned menu in the Demos
+story, the same shell and hint in the Fluent UI and MUI examples, and
+`tests/e2e/storybook.spec.ts` against the built catalogue. The browser check
+right-clicks a real target, asserts the menu and target, closes with Escape, and
+asserts focus return; it also pins that the month band and header keep the
+native menu.
+
+Verification: `pnpm test:quality` (198), `playwright test
+tests/e2e/storybook.spec.ts` (3 Chromium checks), `pnpm verify` and
+`pnpm verify:full`.

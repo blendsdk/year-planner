@@ -160,9 +160,10 @@ popover.
 ## Context menu
 
 `onContextMenuRequest` hands right-click, `Shift+F10` and the `ContextMenu` key
-to the host. The component never renders a menu; see
-[interaction.md](interaction.md#context-menu) for the request shape and focus
-return.
+to the host. Only date cells, ribbon items and annotation chips raise a request;
+the month band and header keep the native menu. The component never renders a
+menu; see [interaction.md](interaction.md#context-menu) for the request shape
+and focus return.
 
 ## Print
 

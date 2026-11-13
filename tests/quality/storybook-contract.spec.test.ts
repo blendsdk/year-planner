@@ -186,9 +186,28 @@ describe("RD-13-AC-07: story-level descriptions and demos", () => {
       "onContextMenuRequest",
       "restoreFocus",
       "webLightTheme",
+      "DemoShell",
+      "Right-click a date cell",
     ]) {
       expect(source, `context-menu story is missing ${token}`).toContain(token);
     }
+  });
+
+  it("RD-13-AC-07: keeps the Demos context story visible and host-owned", () => {
+    const demos = storyFiles().find((file) => file.name === "Demos.stories.tsx");
+    const source = demos?.source ?? "";
+    for (const token of [
+      "DemoShell",
+      'role="menu"',
+      'data-testid="demo-menu"',
+      "restoreFocus",
+      "Right-click a date cell or a ribbon item",
+      'findByRole("menu")',
+    ]) {
+      expect(source, `Demos context story is missing ${token}`).toContain(token);
+    }
+    // Feedback must not sit below the grid where a laptop viewport cannot see it.
+    expect(source).not.toContain('data-testid="demo-context"');
   });
 
   it("sorts Demos before the reference catalogue", () => {

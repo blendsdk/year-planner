@@ -165,6 +165,12 @@ include item content.
 The component does not move focus. Call `request.restoreFocus()` when your menu
 closes so focus returns to the originating cell or item.
 
+Only date cells, ribbon items and annotation chips are targets. The month band,
+the weekday header and the surrounding chrome are not dates, so right-clicking
+them keeps the native browser menu. The Storybook `Demos → Context Menu` story
+renders a plain host menu, and the `Year Planner → Context Menu` stories render
+Fluent UI and MUI menus from the same request.
+
 ## Known limits
 
 - Batch multi-move, bulk commands, alt+drag subtraction and drag between layers

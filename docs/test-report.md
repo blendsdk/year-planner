@@ -64,7 +64,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
-| Quality tests | **197 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
+| Quality tests | **198 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
@@ -451,15 +451,16 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 | Command | Result |
 | ------- | ------ |
 | `pnpm test` | PASS — 226 core, 535 React tests |
-| `pnpm test:quality` | PASS — 197 contracts, including 193 traceability rows |
+| `pnpm test:quality` | PASS — 198 contracts, including 193 traceability rows |
 | `PERF_STRICT=1 playwright ... RD-13-AC-03` | PASS — initial render 242.0 / 346.4 ms p95; click 32.5 / 59.6 ms p95; drag work 4.9 ms/frame, input delay 14.2 ms |
 | `playwright test tests/e2e/fit.spec.ts` | PASS — 1280 × 800, 1440 × 900, 1024 × 768; 24 px cells and ribbon proxies |
 | `playwright test tests/e2e/context-menu.spec.ts` | PASS — pointer item request, selection, keyboard date request, one request per key |
+| `playwright test tests/e2e/storybook.spec.ts` | PASS — the built Demos story opens its host menu, reports the target and returns focus; Fluent and MUI stories open theirs; the month band and header keep the native menu |
 | `pnpm storybook:build` | PASS — 183 stories across 15 files, six Demos play stories and the event log |
 | `pnpm docs:site -- --check-only` | PASS — 249 files; Storybook at `/`, TypeDoc at `/api` |
 | `pnpm release:check` | PASS — lockstep `0.3.0` versions, changelogs, tarballs and source maps |
 | `pnpm release:publish --dry-run --allow-dirty` | PASS — core then React packed and validated in npm dry-run mode |
-| `pnpm verify:full` | PASS — 155 E2E passed; timezone 226 × 3; performance 10 passed; benchmark 11 passed plus the report; clean packed consumer PASS |
+| `pnpm verify:full` | PASS — 158 E2E passed / 46 skipped; timezone 226 × 3; audit PASS; performance 10 passed / 1 skipped; benchmark 11 passed / 11 skipped plus the report; clean packed consumer PASS |
 
 ### What changed
 
@@ -483,7 +484,11 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
   host-owned.
 - **Demos.** Storybook opens with Demos: select, move, resize, paint, keyboard
   and context menu, plus a timestamped event log. All 183 stories have a
-  story-level description.
+  story-level description. The context-menu stories run in a bounded shell so
+  the full 14-month view and the host menu are visible in one laptop viewport;
+  the Demos story renders its own menu instead of hiding the feedback below the
+  grid. A browser check runs the built Storybook, so a story that renders but
+  does nothing visible fails the gate.
 - **Release.** Both packages are `0.3.0`. `docs/releasing.md` records the
   `0.3.0` bootstrap and the `0.3.1` provenance sequence; `0.2.0` is never
   published. RD-13 AC8 stays `partial` until the owner records the registry

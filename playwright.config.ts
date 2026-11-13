@@ -23,13 +23,24 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:4173",
     trace: "retain-on-failure",
   },
-  webServer: {
-    command:
-      "pnpm --filter @blendsdk/year-planner-demo exec vite --host 127.0.0.1 --port 4173 --strictPort",
-    url: "http://127.0.0.1:4173",
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      command:
+        "pnpm --filter @blendsdk/year-planner-demo exec vite --host 127.0.0.1 --port 4173 --strictPort",
+      url: "http://127.0.0.1:4173",
+      reuseExistingServer: true,
+      timeout: 120_000,
+    },
+    {
+      // The Storybook demo checks run against the built site. `pnpm verify`
+      // builds it before `pnpm test:e2e`, and the CI browsers job runs
+      // `pnpm storybook:build`; a missing build fails with a clear message.
+      command: "node scripts/serve-static.mjs storybook-static 4176",
+      url: "http://127.0.0.1:4176/iframe.html",
+      reuseExistingServer: true,
+      timeout: 30_000,
+    },
+  ],
   projects: [
     {
       name: "chromium",

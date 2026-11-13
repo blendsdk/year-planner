@@ -196,7 +196,7 @@ function skipChanges(options) {
 }
 
 /** Executes one Playwright invocation and returns its exit status. */
-function runPlaywright({ args, configFile, workers, reportFile }) {
+function runPlaywright({ args, configFile, workers, reportFile, ports }) {
   mkdirSync(join(ROOT, "test-results"), { recursive: true });
   const result = spawnSync(
     "pnpm",
@@ -204,10 +204,30 @@ function runPlaywright({ args, configFile, workers, reportFile }) {
     {
       cwd: ROOT,
       stdio: "inherit",
-      env: { ...process.env, PLAYWRIGHT_JSON_FILE: join(ROOT, reportFile) },
+      env: {
+        ...process.env,
+        PLAYWRIGHT_JSON_FILE: join(ROOT, reportFile),
+        ...(ports ?? {}),
+      },
     },
   );
   return result.status ?? 1;
+}
+
+/**
+ * Returns a port block for one shard.
+ *
+ * The base starts at 4300 and each shard moves ten ports forward. That keeps
+ * local verification clear of the common 4173 preview port and of every other
+ * shard. CI runners are isolated and never set the base.
+ */
+function shardPorts(index) {
+  const base = Number(process.env.PLAYWRIGHT_CI_PORT_BASE ?? 4300) + Math.max(0, index) * 10;
+  return {
+    PLAYWRIGHT_DEMO_PORT: String(base),
+    PLAYWRIGHT_STORYBOOK_PORT: String(base + 3),
+    PLAYWRIGHT_DOCS_PORT: String(base + 4),
+  };
 }
 
 /** Reads a Playwright JSON report, or null when it is missing. */
@@ -298,11 +318,13 @@ function commandRun(options) {
   const configFile = options.flags.has("ci")
     ? "playwright.ci.config.ts"
     : (options.values.config ?? "playwright.config.ts");
+  const index = plan.shards.findIndex((entry) => entry.name === name);
   return runPlaywright({
     args: shardArguments(shard),
     configFile,
     workers: Number(options.values.workers ?? shard.workers),
     reportFile: options.values.report ?? `test-results/browser-${name}.json`,
+    ports: options.flags.has("ci") ? shardPorts(index) : undefined,
   });
 }
 
@@ -398,6 +420,15 @@ function commandAffected(options) {
       configFile: options.values.config ?? "playwright.config.ts",
       workers: projectWorkers,
       reportFile,
+      // The development servers default to 4173/4176/4177, which other local
+      // projects commonly use. Move them unless the caller chose ports.
+      ports: process.env.PLAYWRIGHT_DEMO_PORT
+        ? undefined
+        : {
+            PLAYWRIGHT_DEMO_PORT: "4310",
+            PLAYWRIGHT_STORYBOOK_PORT: "4313",
+            PLAYWRIGHT_DOCS_PORT: "4314",
+          },
     });
     const results = parseResults(readReport(reportFile) ?? {});
     for (const unit of units) {

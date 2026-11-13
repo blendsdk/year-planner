@@ -12,8 +12,46 @@ const report = read("docs/test-report.md");
 
 describe("RD-10-AC-01: release gate evidence", () => {
   it("declares every CI job", () => {
-    for (const job of ["verify", "browsers", "security", "performance", "dco"]) {
+    for (const job of [
+      "verify",
+      "browser-plan",
+      "browser-build",
+      "browsers",
+      "security",
+      "performance",
+      "dco",
+    ]) {
       expect(workflow, job).toMatch(new RegExp(`^  ${job}:`, "m"));
+    }
+  });
+
+  it("plans, builds once and runs the browser matrix", () => {
+    expect(workflow).toContain("node scripts/browser-shards.mjs plan");
+    expect(workflow).toContain("fromJSON(needs.browser-plan.outputs.matrix)");
+    expect(workflow).toContain("actions/download-artifact@");
+    expect(workflow).toContain("playwright.ci.config.ts");
+    expect(workflow).toContain("pnpm docs:site");
+    expect(workflow).toContain("apps/demo/dist");
+  });
+
+  it("isolates shard ports so local runs cannot collide", () => {
+    const shardConfig = read("playwright.ci.config.ts");
+    for (const name of [
+      "PLAYWRIGHT_DEMO_PORT",
+      "PLAYWRIGHT_STORYBOOK_PORT",
+      "PLAYWRIGHT_DOCS_PORT",
+    ]) {
+      expect(shardConfig, name).toContain(name);
+    }
+    const runner = read("scripts/browser-shards.mjs");
+    expect(runner).toContain("shardPorts");
+    expect(runner).toContain("PLAYWRIGHT_CI_PORT_BASE");
+    for (const path of [
+      "tests/e2e/storybook.spec.ts",
+      "tests/e2e/site.spec.ts",
+      "tests/e2e/full-demo.spec.ts",
+    ]) {
+      expect(read(path), path).toContain("process.env.PLAYWRIGHT_");
     }
   });
 
@@ -61,7 +99,7 @@ describe("RD-10-AC-01: release gate evidence", () => {
       "benchmarks/rd10-baseline",
       "A3 print",
       "226 core tests pass",
-      "Quality tests | **252 passed**",
+      "Quality tests | **254 passed**",
       "46.35 kB",
       "69.59 kB",
       "PASS** for RD-01 through RD-12",

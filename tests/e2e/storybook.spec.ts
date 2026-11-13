@@ -14,7 +14,8 @@ declare global {
  * browsers job runs `pnpm storybook:build`. A missing build fails the server
  * with `serve-static: ... run pnpm storybook:build first`.
  */
-const STORYBOOK = "http://127.0.0.1:4176/year-planner/storybook";
+const STORYBOOK_PORT = process.env.PLAYWRIGHT_STORYBOOK_PORT ?? "4176";
+const STORYBOOK = `http://127.0.0.1:${STORYBOOK_PORT}/year-planner/storybook`;
 
 /** Opens one story in the Storybook preview iframe. */
 function storyUrl(id: string): string {

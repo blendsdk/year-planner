@@ -66,7 +66,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
 | A3 print boundaries | **15/28/29 months** print 2/2/3 pages; 12/14/18/24/36 verified |
-| Quality tests | **252 passed** (traceability, public API, coverage, size, CSS minifier, CI, package, license, audit, environment and release contracts) |
+| Quality tests | **254 passed** (traceability, public API, coverage, size, CSS minifier, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current, including palette attribution |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
@@ -677,4 +677,21 @@ unchanged. See [Browser tests](browser-tests.md).
 | `pnpm test:e2e:affected --paths packages/react/src/locale.ts` | PASS — 6/6 units, Chromium, Firefox and WebKit |
 | repeat `test:e2e:affected` | PASS — 6 cached, 0 executed |
 | `node scripts/browser-shards.mjs run --shard chromium-2 --ci` | PASS — static artifacts served by `playwright.ci.config.ts` |
-| `pnpm test:quality` | PASS — 252 contracts, including 33 browser-plan checks |
+| `pnpm test:quality` | PASS — 254 contracts, including 33 browser-plan checks |
+
+### Shard verification
+
+All five planned shards were executed against the built demo, Storybook and
+docs artifacts on isolated local ports:
+
+| Shard | Passed | Failed | Skipped | Duration |
+| --- | ---: | ---: | ---: | ---: |
+| `chromium-1` | 36 | 0 | 0 | 147 s |
+| `chromium-2` | 44 | 0 | 1 | 124 s |
+| `firefox` | 39 | 0 | 16 | 127 s |
+| `webkit` | 39 | 0 | 16 | 104 s |
+| `mobile` | 3 | 0 | 0 | 7 s |
+
+The five jobs pass independently, so the CI matrix can run them concurrently.
+The full matrix is about 2.5 minutes of wall-clock time instead of about 16
+minutes in one job.

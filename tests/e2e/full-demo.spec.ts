@@ -7,7 +7,8 @@ import { expect, test } from "@playwright/test";
  * no play function, so these interactions are the only source of localStorage
  * writes; every test clears the key first.
  */
-const STORYBOOK = "http://127.0.0.1:4176/year-planner/storybook";
+const STORYBOOK_PORT = process.env.PLAYWRIGHT_STORYBOOK_PORT ?? "4176";
+const STORYBOOK = `http://127.0.0.1:${STORYBOOK_PORT}/year-planner/storybook`;
 const STORY_URL = `${STORYBOOK}/iframe.html?id=full-demo--full-demo&viewMode=story`;
 const STORAGE_KEY = "year-planner.full-demo.v1";
 

@@ -23,12 +23,15 @@ test.describe("RD-10-AC-08/10/13: security and privacy", () => {
       const allowed =
         url.origin === APP_ORIGIN &&
         (url.pathname === "/" ||
+          // Vite development paths.
           url.pathname.startsWith("/src/") ||
           url.pathname.startsWith("/@vite/") ||
           url.pathname.startsWith("/@fs/") ||
           url.pathname.startsWith("/@id/") ||
           url.pathname.startsWith("/@react-refresh") ||
           url.pathname.startsWith("/node_modules/") ||
+          // The production build loads one same-origin bundle from /assets/.
+          url.pathname.startsWith("/assets/") ||
           url.pathname.endsWith(".css") ||
           url.pathname.endsWith(".ico"));
       if (!allowed) unexpected.push(request.url());

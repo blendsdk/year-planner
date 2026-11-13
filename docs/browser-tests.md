@@ -83,15 +83,35 @@ greedy pass:
 - Firefox and WebKit each get one shard.
 - Touch and mobile projects share one small shard.
 
-The current full plan produces five jobs with a maximum estimated load of about
-230 seconds, instead of one job of about 16 minutes. Each shard downloads only
-the browser it needs.
+The plan produces five jobs. A local verification against the built artifacts
+produced these results:
+
+| Shard | Passed | Failed | Skipped | Duration |
+| --- | ---: | ---: | ---: | ---: |
+| `chromium-1` | 36 | 0 | 0 | 147 s |
+| `chromium-2` | 44 | 0 | 1 | 124 s |
+| `firefox` | 39 | 0 | 16 | 127 s |
+| `webkit` | 39 | 0 | 16 | 104 s |
+| `mobile` | 3 | 0 | 0 | 7 s |
+
+The whole matrix therefore takes about **2.5 minutes of wall-clock time in
+parallel**, against about **16 minutes** for the single serial job.
 
 Groups that generate PDFs pin one worker on the browser that generates them.
 Chromium's PDF pipeline is not safe when two print tests write at the same time,
 so `e2e.grid` declares `"workersByProject": { "chromium": 1 }` and `e2e.print`
 declares `"workers": 1`. A shard inherits the strictest limit of the units it
 contains, so Firefox and WebKit keep two workers.
+
+## Port isolation
+
+CI runners are isolated and use ports 4173, 4176 and 4177. A developer machine
+can host another project on one of those ports, so `browser-shards.mjs run`
+assigns each shard its own block starting at 4300 (`PLAYWRIGHT_CI_PORT_BASE`).
+`playwright.ci.config.ts` and the Storybook and docs specs read the same three
+port variables. `test:e2e:affected` uses 4310/4313/4314 for the development
+servers. This is what allowed all five shards to be verified locally while
+another project held 4173.
 
 CI builds the demo, Storybook and documentation once in `browser-build`, then
 each shard serves that static output through `playwright.ci.config.ts`.

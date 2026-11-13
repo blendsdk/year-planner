@@ -9,7 +9,8 @@ import { expect, test } from "@playwright/test";
  *
  * Requires `pnpm docs:site` (run by `pnpm verify` before `pnpm test:e2e`).
  */
-const SITE = "http://127.0.0.1:4177/year-planner";
+const SITE_PORT = process.env.PLAYWRIGHT_DOCS_PORT ?? "4177";
+const SITE = `http://127.0.0.1:${SITE_PORT}/year-planner`;
 
 test.describe("GitHub Pages site", () => {
   test.skip(

@@ -55,8 +55,8 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 
 | Check | Result |
 |---|---|
-| Core tests | **220 passed** |
-| React tests | **508 passed** (47 files) |
+| Core tests | **226 passed** |
+| React tests | **535 passed** (51 files) |
 | Core coverage | **99.00% lines, 95.88% branches, 99.50% functions** |
 | React coverage | **94.01% lines, 85.60% branches, 94.98% functions** |
 | Playwright | **143 passed, 40 skipped** (PDF and axe are Chromium-only; forced-colors is Chromium-only; touch is Chromium-only; one pending-preview timing test is quarantined on all desktop engines) |
@@ -64,18 +64,29 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
-| Quality tests | **185 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
+| Quality tests | **195 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
-| Storybook | **PASS** — static build succeeds; **176 stories across 13 files** |
+| Storybook | **PASS** — static build succeeds; **183 stories across 15 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **React entry + CSS 43.63 kB gzip / 60 kB**; **total 66.86 kB gzip / 68 kB** (core, React, adapters and CSS) |
+| Bundle size | **React entry + CSS 44.40 kB gzip / 60 kB**; **total 67.64 kB gzip / 68 kB** (core, React, adapters and CSS) |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | `verify`, `browsers`, `security`, `performance` and `dco` jobs configured; browser evidence and benchmark artifacts uploaded |
 | Browser versions | Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright 1.65.0) |
-| Timezones | **220 core tests pass under each of UTC, Pacific/Kiritimati and America/Los_Angeles** (660 runs total; final gate) |
+| Timezones | **226 core tests pass under each of UTC, Pacific/Kiritimati and America/Los_Angeles** (660 runs total; final gate) |
+
+### RD-13 Storybook demos
+
+- Navigation starts with **Demos**: select a range, move an item, resize an
+  item, paint a layer, navigate by keyboard and raise a context menu. Every
+  demo has a `play` function.
+- **Demos/Event Log** shows timestamped selection, command and context-menu
+  callbacks beside the planner.
+- Every one of the **183 stories across 15 files** has a story-level
+  description; the Reference catalogue remains intact.
+- The Fluent UI and MUI context-menu examples are host-owned and dev-only.
 
 The coverage thresholds are enforced by Vitest: core 95% and React 80% for
 lines, branches, functions and statements.
@@ -385,7 +396,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 | `pnpm verify` | PASS — 220 core, 508 React, 138 quality tests |
 | `pnpm api-report:ci` | PASS — both reports checked in, no warnings |
 | `pnpm docs:build` | PASS — TypeDoc core and React, 0 warnings with fatal validation |
-| `pnpm storybook:build` | PASS — 176 stories across 13 files |
+| `pnpm storybook:build` | PASS — 183 stories across 15 files |
 | `pnpm docs:site` | PASS — 241 files; Storybook at `/`, TypeDoc at `/api` |
 | `pnpm docs:site -- --check-only` | PASS — the built artifact resolves every relative asset and landing link |
 | `pnpm verify:full` | PASS — 143 E2E passed / 40 skipped; timezone suite 220 × 3; perf 7 passed / 1 skipped; bench 8 passed / 8 skipped; clean consumer PASS |

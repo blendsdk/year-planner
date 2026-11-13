@@ -1,6 +1,7 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within } from "storybook/test";
+import { describeStories } from "./describe";
 import { baseItems, groups, layers, overflowItems, resources } from "./fixtures";
 
 const meta = {
@@ -126,3 +127,20 @@ export const RejectedStatus: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "Move later" }));
   },
 };
+
+describeStories({
+  ClassicBlue,
+  ClassicYellow,
+  HighContrast,
+  SelectedItem,
+  DateRangeSelected,
+  HolidayAndDisabled,
+  Overflow,
+  HiddenItem,
+  ItemListInspector,
+  LongWindow36,
+  ExpandedDensity,
+  SkipLinkFocused,
+  AcceptedStatus,
+  RejectedStatus,
+});

@@ -1,5 +1,6 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { describeStories } from "./describe";
 import { baseItems, groups, layers, prt01Items, resources } from "./fixtures";
 
 const meta = {
@@ -90,3 +91,17 @@ export const HighContrastPrint: Story = {
 export const PrintWithoutISOWeekNumbers: Story = {
   args: { display: { theme: "print", showISOWeekNumbers: false } },
 };
+
+describeStories({
+  PaginateFourteenMonths,
+  PaginateTwentyFourMonths,
+  PaginateThirtySixMonths,
+  PaginateSevenRowsPerPage,
+  FitFourteenMonths,
+  FitTwentyFourMonths,
+  Prt01TwoThousandSeventeen,
+  PrintTheme,
+  PrintThemeThirtySixMonths,
+  HighContrastPrint,
+  PrintWithoutISOWeekNumbers,
+});

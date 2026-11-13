@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-13 03:20
-> **Progress**: 53/77 tasks (69%)
+> **Last Updated**: 2026-11-13 03:36
+> **Progress**: 67/77 tasks (87%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -236,35 +236,35 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 **Reference**: [03-04](03-04-storybook-demos.md) §Contract · ST-26–ST-30 · AR-18–AR-20, AR-32, AR-36
 **Objective**: Encode the demo, story-level description and event-log requirements.
 
-- [ ] 4.1.1 [spec-author] Extend the Storybook contract for story-level descriptions, the helper form, Demos play functions, the event log and storySort — `tests/quality/storybook-contract.spec.test.ts`
-- [ ] 4.1.2 Run the contract and record the red result — `pnpm test:quality`
+- [x] 4.1.1 [spec-author] Extend the Storybook contract for story-level descriptions, the helper form, Demos play functions, the event log and storySort — `tests/quality/storybook-contract.spec.test.ts` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.1.2 Run the contract and record the red result — `pnpm test:quality` ✅ (completed: 2026-11-13 03:36)
 
 ### Step 4.2: Implementation
 
 **Reference**: [03-04](03-04-storybook-demos.md) §Demos, §Event-log playground, §Descriptions · AR-18–AR-20, AR-36
 **Objective**: Add real demos and describe every story.
 
-- [ ] 4.2.1 Add the description helper and apply it to Classic, Layout and Items stories — `apps/storybook/stories/ClassicYear.stories.tsx`, `Layout.stories.tsx`, `Items.stories.tsx`
-- [ ] 4.2.2 Apply descriptions to Interaction, Inspector and Accessibility stories — `Interaction.stories.tsx`, `Inspector.stories.tsx`, `Accessibility.stories.tsx`
-- [ ] 4.2.3 Apply descriptions to State, CommandLifecycle and Print stories — `State.stories.tsx`, `CommandLifecycle.stories.tsx`, `Print.stories.tsx`
-- [ ] 4.2.4 Apply descriptions to Slots, Themes and Adapters stories — `Slots.stories.tsx`, `Themes.stories.tsx`, `Adapters.stories.tsx`
-- [ ] 4.2.5 Add descriptions to the new Demos, EventLog and ContextMenu stories — `Demos.stories.tsx`, `EventLog.stories.tsx`, `ContextMenu.stories.tsx`
-- [ ] 4.2.6 Add the six Demos with `play` functions — `apps/storybook/stories/Demos.stories.tsx`
-- [ ] 4.2.7 Add the event-log playground with a play function and the real callbacks — `apps/storybook/stories/EventLog.stories.tsx`
-- [ ] 4.2.8 Add Demos-first story sorting — `apps/storybook/.storybook/preview.ts`
-- [ ] 4.2.9 Update the story-count statements — `README.md`, `docs/getting-started.md`, `docs/test-report.md`
+- [x] 4.2.1 Add the description helper and apply it to Classic, Layout and Items stories — `apps/storybook/stories/ClassicYear.stories.tsx`, `Layout.stories.tsx`, `Items.stories.tsx` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.2.2 Apply descriptions to Interaction, Inspector and Accessibility stories — `Interaction.stories.tsx`, `Inspector.stories.tsx`, `Accessibility.stories.tsx` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.2.3 Apply descriptions to State, CommandLifecycle and Print stories — `State.stories.tsx`, `CommandLifecycle.stories.tsx`, `Print.stories.tsx` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.2.4 Apply descriptions to Slots, Themes and Adapters stories — `Slots.stories.tsx`, `Themes.stories.tsx`, `Adapters.stories.tsx` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.2.5 Add descriptions to the new Demos, EventLog and ContextMenu stories — `Demos.stories.tsx`, `EventLog.stories.tsx`, `ContextMenu.stories.tsx` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.2.6 Add the six Demos with `play` functions — `apps/storybook/stories/Demos.stories.tsx` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.2.7 Add the event-log playground with a play function and the real callbacks — `apps/storybook/stories/EventLog.stories.tsx` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.2.8 Add Demos-first story sorting — `apps/storybook/.storybook/preview.ts` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.2.9 Update the story-count statements — `README.md`, `docs/getting-started.md`, `docs/test-report.md` ✅ (completed: 2026-11-13 03:36)
 
 ### Step 4.3: Green and verify
 
-- [ ] 4.3.1 Prove ST-26–ST-30 green — `pnpm test:quality`
-- [ ] 4.3.2 Build Storybook and the docs site — `pnpm storybook:build`, `pnpm docs:site -- --check-only`
-- [ ] 4.3.3 Review each demo at 1280 × 800 and record the result — `docs/test-report.md`
+- [x] 4.3.1 Prove ST-26–ST-30 green — `pnpm test:quality` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.3.2 Build Storybook and the docs site — `pnpm storybook:build`, `pnpm docs:site -- --check-only` ✅ (completed: 2026-11-13 03:36)
+- [x] 4.3.3 Review each demo at 1280 × 800 and record the result — `docs/test-report.md` ✅ (completed: 2026-11-13 03:36)
 
 **Deliverables**:
-- [ ] Demos group with at least six interaction stories plus the event log
-- [ ] Story-level description on every story
-- [ ] Storybook and docs site building
-- [ ] All phase verification passing
+- [x] Demos group with at least six interaction stories plus the event log
+- [x] Story-level description on every story
+- [x] Storybook and docs site building
+- [x] All phase verification passing
 
 **Test slices**: `quality.contracts` (task); Storybook build (release)
 **Task verify**: `pnpm test:quality` + `pnpm storybook:build`

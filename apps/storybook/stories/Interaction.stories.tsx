@@ -1,5 +1,6 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { describeStories } from "./describe";
 import { baseItems, groups, layers, overflowItems, resources } from "./fixtures";
 
 const meta = {
@@ -192,3 +193,32 @@ export const OverflowInteraction: Story = {
     interaction: { mode: "auto" },
   },
 };
+
+describeStories({
+  AutoMode,
+  InspectMode,
+  SelectMode,
+  PaintMode,
+  EraseMode,
+  CreateMode,
+  MoveMode,
+  ResizeMode,
+  SelectedDateRange,
+  MultipleDateRanges,
+  SelectedItem,
+  MultipleSelectedItems,
+  ItemRangeSelection,
+  SelectAllVisible,
+  DisabledDates,
+  ReadOnlyInteraction,
+  LockedLayer,
+  TouchEditingOff,
+  TouchEditingAuto,
+  TouchEditingOn,
+  DoubleClickDisabled,
+  AnnotationSelected,
+  HiddenSelectedItem,
+  MarqueeItemsMode,
+  MarqueeDatesMode,
+  OverflowInteraction,
+});

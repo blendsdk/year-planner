@@ -135,6 +135,58 @@ describe("RD-11-AC-02: design-system wrappers", () => {
   });
 });
 
+describe("RD-13-AC-07: story-level descriptions and demos", () => {
+  it("describes every exported story", () => {
+    for (const file of storyFiles()) {
+      const described = new Set<string>();
+      for (const match of file.source.matchAll(/describeStories\(\{([^}]*)\}\)/g)) {
+        for (const name of (match[1] ?? "").split(",")) {
+          const trimmed = name.trim();
+          if (trimmed) described.add(trimmed);
+        }
+      }
+      for (const name of file.exports) {
+        const start = file.source.indexOf(`export const ${name}: Story`);
+        const block = file.source.slice(start, file.source.indexOf("export const", start + 1));
+        const explicit = block.includes("description: {") && block.includes("story:");
+        expect(
+          described.has(name) || explicit,
+          `${file.name} ${name} has no story-level description`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("keeps at least six Demos play stories and the event log", () => {
+    const demos = storyFiles().find((file) => file.name === "Demos.stories.tsx");
+    expect(demos?.title).toBe("Demos");
+    const playCount = (demos?.source.match(/\n {2}play:/g) ?? []).length;
+    expect(playCount).toBeGreaterThanOrEqual(6);
+    for (const name of [
+      "SelectRange",
+      "MoveItem",
+      "ResizeItem",
+      "PaintLayer",
+      "KeyboardNavigation",
+      "ContextMenu",
+    ]) {
+      expect(demos?.source).toContain(`export const ${name}: Story`);
+    }
+    const eventLog = storyFiles().find((file) => file.name === "EventLog.stories.tsx");
+    expect(eventLog?.source).toContain('data-testid="event-log"');
+    expect(eventLog?.source).toContain("play: async");
+  });
+
+  it("sorts Demos before the reference catalogue", () => {
+    const preview = readFileSync(new URL("apps/storybook/.storybook/preview.ts", ROOT), "utf8");
+    const start = preview.indexOf("storySort");
+    expect(start).toBeGreaterThanOrEqual(0);
+    const block = preview.slice(start, start + 200);
+    expect(block).toContain('"Demos"');
+    expect(block.indexOf('"Demos"')).toBeLessThan(block.indexOf('"Year Planner"'));
+  });
+});
+
 describe("RD-11-AC-02: built-in viewport", () => {
   it("configures named viewports without the legacy addon", () => {
     const preview = readFileSync(new URL("apps/storybook/.storybook/preview.ts", ROOT), "utf8");

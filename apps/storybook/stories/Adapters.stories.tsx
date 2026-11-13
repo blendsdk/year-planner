@@ -2,6 +2,7 @@ import { createTheme, YearPlanner, YearPlannerProvider } from "@blendsdk/react-y
 import { fluentThemeToCssVars } from "@blendsdk/react-year-planner/adapters/fluent";
 import { muiThemeToCssVars } from "@blendsdk/react-year-planner/adapters/mui";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { describeStories } from "./describe";
 import { baseItems, groups, layers, resources } from "./fixtures";
 
 const meta = {
@@ -123,3 +124,14 @@ export const DarkSurfaces: Story = {
     },
   },
 };
+
+describeStories({
+  FluentTokens,
+  MuiTokens,
+  FluentWrapper,
+  MuiWrapper,
+  FluentAndMuiMerged,
+  ProviderWithCustomTheme,
+  CustomCssVariableSet,
+  DarkSurfaces,
+});

@@ -1,6 +1,7 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
+import { describeStories } from "./describe";
 import {
   baseItems,
   booking,
@@ -201,3 +202,20 @@ export const ManyOneDayItems: Story = {
     ),
   },
 };
+
+describeStories({
+  HolidayDateMeta,
+  DisabledDates,
+  CustomCellContent,
+  CustomItemContent,
+  CustomAnnotation,
+  CustomTooltip,
+  CustomOverflow,
+  EmptyStateSlot,
+  ItemFragmentWrapper,
+  DayCellWrapper,
+  StructuralWrappers,
+  AllSlotsTogether,
+  ItemClassNameAndStyle,
+  ManyOneDayItems,
+});

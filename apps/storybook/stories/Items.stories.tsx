@@ -1,5 +1,6 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { describeStories } from "./describe";
 import {
   background,
   baseItems,
@@ -192,3 +193,28 @@ export const TrainingAndBookings: Story = {
     items: [item("ops", "bookings", "2027-02-01", "2027-02-20", { title: "Operations" }), training],
   },
 };
+
+describeStories({
+  RibbonsAndAnnotations,
+  CrossMonthBooking,
+  CrossYearBooking,
+  ThreeOverlappingLanes,
+  TouchingIntervalsShareLane,
+  LongDurationFirst,
+  AnnotationsOnly,
+  BackgroundAndForeground,
+  LayerPatterns,
+  CompactOverflow,
+  ExpandedOverflow,
+  TwoVisibleLanes,
+  TimedItem,
+  TimedAndAllDay,
+  HiddenLayer,
+  HiddenGroup,
+  HiddenAnnotations,
+  NoItems,
+  OneDayItems,
+  ItemsOutsideWindow,
+  CollidingItemColors,
+  TrainingAndBookings,
+});

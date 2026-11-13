@@ -10,6 +10,7 @@ import type {
 import { paintItems } from "@blendsdk/year-planner-core";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useRef, useState } from "react";
+import { describeStories } from "./describe";
 
 type HostMode =
   | "accepted"
@@ -458,3 +459,19 @@ export const CapacityRejected: Story = {
     note: "The capacity-2 mock rejects the third overlapping booking.",
   },
 };
+
+describeStories({
+  AcceptedMove,
+  PendingMove,
+  PendingResize,
+  PendingPaint,
+  PendingCreate,
+  PendingDelete,
+  RejectedValidation,
+  RejectedStale,
+  Timeout,
+  AcceptedNotApplied,
+  WarningsOnly,
+  RetryAvailable,
+  CapacityRejected,
+});

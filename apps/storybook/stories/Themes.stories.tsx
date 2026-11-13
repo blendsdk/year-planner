@@ -1,5 +1,6 @@
 import { createTheme, YearPlanner, YearPlannerProvider } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { describeStories } from "./describe";
 import { baseItems, groups, layers, resources } from "./fixtures";
 
 const meta = {
@@ -89,3 +90,22 @@ export const HighDensityExpanded: Story = {
 export const CompactTwoLanes: Story = {
   args: { display: { theme: "classic-blue", density: "compact", compactMaxLanes: 2 } },
 };
+
+describeStories({
+  ClassicBlue,
+  ClassicYellow,
+  Modern,
+  HighContrast,
+  PrintTheme,
+  HiddenISOWeekNumbers,
+  Zoom075,
+  Zoom125,
+  Zoom150,
+  LocaleGerman,
+  LocaleFrench,
+  CssVariableOverride,
+  ProviderTheme,
+  Unstyled,
+  HighDensityExpanded,
+  CompactTwoLanes,
+});

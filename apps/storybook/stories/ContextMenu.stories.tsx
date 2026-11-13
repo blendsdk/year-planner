@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
+import { describeStories } from "./describe";
 import { baseItems, groups, layers, resources } from "./fixtures";
 
 const meta = {
@@ -167,3 +168,5 @@ export const MuiMenuExample: Story = {
     );
   },
 };
+
+describeStories({ FluentMenuExample, MuiMenuExample });

@@ -1,5 +1,6 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { describeStories } from "./describe";
 
 const layers = [
   { id: "bookings", name: "Bookings", channel: "ribbon" as const, color: "#1d4e89", label: "B" },
@@ -107,3 +108,13 @@ export const HighContrast: Story = {
     display: { theme: "high-contrast", showISOWeekNumbers: true },
   },
 };
+
+describeStories({
+  Blue2016,
+  Yellow2017,
+  TwelveMonths,
+  ThirtySixMonths,
+  ItemsAndInspector,
+  PrintTheme,
+  HighContrast,
+});

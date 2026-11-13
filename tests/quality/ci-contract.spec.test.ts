@@ -57,10 +57,10 @@ describe("RD-10-AC-01: release gate evidence", () => {
       "Known gaps",
       "benchmarks/rd10-baseline",
       "A3 print",
-      "220 core tests pass",
-      "Quality tests | **185 passed**",
-      "43.63 kB",
-      "66.86 kB",
+      "226 core tests pass",
+      "Quality tests | **195 passed**",
+      "44.40 kB",
+      "67.64 kB",
       "PASS** for RD-01 through RD-12",
     ]) {
       expect(report, field).toContain(field);

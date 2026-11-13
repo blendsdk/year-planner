@@ -1,5 +1,6 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { describeStories } from "./describe";
 import {
   baseItems,
   booking,
@@ -150,3 +151,25 @@ export const TwoIndependentInstances: Story = {
 export const MaintenanceAndBookings: Story = {
   args: { items: [booking, maintenance, training] },
 };
+
+describeStories({
+  ControlledVisibility,
+  HiddenGroupByDefault,
+  HiddenItemByDefault,
+  HiddenChannel,
+  FilterByStatus,
+  FilterBySearch,
+  FilterByLayer,
+  FilterByResource,
+  FilterNoMatches,
+  SelectedItem,
+  SelectedItems,
+  SelectionWithDates,
+  ReadOnlyPlanner,
+  ReadOnlyLockedLayer,
+  OverlappingSelectionAndOverflow,
+  NoYear,
+  InvalidWindow,
+  TwoIndependentInstances,
+  MaintenanceAndBookings,
+});

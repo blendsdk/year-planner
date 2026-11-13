@@ -1,5 +1,6 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { describeStories } from "./describe";
 import {
   baseItems,
   booking,
@@ -111,3 +112,19 @@ export const MaintenanceLocked: Story = {
     defaultSelection: { dates: [], items: ["maintenance"] },
   },
 };
+
+describeStories({
+  SelectedBooking,
+  SelectedMaintenance,
+  MultipleSelectedItems,
+  OverflowOnActiveRow,
+  ReadOnly,
+  TimedItem,
+  AnnotationHostOwned,
+  HiddenSelection,
+  CustomInspector,
+  InspectorClosed,
+  NoSelection,
+  SelectionWithOverflow,
+  MaintenanceLocked,
+});

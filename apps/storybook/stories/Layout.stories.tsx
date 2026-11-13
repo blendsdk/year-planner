@@ -1,5 +1,6 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { describeStories } from "./describe";
 import { baseItems, groups, layers, resources } from "./fixtures";
 
 const meta = {
@@ -62,3 +63,17 @@ export const ThirtySixMonthsExpanded: Story = {
     display: { theme: "modern", density: "expanded" },
   },
 };
+
+describeStories({
+  ClassicFourteenMonths,
+  TwelveMonths,
+  EighteenMonths,
+  TwentyFourMonths,
+  ThirtySixMonths,
+  NoContextMonths,
+  TwoContextMonths,
+  HighlightPreviousYear,
+  EarliestViewYear,
+  LatestViewYear,
+  ThirtySixMonthsExpanded,
+});

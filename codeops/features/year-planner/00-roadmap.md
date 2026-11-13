@@ -3,8 +3,8 @@
 > **Feature-Set**: Year Planner for React
 > **Status**: In Progress
 > **Created**: 2026-11-10
-> **Last Updated**: 2026-11-13 18:40
-> **Progress**: 13 / 13 (100%) — implementation complete; commit/push authorised
+> **Last Updated**: 2026-11-13 21:20
+> **Progress**: 13 / 13 (100%) — implementation complete; localization and lockstep versioning delivered
 > **CodeOps Artifact Schema**: 1
 
 ## Legend
@@ -30,4 +30,4 @@
 | RD-13 | Product quality: fit, performance and interaction polish | [RD-13](requirements/RD-13-product-quality.md) | [m10-product-quality](plans/m10-product-quality/00-index.md) | Done | ✅ | 2026-11-13 04:00 | 77/77 tasks; 0.3.0 prepared; live publish is an owner action |
 
 
-> **Note**: All 13 RDs are implementation-complete for the licensing/theme refresh. RD-01 and RD-12 carry licence and palette verification; the visual-design rights question was confirmed resolved by the user on 2026-11-13 and the commit/push is authorised. The manual NVDA/VoiceOver evidence (RD-09 AC10) is parked by user decision on 2026-11-11 as a low-priority release-gate item; no WCAG conformance claim is made. RD-10 records initial-render and 10k-overflow performance misses and a WebKit/desktop pending-preview test quarantine in `docs/test-report.md`.
+> **Note**: All 13 RDs are implementation-complete. The licensing/theme refresh and the follow-on localization task are delivered: the React package now owns a complete `PlannerMessages` contract, the `@blendsdk/year-planner-languages` package ships 45 locale catalogues for 41 left-to-right languages, and every workspace is aligned to `0.3.0` with `@blendsdk/lockstep`. RD-01 and RD-12 carry licence and palette verification; the visual-design rights question was confirmed resolved by the user on 2026-11-13 and the commit/push is authorised. The manual NVDA/VoiceOver evidence (RD-09 AC10) is parked by user decision on 2026-11-11 as a low-priority release-gate item; no WCAG conformance claim is made. RD-10 records initial-render and 10k-overflow performance misses and a WebKit/desktop pending-preview test quarantine in `docs/test-report.md`.

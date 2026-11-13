@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "pnpm --filter @blendsdk/year-planner-core build && pnpm --filter @blendsdk/react-year-planner build && pnpm --filter @blendsdk/year-planner-languages build",
-    "typecheck": "pnpm --filter @blendsdk/year-planner-core build && pnpm --filter @blendsdk/react-year-planner build && pnpm -r typecheck",
+    "typecheck": "pnpm --filter @blendsdk/year-planner-core build && pnpm --filter @blendsdk/react-year-planner build && pnpm --filter @blendsdk/year-planner-languages build && pnpm -r typecheck",
     "lint": "biome check .",
     "format": "biome format --write .",
     "test": "pnpm -r test",

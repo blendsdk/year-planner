@@ -53,7 +53,7 @@ export function BenchDemo() {
         range={{ start: { year: 2027, month: 0 }, monthCount: months }}
         layers={benchLayers()}
         defaultItems={model.items}
-        display={{ density, theme, showISOWeekNumbers: true }}
+        display={{ fit: "none", density, theme, showISOWeekNumbers: true }}
         interaction={{ mode: "select", marquee: "dates" }}
         print={{ mode: "paginate" }}
         activeLayerId="bookings"

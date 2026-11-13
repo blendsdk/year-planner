@@ -25,6 +25,8 @@ export interface MonthRowProps {
   ribbonRow: RibbonRow;
   formatters: PlannerFormatters;
   zoom: number;
+  /** Vertical scale for fit mode; defaults to `zoom`. */
+  zoomY?: number;
   bandWidth: number;
   totalDayWidth: number;
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
@@ -58,6 +60,7 @@ function monthRowPropsEqual(previous: MonthRowProps, next: MonthRowProps): boole
     previous.ribbonRow !== next.ribbonRow ||
     previous.formatters !== next.formatters ||
     previous.zoom !== next.zoom ||
+    (previous.zoomY ?? previous.zoom) !== (next.zoomY ?? next.zoom) ||
     previous.bandWidth !== next.bandWidth ||
     previous.totalDayWidth !== next.totalDayWidth ||
     previous.itemsByDate !== next.itemsByDate ||
@@ -86,6 +89,7 @@ export const MonthRow = memo(function MonthRow({
   ribbonRow,
   formatters,
   zoom,
+  zoomY = zoom,
   bandWidth,
   totalDayWidth,
   itemsByDate,
@@ -103,12 +107,14 @@ export const MonthRow = memo(function MonthRow({
   onSelectDate,
 }: MonthRowProps): ReactNode {
   const MonthLabel = components.MonthLabel;
+  const monthName = formatters.monthName(row.monthIndex);
   const label = (
     <>
-      <span>{formatters.monthName(row.monthIndex)}</span>
-      <span>{row.kind === "current" ? `'${String(row.year).slice(-2)}` : row.year}</span>
+      <span>{monthName}</span>
+      <span>{String(row.year).slice(-2)}</span>
     </>
   );
+  const labelTitle = `${monthName} ${row.year}`;
   return (
     // biome-ignore lint/a11y/useSemanticElements: CSS grid rows implement the ARIA grid pattern
     <div
@@ -119,10 +125,14 @@ export const MonthRow = memo(function MonthRow({
       data-yp-kind={row.kind}
       style={{
         gridTemplateColumns: rowTemplate(row, zoom, bandWidth),
-        height: scaledRowHeight(ribbonRow.height, zoom),
+        height: scaledRowHeight(ribbonRow.height, zoom, zoomY),
       }}
     >
-      <div className={`yp-month ${row.kind === "context" ? "yp-context" : ""}`} aria-hidden="true">
+      <div
+        className={`yp-month ${row.kind === "context" ? "yp-context" : ""}`}
+        aria-hidden="true"
+        title={labelTitle}
+      >
         {MonthLabel ? <MonthLabel className="yp-month-slot">{label}</MonthLabel> : label}
       </div>
       <SelectionPreview
@@ -131,7 +141,7 @@ export const MonthRow = memo(function MonthRow({
         zoom={zoom}
         bandWidth={bandWidth}
         totalDayWidth={totalDayWidth}
-        height={scaledRowHeight(ribbonRow.height, zoom)}
+        height={scaledRowHeight(ribbonRow.height, zoom, zoomY)}
         variant="selection"
       />
       {previews.map((entry) =>
@@ -143,7 +153,7 @@ export const MonthRow = memo(function MonthRow({
             zoom={zoom}
             bandWidth={bandWidth}
             totalDayWidth={totalDayWidth}
-            height={scaledRowHeight(ribbonRow.height, zoom)}
+            height={scaledRowHeight(ribbonRow.height, zoom, zoomY)}
             variant="selection-preview"
           />
         ) : null,
@@ -162,7 +172,11 @@ export const MonthRow = memo(function MonthRow({
         onCellKeyDown={onCellKeyDown}
         onSelectDate={onSelectDate}
       />
-      <div className={`yp-month ${row.kind === "context" ? "yp-context" : ""}`} aria-hidden="true">
+      <div
+        className={`yp-month ${row.kind === "context" ? "yp-context" : ""}`}
+        aria-hidden="true"
+        title={labelTitle}
+      >
         {MonthLabel ? <MonthLabel className="yp-month-slot">{label}</MonthLabel> : label}
       </div>
     </div>

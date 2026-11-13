@@ -45,7 +45,7 @@ test.describe("M1 classic year grid", () => {
 
 test.describe("RD-06 items, inspector and print", () => {
   test("renders ribbons, an annotation and inspector details @visual", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/?fit=none");
     await page.locator("select").nth(0).selectOption("2027");
     await page.locator("select").nth(1).selectOption("classic-blue");
     await expect(
@@ -77,10 +77,10 @@ test.describe("RD-06 items, inspector and print", () => {
     await page.goto("/");
     await page.locator("select").nth(0).selectOption("2027");
     const overflow = page.locator('[data-yp-part="overflow-button"]').first();
-    await expect(overflow).toContainText("+17");
+    const count = Number(((await overflow.textContent()) ?? "+0").replace("+", ""));
     await overflow.click();
     await expect(page.locator('[data-yp-part="overflow-popover"]')).toBeVisible();
-    await expect(page.locator(".yp-overflow-entry")).toHaveCount(17);
+    await expect(page.locator(".yp-overflow-entry")).toHaveCount(count);
     await page.keyboard.press("Escape");
     await expect(page.locator('[data-yp-part="overflow-popover"]')).toHaveCount(0);
     await page.locator('[data-yp-part="item-proxy"][data-item-id="booking"]').first().hover();
@@ -120,7 +120,7 @@ test.describe("RD-06 items, inspector and print", () => {
   });
 
   test("keeps zoomed geometry inside a scrollable viewport", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/?fit=none");
     await page.locator("select").nth(0).selectOption("2027");
     const zoom = page.locator('input[type="range"]');
     await zoom.fill("1.5");

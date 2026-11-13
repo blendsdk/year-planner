@@ -1,6 +1,6 @@
 import type { Diagnostic } from "@blendsdk/year-planner-core";
 import { diagnostic } from "@blendsdk/year-planner-core";
-import { clampZoom } from "./geometry.js";
+import { clampZoom, LANE_TOP } from "./geometry.js";
 import { isValidLocale, isValidTimeZone } from "./locale.js";
 import type { YearPlannerTheme } from "./theme.js";
 import type { DisplayConfig } from "./types.js";
@@ -9,9 +9,11 @@ import type { DisplayConfig } from "./types.js";
  * Validated display options used by the renderer.
  */
 export interface ResolvedDisplayOptions {
+  fit: "none" | "contain";
   density: "compact" | "expanded";
   compactMaxLanes: number;
   laneHeight: number;
+  laneTop: number;
   displayTimeZone: string;
   locale: string;
   zoom: number;
@@ -39,6 +41,10 @@ export function resolveDisplayOptions(
   const rawZoom = display?.zoom ?? 1;
   const zoom = clampZoom(rawZoom);
   if (rawZoom !== zoom) push(diagnostics, "INVALID_RANGE", "Zoom is clamped to 0.75-1.5");
+
+  const rawFit = display?.fit ?? "contain";
+  const fit = rawFit === "none" || rawFit === "contain" ? rawFit : "contain";
+  if (fit !== rawFit) push(diagnostics, "INVALID_COMMAND", "Fit must be none or contain");
 
   const density = display?.density ?? "compact";
   const validDensity = density === "compact" || density === "expanded";
@@ -72,9 +78,11 @@ export function resolveDisplayOptions(
 
   return {
     options: {
+      fit,
       density: validDensity ? density : "compact",
       compactMaxLanes,
       laneHeight,
+      laneTop: LANE_TOP,
       displayTimeZone,
       locale,
       zoom,

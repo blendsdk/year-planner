@@ -133,6 +133,30 @@ const [visibility, setVisibility] = useState<VisibilityState>({
 />;
 ```
 
+## Sizing and fit
+
+`display.fit` defaults to `"contain"`. The planner measures its **host region**
+with a `ResizeObserver`, scales day columns horizontally and chooses a 24 px
+lane budget vertically. A host must give the planner a bounded region:
+
+```tsx
+<section style={{ height: 640, minHeight: 0, overflow: "hidden" }}>
+  <YearPlanner year={2027} items={items} layers={layers} />
+</section>
+```
+
+The component root is content-sized, so the nearest parent with a real box is
+the measured host. If the planner sits directly in the page, the viewport is
+used and the page scrolls. A zero-size host (a hidden tab) keeps the last valid
+geometry. If the 24 px column floor or the one-lane vertical budget still does
+not fit, `.yp-viewport` scrolls; content is never clipped.
+
+Set `display={{ fit: "none" }}` to keep the explicit design-unit geometry. In
+fit mode `display.zoom` scales columns only and is clamped to the 24 px floor;
+vertical geometry is fit-driven. `density: "expanded"` is a non-fit preference:
+in fit mode the lane budget wins and extra items go to the existing overflow
+popover.
+
 ## Print
 
 Call `window.print()` when the planner is on the page. The component renders a

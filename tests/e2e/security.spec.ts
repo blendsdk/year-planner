@@ -41,7 +41,7 @@ test.describe("RD-10-AC-08/10/13: security and privacy", () => {
       page.locator('[data-yp-part="item-proxy"][data-item-id="security-probe"]'),
     ).toHaveCount(1);
 
-    await page.locator('[role="gridcell"][data-date="2027-03-01"]').click();
+    await page.locator('[role="gridcell"][data-date="2027-03-15"]').click();
     const overflow = page.locator('[data-yp-part="overflow-button"]').first();
     if ((await overflow.count()) > 0) {
       await overflow.click();

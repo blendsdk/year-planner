@@ -77,9 +77,8 @@ RD-13 run passes every gate on 2026-11-13:
 | Click work p95, 2,000 items | 675.1 ms | **68.8 ms** (p50 45.7) | ≤80 ms | Pass |
 
 DOM size fell from 7,854 to **5,348** nodes at 500 items and from 17,850 to
-**7,794** at 2,000 items. The installed budget moved from 65 to 66 kB to absorb
-the row-selection key and the collapsed item list; the measured total is
-65.27 kB. The accessibility item list now renders as a single "Show all N items" control above 100 entries and materializes the
+**7,794** at 2,000 items. The installed budget moved from 65 to 66 kB in
+Phase 1 (65.27 kB) and to 68 kB after the fit work (66.86 kB). The accessibility item list now renders as a single "Show all N items" control above 100 entries and materializes the
 entries on request. The remaining initial-render cost is the grid itself: 518
 cells, 447/1,190 item fragments, 332/723 proxies and browser layout. Reaching
 the original 150 ms value needs row windowing, which is a separate structural

@@ -52,6 +52,8 @@ export interface UseInteractionInput {
   pipeline: import("../commands.js").CommandPipeline;
   viewportRef: { current: HTMLDivElement | null };
   zoom: number;
+  /** Vertical scale for fit mode; defaults to `zoom`. */
+  zoomY?: number;
   readOnly: boolean;
   activeLayerId?: string | undefined;
   interaction?: import("../types.js").InteractionConfig | undefined;

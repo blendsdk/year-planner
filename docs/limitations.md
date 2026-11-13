@@ -21,8 +21,22 @@ must build it outside the component or wait for a later release.
 The package is ESM-only and ships a single React entry. Per-export tree-shaking
 is deferred; importing one helper still pulls the component bundle. The packed
 React entry plus CSS is measured under the 60 kB target, and the combined
-core + React + adapters + CSS surface stays under the 66 kB guard. Use the
+core + React + adapters + CSS surface stays under the 68 kB guard. Use the
 size report rather than assuming a per-export split.
+
+## Fit and target size
+
+The fit keeps date cells and ribbon item proxies at least 24 × 24 CSS px.
+Annotation chips keep their 14 px design height (their proxy is 12 px high);
+they are compact markers layered above the grid and are exempt from the ribbon
+proxy floor. A host that needs a larger annotation target should hide the
+annotation channel (`display.showAnnotations: false`) and present its own
+marker.
+
+Fit measurement needs a bounded host region. An auto-height page host makes the
+vertical budget follow the content height, so the grid does not shrink; use a
+fixed height, `height: 100%` with `min-height: 0`, or `display: flex` with a
+scrollable region.
 
 ## Browsers
 

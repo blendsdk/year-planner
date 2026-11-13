@@ -151,16 +151,32 @@ function DemoNav() {
 export function App() {
   const search = typeof window === "undefined" ? "" : window.location.search;
   const prt01Mode = new URLSearchParams(search).get("print") === "prt01";
-  const [year, setYear] = useState(prt01Mode ? 2017 : 2016);
+  const requestedYear = Number(
+    new URLSearchParams(search).get("year") ?? (prt01Mode ? 2017 : 2016),
+  );
+  const [year, setYear] = useState(
+    Number.isInteger(requestedYear) && requestedYear >= 2000 && requestedYear <= 2100
+      ? requestedYear
+      : prt01Mode
+        ? 2017
+        : 2016,
+  );
   const securityMode = new URLSearchParams(search).get("security") === "1";
   const ac3Mode = new URLSearchParams(search).get("ac3") === "1";
   const interactionMode = new URLSearchParams(search).get("interaction") === "1";
   const commandsMode = new URLSearchParams(search).get("commands") === "1";
   const benchMode = new URLSearchParams(search).get("bench") === "1";
+  const fitMode = new URLSearchParams(search).get("fit") === "1";
+  const fitNone = new URLSearchParams(search).get("fit") === "none";
   const [theme, setTheme] = useState<YearPlannerThemeName>(
     prt01Mode ? "classic-yellow" : "classic-blue",
   );
-  const [months, setMonths] = useState(14);
+  const initialMonths = Number(new URLSearchParams(search).get("months") ?? 14);
+  const [months, setMonths] = useState(
+    Number.isInteger(initialMonths) && initialMonths >= 12 && initialMonths <= 36
+      ? initialMonths
+      : 14,
+  );
   const [density, setDensity] = useState<"compact" | "expanded">("compact");
   const [zoom, setZoom] = useState(1);
   const items = prt01Mode
@@ -191,21 +207,104 @@ export function App() {
       </>
     );
 
-  return (
-    <main style={{ padding: 24, fontFamily: "Arial, sans-serif" }}>
-      <style>{`@media print { .demo-chrome { display: none !important; } body { margin: 0; } main { padding: 0 !important; } }`}</style>
-      <DemoNav />
-      <div className="demo-chrome">
-        <h1 style={{ marginTop: 0 }}>Year Planner for React</h1>
-        <p style={{ maxWidth: 760 }}>
-          RD-07 view: ribbons, annotations, overflow, drag selection, move/resize, paint/erase,
-          inspector, themes, slots and A3 print pages.
-        </p>
+  const plannerNode = (
+    <YearPlanner
+      {...layoutProps}
+      groups={groups}
+      layers={layers}
+      resources={[
+        { id: "alice", name: "Alice", type: "person" },
+        { id: "bob", name: "Bob", type: "person" },
+      ]}
+      defaultItems={items}
+      {...(securityMode
+        ? {
+            defaultVisibility: {
+              hiddenGroupIds: [],
+              hiddenLayerIds: [],
+              hiddenItemIds: ["security-secret"],
+            },
+          }
+        : {})}
+      defaultSelection={{ dates: [], items: year === 2027 ? ["booking"] : [] }}
+      {...(fitMode ? { showInspector: false } : {})}
+      display={{
+        ...(fitNone ? { fit: "none" as const } : {}),
+        theme,
+        zoom,
+        density,
+        showISOWeekNumbers: true,
+      }}
+      print={{ mode: "paginate" }}
+      activeLayerId="bookings"
+      renderCell={
+        ac3Mode
+          ? (context) => {
+              if (context.date === "2027-02-01") {
+                return <FluentButton size="small">Fluent cell button</FluentButton>;
+              }
+              if (context.date === "2027-02-02") {
+                return (
+                  <MuiButton size="small" variant="contained">
+                    MUI cell button
+                  </MuiButton>
+                );
+              }
+              return null;
+            }
+          : undefined
+      }
+      renderInspector={
+        ac3Mode
+          ? () => (
+              <div>
+                <FluentButton>Fluent inspector button</FluentButton>
+                <MuiButton variant="contained">MUI inspector button</MuiButton>
+              </div>
+            )
+          : undefined
+      }
+    />
+  );
+  const themedPlanner = ac3Mode ? (
+    <FluentProvider theme={webLightTheme}>
+      <ThemeProvider theme={createTheme()}>{plannerNode}</ThemeProvider>
+    </FluentProvider>
+  ) : (
+    plannerNode
+  );
+  if (fitMode) {
+    return (
+      <div data-testid="fit-host" style={{ width: "100vw", height: "100vh", overflow: "hidden" }}>
+        {themedPlanner}
       </div>
-      <div
+    );
+  }
+
+  return (
+    <main
+      style={{
+        height: "100dvh",
+        display: "grid",
+        gridTemplateRows: "auto auto minmax(0, 1fr) auto",
+        overflow: "hidden",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <style>{`body { margin: 0; } @media print { .demo-chrome { display: none !important; } .demo-body { display: block !important; } main { height: auto !important; overflow: visible !important; } }`}</style>
+      <DemoNav />
+      <header
         className="demo-chrome"
-        style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}
+        style={{
+          display: "flex",
+          gap: 12,
+          alignItems: "center",
+          flexWrap: "wrap",
+          padding: "8px 16px",
+          borderBottom: "1px solid #d9e2e8",
+        }}
       >
+        <strong>Year Planner for React</strong>
         <label>
           Year{" "}
           <select
@@ -257,81 +356,47 @@ export function App() {
             <option value="expanded">Expanded</option>
           </select>
         </label>
-        <label>
-          Zoom{" "}
-          <input
-            type="range"
-            min={0.75}
-            max={1.5}
-            step={0.05}
-            value={zoom}
-            onChange={(event) => setZoom(Number(event.target.value))}
-          />
-        </label>
         <button type="button" onClick={() => window.print()}>
           Print A3
         </button>
+      </header>
+      <div
+        className="demo-body"
+        style={{ display: "grid", gridTemplateColumns: "220px minmax(0, 1fr)", minHeight: 0 }}
+      >
+        <aside
+          className="demo-chrome"
+          style={{ padding: 16, borderRight: "1px solid #d9e2e8", overflow: "auto" }}
+        >
+          <label style={{ display: "block", marginBottom: 12 }}>
+            Zoom{" "}
+            <input
+              type="range"
+              min={0.75}
+              max={1.5}
+              step={0.05}
+              value={zoom}
+              onChange={(event) => setZoom(Number(event.target.value))}
+            />
+          </label>
+          <p style={{ margin: 0, color: "#4a5a63", fontSize: 13 }}>
+            The planner fills the region and fits columns horizontally. Scroll inside the grid when
+            the 24 px floor is reached.
+          </p>
+        </aside>
+        <section
+          data-testid="planner-region"
+          style={{ minWidth: 0, minHeight: 0, overflow: "auto", padding: 8 }}
+        >
+          {themedPlanner}
+        </section>
       </div>
-      {(() => {
-        const planner = (
-          <YearPlanner
-            {...layoutProps}
-            groups={groups}
-            layers={layers}
-            resources={[
-              { id: "alice", name: "Alice", type: "person" },
-              { id: "bob", name: "Bob", type: "person" },
-            ]}
-            defaultItems={items}
-            {...(securityMode
-              ? {
-                  defaultVisibility: {
-                    hiddenGroupIds: [],
-                    hiddenLayerIds: [],
-                    hiddenItemIds: ["security-secret"],
-                  },
-                }
-              : {})}
-            defaultSelection={{ dates: [], items: year === 2027 ? ["booking"] : [] }}
-            display={{ theme, zoom, density, showISOWeekNumbers: true }}
-            print={{ mode: "paginate" }}
-            activeLayerId="bookings"
-            renderCell={
-              ac3Mode
-                ? (context) => {
-                    if (context.date === "2027-02-01") {
-                      return <FluentButton size="small">Fluent cell button</FluentButton>;
-                    }
-                    if (context.date === "2027-02-02") {
-                      return (
-                        <MuiButton size="small" variant="contained">
-                          MUI cell button
-                        </MuiButton>
-                      );
-                    }
-                    return null;
-                  }
-                : undefined
-            }
-            renderInspector={
-              ac3Mode
-                ? () => (
-                    <div>
-                      <FluentButton>Fluent inspector button</FluentButton>
-                      <MuiButton variant="contained">MUI inspector button</MuiButton>
-                    </div>
-                  )
-                : undefined
-            }
-          />
-        );
-        if (!ac3Mode) return planner;
-        return (
-          <FluentProvider theme={webLightTheme}>
-            <ThemeProvider theme={createTheme()}>{planner}</ThemeProvider>
-          </FluentProvider>
-        );
-      })()}
+      <footer
+        className="demo-chrome"
+        style={{ padding: "6px 16px", borderTop: "1px solid #d9e2e8", fontSize: 12 }}
+      >
+        Demos: select a range, drag an item, paint a layer, or print the A3 matrix.
+      </footer>
     </main>
   );
 }

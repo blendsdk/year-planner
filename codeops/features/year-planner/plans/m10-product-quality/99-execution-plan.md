@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-13 02:20
-> **Progress**: 22/77 tasks (29%)
+> **Last Updated**: 2026-11-13 03:00
+> **Progress**: 39/77 tasks (51%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -138,39 +138,39 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 **Reference**: [03-02](03-02-fit-typography.md) §Fit algorithm, §Typography · ST-1–ST-10, ST-36, ST-37, ST-39 · AR-5–AR-12, AR-30, AR-31, AR-38
 **Objective**: Encode the two-dimensional fit math, the 24 px floor and the type tokens.
 
-- [ ] 2.1.1 [spec-author] Write the profile, horizontal scale, vertical lane budget, natural-height and zero-size cases — `packages/react/src/fit.spec.test.tsx`
-- [ ] 2.1.2 [spec-author] Write the typography token, centred-label, text-fit and Won’t-Have contract cases — `tests/quality/fit-contract.spec.test.ts`
-- [ ] 2.1.3 Run the new tests and record the red result — `pnpm test:quality` plus the React unit suite
+- [x] 2.1.1 [spec-author] Write the profile, horizontal scale, vertical lane budget, natural-height and zero-size cases — `packages/react/src/fit.spec.test.tsx` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.1.2 [spec-author] Write the typography token, centred-label, text-fit and Won’t-Have contract cases — `tests/quality/fit-contract.spec.test.ts` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.1.3 Run the new tests and record the red result — `pnpm test:quality` plus the React unit suite ✅ (completed: 2026-11-13 03:00)
 
 ### Step 2.2: Implementation
 
 **Reference**: [03-02](03-02-fit-typography.md) §Host-region measurement, §Fit algorithm, §Typography, §Demo shell · AR-5–AR-12, AR-21, AR-30, AR-31, AR-38
 **Objective**: Fit the grid to its host, centre the header and show the embedded layout.
 
-- [ ] 2.2.1 Capture three-size prototypes and record the chosen unit values — `evidence/rd13-baseline/`
-- [ ] 2.2.2 Add `display.fit`, the option resolver and validation — `packages/react/src/types.ts`, `options.ts`
-- [ ] 2.2.3 Add the comfortable/compact/dense unit profiles, 24 px lanes, `laneTop` plumbing and font-token defaults — `packages/react/src/theme.ts`, `options.ts`
-- [ ] 2.2.4 Implement host-region measurement, horizontal scale, vertical lane budget and composed zoom — `packages/react/src/geometry.ts`
-- [ ] 2.2.5 Wire the `ResizeObserver`, bounded-host contract and render zoom into the layout and interaction mapping — `packages/react/src/YearPlanner.tsx`
-- [ ] 2.2.6 Centre the month/year label with the short month and two-digit year — `packages/react/src/render/MonthRow.tsx`
-- [ ] 2.2.7 Replace header and cell font sizes with root tokens and add the text-fit guard — `packages/react/src/styles.css`
-- [ ] 2.2.8 Add the bounded app-shell demo with a 12-month option — `apps/demo/src/App.tsx`
-- [ ] 2.2.9 Add the fit E2E, three `toHaveScreenshot` assertions and the map entries (`e2e.visual` tests and sources) — `tests/e2e/fit.spec.ts`, `codeops/test-map.json`
-- [ ] 2.2.10 Update the public API report — `packages/react/etc/react-year-planner.api.md`
+- [x] 2.2.1 Capture three-size prototypes and record the chosen unit values — `evidence/rd13-baseline/` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.2.2 Add `display.fit`, the option resolver and validation — `packages/react/src/types.ts`, `options.ts` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.2.3 Add the comfortable/compact/dense unit profiles, 24 px lanes, `laneTop` plumbing and font-token defaults — `packages/react/src/theme.ts`, `options.ts` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.2.4 Implement host-region measurement, horizontal scale, vertical lane budget and composed zoom — `packages/react/src/geometry.ts` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.2.5 Wire the `ResizeObserver`, bounded-host contract and render zoom into the layout and interaction mapping — `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.2.6 Centre the month/year label with the short month and two-digit year — `packages/react/src/render/MonthRow.tsx` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.2.7 Replace header and cell font sizes with root tokens and add the text-fit guard — `packages/react/src/styles.css` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.2.8 Add the bounded app-shell demo with a 12-month option — `apps/demo/src/App.tsx` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.2.9 Add the fit E2E, three `toHaveScreenshot` assertions and the map entries (`e2e.visual` tests and sources) — `tests/e2e/fit.spec.ts`, `codeops/test-map.json` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.2.10 Update the public API report — `packages/react/etc/react-year-planner.api.md` ✅ (completed: 2026-11-13 03:00)
 
 ### Step 2.3: Green, implementation tests and verify
 
-- [ ] 2.3.1 Prove ST-1–ST-10 and ST-37 green — `pnpm test:quality`, React unit suite, `pnpm exec playwright test tests/e2e/fit.spec.ts`
-- [ ] 2.3.2 Add fit implementation edge cases (resize storm, invalid units, hidden container, proxy bounding box) — `packages/react/src/fit.impl.test.tsx`
-- [ ] 2.3.3 Rebaseline the existing 1600 × 1200 visual suite, update the zoom assertion and preserve the control selectors — `tests/e2e/quality-visual.spec.ts`, `classic-year.spec.ts`
-- [ ] 2.3.4 Verify the phase — `pnpm verify` plus `pnpm exec playwright test tests/e2e/fit.spec.ts tests/e2e/print-matrix.spec.ts tests/e2e/quality-visual.spec.ts`
+- [x] 2.3.1 Prove ST-1–ST-10 and ST-37 green — `pnpm test:quality`, React unit suite, `pnpm exec playwright test tests/e2e/fit.spec.ts` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.3.2 Add fit implementation edge cases (resize storm, invalid units, hidden container, proxy bounding box) — `packages/react/src/fit.impl.test.tsx` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.3.3 Rebaseline the existing 1600 × 1200 visual suite, update the zoom assertion and preserve the control selectors — `tests/e2e/quality-visual.spec.ts`, `classic-year.spec.ts` ✅ (completed: 2026-11-13 03:00)
+- [x] 2.3.4 Verify the phase — `pnpm verify` plus `pnpm exec playwright test tests/e2e/fit.spec.ts tests/e2e/print-matrix.spec.ts tests/e2e/quality-visual.spec.ts` ✅ (completed: 2026-11-13 03:00)
 
 **Deliverables**:
-- [ ] Two-dimensional `display.fit` with 24 px cells/proxies and internal scroll
-- [ ] Centred header typography with root tokens
-- [ ] Bounded app-shell demo
-- [ ] Updated API report and visual baselines
-- [ ] All phase verification passing
+- [x] Two-dimensional `display.fit` with 24 px cells/ribbon proxies and internal scroll
+- [x] Centred header typography with root tokens
+- [x] Bounded app-shell demo and `?fit=1` host-region route
+- [x] Updated API report and visual baselines
+- [x] All phase verification passing
 
 **Test slices**: `react.unit`, `quality.contracts` (task); `e2e.visual`, `e2e.print` (release)
 **Task verify**: `pnpm verify` + `pnpm exec playwright test tests/e2e/fit.spec.ts`

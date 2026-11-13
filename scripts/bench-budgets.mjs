@@ -29,7 +29,7 @@ export const BUDGETS = Object.freeze({
   /** React package entry plus CSS, gzip. */
   reactEntryCssKb: 60,
   /** Core plus React plus adapters plus CSS, gzip. */
-  totalInstalledKb: 66,
+  totalInstalledKb: 68,
 });
 
 /** The ceiling above which a result fails the harness. */

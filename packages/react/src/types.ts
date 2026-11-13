@@ -60,6 +60,11 @@ export interface InteractionConfig {
  * @public
  */
 export interface DisplayConfig {
+  /**
+   * Fit the grid to its bounded host region; defaults to `contain`.
+   * `none` keeps the explicit design-unit geometry.
+   */
+  fit?: "none" | "contain";
   /** Lane density; defaults to `compact`. */
   density?: "compact" | "expanded";
   /** Preset name or host theme hook; defaults to `classic-blue`. */

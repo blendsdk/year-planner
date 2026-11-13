@@ -35,7 +35,10 @@ export interface ScaledFragment {
  * Viewport geometry used for pointer-to-design-unit mapping.
  */
 export interface ViewGeometry {
+  /** Horizontal scale from design units to CSS pixels. */
   zoom: number;
+  /** Vertical scale; defaults to `zoom` when omitted. */
+  zoomY?: number;
   monthBandWidth: number;
   scrollLeft: number;
   scrollTop: number;
@@ -56,12 +59,16 @@ export function clampZoom(value: number | undefined): number {
 /**
  * Scales one design-unit fragment.
  */
-export function scaleFragment(fragment: RibbonFragment, zoom: number): ScaledFragment {
+export function scaleFragment(
+  fragment: RibbonFragment,
+  zoom: number,
+  zoomY = zoom,
+): ScaledFragment {
   return {
     x: fragment.x * zoom,
-    y: fragment.y * zoom,
+    y: fragment.y * zoomY,
     width: fragment.width * zoom,
-    height: fragment.height * zoom,
+    height: fragment.height * zoomY,
   };
 }
 
@@ -76,8 +83,8 @@ export function rowTemplate(row: MonthRowLayout, zoom: number, bandWidth: number
 /**
  * Returns the scaled CSS height of a ribbon row.
  */
-export function scaledRowHeight(height: number, zoom: number): number {
-  return height * zoom;
+export function scaledRowHeight(height: number, zoom: number, zoomY = zoom): number {
+  return height * zoomY;
 }
 
 /**
@@ -95,7 +102,8 @@ function designX(clientX: number, view: ViewGeometry): number {
 }
 
 function designY(clientY: number, view: ViewGeometry): number {
-  return (clientY - view.viewportRect.top + view.scrollTop - view.headerHeight) / view.zoom;
+  const zoomY = view.zoomY ?? view.zoom;
+  return (clientY - view.viewportRect.top + view.scrollTop - view.headerHeight) / zoomY;
 }
 
 /**

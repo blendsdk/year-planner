@@ -249,12 +249,15 @@
         "packages/react/src/render/**",
         "packages/react/src/theme.ts",
         "packages/react/src/styles.css",
-        "packages/react/src/YearPlanner.tsx"
+        "packages/react/src/YearPlanner.tsx",
+        "packages/react/src/fit.ts",
+        "packages/react/src/useHostFit.ts"
       ],
       "tests": [
         "tests/e2e/classic-year.spec.ts",
         "tests/e2e/quality-visual.spec.ts",
-        "tests/e2e/mobile.spec.ts"
+        "tests/e2e/mobile.spec.ts",
+        "tests/e2e/fit.spec.ts"
       ],
       "run": {
         "command": [

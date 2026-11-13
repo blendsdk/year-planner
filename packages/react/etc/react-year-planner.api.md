@@ -74,6 +74,7 @@ export interface DisplayConfig {
     connectorMode?: "none" | "edge-path";
     density?: "compact" | "expanded";
     displayTimeZone?: string;
+    fit?: "none" | "contain";
     locale?: string;
     showAnnotations?: boolean;
     showISOWeekNumbers?: boolean;

@@ -34,6 +34,8 @@ export interface YearGridProps {
   ribbons: RibbonLayout;
   formatters: PlannerFormatters;
   zoom: number;
+  /** Vertical scale for fit mode; defaults to `zoom`. */
+  zoomY?: number | undefined;
   bandWidth: number;
   layers: ReadonlyMap<string, PlannerLayer>;
   items: ReadonlyMap<string, PlannerItem>;
@@ -138,6 +140,7 @@ export function YearGrid({
   ribbons,
   formatters,
   zoom,
+  zoomY = zoom,
   bandWidth,
   layers,
   items,
@@ -240,6 +243,7 @@ export function YearGrid({
               ribbonRow={ribbonRow}
               formatters={formatters}
               zoom={zoom}
+              zoomY={zoomY}
               bandWidth={bandWidth}
               totalDayWidth={layout.totalDayWidth}
               itemsByDate={itemsByDate}
@@ -266,6 +270,7 @@ export function YearGrid({
               key={entry.key}
               rect={entry.preview.rect}
               zoom={zoom}
+              zoomY={zoomY}
               bandWidth={bandWidth}
               headerHeight={layout.headerHeight}
             />
@@ -304,6 +309,7 @@ export function YearGrid({
           items={items}
           formatters={formatters}
           zoom={zoom}
+          zoomY={zoomY}
           bandWidth={bandWidth}
           selectedItemIds={selectedItemIds}
           pendingItemIds={pendingItemIds}

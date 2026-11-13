@@ -28,6 +28,7 @@ import {
 } from "react";
 import { readableTextColor, selectedDateSet } from "./a11y.js";
 import { useCommandPipeline } from "./commands.js";
+import { computeFit, type FitGeometry } from "./fit.js";
 import { useInteraction } from "./interaction/useInteraction.js";
 import { createFormatters } from "./locale.js";
 import { resolveDisplayOptions } from "./options.js";
@@ -39,6 +40,7 @@ import { YearGrid } from "./render/YearGrid.js";
 import { usePlannerState } from "./state.js";
 import { resolveTheme, themeToCssVars } from "./theme.js";
 import type { YearPlannerComponents, YearPlannerHandle, YearPlannerProps } from "./types.js";
+import { useHostSize } from "./useHostFit.js";
 
 const EMPTY_SELECTED_ITEMS: ReadonlySet<string> = new Set();
 const EMPTY_SELECTED_DATES: ReadonlySet<string> = new Set();
@@ -120,7 +122,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       }),
       [theme, props.cssVars],
     );
-    const units = useMemo(
+    const rootRef = useRef<HTMLDivElement>(null);
+    const baseUnits = useMemo(
       () => ({
         monthBand: Number(theme.monthBandWidth),
         weekend: Number(theme.weekendWidth),
@@ -130,18 +133,61 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       }),
       [theme, props.units],
     );
+    const layoutOptions = useMemo(
+      () => ({
+        ...(props.year === undefined ? {} : { year: props.year }),
+        ...(props.contextMonths === undefined ? {} : { contextMonths: props.contextMonths }),
+        ...(props.range === undefined ? {} : { range: props.range }),
+        ...(props.highlightYear === undefined ? {} : { highlightYear: props.highlightYear }),
+      }),
+      [props.year, props.contextMonths, props.range, props.highlightYear],
+    );
+    const baseLayoutResult = useMemo(
+      () => buildClassicYearLayout({ ...layoutOptions, units: baseUnits }),
+      [layoutOptions, baseUnits],
+    );
+    const baseLayout = baseLayoutResult.ok ? baseLayoutResult.layout : undefined;
+    const hostSize = useHostSize(rootRef, resolvedDisplay.options.fit === "contain");
+    const fit = useMemo<FitGeometry | undefined>(() => {
+      if (resolvedDisplay.options.fit !== "contain" || !hostSize || !baseLayout) return undefined;
+      const columns = baseLayout.rows[0]?.columns ?? [];
+      let weekdayCount = 0;
+      let weekendCount = 0;
+      for (const column of columns) {
+        if (column.isWeekend) weekendCount += 1;
+        else weekdayCount += 1;
+      }
+      return computeFit({
+        // One pixel for the grid border keeps the fitted width free of a
+        // horizontal scrollbar.
+        availableWidth: Math.max(0, hostSize.width - 1),
+        availableHeight: hostSize.height,
+        rowCount: baseLayout.rows.length,
+        headerHeight: baseLayout.headerHeight,
+        footerHeight: baseLayout.footerHeight,
+        weekdayCount,
+        weekendCount,
+        userZoom: resolvedDisplay.options.zoom,
+        laneHeight: resolvedDisplay.options.laneHeight,
+      });
+    }, [resolvedDisplay.options, hostSize, baseLayout]);
+    const units = useMemo(() => {
+      if (!fit) return baseUnits;
+      return {
+        monthBand: fit.profile.monthBand,
+        weekend: fit.profile.weekend,
+        weekday: fit.profile.weekday,
+        rowHeight: fit.rowHeight,
+        ...(props.units ?? {}),
+      };
+    }, [fit, baseUnits, props.units]);
     const layoutResult = useMemo(
-      () =>
-        buildClassicYearLayout({
-          ...(props.year === undefined ? {} : { year: props.year }),
-          ...(props.contextMonths === undefined ? {} : { contextMonths: props.contextMonths }),
-          ...(props.range === undefined ? {} : { range: props.range }),
-          ...(props.highlightYear === undefined ? {} : { highlightYear: props.highlightYear }),
-          units,
-        }),
-      [props.year, props.contextMonths, props.range, props.highlightYear, units],
+      () => (fit ? buildClassicYearLayout({ ...layoutOptions, units }) : baseLayoutResult),
+      [fit, layoutOptions, units, baseLayoutResult],
     );
     const layout = layoutResult.ok ? layoutResult.layout : undefined;
+    const zoomX = fit?.zoomX ?? resolvedDisplay.options.zoom;
+    const zoomY = fit ? 1 : resolvedDisplay.options.zoom;
 
     const state = usePlannerState({
       ...props,
@@ -212,33 +258,64 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           layout,
           { model: state.model, visibility: state.visibility, filter: state.filter },
           {
-            density: resolvedDisplay.options.density,
-            compactMaxLanes: resolvedDisplay.options.compactMaxLanes,
+            density: fit ? "compact" : resolvedDisplay.options.density,
+            compactMaxLanes: fit ? fit.lanes : resolvedDisplay.options.compactMaxLanes,
             laneHeight: resolvedDisplay.options.laneHeight,
+            laneTop: fit ? fit.profile.laneTop : resolvedDisplay.options.laneTop,
             displayTimeZone: resolvedDisplay.options.displayTimeZone,
           },
         );
       } catch {
         return undefined;
       }
-    }, [layout, state.model, state.visibility, state.filter, resolvedDisplay.options]);
+    }, [layout, state.model, state.visibility, state.filter, resolvedDisplay.options, fit]);
+
+    // Print uses its own comfortable geometry; the fit lane budget is screen-only.
+    const printRibbons = useMemo(() => {
+      if (!fit) return ribbons;
+      if (!baseLayout) return undefined;
+      try {
+        return buildRibbonLayout(
+          baseLayout,
+          { model: state.model, visibility: state.visibility, filter: state.filter },
+          {
+            density: resolvedDisplay.options.density,
+            compactMaxLanes: resolvedDisplay.options.compactMaxLanes,
+            laneHeight: resolvedDisplay.options.laneHeight,
+            laneTop: resolvedDisplay.options.laneTop,
+            displayTimeZone: resolvedDisplay.options.displayTimeZone,
+          },
+        );
+      } catch {
+        return undefined;
+      }
+    }, [
+      baseLayout,
+      fit,
+      ribbons,
+      resolvedDisplay.options,
+      state.filter,
+      state.model,
+      state.visibility,
+    ]);
+    const printLayout = fit ? baseLayout : layout;
 
     const printResult = useMemo(() => {
-      if (!ribbons) return undefined;
+      if (!printRibbons) return undefined;
       const requested = props.print ?? {};
       const planOptions = {
         ...(requested.page ? { page: requested.page } : {}),
         ...(requested.mode ? { mode: requested.mode } : {}),
         ...(requested.rowsPerPage === undefined ? {} : { rowsPerPage: requested.rowsPerPage }),
       };
-      const requestedPlan = planRibbonPrint(ribbons, planOptions);
+      const requestedPlan = planRibbonPrint(printRibbons, planOptions);
       if (requestedPlan.ok) {
         return {
           pages: requestedPlan.plan.pages,
           diagnostics: requestedPlan.plan.diagnostics,
         };
       }
-      const fallback = planRibbonPrint(ribbons);
+      const fallback = planRibbonPrint(printRibbons);
       return {
         pages: fallback.ok ? fallback.plan.pages : [],
         diagnostics: [
@@ -246,7 +323,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           ...(fallback.ok ? fallback.plan.diagnostics : []),
         ],
       };
-    }, [ribbons, props.print]);
+    }, [printRibbons, props.print]);
 
     const formatters = useMemo(
       () => createFormatters(resolvedDisplay.options.locale),
@@ -656,7 +733,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         ribbons: ribbons ?? EMPTY_RIBBONS,
         pipeline,
         viewportRef,
-        zoom: resolvedDisplay.options.zoom,
+        zoom: zoomX,
+        zoomY,
         readOnly: props.readOnly === true,
         activeLayerId: props.activeLayerId,
         interaction: props.interaction,
@@ -675,7 +753,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         layout,
         ribbons,
         pipeline,
-        resolvedDisplay.options.zoom,
+        zoomX,
+        zoomY,
         props.readOnly,
         props.activeLayerId,
         props.interaction,
@@ -916,7 +995,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
             layout={layout}
             ribbons={ribbons}
             formatters={formatters}
-            zoom={resolvedDisplay.options.zoom}
+            zoom={zoomX}
+            zoomY={zoomY}
             bandWidth={layout.monthBandWidth}
             layers={layers}
             items={items}
@@ -995,8 +1075,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         />
         {printResult && (
           <PrintPages
-            layout={layout}
-            ribbons={ribbons}
+            layout={printLayout ?? layout}
+            ribbons={printRibbons ?? ribbons}
             pages={printResult.pages}
             formatters={formatters}
             layers={layers}
@@ -1014,6 +1094,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const Root = components.Root;
     return (
       <div
+        ref={rootRef}
         className={className}
         data-yp-part="root"
         data-yp-theme={resolvedTheme.themeName}

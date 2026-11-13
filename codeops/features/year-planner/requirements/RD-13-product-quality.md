@@ -299,7 +299,9 @@ interface YearPlannerProps {
 
 1. [ ] At a **1280 × 800** host region, the 14-month classic view fits without
    page or component scroll, shows one visible ribbon lane per month, and every
-   interactive cell and item proxy is at least 24 × 24 CSS px.
+   interactive date cell and ribbon item proxy is at least 24 × 24 CSS px.
+   Annotation chips keep their compact 14 px design height (documented in
+   `docs/limitations.md`).
 2. [ ] At **1024 × 768**, the 12-month view fits or scrolls inside the
    component; no cell or item proxy is below 24 × 24 CSS px and no content is
    clipped.

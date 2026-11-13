@@ -78,6 +78,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     const rect = viewport.getBoundingClientRect();
     return {
       zoom: input.zoom,
+      zoomY: input.zoomY ?? input.zoom,
       monthBandWidth: input.layout.monthBandWidth,
       scrollLeft: viewport.scrollLeft,
       scrollTop: viewport.scrollTop,
@@ -89,7 +90,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
       },
       headerHeight: input.layout.headerHeight,
     };
-  }, [input.layout, input.viewportRef, input.zoom]);
+  }, [input.layout, input.viewportRef, input.zoom, input.zoomY]);
 
   const isDisabled = useCallback(
     (date: DateKey): boolean => {

@@ -35,6 +35,8 @@ export interface ItemLayerProps {
   items: ReadonlyMap<string, PlannerItem>;
   formatters: PlannerFormatters;
   zoom: number;
+  /** Vertical scale for fit mode; defaults to `zoom`. */
+  zoomY?: number;
   showAnnotations: boolean;
   selectedItemIds: ReadonlySet<string>;
   pendingItemIds: ReadonlySet<string>;
@@ -80,6 +82,7 @@ export const ItemLayer = memo(function ItemLayer({
   items,
   formatters,
   zoom,
+  zoomY = zoom,
   showAnnotations,
   selectedItemIds,
   pendingItemIds,
@@ -119,7 +122,7 @@ export const ItemLayer = memo(function ItemLayer({
     if (!item || !layer) return null;
     if (fragment.channel === "annotation" && !showAnnotations) return null;
     if (fragment.channel === "ribbon" && fragment.lane >= row.visibleLaneCount) return null;
-    const scaled = scaleFragment(fragment, zoom);
+    const scaled = scaleFragment(fragment, zoom, zoomY);
     const selected = selectedItemIds.has(item.id);
     const index = indices.get(item.id) ?? 0;
     indices.set(item.id, index + 1);
@@ -176,7 +179,7 @@ export const ItemLayer = memo(function ItemLayer({
           data-yp-layer={layer.id}
           data-yp-layer-label={layer.label ?? layer.name}
           className={`yp-fragment yp-fragment-${fragment.channel} yp-pattern-${layer.pattern ?? "solid"} ${item.className ?? ""}`}
-          style={{ ...sharedStyle, top: 0, height: row.height * zoom }}
+          style={{ ...sharedStyle, top: 0, height: row.height * zoomY }}
           aria-hidden="true"
         />
       );

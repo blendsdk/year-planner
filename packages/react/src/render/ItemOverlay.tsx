@@ -30,6 +30,8 @@ export interface ItemOverlayProps {
   items: ReadonlyMap<string, PlannerItem>;
   formatters: PlannerFormatters;
   zoom: number;
+  /** Vertical scale for fit mode; defaults to `zoom`. */
+  zoomY?: number;
   bandWidth: number;
   selectedItemIds: ReadonlySet<string>;
   pendingItemIds: ReadonlySet<string>;
@@ -71,6 +73,7 @@ function itemOverlayPropsEqual(previous: ItemOverlayProps, next: ItemOverlayProp
     previous.items !== next.items ||
     previous.formatters !== next.formatters ||
     previous.zoom !== next.zoom ||
+    (previous.zoomY ?? previous.zoom) !== (next.zoomY ?? next.zoom) ||
     previous.bandWidth !== next.bandWidth ||
     previous.selectedItemIds !== next.selectedItemIds ||
     previous.pendingItemIds !== next.pendingItemIds ||
@@ -113,6 +116,7 @@ export const ItemOverlay = memo(function ItemOverlay({
   items,
   formatters,
   zoom,
+  zoomY = zoom,
   bandWidth,
   selectedItemIds,
   pendingItemIds,
@@ -143,7 +147,7 @@ export const ItemOverlay = memo(function ItemOverlay({
       {rows.map((row, index) => {
         const ribbonRow = ribbons.rows[index];
         if (!ribbonRow) return null;
-        const height = scaledRowHeight(ribbonRow.height, zoom);
+        const height = scaledRowHeight(ribbonRow.height, zoom, zoomY);
         const rowTop = top;
         top += height;
         const rowPreviews = previewsForRow(previews, row);
@@ -166,6 +170,7 @@ export const ItemOverlay = memo(function ItemOverlay({
               items={items}
               formatters={formatters}
               zoom={zoom}
+              zoomY={zoomY}
               showAnnotations={showAnnotations}
               selectedItemIds={selectedItemIds}
               pendingItemIds={pendingItemIds}

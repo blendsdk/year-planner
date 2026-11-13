@@ -49,19 +49,19 @@ const meta = {
   component: YearPlanner,
   args: {
     year: 2016,
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Blue2016: Story = {};
+export const MaterialTeal2016: Story = {};
 
-export const Yellow2017: Story = {
+export const FluentMarigold2017: Story = {
   args: {
     year: 2017,
-    display: { theme: "classic-yellow", showISOWeekNumbers: true },
+    display: { theme: "fluent-marigold", showISOWeekNumbers: true },
   },
 };
 
@@ -69,14 +69,14 @@ export const TwelveMonths: Story = {
   args: {
     year: 2027,
     contextMonths: { before: 0, after: 0 },
-    display: { theme: "modern", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 };
 
 export const ThirtySixMonths: Story = {
   args: {
     range: { start: { year: 2027, month: 0 }, monthCount: 36 },
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 };
 
@@ -86,7 +86,7 @@ export const ItemsAndInspector: Story = {
     layers,
     items,
     defaultSelection: { dates: [], items: ["booking"] },
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 };
 
@@ -110,8 +110,8 @@ export const HighContrast: Story = {
 };
 
 describeStories({
-  Blue2016,
-  Yellow2017,
+  MaterialTeal2016,
+  FluentMarigold2017,
   TwelveMonths,
   ThirtySixMonths,
   ItemsAndInspector,

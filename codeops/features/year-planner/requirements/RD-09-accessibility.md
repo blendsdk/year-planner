@@ -1,7 +1,7 @@
 # RD-09: Accessibility and Keyboard Experience
 
 > **Document**: RD-09-accessibility.md
-> **Status**: Draft
+> **Status**: Implemented — automated evidence current; manual audit parked
 > **Created**: 2026-11-10
 > **Project**: Year Planner for React
 > **Depends On**: RD-06, RD-07
@@ -102,7 +102,7 @@ provide a parallel path.
 
 ### Testing
 
-- axe-core automated scan on both themes, compact/expanded, overflow, error and
+- axe-core automated scan on representative Material/Fluent and utility themes, compact/expanded, overflow, error and
   36-month states.
 - Keyboard-only Playwright flows for select, paint/erase, move, resize, cancel.
 - Manual screen-reader check with NVDA or VoiceOver before any conformance
@@ -165,10 +165,12 @@ Semantics/focus: **L**. Announcements: **M**. Manual audit: **M**.
    date and the live region announces it.
 6. [ ] Pending, accepted, rejected, timeout, stale, aborted and
    accepted-not-applied outcomes are announced once and visible in the UI.
-7. [ ] axe reports no serious or critical violations in classic-blue,
-   classic-yellow, high-contrast, overflow, error and 36-month states.
-8. [ ] Text and focus indicators meet 4.5:1 / 3:1 contrast targets in both
-   classic themes.
+7. [ ] axe reports no serious or critical violations in `material-teal`,
+   `fluent-marigold`, `high-contrast`, `print`, overflow, error and 36-month states.
+8. [ ] Across all 56 presets, built-in labels on cell surfaces and ribbon/header
+   labels meet 4.5:1 contrast; focus/selection outlines and grid borders meet
+   3:1 against base cell surfaces. Screen and print use the same readable ribbon
+   text choice. Host-supplied colours remain the host's responsibility.
 9. [ ] Selected, holiday and overflow states are distinguishable without color.
 10. [ ] Manual screen-reader evidence is recorded for at least one of NVDA or
     VoiceOver before any conformance statement is published. **Parked by user

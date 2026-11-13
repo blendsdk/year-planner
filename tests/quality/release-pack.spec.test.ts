@@ -22,6 +22,7 @@ describe("RD-12-AC-11: tarball path allowlist", () => {
         "package/README.md",
         "package/LICENSE",
         "package/CHANGELOG.md",
+        "package/THIRD_PARTY_NOTICES.md",
         "package/dist/index.js",
         "package/dist/index.d.ts",
         "package/dist/styles.css",

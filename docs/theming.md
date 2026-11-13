@@ -32,17 +32,40 @@ theme token or `units` when the layout must change.
 
 ## Presets
 
-`display.theme` accepts `classic-blue`, `classic-yellow`, `modern`,
-`high-contrast` and `print`. `classic-blue` is the default; `print` removes
-screen-only decoration.
+`display.theme` accepts 56 built-in presets:
+
+- **19 Material 2014 families**: `material-red`, `material-pink`, `material-purple`,
+  `material-deep-purple`, `material-indigo`, `material-blue`, `material-light-blue`,
+  `material-cyan`, `material-teal`, `material-green`, `material-light-green`,
+  `material-lime`, `material-yellow`, `material-amber`, `material-orange`,
+  `material-deep-orange`, `material-brown`, `material-grey` and `material-blue-grey`.
+- **35 Fluent UI v9 families**: `fluent-red`, `fluent-green`, `fluent-dark-orange`,
+  `fluent-yellow`, `fluent-berry`, `fluent-light-green`, `fluent-marigold`,
+  `fluent-dark-red`, `fluent-cranberry`, `fluent-pumpkin`, `fluent-peach`,
+  `fluent-gold`, `fluent-brass`, `fluent-brown`, `fluent-forest`, `fluent-seafoam`,
+  `fluent-dark-green`, `fluent-light-teal`, `fluent-teal`, `fluent-steel`,
+  `fluent-blue`, `fluent-royal-blue`, `fluent-cornflower`, `fluent-navy`,
+  `fluent-lavender`, `fluent-purple`, `fluent-grape`, `fluent-lilac`,
+  `fluent-pink`, `fluent-magenta`, `fluent-plum`, `fluent-beige`, `fluent-mink`,
+  `fluent-platinum` and `fluent-anchor`.
+- **Two monochrome utilities**: `high-contrast` and `print`.
+
+`material-teal` is the default. `print` removes screen-only colour and sets the
+print scale to 1.
 
 ```tsx
-<YearPlanner year={2027} display={{ theme: "classic-yellow" }} />
+<YearPlanner year={2027} display={{ theme: "fluent-marigold" }} />
 ```
+
+The old `classic-blue`, `classic-yellow` and `modern` names were removed without
+aliases. Passing one of those strings is treated like any unknown host theme
+name: the supplied class is kept, and the provider theme or the default supplies
+the tokens. `material-blue`, `material-yellow`, `fluent-blue` and
+`fluent-yellow` are the replacement families; see [Migration](migration.md).
 
 ## createTheme
 
-`createTheme` merges a partial token object over `classic-blue` and returns a
+`createTheme` merges a partial token object over `material-teal` and returns a
 complete theme. `cssVars` and `style` override individual variables per instance.
 
 ```tsx
@@ -101,7 +124,7 @@ const muiTheme = createMuiTheme({ palette: { primary: { main: "#1976d2" } } });
 
 ## Contrast
 
-The classic, modern and high-contrast presets meet the documented contrast
-checks for text, focus and selection. `unstyled` removes decorative fills and
+Every built-in preset meets the documented contrast checks for text, focus and
+selection on all four base cell surfaces. `unstyled` removes decorative fills and
 shadows but keeps structure, focus and print geometry. Contrast evidence and the
 manual-audit status are in [accessibility.md](accessibility.md).

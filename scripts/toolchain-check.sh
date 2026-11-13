@@ -12,8 +12,8 @@ test -f packages/core/package.json
 test -f packages/react/package.json
 
 node -e "const p=require('./package.json'); if(!p.scripts?.verify) process.exit(1)"
-node -e "const p=require('./packages/core/package.json'); if(p.type!=='module'||p.license!=='MIT') process.exit(1)"
-node -e "const p=require('./packages/react/package.json'); if(p.type!=='module'||p.license!=='MIT') process.exit(1)"
+node -e "const p=require('./packages/core/package.json'); if(p.type!=='module'||p.license!=='SEE LICENSE IN LICENSE') process.exit(1)"
+node -e "const p=require('./packages/react/package.json'); if(p.type!=='module'||p.license!=='SEE LICENSE IN LICENSE') process.exit(1)"
 node -e "const p=require('./packages/react/package.json'); if(!p.peerDependencies?.react) process.exit(1)"
 
 test -f .github/workflows/ci.yml

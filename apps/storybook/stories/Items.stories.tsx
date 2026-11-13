@@ -26,7 +26,7 @@ const meta = {
     layers,
     resources,
     items: baseItems,
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 
@@ -109,14 +109,14 @@ export const CompactOverflow: Story = {
 export const ExpandedOverflow: Story = {
   args: {
     items: overflowItems,
-    display: { theme: "classic-blue", density: "expanded" },
+    display: { theme: "material-teal", density: "expanded" },
   },
 };
 
 export const TwoVisibleLanes: Story = {
   args: {
     items: overflowItems,
-    display: { theme: "classic-blue", density: "compact", compactMaxLanes: 2 },
+    display: { theme: "material-teal", density: "compact", compactMaxLanes: 2 },
   },
 };
 
@@ -149,7 +149,7 @@ export const HiddenGroup: Story = {
 };
 
 export const HiddenAnnotations: Story = {
-  args: { display: { theme: "classic-blue", showAnnotations: false } },
+  args: { display: { theme: "material-teal", showAnnotations: false } },
 };
 
 export const NoItems: Story = {

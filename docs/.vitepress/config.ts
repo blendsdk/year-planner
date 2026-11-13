@@ -97,6 +97,7 @@ export default defineConfig({
         {
           text: "Guide",
           items: [
+            { text: "Classic year layout", link: "/classic-year-layout" },
             { text: "Dynamic months", link: "/dynamic-months" },
             { text: "Theming", link: "/theming" },
             { text: "Interaction", link: "/interaction" },
@@ -112,6 +113,7 @@ export default defineConfig({
         {
           text: "Project",
           items: [
+            { text: "License", link: "/licensing" },
             { text: "Architecture", link: "/architecture" },
             { text: "Benchmarks", link: "/benchmarks/rd13-baseline" },
             { text: "Test report", link: "/test-report" },
@@ -128,7 +130,7 @@ export default defineConfig({
       text: "Edit this page",
     },
     footer: {
-      message: "MIT licensed. Built with VitePress, Storybook and TypeDoc.",
+      message: "Free for internal use. Built with VitePress, Storybook and TypeDoc.",
       copyright: "Copyright © 2026 blendsdk",
     },
     outline: { level: [2, 3] },

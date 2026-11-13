@@ -72,8 +72,8 @@
 | RD-01-AC-04 | RD-01 | 4 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-04: package publication checks` | Repository contract assertion |
 | RD-01-AC-05 | RD-01 | 5 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-05: clean consumer` | Repository contract assertion |
 | RD-01-AC-06 | RD-01 | 6 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-06: React 19 CI` | Repository contract assertion |
-| RD-01-AC-07 | RD-01 | 7 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-07: DCO gate` | Repository contract assertion |
-| RD-01-AC-08 | RD-01 | 8 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-08: MIT package contracts` | Repository contract assertion |
+| RD-01-AC-07 | RD-01 | 7 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-07: DCO gate` | Signed-off-by contract; the historical dco job now checks the project-specific certification |
+| RD-01-AC-08 | RD-01 | 8 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-08: internal-use package contracts` | Internal-use title and custom licence metadata; identical package copies checked by release-metadata suite |
 | RD-01-AC-09 | RD-01 | 9 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-09: documented release gate` | Repository contract assertion |
 | RD-01-AC-10 | RD-01 | 10 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-10: no committed secrets` | Repository contract assertion |
 | RD-01-AC-11 | RD-01 | 11 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-01-AC-11: production security surface` | Repository contract assertion |
@@ -132,12 +132,12 @@
 | RD-05-AC-08 | RD-05 | 8 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-08: never lists a hidden item in overflow` | Core ribbon test |
 | RD-05-AC-10 | RD-05 | 10 | proven | `packages/core/src/ribbon/fragments.spec.test.ts` | `RD-05-AC-10: is stable for identical inputs and changes with version, visibility and window` | Core ribbon test |
 | RD-05-AC-09 | RD-05 | 9 | proven | `packages/core/src/ribbon/print.spec.test.ts` | `RD-05-AC-09/13: print pagination` | Core print pagination test |
-| RD-05-AC-11 | RD-05 | 11 | proven | `tests/e2e/print-matrix.spec.ts` | `RD-05-AC-11 / RD-10-AC-06: PRT-01 keeps the 2017 yellow fixture on one A3 page` | PRT-01 E2E print test |
+| RD-05-AC-11 | RD-05 | 11 | proven | `tests/e2e/print-matrix.spec.ts` | `RD-05-AC-11 / RD-10-AC-06: PRT-01 keeps the 2017 marigold fixture on one A3 page` | Playwright PRT-01 print test; one A3 page with fluent-marigold, OH annotation, ISO weeks and a ribbon |
 | RD-05-AC-12 | RD-05 | 12 | proven | `packages/core/src/ribbon/print.spec.test.ts` | `RD-05-AC-12: print fit` | Core print fit test |
-| RD-05-AC-13 | RD-05 | 13 | partial | `packages/core/src/ribbon/print.spec.test.ts` | `RD-05-AC-09/13: print pagination` | 36-month 14/14/8 pages covered; 15/28/29 boundary windows land with the print matrix |
+| RD-05-AC-13 | RD-05 | 13 | proven | `tests/e2e/print-matrix.spec.ts` | `RD-05-AC-13 / RD-10-AC-06: A3 print matrix @print` | 36-month three-page test plus 15/28/29 boundary windows at 2/2/3 pages; 1,332-cell grid remains keyboard reachable in the accessibility suite |
 | RD-05-AC-14 | RD-05 | 14 | proven | `tests/quality/repo-contract.spec.test.ts` | `RD-05-AC-14: renderer decision record` | Documentation and public-surface check |
 | RD-05-AC-15 | RD-05 | 15 | proven | `packages/react/src/security.spec.test.tsx` | `RD-04-AC-18 / RD-05-AC-15 / RD-09-AC-16 / RD-10-AC-08: hidden data never renders` | Hidden and escaped output suite |
-| RD-06-AC-01 | RD-06 | 1 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-01: applies theme classes without changing geometry` | React component test |
+| RD-06-AC-01 | RD-06 | 1 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-01: applies theme classes without changing geometry` | React component test switches material-teal and fluent-marigold while the date-cell count stays identical; the theme catalogue test proves shared geometry for all 56 presets |
 | RD-06-AC-02 | RD-06 | 2 | proven | `packages/react/src/YearPlanner.spec.test.tsx` | `RD-06-AC-02: lets an explicit preset win over the provider and cssVars win over both` | React component test |
 | RD-06-AC-03 | RD-06 | 3 | proven | `packages/react/src/adapters.spec.test.tsx` | `RD-06-AC-03: renders host buttons in cells and the inspector without nesting in a proxy` | Adapter test |
 | RD-06-AC-04 | RD-06 | 4 | proven | `packages/react/src/items.spec.test.tsx` | `RD-06-AC-04: applies getDateMeta background, text, label, aria and disabled state` | React item test |
@@ -155,6 +155,7 @@
 | RD-06-AC-16 | RD-06 | 16 | proven | `packages/react/src/inspector.spec.test.tsx` | `RD-06-AC-16: shows retry/dismiss for a timed-out command` | Inspector test |
 | RD-06-AC-17 | RD-06 | 17 | proven | `packages/react/src/inspector.spec.test.tsx` | `RD-06-AC-17: emits move, resize, delete and paint commands` | Inspector test |
 | RD-06-AC-18 | RD-06 | 18 | proven | `packages/react/src/items.spec.test.tsx` | `RD-06-AC-18: never renders metadata as HTML and filters unsafe item styles` | React item test plus source scan |
+| RD-06-AC-19 | RD-06 | 19 | proven | `packages/react/src/theme.spec.test.tsx` | `RD-06-AC-19: preset catalogue` | 56 presets checked for exact names, 24 tokens, shared geometry, role mapping, monochrome utilities, material-teal default and removed-name fallback |
 | RD-07-AC-01 | RD-07 | 1 | proven | `packages/react/src/interaction/pointer.spec.test.tsx` | `RD-07-AC-01: selects a cross-month date range with two preview fragments` | Pointer test |
 | RD-07-AC-02 | RD-07 | 2 | proven | `packages/react/src/interaction/selection.spec.test.tsx` | `RD-07-AC-02/03/04/17: selection policy` | Selection policy test |
 | RD-07-AC-03 | RD-07 | 3 | proven | `packages/react/src/interaction/selection.spec.test.tsx` | `RD-07-AC-02/03/04/17: selection policy` | Selection policy test |
@@ -197,8 +198,8 @@
 | RD-09-AC-04 | RD-09 | 4 | proven | `packages/react/src/accessibility.spec.test.tsx` | `RD-09-AC-04/11/12: item list` | Accessibility item-list test |
 | RD-09-AC-05 | RD-09 | 5 | proven | `packages/react/src/accessibility.spec.test.tsx` | `RD-09-AC-02/05: focus model` | Accessibility focus test |
 | RD-09-AC-06 | RD-09 | 6 | proven | `packages/react/src/accessibility.spec.test.tsx` | `RD-09-AC-05/06: announcements` | Accessibility announcement test |
-| RD-09-AC-07 | RD-09 | 7 | proven | `tests/e2e/accessibility.spec.ts` | `RD-09-AC-07/15: axe matrix` | Playwright axe matrix |
-| RD-09-AC-08 | RD-09 | 8 | proven | `packages/react/src/a11y.spec.test.tsx` | `RD-09-AC-08: contrast helpers` | Contrast helper test |
+| RD-09-AC-07 | RD-09 | 7 | proven | `tests/e2e/accessibility.spec.ts` | `RD-09-AC-07/15 / RD-10-AC-07: axe matrix` | Axe matrix covers material-teal, fluent-marigold, high-contrast, print, overflow, error, AC3 and 36-month states; manual audit remains parked |
+| RD-09-AC-08 | RD-09 | 8 | proven | `packages/react/src/a11y.spec.test.tsx` | `RD-09-AC-08: contrast helpers` | All 56 presets measured for 4.5:1 ribbon text and 3:1 focus/border on surface, muted, weekend and context; primary and muted text also checked at 4.5:1 |
 | RD-09-AC-09 | RD-09 | 9 | proven | `packages/react/src/styles.spec.test.tsx` | `RD-09-AC-09: declares non-colour cues` | CSS contract test |
 | RD-09-AC-10 | RD-09 | 10 | partial |  |  | Manual NVDA/VoiceOver evidence is parked by user decision; no WCAG conformance claim |
 | RD-09-AC-11 | RD-09 | 11 | proven | `packages/react/src/accessibility.spec.test.tsx` | `RD-09-AC-04/11/12: item list` | Accessibility item-list test |
@@ -210,9 +211,9 @@
 | RD-10-AC-01 | RD-10 | 1 | proven | `tests/quality/ci-contract.spec.test.ts` | `RD-10-AC-01: release gate evidence` | CI contract |
 | RD-10-AC-02 | RD-10 | 2 | proven | `tests/quality/traceability.spec.test.ts` | `RD-10-AC-02: repository traceability` | Traceability checker |
 | RD-10-AC-03 | RD-10 | 3 | proven | `tests/quality/coverage-contract.spec.test.ts` | `RD-10-AC-03: coverage floor` | Coverage contract |
-| RD-10-AC-04 | RD-10 | 4 | proven | `tests/e2e/quality-visual.spec.ts` | `RD-10-AC-04: quality visual matrix` | Visual matrix |
+| RD-10-AC-04 | RD-10 | 4 | proven | `tests/e2e/quality-visual.spec.ts` | `RD-10-AC-04: quality visual matrix` | Chromium, Firefox and WebKit visual baselines regenerated for the new default and representative themes; mobile smoke included |
 | RD-10-AC-05 | RD-10 | 5 | proven | `tests/quality/ci-contract.spec.test.ts` | `RD-02-AC-10 / RD-10-AC-05: timezone evidence` | Timezone evidence |
-| RD-10-AC-06 | RD-10 | 6 | proven | `tests/e2e/print-matrix.spec.ts` | `RD-10-AC-06: A3 print matrix @print` | Print matrix |
+| RD-10-AC-06 | RD-10 | 6 | proven | `tests/e2e/print-matrix.spec.ts` | `RD-10-AC-06: A3 print matrix @print` | 12/14/15/18/24/28/29/36-month A3 matrix plus the fluent-marigold PRT-01 fixture; page size and text checked from the PDFs |
 | RD-10-AC-07 | RD-10 | 7 | partial | `tests/e2e/accessibility.spec.ts` | `RD-09-AC-07/15 / RD-10-AC-07: axe matrix` | Automated axe complete; manual NVDA/VoiceOver parked; no conformance claim |
 | RD-10-AC-08 | RD-10 | 8 | proven | `packages/react/src/security.spec.test.tsx` | `RD-04-AC-18 / RD-05-AC-15 / RD-09-AC-16 / RD-10-AC-08: hidden data never renders` | Hidden-data suite |
 | RD-10-AC-09 | RD-10 | 9 | proven | `packages/react/src/security.spec.test.tsx` | `RD-10-AC-09: injection payloads stay inert` | XSS and fuzz suite |
@@ -224,7 +225,7 @@
 | RD-10-AC-15 | RD-10 | 15 | proven | `packages/react/src/YearPlanner.hydration.spec.test.tsx` | `RD-06-AC-10 / RD-10-AC-15: hydration` | SSR and locale hydration |
 | RD-10-AC-16 | RD-10 | 16 | proven | `tests/quality/audit-contract.spec.test.ts` | `RD-10-AC-16: dependency and license gates` | Audit and least privilege |
 | RD-11-AC-01 | RD-11 | 1 | proven | `tests/quality/docs-site-contract.spec.test.ts` | `RD-11-AC-01: builds the API report and the static site` | Docs and site build |
-| RD-11-AC-02 | RD-11 | 2 | proven | `tests/quality/storybook-contract.spec.test.ts` | `RD-11-AC-02: contains every required named story` | Named stories |
+| RD-11-AC-02 | RD-11 | 2 | proven | `tests/quality/storybook-contract.spec.test.ts` | `RD-11-AC-02: contains every required named story` | Named stories include material-teal and fluent-marigold grid states, all palette controls and both utility stories |
 | RD-11-AC-03 | RD-11 | 3 | proven | `tests/quality/tsdoc-contract.spec.test.ts` | `RD-11-AC-03: public TSDoc` | Reports and release tags |
 | RD-11-AC-04 | RD-11 | 4 | proven | `tests/quality/tsdoc-contract.spec.test.ts` | `RD-11-AC-04: keeps the API report comparison in the verify gate` | API report gate |
 | RD-11-AC-05 | RD-11 | 5 | proven | `tests/quality/docs-site-contract.spec.test.ts` | `RD-11-AC-05: verifies the API tree under /api` | API tree |
@@ -233,9 +234,10 @@
 | RD-11-AC-08 | RD-11 | 8 | proven | `tests/quality/demo-contract.spec.test.ts` | `RD-11-AC-08: demo routes` | Demo navigation and E2E |
 | RD-11-AC-09 | RD-11 | 9 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-09: deferred capabilities` | DEFERRED list |
 | RD-11-AC-10 | RD-11 | 10 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-10: honest status` | Status pages and report |
-| RD-11-AC-11 | RD-11 | 11 | proven | `tests/quality/storybook-contract.spec.test.ts` | `RD-11-AC-11: uses the 2017 classic-yellow A3 paginate fixture` | Print story |
+| RD-11-AC-11 | RD-11 | 11 | proven | `tests/quality/storybook-contract.spec.test.ts` | `RD-11-AC-11: uses the 2017 fluent-marigold A3 paginate fixture` | PRT-01 story uses the 2017 fluent-marigold fixture, one booking and one holiday annotation, A3 paginate mode |
 | RD-11-AC-12 | RD-11 | 12 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-12: asset provenance` | Published assets |
 | RD-11-AC-13 | RD-11 | 13 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-13: documentation security` | Synthetic data and examples |
+| RD-11-AC-14 | RD-11 | 14 | proven | `tests/quality/docs-contract.spec.test.ts` | `RD-11-AC-14: documents the implemented grid, presets and print behaviour` | Functional layout guide replaces the fidelity review; docs index and sidebar link it; migration guide maps the removed names; active pages describe 56 presets and material-teal |
 | RD-12-AC-01 | RD-12 | 1 | proven | `tests/quality/release-metadata.spec.test.ts` | `RD-12-AC-01: lockstep release group` | Fixed group and identical 0.2.0 version |
 | RD-12-AC-02 | RD-12 | 2 | partial |  |  | Workflow and pack path proven; first OIDC publish is release-time |
 | RD-12-AC-03 | RD-12 | 3 | proven | `tests/quality/release-pack.spec.test.ts` | `RD-12-AC-03: exact internal dependency` | Packed manifest pins the exact core version |
@@ -249,6 +251,7 @@
 | RD-12-AC-11 | RD-12 | 11 | proven | `tests/quality/release-metadata.spec.test.ts` | `RD-12-AC-11: package metadata and changelogs` | Metadata/files; action pins proven in `release-workflow.spec.test.ts` |
 | RD-12-AC-12 | RD-12 | 12 | proven | `tests/quality/release-governance.spec.test.ts` | `RD-12-AC-12: dependency audit` | Audit gate and grouped updates |
 | RD-12-AC-13 | RD-12 | 13 | proven | `tests/quality/release-workflow.spec.test.ts` | `RD-12-AC-13: uses no token secret or registry credential` | OIDC only, least privilege, no secrets |
+| RD-12-AC-14 | RD-12 | 14 | proven | `tests/quality/release-metadata.spec.test.ts` | `RD-12-AC-14: keeps licence, notices and release metadata consistent` | Identical licence copies, custom manifest metadata, React palette notices, contribution grant and pending licence changeset checked; visual-design rights confirmed by the user on 2026-11-13 and commit/push authorised |
 | RD-13-AC-01 | RD-13 | 1 | proven | `tests/e2e/fit.spec.ts` | `RD-13-AC-01 / RD-13-AC-02: host-region fit` | 1280 x 800 / 14 months fits with one lane and 24 px cells |
 | RD-13-AC-02 | RD-13 | 2 | proven | `tests/e2e/fit.spec.ts` | `RD-13-AC-01 / RD-13-AC-02: host-region fit` | 1024 x 768 / 12 months fits or scrolls internally |
 | RD-13-AC-03 | RD-13 | 3 | proven | `tests/perf/bench.spec.ts` | `RD-13-AC-03: product-quality performance` | Strict initial 400/550 ms, click 60/80 ms, drag 8 ms / 16.7 ms |

@@ -20,7 +20,7 @@ const meta = {
     layers,
     resources,
     items: baseItems,
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
     print: { page: "A3", mode: "paginate" },
   },
 } satisfies Meta<typeof YearPlanner>;
@@ -60,14 +60,14 @@ export const Prt01TwoThousandSeventeen: Story = {
   args: {
     year: 2017,
     items: prt01Items,
-    display: { theme: "classic-yellow", showISOWeekNumbers: true },
+    display: { theme: "fluent-marigold", showISOWeekNumbers: true },
     print: { page: "A3", mode: "paginate" },
   },
   parameters: {
     docs: {
       description: {
         story:
-          "The exact PRT-01 print sample: 2017 classic-yellow with one booking and one holiday annotation, printed as a single A3 page.",
+          "The exact PRT-01 print sample: 2017 fluent-marigold with one booking and one holiday annotation, printed as a single A3 page.",
       },
     },
   },

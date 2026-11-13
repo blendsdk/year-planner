@@ -324,6 +324,34 @@ function binaryAssets(directory: string): string[] {
   return found;
 }
 
+describe("RD-11-AC-14: functional layout guide", () => {
+  it("RD-11-AC-14: documents the implemented grid, presets and print behaviour", () => {
+    expect(exists("docs/fidelity-review.md")).toBe(false);
+    expect(exists("docs/classic-year-layout.md")).toBe(true);
+    const guide = read("docs/classic-year-layout.md");
+    for (const token of [
+      "37 day columns",
+      "Saturday, Sunday, Monday",
+      "Context months",
+      "ISO week",
+      "material-teal",
+      "fluent-marigold",
+      "56",
+      "A3",
+      "paginate",
+    ]) {
+      expect(guide, `layout guide is missing ${token}`).toContain(token);
+    }
+    expect(read("docs/README.md")).toContain("classic-year-layout.md");
+    expect(read("docs/.vitepress/config.ts")).toContain("/classic-year-layout");
+
+    const migration = read("docs/migration.md");
+    for (const token of ["classic-blue", "classic-yellow", "modern", "material-teal"]) {
+      expect(migration, `migration guide is missing ${token}`).toContain(token);
+    }
+  });
+});
+
 describe("RD-11-AC-12: asset provenance", () => {
   it("publishes no source photos or reference material", () => {
     expect(exists("_reference")).toBe(false);

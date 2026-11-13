@@ -70,7 +70,7 @@ export interface DisplayConfig {
   fit?: "none" | "contain";
   /** Lane density; defaults to `compact`. */
   density?: "compact" | "expanded";
-  /** Preset name or host theme hook; defaults to `classic-blue`. */
+  /** Preset name or host theme hook; defaults to `material-teal`. */
   theme?: YearPlannerThemeName | string;
   /** Render ISO week numbers; defaults to true. */
   showISOWeekNumbers?: boolean;

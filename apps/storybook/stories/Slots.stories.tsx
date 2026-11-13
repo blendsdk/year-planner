@@ -51,7 +51,7 @@ const meta = {
     resources,
     items: baseItems,
     defaultSelection: { dates: [], items: ["booking"] },
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 
@@ -120,7 +120,7 @@ export const CustomTooltip: Story = {
 export const CustomOverflow: Story = {
   args: {
     items: overflowItems,
-    display: { theme: "classic-blue", compactMaxLanes: 2 },
+    display: { theme: "material-teal", compactMaxLanes: 2 },
     renderOverflow: (context) => (
       <div>
         Custom overflow: {context.hiddenCount} items on {context.row.rowId}

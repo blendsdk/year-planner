@@ -327,7 +327,7 @@ function CommandStateStory({ mode, action, triggerLabel, note }: StoryProps) {
           : {})}
         onChangeRequest={onChangeRequest}
         onDiagnostic={(entry) => setDiagnostics((previous) => [...previous, entry.code])}
-        display={{ theme: "classic-blue", showISOWeekNumbers: true }}
+        display={{ theme: "material-teal", showISOWeekNumbers: true }}
       />
       <p style={{ fontSize: 12, color: "#4a5a63" }}>
         Diagnostics: {diagnostics.length === 0 ? "none" : diagnostics.join(", ")}

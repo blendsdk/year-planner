@@ -67,6 +67,28 @@ describe("RD-12-AC-01: lockstep release group", () => {
   });
 });
 
+describe("RD-12-AC-14: licence and palette notices", () => {
+  it("RD-12-AC-14: keeps licence, notices and release metadata consistent", () => {
+    const rootLicence = read("LICENSE");
+    expect(rootLicence).toContain("Year Planner Internal Use License 1.0");
+    for (const path of ["packages/core/LICENSE", "packages/react/LICENSE"]) {
+      expect(read(path), path).toBe(rootLicence);
+    }
+    expect(read("README.md")).toMatch(/source-available/i);
+    expect(read("SUPPORT.md")).toContain("internal-use licence");
+    const notices = read("packages/react/THIRD_PARTY_NOTICES.md");
+    expect(notices).toContain("Material 2014");
+    expect(notices).toContain("Fluent UI v9");
+    expect(read("CONTRIBUTING.md")).toContain("contribution licence grant");
+    const changeset = read(".changeset/internal-use-license.md");
+    expect(changeset).toContain("Internal Use License");
+    for (const document of ["README.md", "SUPPORT.md", "docs/licensing.md"]) {
+      const text = read(document);
+      expect(text, `${document} still claims MIT`).not.toMatch(/\bMIT licensed\b/i);
+    }
+  });
+});
+
 describe("RD-12-AC-11: package metadata and changelogs", () => {
   it("generates a changelog heading for the current version", () => {
     for (const path of ["packages/core/CHANGELOG.md", "packages/react/CHANGELOG.md"]) {
@@ -81,7 +103,7 @@ describe("RD-12-AC-11: package metadata and changelogs", () => {
   it("declares the repository, homepage, bugs and public access metadata", () => {
     for (const path of [CORE, REACT]) {
       const manifest = json<Manifest>(path);
-      expect(manifest.license, path).toBe("MIT");
+      expect(manifest.license, path).toBe("SEE LICENSE IN LICENSE");
       expect(manifest.repository?.url, path).toContain("github.com/blendsdk/year-planner");
       expect(manifest.homepage, path).toBe("https://github.com/blendsdk/year-planner#readme");
       expect(manifest.bugs?.url, path).toBe("https://github.com/blendsdk/year-planner/issues");
@@ -114,5 +136,13 @@ describe("RD-12-AC-11: package metadata and changelogs", () => {
     expect(react.sideEffects).toEqual(["**/*.css"]);
     expect(react.peerDependencies?.react).toBe("^19.0.0");
     expect(react.dependencies?.["@blendsdk/year-planner-core"]).toBe("workspace:*");
+  });
+
+  it("ships palette attribution with the React package", () => {
+    expect(json<Manifest>(REACT).files).toContain("THIRD_PARTY_NOTICES.md");
+    const notices = read("packages/react/THIRD_PARTY_NOTICES.md");
+    for (const token of ["Material 2014", "Fluent UI v9", "MIT", "colour values"]) {
+      expect(notices, `React notices are missing ${token}`).toContain(token);
+    }
   });
 });

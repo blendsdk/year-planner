@@ -2,24 +2,24 @@ import { expect, test } from "@playwright/test";
 import { expectA3Pdf } from "./pdf.js";
 
 test.describe("M1 classic year grid", () => {
-  test("renders the 2016 blue 14x37 grid @visual", async ({ page }) => {
+  test("renders the 2016 material-teal 14x37 grid @visual", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("grid")).toBeVisible();
     await expect(page.locator("[data-row-id]")).toHaveCount(14);
     await expect(page.locator('[role="gridcell"]')).toHaveCount(518);
     await expect(page.getByRole("grid")).toHaveAttribute("aria-colcount", "37");
-    await expect(page.locator(".yp-root")).toHaveScreenshot("classic-2016-blue.png", {
+    await expect(page.locator(".yp-root")).toHaveScreenshot("classic-2016-teal.png", {
       maxDiffPixelRatio: 0.02,
     });
   });
 
-  test("renders the 2017 yellow 14-month view @visual", async ({ page }) => {
+  test("renders the 2017 fluent-marigold 14-month view @visual", async ({ page }) => {
     await page.goto("/");
     await page.locator("select").nth(0).selectOption("2017");
-    await page.locator("select").nth(1).selectOption("classic-yellow");
+    await page.locator("select").nth(1).selectOption("fluent-marigold");
     await expect(page.locator("[data-row-id]")).toHaveCount(14);
-    await expect(page.locator(".yp-theme-classic-yellow")).toBeVisible();
-    await expect(page.locator(".yp-root")).toHaveScreenshot("classic-2017-yellow.png", {
+    await expect(page.locator(".yp-theme-fluent-marigold")).toBeVisible();
+    await expect(page.locator(".yp-root")).toHaveScreenshot("classic-2017-marigold.png", {
       maxDiffPixelRatio: 0.02,
     });
   });
@@ -47,7 +47,7 @@ test.describe("RD-06 items, inspector and print", () => {
   test("renders ribbons, an annotation and inspector details @visual", async ({ page }) => {
     await page.goto("/?fit=none");
     await page.locator("select").nth(0).selectOption("2027");
-    await page.locator("select").nth(1).selectOption("classic-blue");
+    await page.locator("select").nth(1).selectOption("material-teal");
     await expect(
       page.locator('[data-yp-part="item-fragment"][data-item-id="booking"]'),
     ).toHaveCount(2);

@@ -19,4 +19,12 @@ if (result.ok) {
 ```
 
 See the [repository](https://github.com/blendsdk/year-planner) for the full
-guides, the React package and the API reference. MIT licensed.
+guides, the React package and the API reference.
+
+## License
+
+[Year Planner Internal Use License 1.0](LICENSE): source-available and free for
+internal business use and modification. Redistribution and customer-facing SaaS
+require separate permission. Earlier MIT grants remain valid for material they
+cover. See the [licensing guide](https://blendsdk.github.io/year-planner/licensing)
+for internal deployment, contractor and output-sharing examples.

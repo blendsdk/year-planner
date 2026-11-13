@@ -79,7 +79,7 @@ test.describe("GitHub Pages site", () => {
 
   test("the story index and the TypeDoc reference are served", async ({ page }) => {
     await page.goto(`${SITE}/stories.html`);
-    await expect(page.getByText(/184 stories in the catalogue/)).toBeVisible();
+    await expect(page.getByText(/183 stories in the catalogue/)).toBeVisible();
     await expect(page.getByRole("link", { name: "Context Menu" }).first()).toBeVisible();
 
     await page.goto(`${SITE}/api/index.html`);

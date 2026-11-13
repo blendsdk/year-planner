@@ -53,17 +53,17 @@ test.describe("RD-09-AC-07/15 / RD-10-AC-07: axe matrix", () => {
     test.skip(browserName !== "chromium", "axe matrix is Chromium-only");
   });
 
-  test("classic-blue compact", async ({ page }) => {
+  test("material-teal compact", async ({ page }) => {
     await page.goto("/");
     await page.locator("select").nth(0).selectOption("2027");
-    await scanPlanner(page, "classic-blue compact");
+    await scanPlanner(page, "material-teal compact");
   });
 
-  test("classic-yellow compact", async ({ page }) => {
+  test("fluent-marigold compact", async ({ page }) => {
     await page.goto("/");
     await page.locator("select").nth(0).selectOption("2027");
-    await page.locator("select").nth(1).selectOption("classic-yellow");
-    await scanPlanner(page, "classic-yellow compact");
+    await page.locator("select").nth(1).selectOption("fluent-marigold");
+    await scanPlanner(page, "fluent-marigold compact");
   });
 
   test("high-contrast compact", async ({ page }) => {
@@ -71,6 +71,13 @@ test.describe("RD-09-AC-07/15 / RD-10-AC-07: axe matrix", () => {
     await page.locator("select").nth(0).selectOption("2027");
     await page.locator("select").nth(1).selectOption("high-contrast");
     await scanPlanner(page, "high-contrast compact");
+  });
+
+  test("print compact", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("select").nth(0).selectOption("2027");
+    await page.locator("select").nth(1).selectOption("print");
+    await scanPlanner(page, "print compact");
   });
 
   test("expanded density", async ({ page }) => {

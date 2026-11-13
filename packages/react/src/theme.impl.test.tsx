@@ -24,11 +24,11 @@ describe("theme implementation", () => {
   });
 
   it("provides a frozen preset and a copy through createTheme", () => {
-    const preset = getPresetTheme("modern");
+    const preset = getPresetTheme("material-teal");
     expect(Object.isFrozen(preset)).toBe(true);
     const copy = createTheme({ ...preset, ribbon: "#000001" });
     expect(copy.ribbon).toBe("#000001");
-    expect(yearPlannerPresets.modern.ribbon).not.toBe("#000001");
+    expect(yearPlannerPresets["material-teal"].ribbon).not.toBe("#000001");
     expect(getPresetTheme("constructor")).toBeUndefined();
     expect(getPresetTheme("__proto__")).toBeUndefined();
   });

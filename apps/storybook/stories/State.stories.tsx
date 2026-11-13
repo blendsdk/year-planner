@@ -21,7 +21,7 @@ const meta = {
     layers,
     resources,
     items: baseItems,
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 
@@ -142,8 +142,8 @@ export const InvalidWindow: Story = {
 export const TwoIndependentInstances: Story = {
   render: (args) => (
     <div style={{ display: "grid", gap: 24 }}>
-      <YearPlanner {...args} year={2016} display={{ theme: "classic-blue" }} items={[]} />
-      <YearPlanner {...args} year={2017} display={{ theme: "classic-yellow" }} items={[]} />
+      <YearPlanner {...args} year={2016} display={{ theme: "material-teal" }} items={[]} />
+      <YearPlanner {...args} year={2017} display={{ theme: "fluent-marigold" }} items={[]} />
     </div>
   ),
 };

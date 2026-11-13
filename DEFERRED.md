@@ -28,7 +28,7 @@ workaround a host can use today.
 | Drag between layers/resources | Drag moves in time, not across layers | Reassign `layerId` through a host command |
 | Second demo | One demo covers the integration states | Use the Storybook stories for more states |
 | CJS/UMD | The packages are ESM-only | Use a dynamic `import()` or an ESM-aware bundler |
-| Commercial support | The project is MIT and community-supported | Open an issue in the repository |
+| Commercial support | The project is source-available and community-supported | Open an issue in the repository |
 
 None of these is described as implemented anywhere in the documentation. The
 accessibility and performance pages state their evidence status separately; this

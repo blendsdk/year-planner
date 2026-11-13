@@ -60,12 +60,12 @@ describe("RD-03/RD-06 classic grid", () => {
 
   it("RD-06-AC-01: applies theme classes without changing geometry", () => {
     const { container, rerender } = render(
-      <YearPlanner year={2016} display={{ theme: "classic-blue" }} />,
+      <YearPlanner year={2016} display={{ theme: "material-teal" }} />,
     );
-    expect(container.querySelector(".yp-theme-classic-blue")).toBeInTheDocument();
+    expect(container.querySelector(".yp-theme-material-teal")).toBeInTheDocument();
     const cells = container.querySelectorAll("[data-date]").length;
-    rerender(<YearPlanner year={2016} display={{ theme: "classic-yellow" }} />);
-    expect(container.querySelector(".yp-theme-classic-yellow")).toBeInTheDocument();
+    rerender(<YearPlanner year={2016} display={{ theme: "fluent-marigold" }} />);
+    expect(container.querySelector(".yp-theme-fluent-marigold")).toBeInTheDocument();
     expect(container.querySelectorAll("[data-date]")).toHaveLength(cells);
   });
 
@@ -119,13 +119,13 @@ describe("RD-06 theming and geometry", () => {
       <YearPlannerProvider theme={{ ribbon: "#111111" }}>
         <YearPlanner
           year={2016}
-          display={{ theme: "classic-yellow" }}
+          display={{ theme: "fluent-marigold" }}
           cssVars={{ "--yp-ribbon": "#123456" }}
         />
       </YearPlannerProvider>,
     );
     const root = container.querySelector(".yp-root") as HTMLElement;
-    expect(root).toHaveAttribute("data-yp-theme", "classic-yellow");
+    expect(root).toHaveAttribute("data-yp-theme", "fluent-marigold");
     expect(root.style.getPropertyValue("--yp-ribbon")).toBe("#123456");
   });
 
@@ -181,14 +181,14 @@ describe("RD-06 theming and geometry", () => {
   it("RD-03-AC-06 / RD-06-AC-07: isolates two instances and renders ISO weeks with dir=ltr", () => {
     const { container } = render(
       <div>
-        <YearPlanner year={2016} display={{ theme: "classic-blue" }} />
-        <YearPlanner year={2017} display={{ theme: "classic-yellow" }} />
+        <YearPlanner year={2016} display={{ theme: "material-teal" }} />
+        <YearPlanner year={2017} display={{ theme: "fluent-marigold" }} />
       </div>,
     );
     const roots = container.querySelectorAll(".yp-root");
     expect(roots).toHaveLength(2);
-    expect(roots[0]).toHaveAttribute("data-yp-theme", "classic-blue");
-    expect(roots[1]).toHaveAttribute("data-yp-theme", "classic-yellow");
+    expect(roots[0]).toHaveAttribute("data-yp-theme", "material-teal");
+    expect(roots[1]).toHaveAttribute("data-yp-theme", "fluent-marigold");
     expect(roots[0]).toHaveAttribute("dir", "ltr");
     const week = (root: Element, date: string): string | null | undefined =>
       root.querySelector(`[data-date="${date}"] .yp-week-number`)?.textContent;

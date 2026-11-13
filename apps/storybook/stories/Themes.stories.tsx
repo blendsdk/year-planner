@@ -1,7 +1,44 @@
-import { createTheme, YearPlanner, YearPlannerProvider } from "@blendsdk/react-year-planner";
+import {
+  createTheme,
+  YearPlanner,
+  YearPlannerProvider,
+  yearPlannerPresets,
+} from "@blendsdk/react-year-planner";
+import type { PlannerLayer } from "@blendsdk/year-planner-core";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { describeStories } from "./describe";
-import { baseItems, groups, layers, resources } from "./fixtures";
+import { baseItems, groups, resources } from "./fixtures";
+
+const THEME_NAMES = Object.keys(yearPlannerPresets);
+
+/**
+ * Theme-gallery layers deliberately omit explicit colours, so the
+ * representative items inherit the selected preset. Custom-colour examples
+ * live in the Items and Adapters stories.
+ */
+const themeLayers: PlannerLayer[] = [
+  { id: "bookings", name: "Bookings", groupId: "logistics", channel: "ribbon", label: "B" },
+  {
+    id: "maintenance",
+    name: "Maintenance",
+    groupId: "logistics",
+    channel: "ribbon",
+    label: "M",
+    pattern: "hatch",
+  },
+  {
+    id: "training",
+    name: "Training",
+    groupId: "people",
+    channel: "ribbon",
+    label: "T",
+    pattern: "dots",
+  },
+  { id: "highlight", name: "Highlight", channel: "highlight", label: "H" },
+  { id: "holidays", name: "Holidays", channel: "background", label: "H", opacity: 0.55 },
+  { id: "notes", name: "Notes", channel: "annotation" },
+  { id: "preview", name: "Preview", channel: "foreground" },
+];
 
 const meta = {
   title: "Year Planner/01 Themes and Display",
@@ -9,24 +46,27 @@ const meta = {
   args: {
     year: 2027,
     groups,
-    layers,
+    layers: themeLayers,
     resources,
     items: baseItems,
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
+  },
+  argTypes: {
+    "display.theme": {
+      control: "select",
+      options: THEME_NAMES,
+      description: "One of the 54 palette families or the two monochrome utilities.",
+    },
   },
 } satisfies Meta<typeof YearPlanner>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const ClassicBlue: Story = {};
+export const MaterialTeal: Story = {};
 
-export const ClassicYellow: Story = {
-  args: { display: { theme: "classic-yellow", showISOWeekNumbers: true } },
-};
-
-export const Modern: Story = {
-  args: { display: { theme: "modern", showISOWeekNumbers: true } },
+export const FluentMarigold: Story = {
+  args: { display: { theme: "fluent-marigold", showISOWeekNumbers: true } },
 };
 
 export const HighContrast: Story = {
@@ -38,27 +78,27 @@ export const PrintTheme: Story = {
 };
 
 export const HiddenISOWeekNumbers: Story = {
-  args: { display: { theme: "classic-blue", showISOWeekNumbers: false } },
+  args: { display: { theme: "material-teal", showISOWeekNumbers: false } },
 };
 
 export const Zoom075: Story = {
-  args: { display: { theme: "classic-blue", zoom: 0.75 } },
+  args: { display: { theme: "material-teal", zoom: 0.75 } },
 };
 
 export const Zoom125: Story = {
-  args: { display: { theme: "classic-blue", zoom: 1.25 } },
+  args: { display: { theme: "material-teal", zoom: 1.25 } },
 };
 
 export const Zoom150: Story = {
-  args: { display: { theme: "classic-blue", zoom: 1.5 } },
+  args: { display: { theme: "material-teal", zoom: 1.5 } },
 };
 
 export const LocaleGerman: Story = {
-  args: { display: { theme: "classic-blue", locale: "de-DE" } },
+  args: { display: { theme: "material-teal", locale: "de-DE" } },
 };
 
 export const LocaleFrench: Story = {
-  args: { display: { theme: "classic-blue", locale: "fr-FR" } },
+  args: { display: { theme: "material-teal", locale: "fr-FR" } },
 };
 
 export const CssVariableOverride: Story = {
@@ -84,17 +124,16 @@ export const Unstyled: Story = {
 };
 
 export const HighDensityExpanded: Story = {
-  args: { display: { theme: "modern", density: "expanded", compactMaxLanes: 3 } },
+  args: { display: { theme: "material-teal", density: "expanded", compactMaxLanes: 3 } },
 };
 
 export const CompactTwoLanes: Story = {
-  args: { display: { theme: "classic-blue", density: "compact", compactMaxLanes: 2 } },
+  args: { display: { theme: "material-teal", density: "compact", compactMaxLanes: 2 } },
 };
 
 describeStories({
-  ClassicBlue,
-  ClassicYellow,
-  Modern,
+  MaterialTeal,
+  FluentMarigold,
   HighContrast,
   PrintTheme,
   HiddenISOWeekNumbers,

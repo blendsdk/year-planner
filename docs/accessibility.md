@@ -75,11 +75,16 @@ underline and the word `holiday` in the name. Overflow uses `+N` text.
 
 | Preset | Ribbon | Chosen text | Ratio | Focus ring | Border |
 | ------ | ------ | ----------- | ----- | ---------- | ------ |
-| classic-blue | `#76bfe5` | `#1b2329` | 7.85 | 5.28 | 4.03 |
-| classic-yellow | `#f6f368` | `#24251d` | 13.22 | 5.33 | 3.58 |
-| modern | `#243b53` | `#ffffff` | 11.50 | 4.24 | 3.54 |
-| high-contrast | `#000000` | `#ffffff` | 21.00 | 8.59 | 21.00 |
-| print | `#2f5d8a` | `#ffffff` | 6.88 | 21.00 | 21.00 |
+| material-teal | `#009688` | `#000000` | 5.72 | 9.83 | 10.05 |
+| fluent-marigold | `#eaa300` | `#000000` | 9.74 | 6.07 | 10.05 |
+| material-yellow | `#ffeb3b` | `#000000` | 17.20 | 21.00 | 10.05 |
+| high-contrast | `#000000` | `#ffffff` | 21.00 | 21.00 | 21.00 |
+| print | `#000000` | `#ffffff` | 21.00 | 21.00 | 21.00 |
+
+The complete catalogue is checked by the unit suite: every one of the 56 presets is measured
+against all four base cell surfaces (surface, muted, weekend and context) for focus, border,
+primary text and muted text contrast. The rows above are representative; they do not replace the
+automated checks.
 
 The ribbon text is computed from the actual fragment background, so a host layer colour (for
 example a dark blue bookings layer) still gets readable text. A host that uses a non-hex colour can
@@ -107,9 +112,10 @@ scans the planner root with the WCAG 2.0/2.1/2.2 A+AA tags in Chromium:
 
 | State | Result |
 | ----- | ------ |
-| classic-blue, compact | no serious or critical violations |
-| classic-yellow, compact | no serious or critical violations |
+| material-teal, compact | no serious or critical violations |
+| fluent-marigold, compact | no serious or critical violations |
 | high-contrast, compact | no serious or critical violations |
+| print, compact | no serious or critical violations |
 | expanded density | no serious or critical violations |
 | open overflow dialog | no serious or critical violations |
 | command error feedback | no serious or critical violations |

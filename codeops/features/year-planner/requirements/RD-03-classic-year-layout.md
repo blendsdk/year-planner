@@ -1,7 +1,7 @@
 # RD-03: Classic Year Layout and Dynamic Months
 
 > **Document**: RD-03-classic-year-layout.md
-> **Status**: Draft
+> **Status**: Implemented — functional guide verified
 > **Created**: 2026-11-10
 > **Project**: Year Planner for React
 > **Depends On**: RD-01, RD-02
@@ -11,9 +11,9 @@
 
 ## Feature Overview
 
-Generates the calendar coordinate plane: the 14-month classic year view derived
-from the two photographed planners, with a configurable window of at least 12
-months. The layout is pure data — month rows, 37 day columns, variable weekend
+Generates the calendar coordinate plane: a 14-month classic year view with a
+configurable window of 12–36 months. The layout is pure data — month rows,
+37 day columns, variable weekend
 widths, date-to-column mapping, prefix widths and row bounds — so the same
 geometry drives HTML, SVG, print and hit-testing.
 
@@ -73,7 +73,7 @@ January of `year + 1`. It is the default, not a hardcoded requirement.
 - RTL mirroring — deferred to P1.
 - Aggregated density view — deferred.
 - Resource timeline rows — deferred.
-- Pixel-perfect reproduction of photo distortions, paper texture or branding.
+- Decorative paper textures and organization branding.
 
 ---
 
@@ -158,7 +158,7 @@ Row generation and prefix sums: **M**. Month-window validation: **S**.
 | Decision | Options Considered | Chosen | Rationale | AR Ref |
 |---|---|---|---|---|
 | Month window | Fixed 14, configurable 12+, arbitrary | 12–36, 14 default | User requirement; 37 columns work for any month | AR #13 |
-| Week start | Saturday-first, Monday-first, configurable | Saturday-first fixed | Photo fidelity; RTL/week start deferred | AR #34 |
+| Week start | Saturday-first, Monday-first, configurable | Saturday-first fixed | Existing coordinate and weekday-alignment contract | AR #34 |
 | Month rows | CSS grid only, data layout + renderer | Pure data layout | Shared by HTML/SVG/print/hit-testing | AR #11 |
 | Print | Fit all, paginate | Paginate larger windows | Readability at A3 | AR #14 |
 

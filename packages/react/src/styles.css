@@ -2,22 +2,22 @@
 
 @layer year-planner.base {
   :where(.yp-root) {
-    --yp-surface: #ffffff;
-    --yp-surface-muted: #f7fafb;
-    --yp-weekend: #e3f7fc;
-    --yp-context: #eaf4f5;
-    --yp-border: #71818b;
-    --yp-text-primary: #1b2329;
-    --yp-text-muted: #4a5a63;
-    --yp-text-inverse: #ffffff;
-    --yp-focus-ring: #0b6bcb;
-    --yp-selection-fill: rgba(11, 107, 203, 0.18);
-    --yp-selection-outline: #0b6bcb;
-    --yp-highlight: #ffd166;
-    --yp-ribbon: #76bfe5;
-    --yp-ribbon-text: #1b2329;
-    --yp-annotation: #f6bd60;
-    --yp-foreground: #243b53;
+    --yp-surface: #fff;
+    --yp-surface-muted: #e0f2f1;
+    --yp-weekend: #b2dfdb;
+    --yp-context: #f5f5f5;
+    --yp-border: #424242;
+    --yp-text-primary: #000;
+    --yp-text-muted: #333;
+    --yp-text-inverse: #fff;
+    --yp-focus-ring: #004d40;
+    --yp-selection-fill: rgba(0, 150, 136, 0.18);
+    --yp-selection-outline: #004d40;
+    --yp-highlight: #b2dfdb;
+    --yp-ribbon: #009688;
+    --yp-ribbon-text: #000;
+    --yp-annotation: #b2dfdb;
+    --yp-foreground: #004d40;
     --yp-row-height: 90px;
     --yp-lane-height: 24px;
     --yp-month-band-width: 70px;
@@ -217,7 +217,7 @@
     padding: 0 3px;
     border-radius: 3px;
     background: var(--yp-annotation);
-    color: #1b2329;
+    color: var(--yp-text-primary);
     font-size: var(--yp-font-size-cell-label);
     font-weight: 700;
   }
@@ -313,7 +313,7 @@
     padding: 0 4px;
     border: 1px solid var(--yp-annotation);
     background: var(--yp-annotation);
-    color: #1b2329;
+    color: var(--yp-text-primary);
     font-size: 9px;
     font-weight: 700;
   }
@@ -706,7 +706,7 @@
     align-items: center;
     justify-content: center;
     background: var(--yp-ribbon);
-    color: var(--yp-text-inverse);
+    color: var(--yp-ribbon-text);
     font-size: 12px;
     font-weight: 700;
   }
@@ -780,7 +780,7 @@
 
   .yp-print-annotation {
     background: var(--yp-annotation);
-    color: #1b2329;
+    color: var(--yp-text-primary);
     font-weight: 700;
   }
 
@@ -830,88 +830,6 @@
       transform-origin: top left;
     }
   }
-}
-
-@layer year-planner.theme {
-  .yp-theme-classic-yellow {
-    --yp-ribbon-text: #24251d;
-    --yp-surface: #fffef2;
-    --yp-surface-muted: #fbfbe6;
-    --yp-weekend: #ffffbe;
-    --yp-context: #e9e8ee;
-    --yp-border: #858783;
-    --yp-text-primary: #24251d;
-    --yp-text-muted: #5d5e55;
-    --yp-text-inverse: #24251d;
-    --yp-focus-ring: #7a6a00;
-    --yp-selection-fill: rgba(246, 243, 104, 0.35);
-    --yp-selection-outline: #7a6a00;
-    --yp-highlight: #f6f368;
-    --yp-ribbon: #f6f368;
-    --yp-annotation: #e0a800;
-    --yp-foreground: #3b3a2a;
-  }
-
-  .yp-theme-modern {
-    --yp-ribbon-text: #ffffff;
-    --yp-surface: #ffffff;
-    --yp-surface-muted: #f5f7fa;
-    --yp-weekend: #eef2f6;
-    --yp-context: #f5f7fa;
-    --yp-border: #7b8a99;
-    --yp-text-primary: #102a43;
-    --yp-text-muted: #52606d;
-    --yp-text-inverse: #ffffff;
-    --yp-focus-ring: #2680c2;
-    --yp-selection-fill: rgba(38, 128, 194, 0.18);
-    --yp-selection-outline: #2680c2;
-    --yp-highlight: #f0b429;
-    --yp-ribbon: #243b53;
-    --yp-annotation: #9f7aea;
-    --yp-foreground: #243b53;
-  }
-
-  .yp-theme-high-contrast {
-    --yp-ribbon-text: #ffffff;
-    --yp-surface: #ffffff;
-    --yp-surface-muted: #ffffff;
-    --yp-weekend: #fff7a8;
-    --yp-context: #f2f2f2;
-    --yp-border: #000000;
-    --yp-text-primary: #000000;
-    --yp-text-muted: #1a1a1a;
-    --yp-text-inverse: #ffffff;
-    --yp-focus-ring: #0000ff;
-    --yp-selection-fill: rgba(0, 0, 255, 0.25);
-    --yp-selection-outline: #0000ff;
-    --yp-highlight: #ffff00;
-    --yp-ribbon: #000000;
-    --yp-annotation: #ff00ff;
-    --yp-foreground: #000000;
-  }
-
-  .yp-theme-print {
-    --yp-ribbon-text: #ffffff;
-    --yp-surface: #ffffff;
-    --yp-surface-muted: #ffffff;
-    --yp-weekend: #f2f2f2;
-    --yp-context: #fafafa;
-    --yp-border: #000000;
-    --yp-text-primary: #000000;
-    --yp-text-muted: #333333;
-    --yp-text-inverse: #ffffff;
-    --yp-focus-ring: #000000;
-    --yp-selection-fill: rgba(0, 0, 0, 0.12);
-    --yp-selection-outline: #000000;
-    --yp-highlight: #f2c94c;
-    --yp-ribbon: #2f5d8a;
-    --yp-annotation: #b8860b;
-    --yp-foreground: #111111;
-  }
-}
-
-@layer year-planner.components {
-  /* Component styles live in the base layer for compatibility with the classic grid. */
 }
 
 @layer year-planner.overrides {

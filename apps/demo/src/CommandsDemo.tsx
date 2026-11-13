@@ -358,7 +358,7 @@ export function CommandsDemo() {
         onChangeRequest={onChangeRequest}
         validateChange={validateChange}
         onDiagnostic={(entry) => setDiagnostics((previous) => [...previous, entry.code])}
-        display={{ theme: "classic-blue", showISOWeekNumbers: true }}
+        display={{ theme: "material-teal", showISOWeekNumbers: true }}
       />
       <pre data-testid="commands-items">
         {JSON.stringify(

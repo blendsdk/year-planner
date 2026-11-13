@@ -21,8 +21,9 @@ export const REQUIRED_TARBALL_PATHS = [
 /**
  * Validates the file list of a packed tarball.
  *
- * Only the package manifest, README, LICENSE, CHANGELOG and `dist/**` are
- * allowed. Every required path must be present. Directory entries are ignored.
+ * Only the package manifest, README, LICENSE, third-party notices, CHANGELOG and
+ * `dist/**` are allowed. Every required path must be present. Directory entries
+ * are ignored.
  *
  * @param paths - Paths printed by `tar -tzf`.
  * @returns Error messages; an empty array means the tarball is valid.
@@ -47,6 +48,7 @@ export function validateTarballPaths(paths) {
     if (path === "package/package.json") continue;
     if (path === "package/README.md") continue;
     if (path === "package/LICENSE") continue;
+    if (path === "package/THIRD_PARTY_NOTICES.md") continue;
     if (path === "package/CHANGELOG.md") continue;
     if (path.startsWith("package/dist/")) continue;
     errors.push(`forbidden path ${path}`);

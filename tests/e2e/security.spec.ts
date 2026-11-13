@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-const APP_ORIGIN = "http://127.0.0.1:4173";
+const DEMO_PORT = process.env.PLAYWRIGHT_DEMO_PORT ?? "4173";
+const APP_ORIGIN = `http://127.0.0.1:${DEMO_PORT}`;
 
 test.describe("RD-10-AC-08/10/13: security and privacy", () => {
   test("RD-11-AC-08: renders only visible data and makes no external request", async ({ page }) => {
@@ -64,7 +65,7 @@ test.describe("RD-10-AC-08/10/13: security and privacy", () => {
     expect(html).not.toContain("attacker.example");
     expect(leaks).toEqual([]);
     expect(unexpected).toEqual([]);
-    expect(sockets.filter((url) => !url.startsWith("ws://127.0.0.1:4173"))).toEqual([]);
+    expect(sockets.filter((url) => !url.startsWith(`ws://127.0.0.1:${DEMO_PORT}`))).toEqual([]);
   });
 
   test("renders under the documented CSP attribute allowance", async ({ page }) => {

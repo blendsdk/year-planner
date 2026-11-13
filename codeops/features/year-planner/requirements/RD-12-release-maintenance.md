@@ -1,7 +1,7 @@
 # RD-12: Release, Versioning and Maintenance
 
 > **Document**: RD-12-release-maintenance.md
-> **Status**: Draft
+> **Status**: Implemented — licence and notices verified; visual-design rights confirmed; commit/push authorised
 > **Created**: 2026-11-10
 > **Project**: Year Planner for React
 > **Depends On**: RD-01 through RD-11
@@ -12,8 +12,9 @@
 ## Feature Overview
 
 Defines how the two packages are versioned, published, maintained and supported.
-The project is MIT open source with a DCO; there is no commercial license or
-CLA. Releases are lockstep and provenance-signed.
+The project uses Year Planner Internal Use License 1.0 with a signed origin
+certification and contribution grant. Commercial solution terms and pricing remain deferred.
+Releases are lockstep and provenance-signed.
 
 ---
 
@@ -31,7 +32,7 @@ CLA. Releases are lockstep and provenance-signed.
 - [ ] GitHub release with tag, changelog and package links.
 - [ ] Repository starts private and becomes public at the first release after
   license/asset review.
-- [ ] Branch protection on `main`: required CI checks, DCO, review, no direct
+- [ ] Branch protection on `main`: required CI checks, sign-off, review, no direct
   pushes.
 - [ ] Issue/PR templates, CODE_OF_CONDUCT, SECURITY, CODEOWNERS and a support
   policy stating best-effort community support with no SLA.
@@ -55,7 +56,7 @@ CLA. Releases are lockstep and provenance-signed.
 
 ### Won't Have (Out of Scope)
 
-- Commercial licensing, CLA, paid support tiers or SLAs.
+- Commercial solution terms, pricing, paid support tiers or SLAs.
 - A hosted SaaS, backend or marketplace listing.
 - Multi-major documentation versioning in R1.
 - Long-term support branches before 1.0.
@@ -68,7 +69,7 @@ CLA. Releases are lockstep and provenance-signed.
 
 ```text
 PR → CI (typecheck, lint, unit, e2e, visual, a11y, print, build, api-report)
-  → DCO + review + branch protection
+  → sign-off + review + branch protection
   → merge to main
   → changesets release PR
   → merge release PR
@@ -86,7 +87,7 @@ React package manifest (the core package uses the same fields without
 ```json
 {
   "type": "module",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "repository": { "type": "git", "url": "https://github.com/blendsdk/year-planner" },
   "homepage": "https://github.com/blendsdk/year-planner#readme",
   "bugs": { "url": "https://github.com/blendsdk/year-planner/issues" },
@@ -138,8 +139,8 @@ Release automation: **M**. Governance/support: **S**.
 | Versioning | Independent, lockstep | Lockstep | Coupled core/React packages | AR #27 |
 | Publishing auth | Token, OIDC | OIDC provenance | No long-lived secrets | AR #27 |
 | Repo visibility | Public immediately, private first | Private first, public at release | Avoid publishing uncleared assets | AR #3, #30 |
-| Support | SLA, best effort | Best effort | Open-source project, no commercial model | AR #32 |
-| License | MIT, Apache, dual | MIT + DCO | User decision | AR #1 |
+| Support | SLA, best effort | Best effort | Community support; no paid tier approved | AR #32 |
+| License | Internal-use source-available terms | Year Planner Internal Use License 1.0 + signed origin certification + contribution grant | Free internal business use; redistribution and external services require separate permission | [Refresh AR #18](../plans/licensing-and-theme-refresh/00-ambiguity-register.md) |
 
 ---
 
@@ -169,7 +170,7 @@ Release automation: **M**. Governance/support: **S**.
 4. [ ] A fresh install from npm in a clean Vite app renders the component and
    imports CSS successfully.
 5. [ ] The GitHub release links the changelog, packages and docs.
-6. [ ] Branch protection requires CI, DCO and review on `main`.
+6. [ ] Branch protection requires CI, sign-off (job `dco`) and review on `main`.
 7. [ ] `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` and issue/PR
    templates exist and are linked from the README.
 8. [ ] The support policy states best-effort support and no SLA.
@@ -183,4 +184,12 @@ Release automation: **M**. Governance/support: **S**.
 12. [ ] `pnpm audit --prod` (or equivalent SCA) reports no high/critical
     vulnerabilities before release.
 13. [ ] Security requirements verified: OIDC only, least-privilege CI, no secrets,
-    no untrusted release scripts.
+     no untrusted release scripts.
+14. [ ] Project/package notices state the internal-use licence consistently, retain the
+     existing BlendSDK attribution and preserve third-party licences. The React
+     package includes the palette notices. A lockstep minor changeset records
+      the pre-1.0 licence break; the later preset change gets its own release note.
+      The user confirmed the visual-design rights question resolved on
+      2026-11-13 and authorised the commit/push; package publication is a
+      separate release action. Earlier MIT grants remain valid. See
+      [refresh AR #16, #18](../plans/licensing-and-theme-refresh/00-ambiguity-register.md).

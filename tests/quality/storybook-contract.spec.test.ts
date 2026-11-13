@@ -43,8 +43,8 @@ function storyFiles(): StoryFile[] {
 
 /** RD-11 states that must exist as named stories. */
 const REQUIRED_STORIES: Array<{ title: string; export: string }> = [
-  { title: "Classic Year/Grid", export: "Blue2016" },
-  { title: "Classic Year/Grid", export: "Yellow2017" },
+  { title: "Classic Year/Grid", export: "MaterialTeal2016" },
+  { title: "Classic Year/Grid", export: "FluentMarigold2017" },
   { title: "Year Planner/02 Layouts and Windows", export: "ClassicFourteenMonths" },
   { title: "Year Planner/02 Layouts and Windows", export: "TwelveMonths" },
   { title: "Year Planner/02 Layouts and Windows", export: "EighteenMonths" },
@@ -95,7 +95,7 @@ describe("RD-11-AC-02: Storybook state coverage", () => {
 });
 
 describe("RD-11-AC-11: PRT-01 print sample", () => {
-  it("RD-11-AC-11: uses the 2017 classic-yellow A3 paginate fixture", () => {
+  it("RD-11-AC-11: uses the 2017 fluent-marigold A3 paginate fixture", () => {
     const print = storyFiles().find((file) => file.name === "Print.stories.tsx");
     expect(print).toBeDefined();
     const source = print?.source ?? "";
@@ -104,7 +104,7 @@ describe("RD-11-AC-11: PRT-01 print sample", () => {
     const block = source.slice(start, source.indexOf("export const", start + 1));
     for (const token of [
       "year: 2017",
-      '"classic-yellow"',
+      '"fluent-marigold"',
       "prt01Items",
       'page: "A3"',
       'mode: "paginate"',

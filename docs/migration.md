@@ -25,6 +25,23 @@ A host migrating from the preview should replace a hand-built theme object with
 `createTheme({ ... })`, move geometry into theme tokens or `units`, and import the
 stylesheet from `@blendsdk/react-year-planner/styles.css`.
 
+## Preset names
+
+The preset refresh replaced the five-name catalogue with 56 named presets.
+`classic-blue`, `classic-yellow` and `modern` were removed without aliases:
+
+| Removed | Replacement |
+| --- | --- |
+| `classic-blue` | `material-teal` (new default) or `material-blue` |
+| `classic-yellow` | `fluent-marigold` or `material-yellow` |
+| `modern` | `material-grey`, `material-blue-grey` or `material-teal` |
+
+A removed string is treated like an unknown host theme name: the component keeps
+the supplied class name and falls back to the provider theme or the default
+`material-teal`. Update `display.theme` values and any stored preference strings.
+`createTheme()` also starts from `material-teal` now, so a partial theme that
+relied on the old base colours should set the affected tokens explicitly.
+
 ## ESM-only
 
 The packages are `"type": "module"`, expose only `import` conditions, and build

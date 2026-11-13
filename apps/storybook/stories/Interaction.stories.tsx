@@ -13,7 +13,7 @@ const meta = {
     resources,
     defaultItems: baseItems,
     activeLayerId: "highlight",
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 

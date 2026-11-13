@@ -1,7 +1,7 @@
 # RD-01: Foundation, Packages and Toolchain
 
 > **Document**: RD-01-foundation.md
-> **Status**: Draft
+> **Status**: Implemented — licence revision verified locally
 > **Created**: 2026-11-10
 > **Project**: Year Planner for React
 > **Depends On**: —
@@ -15,7 +15,7 @@ Establishes the repository, two-package public surface, build/test/documentation
 toolchain and release baseline for the Year Planner component. This RD owns the
 project setup so later RDs can focus on behavior rather than infrastructure.
 
-The repository is an open-source MIT project under the `blendsdk` GitHub
+The repository uses Year Planner Internal Use License 1.0 under the `blendsdk` GitHub
 organization. It is separate from the main BlendSDK SDK so server consumers do
 not inherit a React peer dependency.
 
@@ -46,7 +46,8 @@ not inherit a React peer dependency.
   checks; release gates use `verify:full`.
 - [ ] CI runs on Node 24 with React 19; browser tests run Chromium, Firefox
   and WebKit.
-- [ ] DCO check on every commit; MIT license; `CONTRIBUTING`, `CODE_OF_CONDUCT`,
+- [ ] Sign-off check on every commit; internal-use licence and explicit contribution
+  grant; `CONTRIBUTING`, `CODE_OF_CONDUCT`,
   `SECURITY`, issue/PR templates and `CODEOWNERS`.
 - [ ] `publint` and `@arethetypeswrong/cli` pass on both packs.
 - [ ] A clean-consumer test installs both packed tarballs into a fresh Vite app
@@ -63,7 +64,7 @@ not inherit a React peer dependency.
 - CJS, UMD, AMD or multi-framework adapters — R1 is ESM-only React.
 - A mandatory design system, Redux or a runtime CSS-in-JS dependency.
 - A backend, database, authentication or persistence layer.
-- Commercial licensing, CLA or a proprietary package.
+- Commercial pricing, licensing infrastructure or a separate proprietary package.
 
 ---
 
@@ -150,7 +151,7 @@ year-planner/
 
 | Decision | Options Considered | Chosen | Rationale | AR Ref |
 |---|---|---|---|---|
-| License | Commercial, open core, MIT | MIT + DCO | Open-source decision; no licensing business | AR #1 |
+| License | Internal-use source-available terms | Year Planner Internal Use License 1.0 + signed origin certification + contribution grant | Free internal business use; restrict redistribution and external services | [Refresh AR #18](../plans/licensing-and-theme-refresh/00-ambiguity-register.md) |
 | Package family | One package, two packages | Core + React | Enforces framework-neutral core and React adapter | AR #2 |
 | Repository | BlendSDK monorepo, separate | Separate | Independent release cadence; no React peer for server users | AR #3 |
 | Module format | ESM/CJS, ESM-only, UMD | ESM-only | Modern React tooling; lower packaging complexity | AR #26 |
@@ -184,8 +185,10 @@ year-planner/
    without importing internal paths.
 6. [ ] CI passes on React 19; the TS7 canary may fail without blocking the
    release job.
-7. [ ] The DCO check rejects a commit without `Signed-off-by`.
-8. [ ] `LICENSE` is MIT and the package manifests declare `"license": "MIT"`,
+7. [ ] The sign-off check (CI job `dco`) rejects a commit without `Signed-off-by`.
+8. [ ] Root and package `LICENSE` files contain identical complete Year Planner
+   Internal Use License 1.0 terms; both published manifests declare
+   `"license": "SEE LICENSE IN LICENSE"`,
    `"type": "module"`, `"files"` allowlist and `"sideEffects"` limited to CSS.
 9. [ ] `pnpm verify:full` is the documented release gate; `verify` omits
    browser/print/a11y checks deliberately.

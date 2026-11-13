@@ -12,7 +12,7 @@ const meta = {
     layers,
     resources,
     items: baseItems,
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 
@@ -60,7 +60,7 @@ export const LatestViewYear: Story = {
 export const ThirtySixMonthsExpanded: Story = {
   args: {
     range: { start: { year: 2027, month: 0 }, monthCount: 36 },
-    display: { theme: "modern", density: "expanded" },
+    display: { theme: "material-teal", density: "expanded" },
   },
 };
 

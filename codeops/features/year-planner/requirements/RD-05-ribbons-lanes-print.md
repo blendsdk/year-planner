@@ -1,7 +1,7 @@
 # RD-05: Continuous Ribbons, Lanes, Overflow and Print
 
 > **Document**: RD-05-ribbons-lanes-print.md
-> **Status**: Draft
+> **Status**: Implemented — print theme and boundary matrix verified
 > **Created**: 2026-11-10
 > **Project**: Year Planner for React
 > **Depends On**: RD-02, RD-03, RD-04
@@ -218,7 +218,7 @@ Fragment projection: **M**. Lane packing: **M**. Print pagination: **M**.
    without splitting a month row.
 10. [ ] The layout signature is identical for identical inputs and changes when
     an item, visibility state or month window changes.
-11. [ ] PRT-01: the 2017 yellow theme with OH annotations, ISO week numbers and
+11. [ ] PRT-01: the 2017 `fluent-marigold` theme with OH annotations, ISO week numbers and
     a ribbon prints on one A3 landscape page with all rows aligned and colors
     preserved.
 12. [ ] `fit` on an 18-month window scales to one page; if the scale would make

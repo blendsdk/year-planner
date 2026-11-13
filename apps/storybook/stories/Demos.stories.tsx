@@ -16,7 +16,7 @@ const meta = {
     resources,
     defaultItems: baseItems,
     activeLayerId: "highlight",
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 
@@ -211,7 +211,7 @@ function ContextMenuDemo(): ReactNode {
         defaultItems={baseItems}
         activeLayerId="highlight"
         showInspector={false}
-        display={{ theme: "classic-blue", showISOWeekNumbers: true }}
+        display={{ theme: "material-teal", showISOWeekNumbers: true }}
         onContextMenuRequest={(next) => {
           setRequest(next);
           setStatus(`${describeContextTarget(next.target)} · ${next.source}`);

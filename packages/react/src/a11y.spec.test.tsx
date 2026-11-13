@@ -132,6 +132,7 @@ describe("selection helpers", () => {
 
 describe("RD-09-AC-08: contrast helpers", () => {
   const presets = Object.entries(yearPlannerPresets);
+  const CELL_SURFACES = ["surface", "surfaceMuted", "weekend", "context"] as const;
 
   it("gives every preset a 4.5:1 ribbon text colour", () => {
     for (const [name, theme] of presets) {
@@ -144,29 +145,40 @@ describe("RD-09-AC-08: contrast helpers", () => {
     }
   });
 
-  it("gives every preset a 3:1 focus ring and border on its surface", () => {
+  it("gives every preset a 3:1 focus ring, border and text on every cell surface", () => {
     for (const [name, theme] of presets) {
-      expect(
-        contrastRatio(String(theme.focusRing), String(theme.surface)),
-        `${name} focus`,
-      ).toBeGreaterThanOrEqual(3);
-      expect(
-        contrastRatio(String(theme.border), String(theme.surface)),
-        `${name} border`,
-      ).toBeGreaterThanOrEqual(3);
+      for (const surfaceToken of CELL_SURFACES) {
+        const surface = String(theme[surfaceToken]);
+        expect(
+          contrastRatio(String(theme.focusRing), surface),
+          `${name} focus on ${surfaceToken}`,
+        ).toBeGreaterThanOrEqual(3);
+        expect(
+          contrastRatio(String(theme.border), surface),
+          `${name} border on ${surfaceToken}`,
+        ).toBeGreaterThanOrEqual(3);
+        expect(
+          contrastRatio(String(theme.textPrimary), surface),
+          `${name} text on ${surfaceToken}`,
+        ).toBeGreaterThanOrEqual(4.5);
+        expect(
+          contrastRatio(String(theme.textMuted), surface),
+          `${name} muted text on ${surfaceToken}`,
+        ).toBeGreaterThanOrEqual(4.5);
+      }
     }
   });
 
   it("picks the readable candidate for a light and a dark ribbon", () => {
-    const blue = yearPlannerPresets["classic-blue"];
+    const teal = yearPlannerPresets["material-teal"];
     expect(
-      readableTextColor(String(blue.ribbon), [String(blue.textPrimary), String(blue.textInverse)]),
-    ).toBe("#1b2329");
-    const modern = yearPlannerPresets.modern;
+      readableTextColor(String(teal.ribbon), [String(teal.textPrimary), String(teal.textInverse)]),
+    ).toBe("#000000");
+    const print = yearPlannerPresets.print;
     expect(
-      readableTextColor(String(modern.ribbon), [
-        String(modern.textPrimary),
-        String(modern.textInverse),
+      readableTextColor(String(print.ribbon), [
+        String(print.textPrimary),
+        String(print.textInverse),
       ]),
     ).toBe("#ffffff");
   });

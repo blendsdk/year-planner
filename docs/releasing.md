@@ -5,6 +5,11 @@
 
 ## Pre-release checklist
 
+- [ ] Root and package `LICENSE` files match; both package manifests declare
+      `SEE LICENSE IN LICENSE`. Review the [licensing guide](licensing.md),
+      earlier licence grants, contribution rights and asset provenance before
+      publishing the licence change. The visual-design rights question was
+      confirmed resolved by the owner on 2026-11-13.
 - [ ] `pnpm verify:full` passes on `main` (typecheck, lint, unit, component,
       browser, print, visual, accessibility, timezone, performance, benchmark
       and clean-consumer suites).
@@ -35,9 +40,14 @@
 3. Review both `CHANGELOG.md` files and the lockstep version.
 4. Commit with `git commit -s` so the commit carries
    `Signed-off-by: <name> <email>`, then open a pull request. Every CI job,
-   including the DCO (`dco`) check, runs because the PR is human-authored.
+   including the sign-off (`dco`) check, runs because the PR is human-authored.
 5. Merge after review and a green gate. The first published version is
    `0.3.0`; this procedure starts at `0.3.0`.
+
+The origin certification and contribution grant are defined in
+[CONTRIBUTING.md](https://github.com/blendsdk/year-planner/blob/main/CONTRIBUTING.md).
+They use project-specific terms rather than DCO 1.1; `dco` is the sign-off job's
+historical identifier.
 
 Do not use the Changesets GitHub action. This repository cannot create or approve PRs
 with the default workflow token on its current plan, and a token-created PR
@@ -90,6 +100,10 @@ Run these steps once, after the license and asset review above:
 
 `THIRD_PARTY_NOTICES.md` stays at the repository root. Neither package bundles
 third-party runtime code, so no package ships it.
+
+The internal-use licence applies to the copies offered under it. It does not
+revoke earlier MIT grants. Record the licence change in release notes; do not
+describe these restricted releases as open source or re-label earlier releases.
 
 ## Publish
 

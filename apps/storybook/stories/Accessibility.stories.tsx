@@ -14,17 +14,17 @@ const meta = {
     resources,
     defaultItems: baseItems,
     activeLayerId: "highlight",
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const ClassicBlue: Story = {};
+export const MaterialTeal: Story = {};
 
-export const ClassicYellow: Story = {
-  args: { display: { theme: "classic-yellow", showISOWeekNumbers: true } },
+export const FluentMarigold: Story = {
+  args: { display: { theme: "fluent-marigold", showISOWeekNumbers: true } },
 };
 
 export const HighContrast: Story = {
@@ -87,7 +87,7 @@ export const LongWindow36: Story = {
 };
 
 export const ExpandedDensity: Story = {
-  args: { display: { theme: "classic-blue", density: "expanded", showISOWeekNumbers: true } },
+  args: { display: { theme: "material-teal", density: "expanded", showISOWeekNumbers: true } },
 };
 
 export const SkipLinkFocused: Story = {
@@ -129,8 +129,8 @@ export const RejectedStatus: Story = {
 };
 
 describeStories({
-  ClassicBlue,
-  ClassicYellow,
+  MaterialTeal,
+  FluentMarigold,
   HighContrast,
   SelectedItem,
   DateRangeSelected,

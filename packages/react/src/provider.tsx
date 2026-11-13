@@ -24,7 +24,7 @@ export function useYearPlannerTheme(): YearPlannerTheme | undefined {
  * @public
  */
 export const YearPlannerProvider: FC<{
-  /** Partial theme merged over `classic-blue`. */
+  /** Partial theme merged over `material-teal`. */
   theme?: Partial<YearPlannerTheme>;
   /** Descendant planners that receive the theme. */
   children: ReactNode;

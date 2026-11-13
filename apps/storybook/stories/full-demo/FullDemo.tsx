@@ -3,6 +3,7 @@ import {
   YearPlanner,
   type YearPlannerHandle,
   type YearPlannerThemeName,
+  yearPlannerPresets,
 } from "@blendsdk/react-year-planner";
 import {
   addDays,
@@ -25,6 +26,19 @@ import {
 import { DEMO_YEAR, LAYERS, type ProjectMeta, SEED_ITEMS } from "./seed";
 import { clearDemo, loadDemo, saveDemo } from "./storage";
 import "./full-demo.css";
+
+const THEME_NAMES = Object.keys(yearPlannerPresets) as YearPlannerThemeName[];
+const MATERIAL_THEME_NAMES = THEME_NAMES.filter((name) => name.startsWith("material-"));
+const FLUENT_THEME_NAMES = THEME_NAMES.filter((name) => name.startsWith("fluent-"));
+const UTILITY_THEME_NAMES = THEME_NAMES.filter(
+  (name) => !name.startsWith("material-") && !name.startsWith("fluent-"),
+);
+
+/** Turns a preset id into a short option label, for example `fluent-marigold`. */
+function presetLabel(name: string): string {
+  const label = name.replace(/^(material|fluent)-/, "").replace(/-/g, " ");
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
 
 /** The three project statuses used by the demo. */
 type ProjectStatus = "planned" | "active" | "complete";
@@ -150,7 +164,7 @@ export function FullDemo(): ReactNode {
   const [filter, setFilter] = useState<PlannerFilter>({});
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"" | ProjectStatus>("");
-  const [theme, setTheme] = useState<YearPlannerThemeName>("classic-blue");
+  const [theme, setTheme] = useState<YearPlannerThemeName>("material-teal");
   const [layout, setLayout] = useState<"lanes" | "fit">("lanes");
   const [dialog, setDialog] = useState<DialogTarget>();
   const [form, setForm] = useState<ProjectForm>({
@@ -543,10 +557,27 @@ export function FullDemo(): ReactNode {
             value={theme}
             onChange={(event) => setTheme(event.target.value as YearPlannerThemeName)}
           >
-            <option value="classic-blue">Classic blue</option>
-            <option value="classic-yellow">Classic yellow</option>
-            <option value="modern">Modern</option>
-            <option value="high-contrast">High contrast</option>
+            <optgroup label="Material 2014">
+              {MATERIAL_THEME_NAMES.map((name) => (
+                <option key={name} value={name}>
+                  {presetLabel(name)}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Fluent UI v9">
+              {FLUENT_THEME_NAMES.map((name) => (
+                <option key={name} value={name}>
+                  {presetLabel(name)}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Utility">
+              {UTILITY_THEME_NAMES.map((name) => (
+                <option key={name} value={name}>
+                  {presetLabel(name)}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </label>
         <label>

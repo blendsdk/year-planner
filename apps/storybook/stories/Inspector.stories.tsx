@@ -22,7 +22,7 @@ const meta = {
     resources,
     items: baseItems,
     defaultSelection: { dates: [], items: ["booking"] },
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 

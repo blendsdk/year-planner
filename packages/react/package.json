@@ -2,7 +2,7 @@
   "name": "@blendsdk/react-year-planner",
   "version": "0.3.0",
   "type": "module",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "description": "React classic year planner view for Year Planner for React",
   "repository": {
     "type": "git",
@@ -12,6 +12,7 @@
     "dist",
     "README.md",
     "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
     "CHANGELOG.md"
   ],
   "sideEffects": [
@@ -33,7 +34,7 @@
     }
   },
   "scripts": {
-    "build": "vite build && cp src/styles.css dist/styles.css && tsc -p tsconfig.build.json",
+    "build": "vite build && node ../../scripts/minify-css.mjs src/styles.css dist/styles.css && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run -c vitest.config.ts --coverage",
     "test:watch": "vitest -c vitest.config.ts",

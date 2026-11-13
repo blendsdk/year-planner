@@ -9,15 +9,16 @@ into planner variables.
 ## Use a preset
 
 ```tsx
-<YearPlanner year={2027} display={{ theme: "classic-yellow" }} />
+<YearPlanner year={2027} display={{ theme: "fluent-marigold" }} />
 ```
 
-The presets are `classic-blue`, `classic-yellow`, `modern`, `high-contrast` and
-`print`.
+The presets are 19 Material 2014 families, 35 Fluent UI v9 families and the
+`high-contrast` and `print` utilities. `material-teal` is the default; the full
+list is in the [theming reference](../theming.md#presets).
 
 ## Build a theme
 
-`createTheme` merges partial tokens over `classic-blue` and returns a complete
+`createTheme` merges partial tokens over `material-teal` and returns a complete
 theme. It changes both the CSS variables and the JavaScript geometry when the
 token is a geometry token.
 

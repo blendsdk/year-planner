@@ -24,7 +24,7 @@ export function BenchDemo() {
   const items = positiveInteger(params, "items", 500);
   const months = positiveInteger(params, "months", 14);
   const density = params.get("density") === "expanded" ? "expanded" : "compact";
-  const theme = (params.get("theme") ?? "classic-blue") as YearPlannerThemeName;
+  const theme = (params.get("theme") ?? "material-teal") as YearPlannerThemeName;
   const model = useMemo(() => buildBenchModel({ items, months }), [items, months]);
 
   useEffect(() => {

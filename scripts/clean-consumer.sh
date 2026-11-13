@@ -105,7 +105,7 @@ import { YearPlanner } from "@blendsdk/react-year-planner";
 import "@blendsdk/react-year-planner/styles.css";
 
 createRoot(document.getElementById("root") as HTMLElement).render(
-  <YearPlanner year={2016} display={{ theme: "classic-blue" }} />
+  <YearPlanner year={2016} display={{ theme: "material-teal" }} />
 );
 TSX
 

@@ -7,7 +7,7 @@ Everything below runs the real component; nothing is a mock.
 | --- | --- |
 | [Full construction demo](./full-demo.md) | A working 2027 construction plan with localStorage, allocation and context actions |
 | [Interactive demo](./interactive.md) | Fit-to-host grid, selection, context menu and hover tooltips |
-| [Themes](./themes.md) | Five presets, token overrides and dark surfaces |
+| [Themes](./themes.md) | 56 presets, token overrides and light surfaces |
 | [Print](./print.md) | A3 pagination, fit-one-page and the print theme |
 | [Design systems](./adapters.md) | Fluent UI v9 and MUI token adapters |
 | [Story index](../stories.md) | Every built story, grouped and searchable |

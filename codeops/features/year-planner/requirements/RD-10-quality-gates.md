@@ -1,7 +1,7 @@
 # RD-10: Quality Gates, Performance, Security and Browser Support
 
 > **Document**: RD-10-quality-gates.md
-> **Status**: Draft
+> **Status**: Implemented — browser, visual and print evidence current; manual audit parked
 > **Created**: 2026-11-10
 > **Project**: Year Planner for React
 > **Depends On**: RD-01 through RD-09
@@ -35,7 +35,7 @@ recorded measurement.
 - [ ] Playwright E2E for selection, multi-select, Ctrl/Cmd/Shift, marquee,
   paint/erase/undo/redo, create/delete, move/resize, cancel, visibility,
   rejection/rollback, keyboard-only and touch-edit.
-- [ ] Visual regression baselines for 2016 blue, 2017 yellow, 2027 overlaps,
+- [ ] Visual regression baselines for 2016 `material-teal`, 2017 `fluent-marigold`, 2027 overlaps,
   12/14/18/24/36-month layouts, compact/expanded overflow, high contrast and print.
 - [ ] A3 print verification: generated PDF page size is A3 landscape; no row
   clipping; month labels, weekends, ISO weeks and ribbons align.
@@ -180,7 +180,7 @@ Test harness and evidence: **L**. Performance harness: **M**. Security tests:
    tests pass.
 5. [ ] Date-only tests pass under the three specified timezones.
 6. [ ] A3 PDF output reports 420×297 mm landscape and shows no clipped month
-   row for 12, 14, 18, 24 and 36-month layouts; PRT-01 (2017 yellow, events,
+   row for 12, 14, 18, 24 and 36-month layouts; PRT-01 (2017 `fluent-marigold`, events,
    ISO dates) prints on one page.
 7. [ ] axe reports no serious/critical violations; the manual audit is recorded
    with browser, AT and date.

@@ -1,21 +1,197 @@
-MIT License
+Year Planner Internal Use License 1.0
 
 Copyright (c) 2026 BlendSDK
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Definitions and acceptance
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+"Software" means the Year Planner for React source code, compiled code,
+styles, assets and documentation supplied under this License, including
+copies, portions and modified versions. Separately licensed third-party
+material is excluded and remains subject to its own terms.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+"Licensor" means each copyright holder offering its rights in the Software
+under this License. Each Licensor grants only rights it owns or controls.
+
+"You" means the individual or legal entity exercising rights under this
+License. For a legal entity, "Your Organization" includes that entity and
+entities controlling, controlled by, or under common control with it, but
+only while that control exists. "Control" means ownership of more than
+50 percent of the voting interests or the legal power to direct management.
+For an individual, "Your Organization" means that individual.
+
+"Authorized Users" means You and Your Organization's employees, officers
+and contractors acting solely on Your Organization's behalf for its
+internal operations. Customers and other external users are not Authorized
+Users merely because they have accounts, pay fees, or are called contractors.
+
+By exercising rights granted by this License, You accept its conditions.
+If acting for an entity, You must have authority to accept on its behalf.
+Rights You have independently of this License are preserved by section 8.
+
+2. Free internal-use grant
+
+Subject to this License, each Licensor grants You a worldwide,
+non-exclusive, royalty-free copyright license to obtain, inspect, copy,
+run, test, modify and integrate the Software solely for Your Organization's
+internal operations, or Your own private personal use. This includes
+development, evaluation, production, backups and disaster recovery.
+For-profit businesses may exercise these rights without a license fee.
+There is no user, revenue or time limit while You comply with this License.
+
+Internal operations include planning Your Organization's own staff,
+resources and work, including work performed for customers. They do not
+include providing the Software or its functionality to others as a product
+or service. You need not publish Your source code or internal modifications.
+
+Each Licensor also grants a non-exclusive, worldwide, royalty-free patent
+license for the permitted activities, limited to patent claims it can
+license that are necessarily infringed by the Software as it supplied it.
+No rights to trademarks, service marks or branding are granted, except to
+retain required notices and truthfully identify the Software's origin.
+
+3. Internal deployment, browsers and service providers
+
+You may make the copies needed to deploy the Software within Your
+Organization, including delivery of JavaScript, CSS and related assets to
+Authorized Users' browsers and devices. Private repositories, private
+package registries, build systems and internal application deployments are
+permitted. You must restrict access to Authorized Users and the service
+providers described below, using reasonable access controls.
+
+You may engage contractors and hosting, build, storage or other infrastructure
+providers to develop, operate or maintain a permitted deployment solely on
+Your Organization's behalf. You may supply them the copies needed for that
+work, including on third-party cloud infrastructure. They must be bound by
+contractual duties to limit use and access to that work, protect the copies,
+and stop use and delete them when no longer needed, except legally required
+or routine backup copies that remain protected and are not used otherwise.
+You are responsible for their compliance when acting on Your behalf.
+
+These limited copying and access permissions are exceptions to section 4;
+they do not permit a provider to offer its own product or service containing
+the Software to customers. Charging for contracted development or hosting
+of Your permitted internal deployment is allowed. A provider may serve
+multiple organizations only through separate deployments on behalf of each
+organization exercising its own rights under this License; it may not use
+this exception to offer a shared or white-label planner service.
+
+4. No redistribution or external service
+
+Except as expressly permitted by sections 3, 5, 6 and 8, You may not:
+
+(a) distribute, publish, sell, rent, sublicense or otherwise supply the
+    Software to anyone outside Your Organization, alone or incorporated in
+    an application, library, template, container, SDK or other product;
+(b) make the Software or its functionality available to customers or other
+    external users, whether as SaaS (software as a service), a hosted or
+    managed service, an API, a customer portal or another network service;
+(c) use the Software to operate a service that processes third parties'
+    planning requests on their behalf, even if they receive only outputs;
+(d) enable another person to do any of the above on Your behalf.
+
+These restrictions apply to original and modified versions, source and
+compiled forms, free and paid offerings, and direct and indirect access.
+An external user's own internal business purpose does not make a service
+You provide to that user an internal deployment of Your Organization.
+An externally hosted deployment used only as permitted by section 3 is
+allowed; the location of a server does not determine whether use is internal.
+
+5. Data and outputs
+
+You retain Your rights in Your data and independently created material.
+You may share, publish or sell static outputs from permitted use, such as
+printed plans, PDF exports, screenshots and exported planning data,
+including to customers. To the extent an output reproduces the Software's
+visual appearance, permission to share that appearance with the output is
+included. This permission does not cover Software code, reusable Software
+assets, substantial copies of its documentation, or interactive applications.
+It does not authorize the external services prohibited by section 4.
+
+6. Notices, contributions and public repository access
+
+Keep this License and applicable copyright and attribution notices with
+all permitted copies of the Software. For bundled browser deployments,
+they may be provided in an accompanying third-party notices file or a legal
+notices page accessible to Authorized Users; no visible planner badge is
+required. Mark modified source files as modified without misrepresenting
+their origin. Retain applicable third-party notices.
+
+You may submit patches and other contributions to the Licensor through the
+project's designated contribution channels. This is a limited exception to
+section 4, subject to the contribution terms made available by the project.
+Using or modifying the Software alone does not transfer ownership of Your
+changes or grant the Licensor rights in changes You do not submit.
+
+Where the Licensor publishes the Software on a repository-hosting service,
+this License does not restrict rights the Licensor separately grants under
+that service's terms, including GitHub's in-service viewing and forking
+rights. Those rights do not by themselves authorize external distribution
+or external services beyond the scope of that separate grant. You may use
+Licensor-operated public demos for evaluation, including receiving the
+browser copies needed for that evaluation, without a further reuse grant.
+
+7. Ownership and separate permissions
+
+The Licensor retains ownership of its Software. All rights not expressly
+granted are reserved. You may request separate written permission for uses
+outside this License from the project maintainer through
+https://github.com/blendsdk/year-planner. No such permission is promised or
+implied by public source access, a download, or silence.
+
+This License does not prevent a rights holder from using its own work or
+offering it under other terms, including in commercial solutions, to the
+extent it has the necessary rights. It does not grant that rights holder
+ownership of anyone else's work.
+
+8. Earlier licenses, third-party rights and mandatory law
+
+This License applies to copies offered under it. It does not revoke,
+replace or narrow rights already granted under MIT or another license for
+earlier copies or separately licensed material. Those grants continue under
+their own terms. Possession of an earlier licensed copy does not itself
+grant that earlier license for new material offered only under this License.
+
+Nothing here restricts fair use, fair dealing or other rights that cannot
+lawfully be restricted, or changes third-party license obligations.
+
+9. Termination and reinstatement
+
+Your rights under this License terminate automatically if You breach its
+conditions. You must stop the activities that require those rights and
+remove or disable access to copies made under this License. You may retain
+protected archival copies required by law, but may not otherwise use them.
+
+For Your first breach, Your rights are automatically reinstated from the
+date You fully cure it, if You do so within 30 days after You first become
+aware of it or receive notice of it, whichever occurs first. Otherwise,
+reinstatement requires the Licensor's written consent. Reinstatement does
+not erase liability for earlier breaches. Sections 7, 8, 10, 11 and 12
+survive termination, as do the restrictions on retained copies.
+
+10. No warranty or support obligation
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS PROVIDED
+"AS IS" AND "AS AVAILABLE", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, TITLE AND NON-INFRINGEMENT. NO LICENSOR IS REQUIRED TO PROVIDE
+SUPPORT, MAINTENANCE, UPDATES OR CONTINUED AVAILABILITY.
+
+11. Limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, NO LICENSOR OR CONTRIBUTOR
+IS LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM OR IN
+CONNECTION WITH THE SOFTWARE OR THIS LICENSE, WHETHER IN CONTRACT, TORT OR
+OTHERWISE, INCLUDING LOST PROFITS, LOST DATA, BUSINESS INTERRUPTION OR
+INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES, EVEN IF ADVISED OF
+THE POSSIBILITY. NOTHING HERE EXCLUDES LIABILITY THAT CANNOT LAWFULLY BE
+EXCLUDED OR LIMITS NON-WAIVABLE RIGHTS.
+
+12. Interpretation
+
+If a provision is unenforceable, it is limited to the minimum extent needed
+under applicable law and the remaining provisions continue in effect.
+Failure to enforce a provision is not a waiver. This License and any
+applicable separate written grant state the permissions for the Software;
+summaries do not expand them. A separate written grant controls to the
+extent of an express conflict. Later license versions do not change the
+terms for copies You already received under this version.

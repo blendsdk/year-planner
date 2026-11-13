@@ -1,6 +1,6 @@
 # Documentation
 
-Year Planner for React is an open-source React component for long-range annual
+Year Planner for React is a source-available React component for long-range annual
 planning. This page is the entry point for the developer guides.
 
 ## Documentation map
@@ -8,6 +8,7 @@ planning. This page is the entry point for the developer guides.
 | Topic | Page |
 | ----- | ---- |
 | Getting started | [getting-started.md](getting-started.md) |
+| Classic year layout | [classic-year-layout.md](classic-year-layout.md) |
 | Controlled API | [controlled-api.md](controlled-api.md) |
 | Visibility semantics | [visibility.md](visibility.md) |
 | Selection and keyboard | [interaction.md](interaction.md) (keyboard map: [accessibility.md](accessibility.md)) |
@@ -21,6 +22,7 @@ planning. This page is the entry point for the developer guides.
 | Limitations | [limitations.md](limitations.md) |
 | Migration | [migration.md](migration.md) |
 | FAQ | [faq.md](faq.md) |
+| Licence and permitted uses | [licensing.md](licensing.md) |
 
 ## Reference and evidence
 

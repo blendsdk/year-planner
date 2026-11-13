@@ -14,7 +14,7 @@
   <a href="https://github.com/blendsdk/year-planner/actions/workflows/ci.yml"><img src="https://github.com/blendsdk/year-planner/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://blendsdk.github.io/year-planner/"><img src="https://img.shields.io/badge/docs-live-1d4e89" alt="Documentation" /></a>
   <a href="https://blendsdk.github.io/year-planner/storybook/"><img src="https://img.shields.io/badge/Storybook-catalogue-2a9d8f" alt="Storybook" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-f6bd60" alt="MIT" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-internal--use-f6bd60" alt="Internal-use license" /></a>
 </p>
 
 <img src="docs/public/screenshots/readme-hero.png" alt="Northwind Construction's 2027 plan in the Year Planner" width="100%" />
@@ -24,7 +24,7 @@
 | | |
 | --- | --- |
 | **12–36 months, 37 columns** — a classic Saturday-first year grid with context months, ISO week numbers and continuous ribbons across month rows. | **Fit to the host** — columns scale horizontally and rows choose a 24 px lane budget, so a 14-month view fits a laptop without shrinking hit targets. |
-| **Built for 2,000 items** — one projection per model, a max-end lane index and row-scoped selection keep clicks fast. | **CSS-variable theming** — five presets, host token overrides and optional Fluent UI v9 and MUI adapters. |
+| **Built for 2,000 items** — one projection per model, a max-end lane index and row-scoped selection keep clicks fast. | **CSS-variable theming** — 56 presets, host token overrides and optional Fluent UI v9 and MUI adapters. |
 | **Accessible by default** — a roving grid, live-region announcements, 24 px targets, reduced-motion support and automated axe coverage. | **A3 print output** — a hidden print tree paginates a 12–36 month window into one to three A3 landscape pages. |
 
 | Fit to the host | Host-owned context menu |
@@ -103,7 +103,7 @@ Give the planner a bounded parent; it measures that region for the fit. See
 | **[Getting started](https://blendsdk.github.io/year-planner/getting-started.html)** | Install, render, select and print |
 | **[Tutorials](https://blendsdk.github.io/year-planner/tutorials/first-planner.html)** | First planner, controlled commands, theming and print |
 | **[Examples](https://blendsdk.github.io/year-planner/examples/)** | Full demo, themes, print and design systems |
-| **[Storybook](https://blendsdk.github.io/year-planner/storybook/)** | **184 stories across 16 files**, including the full demo |
+| **[Storybook](https://blendsdk.github.io/year-planner/storybook/)** | **183 stories across 16 files**, including the full demo |
 | **[API reference](https://blendsdk.github.io/year-planner/api/)** | Generated TypeDoc for both packages |
 | [Repository guides](docs/README.md) | Architecture, performance, security, test report and ADRs |
 
@@ -125,7 +125,7 @@ commands, interaction, hidden-data, design-system and print samples.
 | `@blendsdk/react-year-planner` | React 19 component, interaction engine, renderer and adapters |
 
 - **ESM only**, Node `>=20.19`, React 19 peer dependency.
-- **MIT licensed**; contributions use the Developer Certificate of Origin.
+- **Source-available, free for internal use**; see the [licensing guide](docs/licensing.md).
 - The packages are prepared at `0.3.0`; the first npm publication is pending.
 
 ## Development
@@ -160,5 +160,12 @@ release.
 
 ## License
 
-[MIT](LICENSE). Third-party notices are in
+[Year Planner Internal Use License 1.0](LICENSE). Free use and modification for
+internal business operations, including internal cloud hosting and browser
+delivery to authorized staff and contractors. Redistribution and customer-facing
+SaaS require separate permission. Earlier MIT grants remain valid for material
+covered by those grants. See [permitted uses and examples](docs/licensing.md).
+
+Contributions require the origin certification and contribution grant in
+[CONTRIBUTING.md](CONTRIBUTING.md). Third-party notices are in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

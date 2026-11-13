@@ -228,7 +228,7 @@ describe("RD-10-AC-02: repository traceability", () => {
   it("defaults through RD-13", () => {
     const result = checkTraceability(process.cwd());
     expect(result.ok).toBe(true);
-    expect(result.expected).toHaveLength(193);
+    expect(result.expected).toHaveLength(196);
   });
 
   it("covers RD-01 through RD-13", () => {

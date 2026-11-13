@@ -8,12 +8,15 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 const WINDOWS: readonly (readonly [number, number])[] = [
   [12, 1],
   [14, 1],
+  [15, 2],
   [18, 2],
   [24, 2],
+  [28, 2],
+  [29, 3],
   [36, 3],
 ];
 
-test.describe("RD-10-AC-06: A3 print matrix @print", () => {
+test.describe("RD-05-AC-13 / RD-10-AC-06: A3 print matrix @print", () => {
   test.beforeEach(async ({ page, browserName }) => {
     test.skip(browserName !== "chromium", "PDF generation is Chromium-only");
     await page.setViewportSize({ width: 1600, height: 1400 });
@@ -62,12 +65,12 @@ test.describe("RD-10-AC-06: A3 print matrix @print", () => {
     });
   }
 
-  test("RD-05-AC-11 / RD-10-AC-06: PRT-01 keeps the 2017 yellow fixture on one A3 page", async ({
+  test("RD-05-AC-11 / RD-10-AC-06: PRT-01 keeps the 2017 marigold fixture on one A3 page", async ({
     page,
   }) => {
     await page.goto("/?print=prt01");
     await expect(page.getByTestId("year")).toHaveValue("2017");
-    await expect(page.getByTestId("theme")).toHaveValue("classic-yellow");
+    await expect(page.getByTestId("theme")).toHaveValue("fluent-marigold");
     await page.emulateMedia({ media: "print" });
     const prtPage = page.locator('[data-yp-part="print-page"]');
     await expect(prtPage).toHaveCount(1);

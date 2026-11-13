@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const demoPort = Number(process.env.PLAYWRIGHT_DEMO_PORT ?? 4173);
+const demoUrl = `http://127.0.0.1:${demoPort}`;
+
 /**
  * End-to-end browser matrix.
  *
@@ -20,14 +23,13 @@ export default defineConfig({
     ["html", { open: "never" }],
   ],
   use: {
-    baseURL: "http://127.0.0.1:4173",
+    baseURL: demoUrl,
     trace: "retain-on-failure",
   },
   webServer: [
     {
-      command:
-        "pnpm --filter @blendsdk/year-planner-demo exec vite --host 127.0.0.1 --port 4173 --strictPort",
-      url: "http://127.0.0.1:4173",
+      command: `pnpm --filter @blendsdk/year-planner-demo exec vite --host 127.0.0.1 --port ${demoPort} --strictPort`,
+      url: demoUrl,
       reuseExistingServer: true,
       timeout: 120_000,
     },

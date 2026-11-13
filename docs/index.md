@@ -28,7 +28,7 @@ features:
     details: One projection per model, a max-end lane index and row-scoped selection keep clicks fast on a full year of work.
   - icon: 🎨
     title: CSS-variable theming
-    details: Five built-in themes, host token overrides and optional Fluent UI v9 and MUI adapters.
+    details: 56 built-in themes, host token overrides and optional Fluent UI v9 and MUI adapters.
   - icon: ♿
     title: Accessible by default
     details: A roving grid, live-region announcements, 24 px targets, reduced-motion support and automated axe coverage.

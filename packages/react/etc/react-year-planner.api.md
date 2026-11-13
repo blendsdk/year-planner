@@ -330,7 +330,7 @@ export interface YearPlannerSlotProps {
 export type YearPlannerTheme = Record<YearPlannerTokenName, string | number>;
 
 // @public
-export type YearPlannerThemeName = "classic-blue" | "classic-yellow" | "modern" | "high-contrast" | "print";
+export type YearPlannerThemeName = "material-red" | "material-pink" | "material-purple" | "material-deep-purple" | "material-indigo" | "material-blue" | "material-light-blue" | "material-cyan" | "material-teal" | "material-green" | "material-light-green" | "material-lime" | "material-yellow" | "material-amber" | "material-orange" | "material-deep-orange" | "material-brown" | "material-grey" | "material-blue-grey" | "fluent-red" | "fluent-green" | "fluent-dark-orange" | "fluent-yellow" | "fluent-berry" | "fluent-light-green" | "fluent-marigold" | "fluent-dark-red" | "fluent-cranberry" | "fluent-pumpkin" | "fluent-peach" | "fluent-gold" | "fluent-brass" | "fluent-brown" | "fluent-forest" | "fluent-seafoam" | "fluent-dark-green" | "fluent-light-teal" | "fluent-teal" | "fluent-steel" | "fluent-blue" | "fluent-royal-blue" | "fluent-cornflower" | "fluent-navy" | "fluent-lavender" | "fluent-purple" | "fluent-grape" | "fluent-lilac" | "fluent-pink" | "fluent-magenta" | "fluent-plum" | "fluent-beige" | "fluent-mink" | "fluent-platinum" | "fluent-anchor" | "high-contrast" | "print";
 
 // @public
 export type YearPlannerTokenName = "surface" | "surfaceMuted" | "weekend" | "context" | "border" | "textPrimary" | "textMuted" | "textInverse" | "focusRing" | "selectionFill" | "selectionOutline" | "highlight" | "ribbon" | "annotation" | "foreground" | "rowHeight" | "laneHeight" | "monthBandWidth" | "weekendWidth" | "weekdayWidth" | "fontFamily" | "fontSize" | "fontWeight" | "printScale";

@@ -1,4 +1,8 @@
-import { YearPlanner, type YearPlannerThemeName } from "@blendsdk/react-year-planner";
+import {
+  YearPlanner,
+  type YearPlannerThemeName,
+  yearPlannerPresets,
+} from "@blendsdk/react-year-planner";
 import type { PlannerItem, PlannerLayer } from "@blendsdk/year-planner-core";
 import { Button as FluentButton, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { createTheme, Button as MuiButton, ThemeProvider } from "@mui/material";
@@ -6,6 +10,19 @@ import { useState } from "react";
 import { BenchDemo } from "./BenchDemo.js";
 import { CommandsDemo } from "./CommandsDemo.js";
 import { InteractionDemo } from "./InteractionDemo.js";
+
+const THEME_NAMES = Object.keys(yearPlannerPresets) as YearPlannerThemeName[];
+const MATERIAL_THEME_NAMES = THEME_NAMES.filter((name) => name.startsWith("material-"));
+const FLUENT_THEME_NAMES = THEME_NAMES.filter((name) => name.startsWith("fluent-"));
+const UTILITY_THEME_NAMES = THEME_NAMES.filter(
+  (name) => !name.startsWith("material-") && !name.startsWith("fluent-"),
+);
+
+/** Turns a preset id into a short option label, for example `fluent-marigold`. */
+function presetLabel(name: string): string {
+  const label = name.replace(/^(material|fluent)-/, "").replace(/-/g, " ");
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
 
 const groups = [
   { id: "ops", name: "Operations" },
@@ -170,7 +187,7 @@ export function App() {
   const fitNone = new URLSearchParams(search).get("fit") === "none";
   const contextMode = new URLSearchParams(search).get("context") === "1";
   const [theme, setTheme] = useState<YearPlannerThemeName>(
-    prt01Mode ? "classic-yellow" : "classic-blue",
+    prt01Mode ? "fluent-marigold" : "material-teal",
   );
   const initialMonths = Number(new URLSearchParams(search).get("months") ?? 14);
   const [months, setMonths] = useState(
@@ -353,11 +370,27 @@ export function App() {
             value={theme}
             onChange={(event) => setTheme(event.target.value as YearPlannerThemeName)}
           >
-            <option value="classic-blue">Classic blue</option>
-            <option value="classic-yellow">Classic yellow</option>
-            <option value="modern">Modern</option>
-            <option value="high-contrast">High contrast</option>
-            <option value="print">Print</option>
+            <optgroup label="Material 2014">
+              {MATERIAL_THEME_NAMES.map((name) => (
+                <option key={name} value={name}>
+                  {presetLabel(name)}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Fluent UI v9">
+              {FLUENT_THEME_NAMES.map((name) => (
+                <option key={name} value={name}>
+                  {presetLabel(name)}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Utility">
+              {UTILITY_THEME_NAMES.map((name) => (
+                <option key={name} value={name}>
+                  {presetLabel(name)}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </label>
         <label>
@@ -369,8 +402,11 @@ export function App() {
           >
             <option value={12}>12 months</option>
             <option value={14}>14 months</option>
+            <option value={15}>15 months</option>
             <option value={18}>18 months</option>
             <option value={24}>24 months</option>
+            <option value={28}>28 months</option>
+            <option value={29}>29 months</option>
             <option value={36}>36 months</option>
           </select>
         </label>

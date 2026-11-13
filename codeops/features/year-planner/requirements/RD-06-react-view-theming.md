@@ -1,7 +1,7 @@
 # RD-06: React View, Theming and Style Integration
 
 > **Document**: RD-06-react-view-theming.md
-> **Status**: Draft
+> **Status**: Implemented — 56-theme catalogue verified
 > **Created**: 2026-11-10
 > **Project**: Year Planner for React
 > **Depends On**: RD-03, RD-04, RD-05
@@ -41,8 +41,14 @@ replace hit-testing, focus or geometry.
   `@layer year-planner.base, theme, components, overrides`.
 - [ ] `createTheme(tokens)` returns a typed theme; `YearPlannerProvider` is
   optional; CSS variables work without React context.
-- [ ] Presets: `classic-blue`, `classic-yellow`, `modern`, `high-contrast`,
-  `print`.
+- [ ] Presets: 19 Material 2014 named colour families (`material-*`), 35 Fluent
+  UI v9 named colour families (`fluent-*`), plus monochrome `high-contrast` and
+  `print`. All palette themes have light surfaces. Default: `material-teal`.
+- [ ] Remove `classic-blue`, `classic-yellow` and `modern` without aliases.
+  Removed string names follow the existing custom-name provider/default fallback.
+  Official blue/yellow families remain part of the new palette inventory.
+- [ ] Preserve the 24-token API and shared geometry. Palette data is local and
+  attributed; built-in themes require no Fluent/MUI runtime dependency.
 - [ ] Consumers can override via `className`, `style`, `cssVars`, stable
   `data-yp-part` attributes and slot components.
 - [ ] `unstyled` keeps structural CSS but removes decorative defaults.
@@ -198,7 +204,7 @@ logs a development warning and ignores `defaultItems`.
 | `interaction.touchEditing` | `auto` |
 | `interaction.marquee` | `items` |
 | `display.density` | `compact` |
-| `display.theme` | `classic-blue` |
+| `display.theme` | `material-teal` |
 | `display.zoom` | `1` |
 | `display.locale` | `en-US` |
 | `display.displayTimeZone` | `UTC` |
@@ -385,8 +391,8 @@ keyboard resize is provided by the inspector's requestCommand action.
 
 :where(.yp-root) {
   --yp-surface: #fff;
-  --yp-weekend: #e3f7fc;
-  --yp-ribbon: #8358c6;
+  --yp-weekend: #b2dfdb;
+  --yp-ribbon: #009688;
 }
 ```
 
@@ -436,6 +442,7 @@ Framework adapters: **S**. Inspector/tooltip: **M**.
 | Locale | Host default, explicit prop | `en-US` + Gregorian | SSR determinism | AR #51 |
 | CSP | Claim safe, document allowance | Document `style-src-attr` | Honest policy | AR #52 |
 | Renderer | HTML/SVG fixed, evidence | Spike decides | Avoid irreversible coupling | AR #11, #57 |
+| Palette refresh | Named families, generated tonal themes | 19 Material + 35 Fluent; two monochrome utilities | Complete named inventory using the existing API | [Refresh AR #2–3, #8–11](../plans/licensing-and-theme-refresh/00-ambiguity-register.md) |
 
 ---
 
@@ -457,8 +464,8 @@ Framework adapters: **S**. Inspector/tooltip: **M**.
 
 ## Acceptance Criteria
 
-1. [ ] Switching `classic-blue` to `classic-yellow` changes only theme tokens;
-   layout geometry and dates are identical.
+1. [ ] Switching between any of the 56 presets changes colours while layout
+   geometry and dates remain identical; print retains its existing scale value.
 2. [ ] A consumer override of `--yp-ribbon` changes ribbon color without
    editing package CSS.
 3. [ ] A Fluent UI v9 Button renders in a cell and in the inspector; an MUI
@@ -496,4 +503,9 @@ Framework adapters: **S**. Inspector/tooltip: **M**.
     `requestCommand` calls use the same validation/read-only pipeline as pointer
     edits; a read-only item is rejected with `READ_ONLY`.
 18. [ ] Security requirements verified: no raw HTML, no CSS injection from
-    untrusted metadata, hidden items absent from render slots.
+     untrusted metadata, hidden items absent from render slots.
+19. [ ] The preset catalogue contains exactly the approved 54 palette names and
+     two utility names. `createTheme()` and the component default to
+     `material-teal`; removed names are not aliases. Local palette values and
+     token mapping match the approved refresh specification, and utility
+     colours are monochrome. See [refresh AR #8–11](../plans/licensing-and-theme-refresh/00-ambiguity-register.md).

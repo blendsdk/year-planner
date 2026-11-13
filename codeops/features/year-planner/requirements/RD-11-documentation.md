@@ -1,7 +1,7 @@
 # RD-11: Documentation, Storybook and API Reference
 
 > **Document**: RD-11-documentation.md
-> **Status**: Draft
+> **Status**: Implemented — guide and catalogue documentation verified
 > **Created**: 2026-11-10
 > **Project**: Year Planner for React
 > **Depends On**: RD-01 through RD-10
@@ -30,16 +30,16 @@ accessibility/performance evidence.
 - [ ] Storybook is exhaustive: every meaningful component state gets a story,
   and contributors should err on the side of adding more stories.
 - [ ] Storybook 10 site with stories for:
-  - 2016 classic-blue, 2017 classic-yellow, 2027 overlaps;
+  - 2016 `material-teal`, 2017 `fluent-marigold`, 2027 overlaps;
   - 12, 14, 18, 24 and 36-month windows;
   - cross-month and cross-year ribbons;
   - three overlapping ribbons and compact overflow;
   - visibility/group/layer/item controls;
   - select, multi-select, Ctrl/Cmd/Shift, marquee, paint/erase, move/resize;
   - keyboard focus and item inspector;
-  - classic themes, high contrast, unstyled and Fluent/MUI wrappers;
+  - all Material/Fluent palette choices, monochrome utilities, unstyled and Fluent/MUI wrappers;
   - empty state, inspector and tooltip;
-  - PRT-01 exact 2017-yellow print sample;
+  - PRT-01 exact 2017 `fluent-marigold` print sample;
   - A3 print preview.
 - [ ] TSDoc on every public class, interface, type, function, hook and component
   prop; `@example` on public entry points.
@@ -66,6 +66,11 @@ accessibility/performance evidence.
   layers/resources, second demo, CJS/UMD and commercial support.
 - [ ] No claim of WCAG conformance, booking correctness, healthcare safety or
   unmeasured performance.
+- [ ] `docs/classic-year-layout.md` explains the actual month/day grid, labels,
+  context months, theme behavior and printing. Replace the old fidelity review
+  with functional documentation and update its historical inbound link accurately.
+- [ ] Active examples, theme selectors, screenshots and migration documentation
+  describe the new preset catalogue and default. Use neutral project wording.
 
 ### Should Have
 
@@ -131,7 +136,8 @@ Storybook stories: **L**. API docs pipeline: **M**. Guides: **M**.
 | Docs site | Storybook only, Storybook + TypeDoc, VitePress | Storybook + TypeDoc | Meets API-doc priority with minimal stack | AR #25 |
 | API source | Hand-written, TSDoc | TSDoc | Single source of truth | AR #25 |
 | API stability | Ad hoc, API report | API Extractor report | Catches breaking changes | AR #25 |
-| Photos | Include, exclude | Exclude | Rights/provenance; clean-room | AR #30 |
+| Source assets | Include, exclude | Exclude unpublished source assets | Rights/provenance policy | AR #30 |
+| Functional guide | Rewrite in place, rename | Rename to `classic-year-layout.md` | Clear current behavior rather than historical comparison | [Refresh AR #7, #12, #15](../plans/licensing-and-theme-refresh/00-ambiguity-register.md) |
 
 ---
 
@@ -173,4 +179,8 @@ Storybook stories: **L**. API docs pipeline: **M**. Guides: **M**.
     print stories.
 12. [ ] No source photo, legacy code or unlicensed asset is published.
 13. [ ] Security requirements verified: synthetic data only, no secrets, no raw
-    HTML examples.
+     HTML examples.
+14. [ ] The functional layout guide matches the implemented grid and print
+     behavior; active examples and migration guidance describe the 56 themes,
+     removed preset names and new default. Links and neutral project wording
+     are reviewed. See [refresh AR #7–12, #15](../plans/licensing-and-theme-refresh/00-ambiguity-register.md).

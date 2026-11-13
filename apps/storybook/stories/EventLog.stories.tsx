@@ -22,7 +22,7 @@ const meta = {
     resources,
     defaultItems: baseItems,
     activeLayerId: "highlight",
-    display: { theme: "classic-blue", showISOWeekNumbers: true },
+    display: { theme: "material-teal", showISOWeekNumbers: true },
   },
 } satisfies Meta<typeof YearPlanner>;
 
@@ -68,7 +68,7 @@ export const EventLog: Story = {
             resources={resources}
             defaultItems={baseItems}
             activeLayerId="highlight"
-            display={{ theme: "classic-blue", showISOWeekNumbers: true }}
+            display={{ theme: "material-teal", showISOWeekNumbers: true }}
             onSelectionChange={selection}
             onChangeCommitted={(outcome) =>
               push("command", outcome.accepted ? "accepted" : "rejected")

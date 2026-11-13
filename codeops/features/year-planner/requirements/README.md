@@ -1,6 +1,6 @@
 # Year Planner for React — Requirements Documents
 
-> **Project**: Year Planner for React — an open-source React annual planning component
+> **Project**: Year Planner for React — a source-available React annual planning component
 > **Status**: Draft
 > **Created**: 2026-11-10
 > **Architecture**: React + strict TypeScript; core + React packages; Vite/Vitest/Storybook/Playwright
@@ -10,9 +10,10 @@
 
 ## Overview
 
-Year Planner for React is an MIT open-source component for long-range annual
+Year Planner for React permits free internal business use under its internal-use
+licence for long-range annual
 planning. Its flagship view is a classic 14-month, Saturday-first, 37-slot year
-grid derived from two photographed physical planners, extended with continuous
+grid with continuous
 interval ribbons, overlapping layers, annotations, range painting, drag
 selection, moves/resizes, theming and print.
 
@@ -24,7 +25,7 @@ adapter.
 ## Minimum-Sufficient Baseline
 
 **Original goal:** a reusable, production-oriented annual planning component
-that reconstructs the two source calendars and supports continuous overlapping
+with a classic year grid that supports continuous overlapping
 intervals, layers, interactions, theming and a controlled integration API.
 
 **Smallest viable design:** two ESM packages (pure core + React view), a
@@ -39,8 +40,20 @@ optimizer or commercial licensing infrastructure.
 **Documentation mandate:** create as many Storybook stories as possible; every meaningful state is documented visually.
 
 **Approved complexity:** user-mandated toolchain — Storybook, API Extractor/
-TypeDoc, Playwright, Turbo, Changesets and npm provenance. No AI-proposed
+TypeDoc, Playwright, Turbo, Changesets and npm provenance. No proposed
 complexity escalation remains open.
+
+## Current revision
+
+The [Licensing and Theme Refresh](../plans/licensing-and-theme-refresh/00-ambiguity-register.md)
+revises RD-01/03/05/06/09/10/11/12 under the user's approved
+[decision register](../plans/licensing-and-theme-refresh/00-ambiguity-register.md).
+The licence documents and metadata have been prepared locally; verification is
+recorded in the refresh review. Themes and functional documentation remain
+planned targets. The corresponding licence, palette, fixture and documentation
+sections of older plans are superseded for new work; their completed execution
+records remain historical evidence. Affected acceptance rows are partial until
+new verification is recorded. Other implemented contracts retain their evidence.
 
 ## Domain Lenses
 
@@ -122,7 +135,7 @@ RD-01 Foundation
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| License | MIT + DCO | Open-source decision; no commercial license |
+| License | Year Planner Internal Use License 1.0 + signed origin certification + contribution grant | Free internal use; restricted redistribution and external services; earlier MIT grants preserved |
 | Package family | Core + React | Framework-neutral core; React adapter |
 | Dates | Validated strings + integer math | No timezone drift; no date dependency |
 | Intervals | Half-open | Adjacent intervals do not overlap |
@@ -162,7 +175,7 @@ RD-01 Foundation
 | Dynamic months | RD-03 AC7–10; RD-05 AC9, AC12 |
 | Theming/Fluent/MUI | RD-06 AC1–3, AC11 |
 | Storybook/API docs | RD-11 AC1–11 |
-| Open-source governance | RD-01 AC7–11; RD-12 AC1–12 |
+| Project governance | RD-01 AC7–11; RD-12 AC1–14 |
 
 ## Commonly Forgotten Requirements — Final Check
 

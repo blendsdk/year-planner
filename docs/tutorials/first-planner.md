@@ -97,7 +97,7 @@ export function Plan() {
           defaultItems={items}
           activeLayerId="build"
           print={{ page: "A3", mode: "paginate" }}
-          display={{ theme: "classic-blue", showISOWeekNumbers: true }}
+          display={{ theme: "material-teal", showISOWeekNumbers: true }}
         />
       </div>
     </>

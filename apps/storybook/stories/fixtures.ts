@@ -141,7 +141,7 @@ export const storyLayers = layers;
 export const storyGroups = groups;
 export const storyResources = resources;
 
-/** The exact 2017 classic-yellow print sample used by the print evidence. */
+/** The exact 2017 fluent-marigold print sample used by the print evidence. */
 export const prt01Items: PlannerItem[] = [
   item("prt01-booking", "bookings", "2017-02-06", "2017-02-10", {
     title: "PRT-01 booking",

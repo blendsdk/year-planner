@@ -132,11 +132,11 @@ describe("RD-01-AC-07: DCO gate", () => {
   });
 });
 
-describe("RD-01-AC-08: MIT package contracts", () => {
-  it("declares MIT, an allowlist and CSS-only side effects", () => {
-    expect(read("LICENSE")).toContain("MIT License");
+describe("RD-01-AC-08: internal-use package contracts", () => {
+  it("declares the internal-use license, an allowlist and CSS-only side effects", () => {
+    expect(read("LICENSE")).toContain("Year Planner Internal Use License 1.0");
     for (const manifest of [coreManifest, reactManifest]) {
-      expect(manifest.license).toBe("MIT");
+      expect(manifest.license).toBe("SEE LICENSE IN LICENSE");
       expect(manifest.type).toBe("module");
       expect(manifest.files).toEqual(expect.arrayContaining(["dist", "README.md", "LICENSE"]));
     }

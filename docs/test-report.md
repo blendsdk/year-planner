@@ -1,6 +1,6 @@
 # Test Report — Year Planner for React (RD-01 through RD-12)
 
-> **Date**: 2026-11-12
+> **Date**: 2026-11-13
 > **Scope**: M1 foundation/temporal core/classic grid; M2 layers, visibility,
 > paint/erase, ribbons, hit index and print planning; RD-06 rendered view,
 > theming, slots, inspector, adapters and A3 print output; RD-07 pointer,
@@ -11,7 +11,8 @@
 > matrices, timezone and SSR evidence, performance budgets, issue #3
 > optimization, security/privacy gates, dependency audit and CI evidence;
 > RD-11 documentation, Storybook and API reference; RD-12 release versioning,
-> OIDC automation, package metadata, governance and the release checklist
+> OIDC automation, package metadata, governance and the release checklist;
+> final internal-use licence, functional layout guide and 56-theme refresh
 > **Workflow**: CodeOps (`exec-plan`), plans `m1-foundation-core`,
 > `m2-layers-ribbons`, `m3-react-view`, `m4-interaction-engine`,
 > `m5-controlled-commands`, `m6-accessibility`, `m7-quality-gates`,
@@ -56,26 +57,28 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | Check | Result |
 |---|---|
 | Core tests | **226 passed** |
-| React tests | **535 passed** (51 files) |
-| Core coverage | **99.00% lines, 95.88% branches, 99.50% functions** |
-| React coverage | **94.01% lines, 85.60% branches, 94.98% functions** |
-| Playwright | **143 passed, 40 skipped** (PDF and axe are Chromium-only; forced-colors is Chromium-only; touch is Chromium-only; one pending-preview timing test is quarantined on all desktop engines) |
+| React tests | **542 passed** (51 files) |
+| Core coverage | **97.58% lines, 95.78% branches, 99.50% functions** |
+| React coverage | **94.58% lines, 86.09% branches, 95.29% functions** |
+| Playwright | **172 passed, 74 skipped** (PDF and axe are Chromium-only; forced-colors is Chromium-only; touch is Chromium-only; one pending-preview timing test is quarantined on all desktop engines) |
 | Browsers | Chromium, Firefox, WebKit, Pixel 5 Chromium, iPhone 13 WebKit, Chromium touch |
 | A3 print (M1 view) | **1 page**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
-| Quality tests | **211 passed** (traceability, public API, coverage, size, CI, package, license, audit, environment and release contracts) |
+| A3 print boundaries | **15/28/29 months** print 2/2/3 pages; 12/14/18/24/36 verified |
+| Quality tests | **216 passed** (traceability, public API, coverage, size, CSS minifier, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
-| Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
+| Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current, including palette attribution |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
-| Storybook | **PASS** — static build succeeds; **184 stories across 16 files** |
+| Storybook | **PASS** — static build succeeds; **183 stories across 16 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **React entry + CSS 44.40 kB gzip / 60 kB**; **total 67.64 kB gzip / 68 kB** (core, React, adapters and CSS) |
+| Docs site | **PASS** — 429 files; classic layout, licence and theme pages build |
+| Bundle size | **React entry + CSS 44.71 kB gzip / 60 kB**; **total 67.95 kB gzip / 68 kB** (core, React, adapters and CSS) |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | `verify`, `browsers`, `security`, `performance` and `dco` jobs configured; browser evidence and benchmark artifacts uploaded |
 | Browser versions | Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright 1.65.0) |
-| Timezones | **226 core tests pass under each of UTC, Pacific/Kiritimati and America/Los_Angeles** (660 runs total; final gate) |
+| Timezones | **226 core tests pass under each of UTC, Pacific/Kiritimati and America/Los_Angeles** (678 runs total; final gate) |
 
 ### RD-13 Storybook demos
 
@@ -84,7 +87,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
   demo has a `play` function.
 - **Demos/Event Log** shows timestamped selection, command and context-menu
   callbacks beside the planner.
-- Every one of the **184 stories across 16 files** has a story-level
+- Every one of the **183 stories across 16 files** has a story-level
   description; the Reference catalogue remains intact.
 - The Fluent UI and MUI context-menu examples are host-owned and dev-only.
 
@@ -118,7 +121,7 @@ lines, branches, functions and statements.
 | Cells | `getDateMeta` background/text/label/ARIA/holiday/disabled/content and annotation overlay |
 | Slots | `renderCell`, `renderItem`, `renderAnnotation`, `renderOverflow`, `renderEmpty`, `renderInspector`, `renderTooltip`; structural `components` |
 | Proxy contract | `role="button"` proxy, no nested interactive controls, sibling resize handles, `aria-pressed` selection |
-| Theming | 24 tokens, five presets, provider, `cssVars`, implemented `unstyled`, `data-yp-theme` |
+| Theming | 24 tokens, 56 presets, provider, `cssVars`, implemented `unstyled`, `data-yp-theme` |
 | State | Controlled/uncontrolled items/visibility/selection/filter; dev warnings; deterministic seeding |
 | Commands | Local read-only/version/period checks, host validation, timeout, accept/reject, retry/dismiss, uncontrolled undo/redo, annotation host-ownership |
 | Inspector | Details, visibility/editability, overflow, create/move/resize/paint/erase/delete, keyboard reachable |
@@ -127,6 +130,23 @@ lines, branches, functions and statements.
 | SSR | Node `renderToString` plus jsdom hydration with no mismatch errors |
 | CSP | Documented `style-src-attr 'unsafe-inline'`; Playwright CSP-header test |
 | Security | Metadata never rendered; item style and color allowlist; hidden data and stale tooltips excluded |
+
+## Theme refresh evidence
+
+| Area | Evidence |
+|---|---|
+| Catalogue | 19 Material 2014 families, 35 Fluent UI v9 families and `high-contrast`/`print`; exactly 56 public names |
+| Default and removals | `material-teal`; `classic-blue`, `classic-yellow` and `modern` have no aliases |
+| Token mapping | Material 50/100/500/900 and Fluent neutral/Background2/BorderActive/Foreground2 mapped to the existing 24 tokens |
+| Contrast | All 56 presets measured on surface, muted, weekend and context for 4.5:1 ribbon/text and 3:1 focus/border |
+| Utilities | Monochrome `high-contrast` and `print`; print keeps `printScale: 1` |
+| Demo and Storybook | Selectors enumerate the catalogue; Material, Fluent and utility groups; Themes control covers all presets |
+| Fixtures | 2016 `material-teal`, 2017 `fluent-marigold`, PRT-01 in `fluent-marigold` |
+| Baselines | 42 visual tests regenerated across Chromium, Firefox and WebKit; print baselines regenerated |
+| Print boundaries | 12/14/15/18/24/28/29/36-month A3 page counts verified from PDFs |
+| Accessibility | Axe matrix includes material-teal, fluent-marigold, high-contrast, print, overflow, error and 36-month states |
+| Notices | React package ships palette attribution; root notice repeats it |
+| Size | Compact local palette data and a minified published CSS keep the total at 67.95 kB / 68 kB |
 
 ## Specification evidence
 
@@ -378,7 +398,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 
 ## Repository state
 
-- MIT license, DCO, no CLA.
+- Source-available internal-use licence; signed origin certification and an explicit contribution grant.
 - ESM-only package; no CJS/UMD build.
 - `pnpm verify` and `pnpm verify:full` pass locally.
 - M1 plan: 48/48 tasks; M2 plan: 46/46; RD-06 plan: 46/46; RD-07 plan: 33/33; RD-09 plan: 55/55.
@@ -410,7 +430,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 - The README quickstart renders a 14-month view from static data with controlled
   selection and visibility and a print action. The install note is honest: the
   packages are not on a public registry, so the packed-tarball path is documented.
-- Storybook adds the exact 2017 classic-yellow PRT-01 print story and Fluent/MUI
+- Storybook adds the exact 2017 fluent-marigold PRT-01 print story and Fluent/MUI
   provider wrapper stories, and configures the built-in Storybook 10 viewport.
 - TSDoc covers every public report entry, `@public` tags are on the public source
   surface, and `@example` is bound to the five entry points.
@@ -483,7 +503,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
   are deduped; touch keeps the native long-press; Fluent and MUI examples are
   host-owned.
 - **Demos.** Storybook opens with Demos: select, move, resize, paint, keyboard
-  and context menu, plus a timestamped event log. All 184 stories have a
+  and context menu, plus a timestamped event log. All 183 stories have a
   story-level description. The context-menu stories run in a bounded shell so
   the full 14-month view and the host menu are visible in one laptop viewport;
   the Demos story renders its own menu instead of hiding the feedback below the
@@ -531,7 +551,7 @@ The documentation site is one artifact built by `pnpm docs:site`:
 The build sets the VitePress base and the Storybook production base, copies
 both into `docs/.vitepress/dist`, and verifies every local link and asset
 against the project base. `pnpm docs:site` reported **423 files**; the artifact
-includes 184 stories and the generated API tree.
+includes 183 stories and the generated API tree.
 
 ### Commands and results
 
@@ -597,8 +617,8 @@ The demo is a working application, not a mock:
 | Command | Result |
 | --- | --- |
 | `pnpm lint` | PASS |
-| `pnpm test:quality` | PASS — 211 contracts, including 184 stories across 16 files |
-| `pnpm storybook:build` | PASS — 184 stories across 16 files |
+| `pnpm test:quality` | PASS — 211 contracts, including 183 stories across 16 files |
+| `pnpm storybook:build` | PASS — 183 stories across 16 files |
 | `pnpm docs:site` | PASS — VitePress + Storybook + TypeDoc; 423 files; links checked under `/year-planner/` |
 | `playwright test tests/e2e/full-demo.spec.ts tests/e2e/site.spec.ts --project=chromium` | PASS — 10 checks: Storybook landing, allocate/persist, context delete/undo/reset, filter/layout, site home/guide, full-demo iframe, manager, story index and API |
 | `pnpm verify:full` | Not run for this post-release demo. The last full gate passed at `314f893`; this change is Storybook/VitePress/docs/test only, so the owner asked to skip the full gate. |

@@ -3,7 +3,9 @@ import { expectA3Pdf } from "./pdf.js";
 
 test.describe("M1 classic year grid", () => {
   test("renders the 2016 material-teal 14x37 grid @visual", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/?fit=none");
+    await page.addStyleTag({ content: ".yp-inspector { display: none !important; }" });
+    await expect(page.locator(".yp-inspector")).toBeHidden();
     await expect(page.getByRole("grid")).toBeVisible();
     await expect(page.locator("[data-row-id]")).toHaveCount(14);
     await expect(page.locator('[role="gridcell"]')).toHaveCount(518);
@@ -14,7 +16,9 @@ test.describe("M1 classic year grid", () => {
   });
 
   test("renders the 2017 fluent-marigold 14-month view @visual", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/?fit=none");
+    await page.addStyleTag({ content: ".yp-inspector { display: none !important; }" });
+    await expect(page.locator(".yp-inspector")).toBeHidden();
     await page.locator("select").nth(0).selectOption("2017");
     await page.locator("select").nth(1).selectOption("fluent-marigold");
     await expect(page.locator("[data-row-id]")).toHaveCount(14);

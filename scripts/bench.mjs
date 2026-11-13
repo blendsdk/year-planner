@@ -18,7 +18,7 @@ import { BUDGETS, statusFor } from "./bench-budgets.mjs";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const RESULTS_DIR = resolve(ROOT, "test-results/bench");
 const PROFILE_DIR = resolve(RESULTS_DIR, "profiles");
-const RUN_ID = new Date().toISOString();
+const RUN_ID = new Date().toISOString().replaceAll(":", "-");
 
 /** Scenarios every complete benchmark run must produce. */
 const REQUIRED_SCENARIOS = [

@@ -11,8 +11,13 @@ async function selectWindow(page: import("@playwright/test").Page, months: numbe
 test.describe("RD-10-AC-04: quality visual matrix", () => {
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize(DESKTOP_VIEWPORT);
-    await page.goto("/");
+    await page.goto("/?fit=none");
     await expect(page.getByRole("grid")).toBeVisible();
+    // The inspector contributes browser-specific text height; the grid
+    // screenshots cover the planner surface, not inspector typography.
+    await page.addStyleTag({ content: ".yp-inspector { display: none !important; }" });
+    await expect(page.locator(".yp-inspector")).toBeHidden();
+    await page.evaluate(() => document.fonts.ready);
   });
 
   test("12-month compact @visual", async ({ page }) => {
@@ -66,7 +71,9 @@ test.describe("RD-10-AC-04: quality visual matrix", () => {
     await page.goto("/?fit=none");
     await page.getByTestId("year").selectOption("2027");
     await page.getByTestId("density").selectOption("expanded");
+    await expect(page.locator("[data-row-id]")).toHaveCount(14);
     await expect(page.locator('[data-yp-part="overflow-button"]')).toHaveCount(0);
+    await page.evaluate(() => document.fonts.ready);
     await expect(page.locator(".yp-root")).toHaveScreenshot("quality-overflow-expanded.png", {
       maxDiffPixelRatio: 0.02,
       animations: "disabled",

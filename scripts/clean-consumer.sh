@@ -25,17 +25,22 @@ mkdir -p "$TMP/app/src"
 
 CORE_VERSION="$(node -p "require('$ROOT/packages/core/package.json').version")"
 REACT_VERSION="$(node -p "require('$ROOT/packages/react/package.json').version")"
+LANGUAGES_VERSION="$(node -p "require('$ROOT/packages/languages/package.json').version")"
 
 if [ "$MODE" = "packed" ]; then
   mkdir -p "$TMP/packs"
   (cd "$ROOT/packages/core" && pnpm pack --pack-destination "$TMP/packs" >/dev/null)
   (cd "$ROOT/packages/react" && pnpm pack --pack-destination "$TMP/packs" >/dev/null)
+  (cd "$ROOT/packages/languages" && pnpm pack --pack-destination "$TMP/packs" >/dev/null)
   CORE_PACK="$(find "$TMP/packs" -name 'blendsdk-year-planner-core-*.tgz' -print -quit)"
   REACT_PACK="$(find "$TMP/packs" -name 'blendsdk-react-year-planner-*.tgz' -print -quit)"
+  LANGUAGES_PACK="$(find "$TMP/packs" -name 'blendsdk-year-planner-languages-*.tgz' -print -quit)"
   test -n "$CORE_PACK"
   test -n "$REACT_PACK"
+  test -n "$LANGUAGES_PACK"
   CORE_DEP="file:${CORE_PACK}"
   REACT_DEP="file:${REACT_PACK}"
+  LANGUAGES_DEP="file:${LANGUAGES_PACK}"
   OVERRIDES=""
 else
   echo "waiting for @blendsdk/year-planner-core@$CORE_VERSION on npm"
@@ -60,8 +65,20 @@ else
     fi
     sleep 5
   done
+  echo "waiting for @blendsdk/year-planner-languages@$LANGUAGES_VERSION on npm"
+  for attempt in $(seq 1 12); do
+    if npm view "@blendsdk/year-planner-languages@$LANGUAGES_VERSION" version >/dev/null 2>&1; then
+      break
+    fi
+    if [ "$attempt" -eq 12 ]; then
+      echo "registry did not expose @blendsdk/year-planner-languages@$LANGUAGES_VERSION" >&2
+      exit 1
+    fi
+    sleep 5
+  done
   CORE_DEP="$CORE_VERSION"
   REACT_DEP="$REACT_VERSION"
+  LANGUAGES_DEP="$LANGUAGES_VERSION"
   OVERRIDES=$(cat <<JSON
   ,"overrides": {
     "@blendsdk/year-planner-core": "$CORE_VERSION"
@@ -78,6 +95,7 @@ cat >"$TMP/app/package.json" <<JSON
   "dependencies": {
     "@blendsdk/year-planner-core": "$CORE_DEP",
     "@blendsdk/react-year-planner": "$REACT_DEP",
+    "@blendsdk/year-planner-languages": "$LANGUAGES_DEP",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
@@ -102,10 +120,14 @@ HTML
 cat >"$TMP/app/src/main.tsx" <<'TSX'
 import { createRoot } from "react-dom/client";
 import { YearPlanner } from "@blendsdk/react-year-planner";
+import { getPlannerMessages } from "@blendsdk/year-planner-languages";
+import { de } from "@blendsdk/year-planner-languages/de";
 import "@blendsdk/react-year-planner/styles.css";
 
+const messages = getPlannerMessages("de-DE");
+
 createRoot(document.getElementById("root") as HTMLElement).render(
-  <YearPlanner year={2016} display={{ theme: "material-teal" }} />
+  <YearPlanner year={2016} display={{ theme: "material-teal", locale: "de-DE" }} messages={messages ?? de} />,
 );
 TSX
 

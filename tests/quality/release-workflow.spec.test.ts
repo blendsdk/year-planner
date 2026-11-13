@@ -112,7 +112,7 @@ describe("RD-12-AC-02: manual main-only release", () => {
 });
 
 describe("RD-12-AC-02: publish script", () => {
-  it("publishes core before React with provenance", () => {
+  it("publishes core, then React, then languages with provenance", () => {
     const script = read("scripts/release-publish.mjs");
     expect(script).toContain("npm");
     expect(script).toContain("--provenance");
@@ -120,8 +120,10 @@ describe("RD-12-AC-02: publish script", () => {
     expect(script).toContain("dist.integrity");
     const core = script.indexOf("year-planner-core");
     const react = script.indexOf("react-year-planner");
+    const languages = script.indexOf("year-planner-languages");
     expect(core).toBeGreaterThanOrEqual(0);
     expect(react).toBeGreaterThan(core);
+    expect(languages).toBeGreaterThan(react);
   });
 
   it("supports the documented flags and rejects unsafe combinations", () => {

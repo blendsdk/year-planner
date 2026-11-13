@@ -137,10 +137,12 @@ describe("release manifest helper failure modes", () => {
       date: "2026-11-12",
       coreChangelog: "## 0.2.0\n\n- old",
       reactChangelog: "## 0.2.0\n\n- old",
+      languagesChangelog: "## 0.2.0\n\n- old",
       docsUrl: "https://example.com",
     });
     expect(notes).toContain("_No core changes._");
     expect(notes).toContain("_No React changes._");
+    expect(notes).toContain("_No language changes._");
   });
 });
 

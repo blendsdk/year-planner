@@ -16,6 +16,9 @@ import { BUDGETS } from "./bench-budgets.mjs";
 
 const REACT_BUDGET_KB = BUDGETS.reactEntryCssKb;
 const TOTAL_BUDGET_KB = BUDGETS.totalInstalledKb;
+const LANGUAGES_BUDGET_KB = BUDGETS.languagesEntryKb;
+const LANGUAGES_ALL_BUDGET_KB = BUDGETS.languagesCataloguesKb;
+const LANGUAGE_PACK_BUDGET_KB = BUDGETS.languagePackKb;
 
 /** Recursively lists the emitted JavaScript files under one directory. */
 function coreJavaScriptFiles(directory) {
@@ -86,3 +89,44 @@ if (totalKb > TOTAL_BUDGET_KB) {
   failed = true;
 }
 if (failed) process.exit(1);
+
+const languagesEntry = "packages/languages/dist/index.js";
+const languagesEntryKb = gzipBytes(languagesEntry) / 1024;
+console.log(
+  `Languages main entry (imports only): ${languagesEntryKb.toFixed(2)} kB gzip / ${LANGUAGES_BUDGET_KB} kB budget`,
+);
+if (languagesEntryKb > LANGUAGES_BUDGET_KB) {
+  console.error(
+    `Languages entry budget exceeded: ${languagesEntryKb.toFixed(2)} kB > ${LANGUAGES_BUDGET_KB} kB`,
+  );
+  process.exit(1);
+}
+
+const localeDirectory = "packages/languages/dist/locales";
+let largest = { file: "", kb: 0 };
+let cataloguesKb = languagesEntryKb;
+for (const entry of readdirSync(localeDirectory, { withFileTypes: true })) {
+  if (!entry.isFile() || !entry.name.endsWith(".js")) continue;
+  const file = join(localeDirectory, entry.name);
+  const kb = gzipBytes(file) / 1024;
+  cataloguesKb += kb;
+  if (kb > largest.kb) largest = { file, kb };
+}
+console.log(
+  `Languages main entry plus all catalogues: ${cataloguesKb.toFixed(2)} kB gzip / ${LANGUAGES_ALL_BUDGET_KB} kB budget`,
+);
+if (cataloguesKb > LANGUAGES_ALL_BUDGET_KB) {
+  console.error(
+    `Languages catalogue budget exceeded: ${cataloguesKb.toFixed(2)} kB > ${LANGUAGES_ALL_BUDGET_KB} kB`,
+  );
+  process.exit(1);
+}
+console.log(
+  `Largest single language: ${largest.file} ${largest.kb.toFixed(2)} kB gzip / ${LANGUAGE_PACK_BUDGET_KB} kB budget`,
+);
+if (largest.kb > LANGUAGE_PACK_BUDGET_KB) {
+  console.error(
+    `Language pack budget exceeded: ${largest.file} ${largest.kb.toFixed(2)} kB > ${LANGUAGE_PACK_BUDGET_KB} kB`,
+  );
+  process.exit(1);
+}

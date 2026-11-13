@@ -72,7 +72,10 @@ describe("RD-10-AC-11: benchmark budgets", () => {
     expect(BUDGETS.initialRenderP95Ms).toBe(400);
     expect(BUDGETS.initialRender2kP95Ms).toBe(550);
     expect(BUDGETS.reactEntryCssKb).toBe(60);
-    expect(BUDGETS.totalInstalledKb).toBe(68);
+    expect(BUDGETS.totalInstalledKb).toBe(72);
+    expect(BUDGETS.languagesEntryKb).toBe(5);
+    expect(BUDGETS.languagesCataloguesKb).toBe(95);
+    expect(BUDGETS.languagePackKb).toBe(8);
     expect(CEILING_FACTOR).toBe(2);
   });
 

@@ -17,9 +17,9 @@ import {
 /**
  * Release readiness gate.
  *
- * Validates the checked-in versions and changelogs, packs both packages into
- * `release-packs/`, inspects the tarballs and source maps, and compares the
- * npm dry-run file list with the same allowlist. It never publishes.
+ * Validates the checked-in versions and changelogs, packs the three packages
+ * into `release-packs/`, inspects the tarballs and source maps, and compares
+ * the npm dry-run file list with the same allowlist. It never publishes.
  */
 
 /** Runs one command and returns stdout. */
@@ -27,16 +27,20 @@ function capture(command, args, cwd) {
   return execFileSync(command, args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
 }
 
-/** Packs both packages into release-packs/. */
+/** Packs the three packages into release-packs/. */
 function pack(root, manifests) {
   const destination = join(root, "release-packs");
   mkdirSync(destination, { recursive: true });
-  for (const name of [manifests.core.name, manifests.react.name]) {
+  for (const name of [manifests.core.name, manifests.react.name, manifests.languages.name]) {
     capture("pnpm", ["--filter", name, "pack", "--pack-destination", destination], root);
   }
   return {
     core: join(destination, `blendsdk-year-planner-core-${manifests.core.version}.tgz`),
     react: join(destination, `blendsdk-react-year-planner-${manifests.react.version}.tgz`),
+    languages: join(
+      destination,
+      `blendsdk-year-planner-languages-${manifests.languages.version}.tgz`,
+    ),
   };
 }
 
@@ -66,12 +70,17 @@ export function checkRelease(root) {
   for (const [key, path] of [
     ["core", "packages/core/CHANGELOG.md"],
     ["react", "packages/react/CHANGELOG.md"],
+    ["languages", "packages/languages/CHANGELOG.md"],
   ]) {
     if (!changelogSection(readFileSync(join(root, path), "utf8"), manifests[key].version)) {
       errors.push(`${path} has no ## ${manifests[key].version} section`);
     }
   }
-  for (const directory of ["packages/core/dist", "packages/react/dist"]) {
+  for (const directory of [
+    "packages/core/dist",
+    "packages/react/dist",
+    "packages/languages/dist",
+  ]) {
     if (!existsSync(join(root, directory))) errors.push(`${directory} is missing; run pnpm build`);
   }
   if (errors.length > 0) return errors;
@@ -95,9 +104,11 @@ export function checkRelease(root) {
   }
   errors.push(...inspectSourceMaps(join(root, "packages/core/dist")));
   errors.push(...inspectSourceMaps(join(root, "packages/react/dist")));
+  errors.push(...inspectSourceMaps(join(root, "packages/languages/dist")));
   for (const [directory, key] of [
     ["packages/core", "core"],
     ["packages/react", "react"],
+    ["packages/languages", "languages"],
   ]) {
     for (const error of validateTarballPaths(npmDryRunPaths(root, directory))) {
       errors.push(`npm pack --dry-run in ${directory}: ${error}`);

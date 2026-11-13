@@ -99,6 +99,30 @@ describe("RD-12-AC-03: exact internal dependency", () => {
     );
     expect(errors.join("\n")).toContain("version");
   });
+
+  it("requires the React peer dependency on the languages package", () => {
+    const expected = {
+      name: "@blendsdk/year-planner-languages",
+      version: "0.3.0",
+      coreVersion: "0.3.0",
+    };
+    expect(
+      validatePackedManifest(
+        {
+          name: "@blendsdk/year-planner-languages",
+          version: "0.3.0",
+          peerDependencies: { "@blendsdk/react-year-planner": "^0.3.0" },
+        },
+        expected,
+      ),
+    ).toEqual([]);
+    expect(
+      validatePackedManifest(
+        { name: "@blendsdk/year-planner-languages", version: "0.3.0" },
+        expected,
+      ).join("\n"),
+    ).toContain("peer dependency");
+  });
 });
 
 describe("RD-12-AC-11: source-map privacy", () => {
@@ -124,19 +148,22 @@ describe("RD-12-AC-11: source-map privacy", () => {
 });
 
 describe("RD-12-AC-05: release notes", () => {
-  it("includes both changelogs and the package and docs links", () => {
+  it("includes all three changelogs and the package and docs links", () => {
     const notes = buildReleaseNotes({
-      version: "0.2.1",
-      date: "2026-11-12",
-      coreChangelog: "## 0.2.1\n\n### Patch Changes\n\n- core fix",
-      reactChangelog: "## 0.2.1\n\n### Patch Changes\n\n- react fix",
+      version: "0.3.0",
+      date: "2026-11-13",
+      coreChangelog: "## 0.3.0\n\n### Patch Changes\n\n- core fix",
+      reactChangelog: "## 0.3.0\n\n### Patch Changes\n\n- react fix",
+      languagesChangelog: "## 0.3.0\n\n### Patch Changes\n\n- language fix",
       docsUrl: "https://blendsdk.github.io/year-planner/",
     });
-    expect(notes).toContain("0.2.1");
+    expect(notes).toContain("0.3.0");
     expect(notes).toContain("core fix");
     expect(notes).toContain("react fix");
+    expect(notes).toContain("language fix");
     expect(notes).toContain("https://www.npmjs.com/package/@blendsdk/year-planner-core");
     expect(notes).toContain("https://www.npmjs.com/package/@blendsdk/react-year-planner");
+    expect(notes).toContain("https://www.npmjs.com/package/@blendsdk/year-planner-languages");
     expect(notes).toContain("https://blendsdk.github.io/year-planner/");
   });
 });

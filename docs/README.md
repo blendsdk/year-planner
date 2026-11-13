@@ -13,6 +13,7 @@ planning. This page is the entry point for the developer guides.
 | Visibility semantics | [visibility.md](visibility.md) |
 | Selection and keyboard | [interaction.md](interaction.md) (keyboard map: [accessibility.md](accessibility.md)) |
 | Theming | [theming.md](theming.md#css-variables) |
+| Localization | [localization.md](localization.md) |
 | Customization and holidays | [customization.md](customization.md) |
 | Inspector and tooltip | [inspector-tooltip.md](inspector-tooltip.md) |
 | Dynamic months | [dynamic-months.md](dynamic-months.md) |
@@ -43,6 +44,7 @@ The documentation site is one GitHub Pages artifact:
 | `/year-planner/` | VitePress home, guide, tutorials, how-tos and examples |
 | `/year-planner/storybook/` | The static Storybook catalogue |
 | `/year-planner/api/` | The generated TypeDoc reference |
+| `/year-planner/localization.html` | Languages and message overrides |
 
 This is a project site, so the base path is `/year-planner/`. There is no
 custom domain. The repository is public, Pages is enabled with **GitHub

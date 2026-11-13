@@ -86,6 +86,12 @@ export function validatePackedManifest(manifest, expected) {
   if (expected.name === "@blendsdk/react-year-planner" && dependency === undefined) {
     errors.push("React package is missing the core dependency");
   }
+  if (expected.name === "@blendsdk/year-planner-languages") {
+    const peer = manifest.peerDependencies?.["@blendsdk/react-year-planner"];
+    if (peer === undefined) {
+      errors.push("Languages package is missing the React peer dependency");
+    }
+  }
   return errors;
 }
 
@@ -146,14 +152,16 @@ export function changelogSection(changelog, version) {
 /**
  * Builds the GitHub release body.
  *
- * @param input - Version, date, both changelog sections and the docs URL.
+ * @param input - Version, date, the three changelog sections and the docs URL.
  * @returns Markdown release notes.
  * @example
- * buildReleaseNotes({ version: "0.2.1", date: "2026-11-12", coreChangelog: "", reactChangelog: "", docsUrl: "https://example.com" })
+ * buildReleaseNotes({ version: "0.3.0", date: "2026-11-13", coreChangelog: "", reactChangelog: "", languagesChangelog: "", docsUrl: "https://example.com" })
  */
 export function buildReleaseNotes(input) {
   const core = changelogSection(input.coreChangelog, input.version) || "_No core changes._";
   const react = changelogSection(input.reactChangelog, input.version) || "_No React changes._";
+  const languages =
+    changelogSection(input.languagesChangelog, input.version) || "_No language changes._";
   return [
     `# ${input.version}`,
     "",
@@ -163,6 +171,7 @@ export function buildReleaseNotes(input) {
     "",
     "- [@blendsdk/year-planner-core](https://www.npmjs.com/package/@blendsdk/year-planner-core)",
     "- [@blendsdk/react-year-planner](https://www.npmjs.com/package/@blendsdk/react-year-planner)",
+    "- [@blendsdk/year-planner-languages](https://www.npmjs.com/package/@blendsdk/year-planner-languages)",
     `- [Documentation](${input.docsUrl})`,
     "",
     "## Core",
@@ -172,6 +181,10 @@ export function buildReleaseNotes(input) {
     "## React",
     "",
     react,
+    "",
+    "## Languages",
+    "",
+    languages,
     "",
   ].join("\n");
 }
@@ -195,10 +208,10 @@ export function validatePublishedIntegrity(published, local, label) {
 }
 
 /**
- * Reads both package manifests from a repository root.
+ * Reads the three package manifests from a repository root.
  *
  * @param root - Repository root.
- * @returns The parsed core and React manifests.
+ * @returns The parsed core, React and languages manifests.
  * @example
  * readPackageManifests("/repo")
  */
@@ -206,6 +219,7 @@ export function readPackageManifests(root) {
   return {
     core: JSON.parse(readFileSync(join(root, "packages/core/package.json"), "utf8")),
     react: JSON.parse(readFileSync(join(root, "packages/react/package.json"), "utf8")),
+    languages: JSON.parse(readFileSync(join(root, "packages/languages/package.json"), "utf8")),
   };
 }
 
@@ -229,7 +243,7 @@ export function pendingChangesets(root) {
 }
 
 /**
- * Validates that both packages share one version and have changelog headings.
+ * Validates that the public packages share one version.
  *
  * @param manifests - Result of `readPackageManifests`.
  * @returns Error messages.
@@ -238,10 +252,11 @@ export function pendingChangesets(root) {
  */
 export function validateVersions(manifests) {
   const errors = [];
-  if (manifests.core.version !== manifests.react.version) {
-    errors.push(
-      `version mismatch: core ${manifests.core.version}, react ${manifests.react.version}`,
-    );
+  const reference = manifests.core.version;
+  for (const key of ["react", "languages"]) {
+    if (manifests[key].version !== reference) {
+      errors.push(`version mismatch: core ${reference}, ${key} ${manifests[key].version}`);
+    }
   }
   return errors;
 }

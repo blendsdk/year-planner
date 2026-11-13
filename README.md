@@ -95,6 +95,22 @@ export function Plan() {
 Give the planner a bounded parent; it measures that region for the fit. See
 [Sizing and fit](https://blendsdk.github.io/year-planner/getting-started.html#sizing-and-fit).
 
+## Languages
+
+The component is English by default. Import one catalogue for a localised UI
+and keep the bundle small:
+
+```tsx
+import { hy } from "@blendsdk/year-planner-languages/hy";
+
+<YearPlanner year={2027} display={{ locale: "hy-AM" }} messages={hy} />;
+```
+
+The languages package ships 45 locale catalogues covering 41 left-to-right
+languages. `getPlannerMessages("de-AT")` resolves regional locales with an
+English fallback. See the
+[localization guide](https://blendsdk.github.io/year-planner/localization.html).
+
 ## Documentation
 
 | | |
@@ -103,8 +119,9 @@ Give the planner a bounded parent; it measures that region for the fit. See
 | **[Getting started](https://blendsdk.github.io/year-planner/getting-started.html)** | Install, render, select and print |
 | **[Tutorials](https://blendsdk.github.io/year-planner/tutorials/first-planner.html)** | First planner, controlled commands, theming and print |
 | **[Examples](https://blendsdk.github.io/year-planner/examples/)** | Full demo, themes, print and design systems |
-| **[Storybook](https://blendsdk.github.io/year-planner/storybook/)** | **183 stories across 16 files**, including the full demo |
-| **[API reference](https://blendsdk.github.io/year-planner/api/)** | Generated TypeDoc for both packages |
+| **[Storybook](https://blendsdk.github.io/year-planner/storybook/)** | **186 stories across 16 files**, including the full demo |
+| **[API reference](https://blendsdk.github.io/year-planner/api/)** | Generated TypeDoc for all three packages |
+| **[Localization](https://blendsdk.github.io/year-planner/localization.html)** | Languages, locale resolution and message overrides |
 | [Repository guides](docs/README.md) | Architecture, performance, security, test report and ADRs |
 
 The public full demo is a working construction plan: double-click a date to
@@ -114,8 +131,9 @@ the plan restored from browser storage.
 ## Demo routes
 
 Run `pnpm dev` for the private demo app. It supports `?commands=1`,
-`?interaction=1`, `?security=1`, `?ac3=1` and `?print=prt01` for the controlled
-commands, interaction, hidden-data, design-system and print samples.
+`?interaction=1`, `?security=1`, `?ac3=1`, `?print=prt01` and `?lang=de` for the
+controlled commands, interaction, hidden-data, design-system, print and
+localization samples.
 
 ## Packages
 
@@ -123,6 +141,7 @@ commands, interaction, hidden-data, design-system and print samples.
 | --- | --- |
 | `@blendsdk/year-planner-core` | Dates, layout, ribbons, hit index and print planning |
 | `@blendsdk/react-year-planner` | React 19 component, interaction engine, renderer and adapters |
+| `@blendsdk/year-planner-languages` | 45 locale catalogues for 41 left-to-right languages, including Eastern Armenian |
 
 - **ESM only**, Node `>=20.19`, React 19 peer dependency.
 - **Source-available, free for internal use**; see the [licensing guide](docs/licensing.md).

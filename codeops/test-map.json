@@ -31,7 +31,8 @@
     "testRoots": [
       "packages/core/src",
       "packages/react/src",
-      "tests"
+      "tests",
+      "packages/languages/src"
     ],
     "fullOnPaths": [
       ".github/**",
@@ -67,7 +68,16 @@
       "packages/core/CHANGELOG.md",
       "packages/react/README.md",
       "packages/react/LICENSE",
-      "packages/react/CHANGELOG.md"
+      "packages/react/CHANGELOG.md",
+      "packages/languages/package.json",
+      "packages/languages/tsconfig.json",
+      "packages/languages/tsconfig.build.json",
+      "packages/languages/vitest.config.ts",
+      "packages/languages/README.md",
+      "packages/languages/LICENSE",
+      "packages/languages/CHANGELOG.md",
+      "typedoc.languages.json",
+      "packages/react/THIRD_PARTY_NOTICES.md"
     ],
     "ignorePaths": [
       {
@@ -216,6 +226,36 @@
       }
     },
     {
+      "id": "languages.unit",
+      "slice": "languages",
+      "tier": "task",
+      "sources": [
+        "packages/languages/src/**"
+      ],
+      "tests": [
+        "packages/languages/src/**/*.test.ts"
+      ],
+      "run": {
+        "command": [
+          "pnpm",
+          "--filter",
+          "@blendsdk/year-planner-languages",
+          "exec",
+          "vitest",
+          "run"
+        ]
+      },
+      "durationSec": 5,
+      "parallelSafe": true,
+      "dependsOn": [
+        "react.unit"
+      ],
+      "acceptance": {
+        "mode": "na",
+        "reason": "The languages package is exercised by the React integration and browser localization checks."
+      }
+    },
+    {
       "id": "quality.contracts",
       "slice": "verification",
       "tier": "task",
@@ -265,7 +305,8 @@
         "tests/e2e/fit.spec.ts",
         "tests/e2e/storybook.spec.ts",
         "tests/e2e/site.spec.ts",
-        "tests/e2e/full-demo.spec.ts"
+        "tests/e2e/full-demo.spec.ts",
+        "tests/e2e/i18n.spec.ts"
       ],
       "run": {
         "command": [

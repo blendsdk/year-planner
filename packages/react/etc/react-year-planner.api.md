@@ -69,6 +69,9 @@ export interface DateMetaContext {
 }
 
 // @public
+export const defaultPlannerMessages: PlannerMessages;
+
+// @public
 export interface DisplayConfig {
     compactMaxLanes?: number;
     connectorMode?: "none" | "edge-path";
@@ -81,6 +84,12 @@ export interface DisplayConfig {
     theme?: YearPlannerThemeName | string;
     zoom?: number;
 }
+
+// @public
+export function formatPlannerMessage(template: string, values: Readonly<Record<string, string | number>>): string;
+
+// @public
+export function formatPluralMessage(message: PluralMessage, count: number, locale: string): string;
 
 // @public
 export function getPresetTheme(name: string): YearPlannerTheme | undefined;
@@ -159,7 +168,110 @@ export type PlannerContextTarget = {
     date: DateKey;
 };
 
+// @public
+export interface PlannerMessages {
+    actionCreate: string;
+    actionDelete: string;
+    actionDismiss: string;
+    actionErase: string;
+    actionMoveEarlier: string;
+    actionMoveLater: string;
+    actionPaint: string;
+    actionResizeLonger: string;
+    actionResizeShorter: string;
+    actionRetry: string;
+    actionsFor: string;
+    commandAborted: string;
+    commandAccepted: string;
+    commandAcceptedNotApplied: string;
+    commandCancelled: string;
+    commandHostRejected: string;
+    commandPending: string;
+    commandRejected: string;
+    commandStale: string;
+    commandTimedOut: string;
+    confirmDelete: string;
+    dayCount: PluralMessage;
+    detailEditable: string;
+    detailKind: string;
+    detailLayer: string;
+    detailPeriod: string;
+    detailStatus: string;
+    detailVisibility: string;
+    editabilityReasonGlobalReadOnly: string;
+    editabilityReasonHidden: string;
+    editabilityReasonInteractionMode: string;
+    editabilityReasonItemLocked: string;
+    editabilityReasonLayerLocked: string;
+    editabilityReasonPolicy: string;
+    editabilityReasonUnknown: string;
+    editableUnknown: string;
+    editableYes: string;
+    feedbackLabel: string;
+    focusMoved: string;
+    gridLabel: string;
+    holiday: string;
+    inspectorClose: string;
+    inspectorEmpty: string;
+    inspectorHiddenOnRow: string;
+    inspectorLabel: string;
+    inspectorTitle: string;
+    isoWeek: string;
+    itemCount: PluralMessage;
+    itemListEmpty: string;
+    itemListHeading: string;
+    itemListOverflow: string;
+    itemListShowAll: PluralMessage;
+    itemStatus: string;
+    keyboardHelp: string;
+    kindActivity: string;
+    kindAnnotation: string;
+    kindHighlight: string;
+    kindReservation: string;
+    layerName: string;
+    noteDeleteDisabled: string;
+    noteHostOwned: string;
+    noteNoActiveLayer: string;
+    noteTimed: string;
+    notSelected: string;
+    overflowLabel: string;
+    overflowShow: PluralMessage;
+    partiallyVisible: string;
+    patternDots: string;
+    patternHatch: string;
+    patternName: string;
+    patternSolid: string;
+    regionLabel: string;
+    selected: string;
+    selectionCleared: string;
+    selectionSummary: string;
+    skipToItemList: string;
+    unableToRender: string;
+    unavailable: string;
+    visibilityChanged: PluralMessage;
+    visibilityReasonChannel: string;
+    visibilityReasonFilter: string;
+    visibilityReasonGroup: string;
+    visibilityReasonItem: string;
+    visibilityReasonLayer: string;
+    visibilityReasonUnknown: string;
+    visibilityVisible: string;
+}
+
+// @public
+export type PlannerMessagesOverride = Partial<PlannerMessages>;
+
 export { PlannerPeriod }
+
+// @public
+export interface PluralMessage {
+    few?: string;
+    many?: string;
+    one?: string;
+    other: string;
+    two?: string;
+    zero?: string;
+}
 
 // @public
 export interface PrintConfig {
@@ -174,6 +286,9 @@ export interface ResolvedTheme {
     theme: YearPlannerTheme;
     themeName: string;
 }
+
+// @public
+export function resolvePlannerMessages(overrides: PlannerMessagesOverride | undefined): PlannerMessages;
 
 // @public
 export function resolveTheme(name: string | undefined, providerTheme: YearPlannerTheme | undefined): {
@@ -274,6 +389,7 @@ export interface YearPlannerProps {
     interaction?: InteractionConfig;
     items?: PlannerItem[];
     layers?: PlannerLayer[];
+    messages?: PlannerMessagesOverride;
     onChangeCommitted?: (outcome: CommandOutcome) => void;
     onChangeRejected?: (outcome: CommandOutcome) => void;
     onChangeRequest?: (command: PlannerCommand, context: CommandContext, signal?: AbortSignal) => CommandOutcome | Promise<CommandOutcome>;

@@ -1,0 +1,229 @@
+{
+  "name": "@blendsdk/year-planner-languages",
+  "version": "0.3.0",
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "description": "Complete left-to-right UI translations for Year Planner for React",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blendsdk/year-planner.git"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./en": {
+      "types": "./dist/locales/en.d.ts",
+      "import": "./dist/locales/en.js"
+    },
+    "./en-GB": {
+      "types": "./dist/locales/en-GB.d.ts",
+      "import": "./dist/locales/en-GB.js"
+    },
+    "./nl": {
+      "types": "./dist/locales/nl.d.ts",
+      "import": "./dist/locales/nl.js"
+    },
+    "./de": {
+      "types": "./dist/locales/de.d.ts",
+      "import": "./dist/locales/de.js"
+    },
+    "./fr": {
+      "types": "./dist/locales/fr.d.ts",
+      "import": "./dist/locales/fr.js"
+    },
+    "./es": {
+      "types": "./dist/locales/es.d.ts",
+      "import": "./dist/locales/es.js"
+    },
+    "./it": {
+      "types": "./dist/locales/it.d.ts",
+      "import": "./dist/locales/it.js"
+    },
+    "./pt": {
+      "types": "./dist/locales/pt.d.ts",
+      "import": "./dist/locales/pt.js"
+    },
+    "./pt-BR": {
+      "types": "./dist/locales/pt-BR.d.ts",
+      "import": "./dist/locales/pt-BR.js"
+    },
+    "./da": {
+      "types": "./dist/locales/da.d.ts",
+      "import": "./dist/locales/da.js"
+    },
+    "./sv": {
+      "types": "./dist/locales/sv.d.ts",
+      "import": "./dist/locales/sv.js"
+    },
+    "./nb": {
+      "types": "./dist/locales/nb.d.ts",
+      "import": "./dist/locales/nb.js"
+    },
+    "./fi": {
+      "types": "./dist/locales/fi.d.ts",
+      "import": "./dist/locales/fi.js"
+    },
+    "./is": {
+      "types": "./dist/locales/is.d.ts",
+      "import": "./dist/locales/is.js"
+    },
+    "./pl": {
+      "types": "./dist/locales/pl.d.ts",
+      "import": "./dist/locales/pl.js"
+    },
+    "./cs": {
+      "types": "./dist/locales/cs.d.ts",
+      "import": "./dist/locales/cs.js"
+    },
+    "./sk": {
+      "types": "./dist/locales/sk.d.ts",
+      "import": "./dist/locales/sk.js"
+    },
+    "./hu": {
+      "types": "./dist/locales/hu.d.ts",
+      "import": "./dist/locales/hu.js"
+    },
+    "./ro": {
+      "types": "./dist/locales/ro.d.ts",
+      "import": "./dist/locales/ro.js"
+    },
+    "./bg": {
+      "types": "./dist/locales/bg.d.ts",
+      "import": "./dist/locales/bg.js"
+    },
+    "./hr": {
+      "types": "./dist/locales/hr.d.ts",
+      "import": "./dist/locales/hr.js"
+    },
+    "./sl": {
+      "types": "./dist/locales/sl.d.ts",
+      "import": "./dist/locales/sl.js"
+    },
+    "./sr": {
+      "types": "./dist/locales/sr.d.ts",
+      "import": "./dist/locales/sr.js"
+    },
+    "./sr-Cyrl": {
+      "types": "./dist/locales/sr-Cyrl.d.ts",
+      "import": "./dist/locales/sr-Cyrl.js"
+    },
+    "./ru": {
+      "types": "./dist/locales/ru.d.ts",
+      "import": "./dist/locales/ru.js"
+    },
+    "./uk": {
+      "types": "./dist/locales/uk.d.ts",
+      "import": "./dist/locales/uk.js"
+    },
+    "./et": {
+      "types": "./dist/locales/et.d.ts",
+      "import": "./dist/locales/et.js"
+    },
+    "./lv": {
+      "types": "./dist/locales/lv.d.ts",
+      "import": "./dist/locales/lv.js"
+    },
+    "./lt": {
+      "types": "./dist/locales/lt.d.ts",
+      "import": "./dist/locales/lt.js"
+    },
+    "./el": {
+      "types": "./dist/locales/el.d.ts",
+      "import": "./dist/locales/el.js"
+    },
+    "./tr": {
+      "types": "./dist/locales/tr.d.ts",
+      "import": "./dist/locales/tr.js"
+    },
+    "./hy": {
+      "types": "./dist/locales/hy.d.ts",
+      "import": "./dist/locales/hy.js"
+    },
+    "./ka": {
+      "types": "./dist/locales/ka.d.ts",
+      "import": "./dist/locales/ka.js"
+    },
+    "./ja": {
+      "types": "./dist/locales/ja.d.ts",
+      "import": "./dist/locales/ja.js"
+    },
+    "./ko": {
+      "types": "./dist/locales/ko.d.ts",
+      "import": "./dist/locales/ko.js"
+    },
+    "./zh": {
+      "types": "./dist/locales/zh.d.ts",
+      "import": "./dist/locales/zh.js"
+    },
+    "./zh-TW": {
+      "types": "./dist/locales/zh-TW.d.ts",
+      "import": "./dist/locales/zh-TW.js"
+    },
+    "./vi": {
+      "types": "./dist/locales/vi.d.ts",
+      "import": "./dist/locales/vi.js"
+    },
+    "./id": {
+      "types": "./dist/locales/id.d.ts",
+      "import": "./dist/locales/id.js"
+    },
+    "./ms": {
+      "types": "./dist/locales/ms.d.ts",
+      "import": "./dist/locales/ms.js"
+    },
+    "./th": {
+      "types": "./dist/locales/th.d.ts",
+      "import": "./dist/locales/th.js"
+    },
+    "./hi": {
+      "types": "./dist/locales/hi.d.ts",
+      "import": "./dist/locales/hi.js"
+    },
+    "./bn": {
+      "types": "./dist/locales/bn.d.ts",
+      "import": "./dist/locales/bn.js"
+    },
+    "./ta": {
+      "types": "./dist/locales/ta.d.ts",
+      "import": "./dist/locales/ta.js"
+    },
+    "./mr": {
+      "types": "./dist/locales/mr.d.ts",
+      "import": "./dist/locales/mr.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "pack:check": "publint && attw --pack . --profile esm-only"
+  },
+  "peerDependencies": {
+    "@blendsdk/react-year-planner": "^0.3.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
+    "@blendsdk/react-year-planner": "workspace:*",
+    "@vitest/coverage-v8": "4.1.12",
+    "publint": "0.3.25",
+    "typescript": "6.0.3",
+    "vitest": "4.1.12"
+  },
+  "homepage": "https://github.com/blendsdk/year-planner#readme",
+  "bugs": {
+    "url": "https://github.com/blendsdk/year-planner/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

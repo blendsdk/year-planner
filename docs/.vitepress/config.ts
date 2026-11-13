@@ -99,6 +99,7 @@ export default defineConfig({
           items: [
             { text: "Classic year layout", link: "/classic-year-layout" },
             { text: "Dynamic months", link: "/dynamic-months" },
+            { text: "Localization", link: "/localization" },
             { text: "Theming", link: "/theming" },
             { text: "Interaction", link: "/interaction" },
             { text: "Controlled commands", link: "/commands" },

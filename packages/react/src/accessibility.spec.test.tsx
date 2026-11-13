@@ -198,7 +198,7 @@ describe("RD-09-AC-04/11/12: item list", () => {
     );
     const inspector = container.querySelector('[data-yp-part="inspector"]') as HTMLElement;
     expect(inspector.textContent).toContain("Winter booking");
-    expect(inspector.textContent).toContain("activity");
+    expect(inspector.textContent).toContain("Activity");
     expect(inspector.textContent).toContain("Bookings");
     expect(inspector.textContent).toContain("Feb 1, 2027 - Feb 3, 2027");
   });

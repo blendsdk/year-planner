@@ -130,14 +130,17 @@ export const ItemLayer = memo(function ItemLayer({
     const periodLabel = formatters.formatPeriod(item.period, displayTimeZone);
     const visibleLabel =
       fragment.channel === "annotation" ? (item.annotation?.label ?? label) : label;
-    const accessibleName = itemAccessibleName({
-      item,
-      layer,
-      periodLabel,
-      visibleLabel,
-      selected,
-      clipped: fragment.isStartClipped || fragment.isEndClipped,
-    });
+    const accessibleName = itemAccessibleName(
+      {
+        item,
+        layer,
+        periodLabel,
+        visibleLabel,
+        selected,
+        clipped: fragment.isStartClipped || fragment.isEndClipped,
+      },
+      formatters.messages,
+    );
     const annotationBackground =
       fragment.channel === "annotation" ? item.annotation?.background : undefined;
     const background =

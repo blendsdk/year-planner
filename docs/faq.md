@@ -59,5 +59,6 @@ conformance claim is made. See [accessibility.md](accessibility.md).
 ### Why is the bundle a single file?
 
 Per-export tree-shaking is deferred. The React entry plus CSS is measured under
-the 60 kB target, and the combined installed surface stays under the 68 kB guard.
+the 60 kB target, and the combined installed surface stays under the 72 kB guard.
+Language catalogues are an optional package and are measured separately.
 See [limitations.md](limitations.md).

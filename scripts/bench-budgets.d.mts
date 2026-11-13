@@ -12,6 +12,9 @@ export const BUDGETS: Readonly<{
   initialRender2kP95Ms: number;
   reactEntryCssKb: number;
   totalInstalledKb: number;
+  languagesEntryKb: number;
+  languagesCataloguesKb: number;
+  languagePackKb: number;
 }>;
 
 /** The ceiling above which a result fails the harness. */

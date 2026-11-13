@@ -66,15 +66,15 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
 | A3 print boundaries | **15/28/29 months** print 2/2/3 pages; 12/14/18/24/36 verified |
-| Quality tests | **216 passed** (traceability, public API, coverage, size, CSS minifier, CI, package, license, audit, environment and release contracts) |
+| Quality tests | **219 passed** (traceability, public API, coverage, size, CSS minifier, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current, including palette attribution |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
-| Storybook | **PASS** — static build succeeds; **183 stories across 16 files** |
+| Storybook | **PASS** — static build succeeds; **186 stories across 16 files** |
 | API Extractor | **PASS** — reports checked in |
-| TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Docs site | **PASS** — 429 files; classic layout, licence and theme pages build |
-| Bundle size | **React entry + CSS 44.71 kB gzip / 60 kB**; **total 67.95 kB gzip / 68 kB** (core, React, adapters and CSS) |
+| TypeDoc | **PASS** — `docs/api/core`, `docs/api/react` and `docs/api/languages` generated |
+| Docs site | **PASS** — classic layout, licence, localization and theme pages build |
+| Bundle size | **React entry + CSS 46.35 kB gzip / 60 kB**; **total 69.59 kB gzip / 72 kB** (core, React, adapters and CSS, including the English fallback). **Languages 86.95 kB gzip / 95 kB** for all 45 catalogues; largest single language 2.22 kB / 8 kB |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | `verify`, `browsers`, `security`, `performance` and `dco` jobs configured; browser evidence and benchmark artifacts uploaded |
 | Browser versions | Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright 1.65.0) |
@@ -87,7 +87,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
   demo has a `play` function.
 - **Demos/Event Log** shows timestamped selection, command and context-menu
   callbacks beside the planner.
-- Every one of the **183 stories across 16 files** has a story-level
+- Every one of the **186 stories across 16 files** has a story-level
   description; the Reference catalogue remains intact.
 - The Fluent UI and MUI context-menu examples are host-owned and dev-only.
 
@@ -146,7 +146,7 @@ lines, branches, functions and statements.
 | Print boundaries | 12/14/15/18/24/28/29/36-month A3 page counts verified from PDFs |
 | Accessibility | Axe matrix includes material-teal, fluent-marigold, high-contrast, print, overflow, error and 36-month states |
 | Notices | React package ships palette attribution; root notice repeats it |
-| Size | Compact local palette data and a minified published CSS keep the total at 67.95 kB / 68 kB |
+| Size | Compact local palette data and a minified published CSS keep the React surface at 69.59 kB / 72 kB. Optional language catalogues are measured separately: all 45 at 86.95 kB / 95 kB, largest single language at 2.22 kB / 8 kB |
 
 ## Specification evidence
 
@@ -503,7 +503,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
   are deduped; touch keeps the native long-press; Fluent and MUI examples are
   host-owned.
 - **Demos.** Storybook opens with Demos: select, move, resize, paint, keyboard
-  and context menu, plus a timestamped event log. All 183 stories have a
+  and context menu, plus a timestamped event log. All 186 stories have a
   story-level description. The context-menu stories run in a bounded shell so
   the full 14-month view and the host menu are visible in one laptop viewport;
   the Demos story renders its own menu instead of hiding the feedback below the
@@ -551,7 +551,7 @@ The documentation site is one artifact built by `pnpm docs:site`:
 The build sets the VitePress base and the Storybook production base, copies
 both into `docs/.vitepress/dist`, and verifies every local link and asset
 against the project base. `pnpm docs:site` reported **423 files**; the artifact
-includes 183 stories and the generated API tree.
+includes 186 stories and the generated API tree.
 
 ### Commands and results
 
@@ -617,8 +617,8 @@ The demo is a working application, not a mock:
 | Command | Result |
 | --- | --- |
 | `pnpm lint` | PASS |
-| `pnpm test:quality` | PASS — 211 contracts, including 183 stories across 16 files |
-| `pnpm storybook:build` | PASS — 183 stories across 16 files |
+| `pnpm test:quality` | PASS — 211 contracts, including 186 stories across 16 files |
+| `pnpm storybook:build` | PASS — 186 stories across 16 files |
 | `pnpm docs:site` | PASS — VitePress + Storybook + TypeDoc; 423 files; links checked under `/year-planner/` |
 | `playwright test tests/e2e/full-demo.spec.ts tests/e2e/site.spec.ts --project=chromium` | PASS — 10 checks: Storybook landing, allocate/persist, context delete/undo/reset, filter/layout, site home/guide, full-demo iframe, manager, story index and API |
 | `pnpm verify:full` | Not run for this post-release demo. The last full gate passed at `314f893`; this change is Storybook/VitePress/docs/test only, so the owner asked to skip the full gate. |
@@ -636,3 +636,26 @@ The demo is a working application, not a mock:
 
 The owner explicitly requested no full `verify:full` for this change and no
 custom domain. The Pages deployment is live.
+
+## Localization and lockstep versions (0.3.0)
+
+The localization work added the `@blendsdk/year-planner-languages` package, the
+`messages` prop and 45 locale catalogues covering 41 left-to-right languages.
+Verification was targeted, as required by the project rule against unnecessary
+full runs:
+
+| Command | Result |
+| --- | --- |
+| `pnpm --filter @blendsdk/year-planner-languages test` | PASS — 10 tests; 100% statements, branches, functions and lines |
+| `pnpm --filter @blendsdk/react-year-planner exec vitest run src/i18n.spec.test.tsx` | PASS — 7 formatting, integration and SSR tests |
+| `pnpm --filter @blendsdk/react-year-planner test` | PASS — full React suite after the message refactor |
+| `playwright test tests/e2e/i18n.spec.ts --project=chromium` | PASS — German to Eastern Armenian to Japanese switch in the demo |
+| `pnpm typecheck` | PASS — core, React, languages, demo and Storybook |
+| `pnpm lint` | PASS — no errors |
+| `pnpm test:quality` | PASS — 28 files, including release metadata, public API and story contracts |
+| `pnpm test:size` | PASS — 46.35 / 60 kB React entry, 69.59 / 72 kB installed, 86.95 / 95 kB all languages, 2.22 / 8 kB largest language |
+| `pnpm test:versions` | PASS — all seven workspaces at 0.3.0 |
+
+The full `verify:full` gate was not run locally for this feature; CI keeps the
+authoritative full gate. The catalogue completeness test fails when a locale
+misses a key, a placeholder or a plural category.

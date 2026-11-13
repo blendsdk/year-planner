@@ -1,6 +1,7 @@
 import type { MonthRowLayout, PlannerItem, RibbonRow } from "@blendsdk/year-planner-core";
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import type { PlannerFormatters } from "../locale.js";
+import { formatPluralMessage } from "../messages.js";
 import type { OverflowRenderContext } from "../types.js";
 
 /**
@@ -88,7 +89,11 @@ export function Overflow({
         aria-expanded={open}
         aria-controls={open ? popoverId : undefined}
         aria-haspopup="dialog"
-        aria-label={`Show ${ribbonRow.overflowCount} hidden items`}
+        aria-label={formatPluralMessage(
+          formatters.messages.overflowShow,
+          ribbonRow.overflowCount,
+          formatters.locale,
+        )}
         onClick={() => setOpen((value) => !value)}
         onKeyDown={(event) => {
           if (event.key === "Escape" && open) {
@@ -106,7 +111,7 @@ export function Overflow({
           className="yp-overflow-popover"
           data-yp-part="overflow-popover"
           role="dialog"
-          aria-label="Hidden items"
+          aria-label={formatters.messages.overflowLabel}
           onKeyDown={(event) => {
             if (event.key !== "Escape") return;
             event.preventDefault();

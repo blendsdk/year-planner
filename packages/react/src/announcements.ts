@@ -1,4 +1,5 @@
 import type { CommandSettlement } from "./commands.js";
+import { defaultPlannerMessages, type PlannerMessages } from "./messages.js";
 
 /**
  * Visible and announced form of the current command state.
@@ -12,11 +13,17 @@ export interface CommandStatusView {
   announcement: "polite" | "assertive" | "none";
 }
 
-const ERROR_PREFIX: Record<string, string> = {
-  COMMAND_TIMEOUT: "Change timed out",
-  COMMAND_ABORTED: "Change aborted",
-  STALE_REVISION: "Change is stale",
-  HOST_REJECTED: "Change rejected",
+const ERROR_CODE_KEYS: Record<
+  string,
+  keyof Pick<
+    PlannerMessages,
+    "commandTimedOut" | "commandAborted" | "commandStale" | "commandRejected"
+  >
+> = {
+  COMMAND_TIMEOUT: "commandTimedOut",
+  COMMAND_ABORTED: "commandAborted",
+  STALE_REVISION: "commandStale",
+  HOST_REJECTED: "commandRejected",
 };
 
 /**
@@ -38,34 +45,37 @@ const ERROR_PREFIX: Record<string, string> = {
  * // { text: "Change accepted", level: "success", announcement: "polite" }
  * ```
  */
-export function commandStatusView(input: {
-  pending: boolean;
-  settled: CommandSettlement | undefined;
-}): CommandStatusView | undefined {
+export function commandStatusView(
+  input: {
+    pending: boolean;
+    settled: CommandSettlement | undefined;
+  },
+  messages: PlannerMessages = defaultPlannerMessages,
+): CommandStatusView | undefined {
   if (input.pending) {
-    return { text: "Change pending", level: "info", announcement: "polite" };
+    return { text: messages.commandPending, level: "info", announcement: "polite" };
   }
   const settled = input.settled;
   if (!settled) return undefined;
   if (settled.result === "accepted") {
-    return { text: "Change accepted", level: "success", announcement: "polite" };
+    return { text: messages.commandAccepted, level: "success", announcement: "polite" };
   }
   if (settled.result === "accepted-not-applied") {
     return {
-      text: "Change accepted but not applied",
+      text: messages.commandAcceptedNotApplied,
       level: "warning",
       announcement: "polite",
     };
   }
   if (settled.result === "confirmation-denied") {
-    return { text: "Change cancelled", level: "info", announcement: "polite" };
+    return { text: messages.commandCancelled, level: "info", announcement: "polite" };
   }
   if (settled.result === "rejected") {
     const primary = settled.diagnostics[0];
-    const prefix = ERROR_PREFIX[primary?.code ?? ""] ?? "Change rejected";
-    const message = primary?.message?.trim() || "The host rejected the change";
+    const key = ERROR_CODE_KEYS[primary?.code ?? ""] ?? "commandRejected";
+    const message = primary?.message?.trim() || messages.commandHostRejected;
     return {
-      text: `${prefix}: ${message}`,
+      text: `${messages[key]}: ${message}`,
       level: "error",
       announcement: "assertive",
     };

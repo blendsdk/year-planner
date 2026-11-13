@@ -126,16 +126,24 @@ function publishedIntegrity(name, version) {
   }
 }
 
-/** Packs both packages into the requested directory. */
+/** Packs the three packages into the requested directory. */
 function packPackages(root, destination) {
   const directory = join(root, destination);
   mkdirSync(directory, { recursive: true });
-  for (const name of ["@blendsdk/year-planner-core", "@blendsdk/react-year-planner"]) {
+  for (const name of [
+    "@blendsdk/year-planner-core",
+    "@blendsdk/react-year-planner",
+    "@blendsdk/year-planner-languages",
+  ]) {
     run("pnpm", ["--filter", name, "pack", "--pack-destination", directory], { cwd: root });
   }
   return {
     core: join(directory, `blendsdk-year-planner-core-${readVersion(root, "core")}.tgz`),
     react: join(directory, `blendsdk-react-year-planner-${readVersion(root, "react")}.tgz`),
+    languages: join(
+      directory,
+      `blendsdk-year-planner-languages-${readVersion(root, "languages")}.tgz`,
+    ),
   };
 }
 
@@ -150,6 +158,7 @@ function validateRelease(root, manifests) {
   for (const [key, path] of [
     ["core", "packages/core/CHANGELOG.md"],
     ["react", "packages/react/CHANGELOG.md"],
+    ["languages", "packages/languages/CHANGELOG.md"],
   ]) {
     const changelog = readFileSync(join(root, path), "utf8");
     if (!changelogSection(changelog, manifests[key].version)) {
@@ -225,6 +234,7 @@ function publishGithubRelease(root, version, options) {
     date: new Date().toISOString().slice(0, 10),
     coreChangelog: readFileSync(join(root, "packages/core/CHANGELOG.md"), "utf8"),
     reactChangelog: readFileSync(join(root, "packages/react/CHANGELOG.md"), "utf8"),
+    languagesChangelog: readFileSync(join(root, "packages/languages/CHANGELOG.md"), "utf8"),
     docsUrl: DOCS_URL,
   });
   const notesFile = join(root, "release-packs", `release-notes-${version}.md`);
@@ -264,6 +274,10 @@ export function release(root, options) {
     ? {
         core: join(options.packs, `blendsdk-year-planner-core-${manifests.core.version}.tgz`),
         react: join(options.packs, `blendsdk-react-year-planner-${manifests.react.version}.tgz`),
+        languages: join(
+          options.packs,
+          `blendsdk-year-planner-languages-${manifests.languages.version}.tgz`,
+        ),
       }
     : undefined;
   if (!tarballs) {
@@ -273,6 +287,7 @@ export function release(root, options) {
   const errors = inspectRelease(tarballs, manifests);
   if (existsSync(tarballs.core)) errors.push(...inspectTarballSourceMaps(tarballs.core));
   if (existsSync(tarballs.react)) errors.push(...inspectTarballSourceMaps(tarballs.react));
+  if (existsSync(tarballs.languages)) errors.push(...inspectTarballSourceMaps(tarballs.languages));
   if (errors.length > 0) throw new Error(errors.join("\n"));
 
   const published = [];
@@ -282,9 +297,19 @@ export function release(root, options) {
   if (publishTarball(tarballs.react, manifests.react.name, manifests.react.version, options)) {
     published.push(manifests.react.name);
   }
+  if (
+    publishTarball(
+      tarballs.languages,
+      manifests.languages.name,
+      manifests.languages.version,
+      options,
+    )
+  ) {
+    published.push(manifests.languages.name);
+  }
   publishGithubRelease(root, manifests.core.version, options);
   if (options.dryRun) {
-    console.log(`release ${manifests.core.version}: dry-run validated core and React`);
+    console.log(`release ${manifests.core.version}: dry-run validated core, React and languages`);
   } else {
     console.log(
       `release ${manifests.core.version}: ${published.length > 0 ? published.join(", ") : "nothing to publish"}`,

@@ -9,9 +9,15 @@
   the Demos Storybook group, the event-log playground and story-level
   descriptions for the whole catalogue. The supported data size is 2,000 items;
   the 0.3.0 bootstrap is the first published version.
-
-### Patch Changes
-
+- Replace the old theme preset names with 56 built-in presets: 19 Material 2014
+  families, 35 Fluent UI v9 families and the `high-contrast` and `print`
+  utilities. `material-teal` is the default. The 24-token theme API, geometry and
+  print behaviour are unchanged.
+- Add the planner-owned `PlannerMessages` contract and the `messages` prop.
+  Every label, button, command status, keyboard instruction and screen-reader
+  announcement can be translated or overridden. English remains the zero-config
+  default.
+- Change the licence for newly offered copies to Year Planner Internal Use License 1.0. Earlier MIT grants remain valid for the material they cover.
 - Updated dependencies
   - @blendsdk/year-planner-core@0.3.0
 

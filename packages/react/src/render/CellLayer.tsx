@@ -78,14 +78,18 @@ export const CellLayer = memo(function CellLayer({
     const labelId = `${idPrefix}-${column.columnIndex}-label`;
     const contentId = `${idPrefix}-${column.columnIndex}-content`;
     const label = date
-      ? dateCellAccessibleName({
-          date,
-          formattedDate: formatters.formatDate(date),
-          itemCount: itemIds.length,
-          weekNumber,
-          meta,
-          selected,
-        })
+      ? dateCellAccessibleName(
+          {
+            date,
+            formattedDate: formatters.formatDate(date),
+            itemCount: itemIds.length,
+            weekNumber,
+            meta,
+            selected,
+            locale: formatters.locale,
+          },
+          formatters.messages,
+        )
       : undefined;
     const content = date ? (
       <>

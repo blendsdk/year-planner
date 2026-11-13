@@ -97,7 +97,9 @@ Inside a valid day cell, the components place:
 ISO week numbering follows the ISO-8601 week-year rules. That is why 1 January
 2016 can display week 53 while 4 January 2016 displays week 1. The default
 formatter is `Intl.DateTimeFormat` with an explicit locale (`en-US` by default)
-and the Gregorian calendar.
+and the Gregorian calendar. Planner-owned interface text comes from the English
+message catalogue; pass `messages` to translate it. See
+[Localization](./localization.md).
 
 Month rows, weekday bands and day cells are real CSS Grid tracks. Cell borders
 are one pixel and the grid is bounded by the same border token, so print and

@@ -1,10 +1,12 @@
 import { addDays, type DateKey, type PlannerPeriod } from "@blendsdk/year-planner-core";
+import { defaultPlannerMessages, type PlannerMessages } from "./messages.js";
 
 /**
  * Formatters derived from one explicit locale.
  */
 export interface PlannerFormatters {
   locale: string;
+  messages: PlannerMessages;
   monthName(monthIndex: number): string;
   weekdayNames(): string[];
   formatNumber(value: number): string;
@@ -31,9 +33,13 @@ function dateParts(date: DateKey): Date {
  * Builds locale formatters with an explicit Gregorian calendar.
  *
  * @param locale - Host locale; invalid values fall back to `en-US`.
- * @returns Formatters plus the effective locale.
+ * @param messages - Active UI messages; defaults to English.
+ * @returns Formatters plus the effective locale and messages.
  */
-export function createFormatters(locale: string | undefined): PlannerFormatters {
+export function createFormatters(
+  locale: string | undefined,
+  messages: PlannerMessages = defaultPlannerMessages,
+): PlannerFormatters {
   const requested = locale ?? FALLBACK_LOCALE;
   const monthFormat = safeIntl(
     () =>
@@ -81,6 +87,7 @@ export function createFormatters(locale: string | undefined): PlannerFormatters 
 
   return {
     locale: effective,
+    messages,
     monthName: (monthIndex) => finalMonth.format(new Date(Date.UTC(2024, monthIndex, 1))),
     weekdayNames: () =>
       Array.from({ length: 7 }, (_, index) =>

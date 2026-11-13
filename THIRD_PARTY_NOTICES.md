@@ -39,6 +39,7 @@ is not published.
 | @algolia/requester-fetch | 5.64.0 | MIT | https://github.com/algolia/algoliasearch-client-javascript#readme |
 | @algolia/requester-node-http | 5.64.0 | MIT | https://github.com/algolia/algoliasearch-client-javascript#readme |
 | @andrewbranch/untar.js | 1.0.4 | MIT | https://github.com/andrewbranch/untar.js#readme |
+| @anthropic-ai/sdk | 0.111.0 | MIT | https://github.com/anthropics/anthropic-sdk-typescript#readme |
 | @arethetypeswrong/cli | 0.18.5 | MIT | https://github.com/arethetypeswrong/arethetypeswrong.github.io#readme |
 | @arethetypeswrong/core | 0.18.5 | MIT | https://github.com/arethetypeswrong/arethetypeswrong.github.io#readme |
 | @babel/code-frame | 7.29.7 | MIT | https://babel.dev/docs/en/next/babel-code-frame |
@@ -64,6 +65,7 @@ is not published.
 | @bcoe/v8-coverage | 1.0.2 | MIT | https://github.com/bcoe/v8-coverage#readme |
 | @biomejs/biome | 2.6.6 | MIT OR Apache-2.0 | https://biomejs.dev |
 | @biomejs/cli-linux-x64 | 2.6.6 | MIT OR Apache-2.0 | https://biomejs.dev |
+| @blendsdk/lockstep | 1.4.1 | MIT | https://github.com/TrueSoftwareNL/lockstep#readme |
 | @braidai/lang | 1.1.2 | ISC | https://github.com/braidnetworks/braidai/tree/main/packages/lang |
 | @changesets/apply-release-plan | 8.1.1 | MIT | https://github.com/changesets/changesets#readme |
 | @changesets/assemble-release-plan | 7.0.0 | MIT | https://github.com/changesets/changesets#readme |
@@ -230,6 +232,7 @@ is not published.
 | @shikijs/types | 3.23.0 | MIT | https://github.com/shikijs/shiki#readme |
 | @shikijs/vscode-textmate | 10.1.0 | MIT | https://github.com/shikijs/vscode-textmate#readme |
 | @sindresorhus/is | 4.6.0 | MIT | https://github.com/sindresorhus/is#readme |
+| @stablelib/base64 | 1.0.1 | MIT | https://github.com/StableLib/stablelib/tree/master/packages/base64 |
 | @standard-schema/spec | 1.1.0 | MIT | https://standardschema.dev |
 | @storybook/addon-a11y | 10.6.6 | MIT | https://github.com/storybookjs/storybook/tree/next/code/addons/a11y |
 | @storybook/addon-docs | 10.6.6 | MIT | https://github.com/storybookjs/storybook/tree/next/code/addons/docs |
@@ -400,6 +403,7 @@ is not published.
 | esutils | 2.0.3 | BSD-2-Clause | https://github.com/estools/esutils |
 | expect-type | 1.4.0 | Apache-2.0 | https://github.com/mmkal/expect-type#readme |
 | fast-deep-equal | 3.1.3 | MIT | https://github.com/epoberezkin/fast-deep-equal#readme |
+| fast-sha256 | 1.3.0 | Unlicense | https://github.com/dchest/fast-sha256-js#readme |
 | fast-string-truncated-width | 3.0.3 | MIT | https://github.com/fabiospampinato/fast-string-truncated-width#readme |
 | fast-string-width | 3.0.2 | MIT | https://github.com/fabiospampinato/fast-string-width#readme |
 | fast-uri | 3.1.9 | BSD-3-Clause | https://github.com/fastify/fast-uri |
@@ -448,6 +452,7 @@ is not published.
 | jsdom | 31.0.0 | MIT | https://github.com/jsdom/jsdom#readme |
 | jsesc | 3.1.0 | MIT | https://mths.be/jsesc |
 | json-parse-even-better-errors | 2.3.1 | MIT | https://github.com/npm/json-parse-even-better-errors#readme |
+| json-schema-to-ts | 3.1.1 | MIT | https://github.com/ThomasAribart/json-schema-to-ts#readme |
 | json-schema-traverse | 1.0.0 | MIT | https://github.com/epoberezkin/json-schema-traverse#readme |
 | json5 | 2.2.3 | MIT | http://json5.org/ |
 | jsonc-parser | 3.3.1 | MIT | https://github.com/microsoft/node-jsonc-parser#readme |
@@ -492,10 +497,12 @@ is not published.
 | nanoid | 3.3.20 | MIT | https://github.com/ai/nanoid#readme |
 | node-emoji | 2.2.0 | MIT | https://github.com/omnidan/node-emoji#readme |
 | node-releases | 2.0.63 | MIT | https://github.com/chicoxyzzy/node-releases#readme |
+| npm-check-updates | 22.2.9 | Apache-2.0 | https://github.com/raineorshine/npm-check-updates |
 | object-assign | 4.1.1 | MIT | https://github.com/sindresorhus/object-assign#readme |
 | obug | 2.2.1 | MIT | https://github.com/sxzz/obug#readme |
 | oniguruma-to-es | 3.1.1 | MIT | https://github.com/slevithan/oniguruma-to-es#readme |
 | open | 10.2.0 | MIT | https://github.com/sindresorhus/open#readme |
+| openai | 6.49.0 | Apache-2.0 | https://github.com/openai/openai-node#readme |
 | oxc-parser | 0.127.0 | MIT | https://oxc.rs/docs/guide/usage/parser |
 | oxc-resolver | 11.21.2 | MIT | https://oxc.rs |
 | package-manager-detector | 1.9.0 | MIT | https://github.com/antfu-collective/package-manager-detector#readme |
@@ -565,6 +572,7 @@ is not published.
 | speakingurl | 14.0.1 | BSD-3-Clause | http://pid.github.io/speakingurl/ |
 | sprintf-js | 1.0.3 | BSD-3-Clause | https://github.com/alexei/sprintf.js#readme |
 | stackback | 0.0.2 | MIT | https://github.com/shtylman/node-stackback#readme |
+| standardwebhooks | 1.1.1 | MIT | https://github.com/standard-webhooks/standard-webhooks/tree/main/libraries/javascript |
 | std-env | 4.3.0 | MIT | https://github.com/unjs/std-env#readme |
 | storybook | 10.6.6 | MIT | https://storybook.js.org |
 | string-argv | 0.3.2 | MIT | https://github.com/mccormicka/string-argv |
@@ -597,6 +605,7 @@ is not published.
 | tough-cookie | 6.1.0 | BSD-3-Clause | https://github.com/salesforce/tough-cookie |
 | tr46 | 7.0.0 | MIT | https://github.com/jsdom/tr46#readme |
 | trim-lines | 3.0.1 | MIT | https://github.com/wooorm/trim-lines#readme |
+| ts-algebra | 2.0.0 | MIT | https://github.com/ThomasAribart/ts-algebra#readme |
 | ts-dedent | 2.3.0 | MIT | https://github.com/tamino-martinius/node-ts-dedent#readme |
 | tsconfig-paths | 4.2.0 | MIT | https://github.com/dividab/tsconfig-paths#readme |
 | tslib | 2.9.1 | 0BSD | https://www.typescriptlang.org/ |

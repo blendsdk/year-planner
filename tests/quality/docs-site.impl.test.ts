@@ -53,10 +53,11 @@ function valid(directory: string): void {
   write(
     directory,
     "docs/.vitepress/dist/api/index.html",
-    '<a href="./core/index.html">core</a><a href="./react/index.html">react</a>',
+    '<a href="./core/index.html">core</a><a href="./react/index.html">react</a><a href="./languages/index.html">languages</a>',
   );
   write(directory, "docs/.vitepress/dist/api/core/index.html", "<h1>core</h1>");
   write(directory, "docs/.vitepress/dist/api/react/index.html", "<h1>react</h1>");
+  write(directory, "docs/.vitepress/dist/api/languages/index.html", "<h1>languages</h1>");
 }
 
 afterEach(() => {

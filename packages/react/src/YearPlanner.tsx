@@ -38,6 +38,7 @@ import { computeFit, type FitGeometry } from "./fit.js";
 import { pointToDate, viewFromViewport } from "./geometry.js";
 import { useInteraction } from "./interaction/useInteraction.js";
 import { createFormatters } from "./locale.js";
+import { formatPlannerMessage, resolvePlannerMessages } from "./messages.js";
 import { resolveDisplayOptions } from "./options.js";
 import { useYearPlannerTheme } from "./provider.js";
 import { Inspector } from "./render/Inspector.js";
@@ -222,6 +223,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       [layout?.signature, state.filter, state.interactionMode, state.visibility],
     );
     // Stable input keeps the command pipeline object stable during gestures.
+    const messages = useMemo(() => resolvePlannerMessages(props.messages), [props.messages]);
     const pipelineInput = useMemo(
       () => ({
         state,
@@ -237,6 +239,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         ...(props.interaction?.confirmChange
           ? { confirmChange: props.interaction.confirmChange }
           : {}),
+        confirmDeleteMessage: messages.confirmDelete,
         ...(props.validateChange ? { validateChange: props.validateChange } : {}),
         ...(props.onChangeRequest ? { onChangeRequest: props.onChangeRequest } : {}),
         ...(props.onChangeCommitted ? { onChangeCommitted: props.onChangeCommitted } : {}),
@@ -255,6 +258,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         props.onChangeCommitted,
         props.onChangeRejected,
         props.onDiagnostic,
+        messages,
       ],
     );
     const pipeline = useCommandPipeline(pipelineInput);
@@ -334,8 +338,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     }, [printRibbons, props.print]);
 
     const formatters = useMemo(
-      () => createFormatters(resolvedDisplay.options.locale),
-      [resolvedDisplay.options.locale],
+      () => createFormatters(resolvedDisplay.options.locale, messages),
+      [resolvedDisplay.options.locale, messages],
     );
     const components = useMemo(() => props.components ?? EMPTY_COMPONENTS, [props.components]);
     const weekdayNames = useMemo(() => formatters.weekdayNames(), [formatters]);
@@ -425,6 +429,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       selection: state.selection,
       visibility: state.visibility,
       visibleItemCount,
+      messages,
+      locale: formatters.locale,
     });
     const helpId = useId();
     const inspectorId = useId();
@@ -433,9 +439,12 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const errorItemId = pipeline.feedback ? commandItemId(pipeline.feedback.command) : undefined;
     const itemListRef = useRef<HTMLElement>(null);
     const regionLabel = (
-      props.ariaLabel ?? `Year planner ${layout?.highlightYear ?? props.year ?? ""}`
+      props.ariaLabel ??
+      formatPlannerMessage(messages.regionLabel, {
+        year: layout?.highlightYear ?? props.year ?? "",
+      })
     ).trim();
-    const gridLabel = `${regionLabel} grid`;
+    const gridLabel = formatPlannerMessage(messages.gridLabel, { region: regionLabel });
     const gridDescribedBy = [props.ariaDescribedBy, helpId].filter(Boolean).join(" ") || undefined;
 
     const isDisabledDate = useCallback(
@@ -493,15 +502,18 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       [isDisabledDate, layout],
     );
 
-    const announceFocus = useCallback((date: string) => {
-      setFocusAnnouncement(undefined);
-      const message = `Focus moved to ${date}`;
-      if (typeof queueMicrotask === "function") {
-        queueMicrotask(() => setFocusAnnouncement(message));
-      } else {
-        setFocusAnnouncement(message);
-      }
-    }, []);
+    const announceFocus = useCallback(
+      (date: string) => {
+        setFocusAnnouncement(undefined);
+        const message = formatPlannerMessage(messages.focusMoved, { date });
+        if (typeof queueMicrotask === "function") {
+          queueMicrotask(() => setFocusAnnouncement(message));
+        } else {
+          setFocusAnnouncement(message);
+        }
+      },
+      [messages],
+    );
 
     const layoutDiagnostics = layoutResult.ok ? [] : layoutResult.diagnostics;
     const printDiagnostics = printResult?.diagnostics ?? [];
@@ -1035,7 +1047,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
           style={{ ...cssVars, ...props.style }}
         >
           <div className="yp-empty" role="status" data-yp-part="empty">
-            {props.renderEmpty?.() ?? layoutErrorMessage ?? "Unable to render the year planner."}
+            {props.renderEmpty?.() ?? layoutErrorMessage ?? messages.unableToRender}
           </div>
         </div>
       );
@@ -1059,13 +1071,11 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       <>
         {props.showInspector !== false && (
           <a className="yp-skip-link" href={`#${itemListId}`} onClick={skipToItemList}>
-            Skip to item list
+            {messages.skipToItemList}
           </a>
         )}
         <p id={helpId} className="yp-sr-only">
-          Use arrow keys to move between dates. Hold Shift with an arrow key to extend the
-          selection. Press Space to toggle a date or item, Enter to inspect, Escape to cancel or
-          clear, and Delete to delete the focused item after confirmation.
+          {messages.keyboardHelp}
         </p>
         <p className="yp-sr-only" role="status" aria-live="polite" data-yp-part="focus-status">
           {focusAnnouncement}

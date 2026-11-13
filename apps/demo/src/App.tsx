@@ -4,9 +4,14 @@ import {
   yearPlannerPresets,
 } from "@blendsdk/react-year-planner";
 import type { PlannerItem, PlannerLayer } from "@blendsdk/year-planner-core";
+import {
+  getPlannerLanguage,
+  getPlannerMessages,
+  plannerLanguages,
+} from "@blendsdk/year-planner-languages";
 import { Button as FluentButton, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { createTheme, Button as MuiButton, ThemeProvider } from "@mui/material";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { BenchDemo } from "./BenchDemo.js";
 import { CommandsDemo } from "./CommandsDemo.js";
 import { InteractionDemo } from "./InteractionDemo.js";
@@ -189,6 +194,15 @@ export function App() {
   const [theme, setTheme] = useState<YearPlannerThemeName>(
     prt01Mode ? "fluent-marigold" : "material-teal",
   );
+  const requestedLanguage = new URLSearchParams(search).get("lang");
+  const [languageId, setLanguageId] = useState(
+    getPlannerLanguage(requestedLanguage ?? "en")?.id ?? "en",
+  );
+  const language = getPlannerLanguage(languageId) ?? getPlannerLanguage("en");
+  const messages = useMemo(
+    () => getPlannerMessages(language?.locale ?? "en-US"),
+    [language?.locale],
+  );
   const initialMonths = Number(new URLSearchParams(search).get("months") ?? 14);
   const [months, setMonths] = useState(
     Number.isInteger(initialMonths) && initialMonths >= 12 && initialMonths <= 36
@@ -280,7 +294,9 @@ export function App() {
         zoom,
         density,
         showISOWeekNumbers: true,
+        locale: language?.locale ?? "en-US",
       }}
+      messages={messages}
       print={{ mode: "paginate" }}
       activeLayerId="bookings"
       renderCell={
@@ -361,6 +377,20 @@ export function App() {
             <option value={2016}>2016</option>
             <option value={2017}>2017</option>
             <option value={2027}>2027</option>
+          </select>
+        </label>
+        <label>
+          Language{" "}
+          <select
+            data-testid="language"
+            value={languageId}
+            onChange={(event) => setLanguageId(event.target.value)}
+          >
+            {plannerLanguages.map((entry) => (
+              <option key={entry.id} value={entry.id}>
+                {entry.nativeName} ({entry.locale})
+              </option>
+            ))}
           </select>
         </label>
         <label>

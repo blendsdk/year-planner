@@ -28,8 +28,20 @@ export const BUDGETS = Object.freeze({
   initialRender2kP95Ms: 550,
   /** React package entry plus CSS, gzip. */
   reactEntryCssKb: 60,
-  /** Core plus React plus adapters plus CSS, gzip. */
-  totalInstalledKb: 68,
+  /**
+   * Core plus React plus adapters plus CSS, gzip.
+   *
+   * The English fallback catalogue is part of the zero-config React surface.
+   * Full translations live in the optional languages package and are measured
+   * separately, so they never inflate every consumer's install.
+   */
+  totalInstalledKb: 72,
+  /** Optional languages package main entry (imports only), gzip. */
+  languagesEntryKb: 5,
+  /** Main entry plus every locale catalogue, gzip. */
+  languagesCataloguesKb: 95,
+  /** Largest single language subpath, gzip. */
+  languagePackKb: 8,
 });
 
 /** The ceiling above which a result fails the harness. */

@@ -134,6 +134,7 @@ export function verifyArtifact(root, options = {}) {
     "api/index.html",
     "api/core/index.html",
     "api/react/index.html",
+    "api/languages/index.html",
   ]) {
     if (!existsSync(join(artifact, path))) errors.push(`missing ${path}`);
   }

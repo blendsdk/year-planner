@@ -1,6 +1,6 @@
 {
   "name": "@blendsdk/year-planner-storybook",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,6 +10,7 @@
   "dependencies": {
     "@blendsdk/react-year-planner": "workspace:*",
     "@blendsdk/year-planner-core": "workspace:*",
+    "@blendsdk/year-planner-languages": "workspace:*",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { selectionSummary } from "./a11y.js";
 import { type CommandStatusView, commandStatusView } from "./announcements.js";
 import type { CommandSettlement } from "./commands.js";
+import { defaultPlannerMessages, formatPluralMessage, type PlannerMessages } from "./messages.js";
 
 /**
  * Inputs for the announcement hook.
@@ -20,6 +21,10 @@ export interface UseAnnouncementsInput {
   visibility: VisibilityState;
   /** Number of effectively visible items. */
   visibleItemCount: number;
+  /** Active message catalogue. */
+  messages?: PlannerMessages;
+  /** Active locale for plural forms. */
+  locale?: string;
 }
 
 /**
@@ -71,6 +76,8 @@ function announce(setter: (value: string | undefined) => void, message: string):
  * @returns Visible status and the live-region messages.
  */
 export function useAnnouncements(input: UseAnnouncementsInput): AnnouncementState {
+  const messages = input.messages ?? defaultPlannerMessages;
+  const locale = input.locale ?? "en-US";
   const [polite, setPolite] = useState<string | undefined>(undefined);
   const [assertive, setAssertive] = useState<string | undefined>(undefined);
   const [selection, setSelection] = useState<string | undefined>(undefined);
@@ -80,13 +87,13 @@ export function useAnnouncements(input: UseAnnouncementsInput): AnnouncementStat
   const lastVisibility = useRef(visibilitySignature(input.visibility));
 
   useEffect(() => {
-    if (input.pending && !wasPending.current) announce(setPolite, "Change pending");
+    if (input.pending && !wasPending.current) announce(setPolite, messages.commandPending);
     wasPending.current = input.pending;
-  }, [input.pending]);
+  }, [input.pending, messages]);
 
   useEffect(() => {
     if (!input.settled) return;
-    const view = commandStatusView({ pending: false, settled: input.settled });
+    const view = commandStatusView({ pending: false, settled: input.settled }, messages);
     if (!view || view.announcement === "none") return;
     setPolite(undefined);
     setAssertive(undefined);
@@ -96,31 +103,27 @@ export function useAnnouncements(input: UseAnnouncementsInput): AnnouncementStat
     } else {
       setter(view.text);
     }
-  }, [input.settled]);
+  }, [input.settled, messages]);
 
   useEffect(() => {
     const signature = selectionSignature(input.selection);
     if (signature === lastSelection.current) return;
     lastSelection.current = signature;
-    setSelection(selectionSummary(input.selection));
-  }, [input.selection]);
+    setSelection(selectionSummary(input.selection, messages, locale));
+  }, [input.selection, messages, locale]);
 
   useEffect(() => {
     const signature = visibilitySignature(input.visibility);
     if (signature === lastVisibility.current) return;
     lastVisibility.current = signature;
-    setVisibility(
-      `Visibility changed: ${input.visibleItemCount} visible ${
-        input.visibleItemCount === 1 ? "item" : "items"
-      }`,
-    );
-  }, [input.visibleItemCount, input.visibility]);
+    setVisibility(formatPluralMessage(messages.visibilityChanged, input.visibleItemCount, locale));
+  }, [input.visibleItemCount, input.visibility, messages, locale]);
 
   const status = useMemo(() => {
-    const view = commandStatusView({ pending: input.pending, settled: input.settled });
+    const view = commandStatusView({ pending: input.pending, settled: input.settled }, messages);
     if (view?.level === "error" && !input.feedbackVisible) return undefined;
     return view;
-  }, [input.feedbackVisible, input.pending, input.settled]);
+  }, [input.feedbackVisible, input.pending, input.settled, messages]);
 
   return { status, polite, assertive, selection, visibility };
 }

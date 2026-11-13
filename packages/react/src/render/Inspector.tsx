@@ -3,9 +3,11 @@ import {
   canCreateItem,
   canDeleteItem,
   diffDays,
+  type EditabilityReason,
   getEffectiveVisibility,
   getItemEditability,
   getResolvedLayerPolicy,
+  type ItemKind,
   isLayerEffectivelyHidden,
   type LayerGroup,
   type PlannerFilter,
@@ -14,6 +16,7 @@ import {
   type PlannerModel,
   type PlannerSelection,
   type RibbonRow,
+  type VisibilityReason,
   type VisibilityState,
 } from "@blendsdk/year-planner-core";
 import { memo, type ReactNode, type RefObject } from "react";
@@ -25,6 +28,7 @@ import {
   defaultPaintDefaults,
 } from "../interaction/builders.js";
 import type { PlannerFormatters } from "../locale.js";
+import { formatPlannerMessage, type PlannerMessages } from "../messages.js";
 import type {
   InspectorActions,
   InspectorRenderContext,
@@ -78,6 +82,34 @@ function groupPath(layer: PlannerLayer, groups: LayerGroup[]): string {
     cursor = group.parentGroupId;
   }
   return [...names, layer.name].join(" / ");
+}
+
+function kindMessage(kind: ItemKind, messages: PlannerMessages): string {
+  if (kind === "activity") return messages.kindActivity;
+  if (kind === "reservation") return messages.kindReservation;
+  if (kind === "annotation") return messages.kindAnnotation;
+  return messages.kindHighlight;
+}
+
+function visibilityMessage(reason: VisibilityReason, messages: PlannerMessages): string {
+  if (reason === "group") return messages.visibilityReasonGroup;
+  if (reason === "layer") return messages.visibilityReasonLayer;
+  if (reason === "item") return messages.visibilityReasonItem;
+  if (reason === "filter") return messages.visibilityReasonFilter;
+  if (reason === "channel") return messages.visibilityReasonChannel;
+  if (reason === "unknown-entity") return messages.visibilityReasonUnknown;
+  return messages.visibilityVisible;
+}
+
+function editabilityMessage(reason: EditabilityReason, messages: PlannerMessages): string {
+  if (reason === "global-read-only") return messages.editabilityReasonGlobalReadOnly;
+  if (reason === "hidden") return messages.editabilityReasonHidden;
+  if (reason === "item-locked") return messages.editabilityReasonItemLocked;
+  if (reason === "layer-locked") return messages.editabilityReasonLayerLocked;
+  if (reason === "policy") return messages.editabilityReasonPolicy;
+  if (reason === "interaction-mode") return messages.editabilityReasonInteractionMode;
+  if (reason === "unknown-entity") return messages.editabilityReasonUnknown;
+  return messages.editableYes;
 }
 
 function periodText(
@@ -245,6 +277,7 @@ export const Inspector = memo(function Inspector({
     items: selectedItems,
     actions,
   };
+  const messages = formatters.messages;
 
   return (
     <aside
@@ -252,16 +285,16 @@ export const Inspector = memo(function Inspector({
       ref={asideRef}
       className="yp-inspector"
       data-yp-part="inspector"
-      aria-label="Planner inspector"
+      aria-label={messages.inspectorLabel}
       tabIndex={-1}
     >
       <header className="yp-inspector-header">
-        <h2>Inspector</h2>
+        <h2>{messages.inspectorTitle}</h2>
         <button
           type="button"
           className="yp-inspector-close"
           data-yp-part="inspector-close"
-          aria-label="Close inspector"
+          aria-label={messages.inspectorClose}
           onClick={onClose}
         >
           ×
@@ -291,7 +324,7 @@ export const Inspector = memo(function Inspector({
               onFocusItem={onFocusItem}
               layerById={layerById}
             />
-            <InspectorFeedback pipeline={pipeline} id={feedbackId} />
+            <InspectorFeedback pipeline={pipeline} id={feedbackId} messages={formatters.messages} />
           </InspectorSlot>
         ) : (
           <>
@@ -316,7 +349,7 @@ export const Inspector = memo(function Inspector({
               onFocusItem={onFocusItem}
               layerById={layerById}
             />
-            <InspectorFeedback pipeline={pipeline} id={feedbackId} />
+            <InspectorFeedback pipeline={pipeline} id={feedbackId} messages={formatters.messages} />
           </>
         )}
       </div>
@@ -387,12 +420,13 @@ function DefaultInspectorBody({
   onFocusItem,
   layerById,
 }: BodyProps): ReactNode {
+  const messages = formatters.messages;
   const createLayer = interaction?.createDefaults?.layerId ?? activeLayerId;
   const createDate = selection.focusDate ?? selection.dates[0]?.startDate ?? activeDate;
   return (
     <>
       {selectedItems.length === 0 && overflowItems.length === 0 && (
-        <p className="yp-inspector-empty">Select an item or date range.</p>
+        <p className="yp-inspector-empty">{messages.inspectorEmpty}</p>
       )}
       {selectedItems.map((item) => {
         const layer = layerById.get(item.layerId);
@@ -482,24 +516,30 @@ function DefaultInspectorBody({
           <section className="yp-inspector-item" key={item.id} data-item-id={item.id}>
             <h3>{item.title ?? item.id}</h3>
             <dl className="yp-inspector-details">
-              <dt>Kind</dt>
-              <dd>{item.kind}</dd>
-              <dt>Layer</dt>
+              <dt>{messages.detailKind}</dt>
+              <dd>{kindMessage(item.kind, messages)}</dd>
+              <dt>{messages.detailLayer}</dt>
               <dd>{layer ? groupPath(layer, model.groups) : item.layerId}</dd>
-              <dt>Period</dt>
+              <dt>{messages.detailPeriod}</dt>
               <dd>{periodText(item, formatters, displayTimeZone)}</dd>
-              <dt>Status</dt>
+              <dt>{messages.detailStatus}</dt>
               <dd>{item.status ?? "—"}</dd>
-              <dt>Visibility</dt>
-              <dd>{visibilityResult.visible ? "visible" : visibilityResult.reason}</dd>
-              <dt>Editable</dt>
-              <dd>{editability?.editable ? "yes" : (editability?.reason ?? "unknown")}</dd>
+              <dt>{messages.detailVisibility}</dt>
+              <dd>{visibilityMessage(visibilityResult.reason, messages)}</dd>
+              <dt>{messages.detailEditable}</dt>
+              <dd>
+                {editability
+                  ? editabilityMessage(editability.reason, messages)
+                  : messages.editableUnknown}
+              </dd>
             </dl>
             {/* biome-ignore lint/a11y/useSemanticElements: a button group is a div with role=group in this layout */}
             <div
               className="yp-inspector-actions"
               role="group"
-              aria-label={`Actions for ${item.title ?? item.id}`}
+              aria-label={formatPlannerMessage(messages.actionsFor, {
+                title: item.title ?? item.id,
+              })}
             >
               <button
                 type="button"
@@ -512,7 +552,7 @@ function DefaultInspectorBody({
                   })
                 }
               >
-                Delete
+                {messages.actionDelete}
               </button>
               <button
                 type="button"
@@ -531,7 +571,7 @@ function DefaultInspectorBody({
                   })
                 }
               >
-                Move earlier
+                {messages.actionMoveEarlier}
               </button>
               <button
                 type="button"
@@ -550,7 +590,7 @@ function DefaultInspectorBody({
                   })
                 }
               >
-                Move later
+                {messages.actionMoveLater}
               </button>
               <button
                 type="button"
@@ -570,7 +610,7 @@ function DefaultInspectorBody({
                   })
                 }
               >
-                Resize shorter
+                {messages.actionResizeShorter}
               </button>
               <button
                 type="button"
@@ -589,36 +629,38 @@ function DefaultInspectorBody({
                   })
                 }
               >
-                Resize longer
+                {messages.actionResizeLonger}
               </button>
               <button
                 type="button"
                 disabled={!paintCommand}
                 onClick={() => paintCommand && void pipeline.requestCommand(paintCommand)}
               >
-                Paint range
+                {messages.actionPaint}
               </button>
               <button
                 type="button"
                 disabled={!eraseCommand}
                 onClick={() => eraseCommand && void pipeline.requestCommand(eraseCommand)}
               >
-                Erase range
+                {messages.actionErase}
               </button>
             </div>
-            {hostOwned && <p className="yp-inspector-note">Annotation items are host-owned.</p>}
-            {timed && (
-              <p className="yp-inspector-note">Timed items cannot be moved, resized or painted.</p>
-            )}
+            {hostOwned && <p className="yp-inspector-note">{messages.noteHostOwned}</p>}
+            {timed && <p className="yp-inspector-note">{messages.noteTimed}</p>}
             {layer && !getResolvedLayerPolicy(layer.id, model).allowDelete && (
-              <p className="yp-inspector-note">Deletion is disabled by the layer policy.</p>
+              <p className="yp-inspector-note">{messages.noteDeleteDisabled}</p>
             )}
           </section>
         );
       })}
       {overflowItems.length > 0 && (
         <section className="yp-inspector-overflow">
-          <h3>Hidden on this row ({overflowItems.length})</h3>
+          <h3>
+            {formatPlannerMessage(messages.inspectorHiddenOnRow, {
+              count: overflowItems.length,
+            })}
+          </h3>
           <ul>
             {overflowItems.map((item) => (
               <li key={item.id}>
@@ -664,9 +706,9 @@ function DefaultInspectorBody({
             if (item) void pipeline.requestCommand({ type: "create", item });
           }}
         >
-          Create item
+          {messages.actionCreate}
         </button>
-        {!createLayer && <p className="yp-inspector-note">Set an active layer to create items.</p>}
+        {!createLayer && <p className="yp-inspector-note">{messages.noteNoActiveLayer}</p>}
       </section>
     </>
   );
@@ -678,9 +720,11 @@ function DefaultInspectorBody({
 export function InspectorFeedback({
   pipeline,
   id,
+  messages,
 }: {
   pipeline: CommandPipeline;
   id?: string | undefined;
+  messages: PlannerMessages;
 }): ReactNode {
   const feedback: CommandFeedback | undefined = pipeline.feedback;
   const notices = pipeline.notices;
@@ -690,7 +734,7 @@ export function InspectorFeedback({
       id={id}
       className="yp-inspector-feedback"
       data-yp-part="inspector-feedback"
-      aria-label="Command feedback"
+      aria-label={messages.feedbackLabel}
     >
       {feedback && (
         <p data-yp-level={feedback.level}>
@@ -709,11 +753,11 @@ export function InspectorFeedback({
       <div className="yp-inspector-actions">
         {feedback?.retryable && (
           <button type="button" onClick={() => void pipeline.retry()}>
-            Retry
+            {messages.actionRetry}
           </button>
         )}
         <button type="button" onClick={pipeline.dismiss}>
-          Dismiss
+          {messages.actionDismiss}
         </button>
       </div>
     </section>

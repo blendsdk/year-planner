@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 /**
  * Release metadata contract.
  *
- * The two packages release in lockstep from one Changesets fixed group. Their
+ * The three packages release in lockstep from one Changesets fixed group. Their
  * manifests, generated changelogs, README and license are the published
  * contract, so these checks read the checked-in files before the build.
  */
@@ -28,6 +28,7 @@ function exists(path: string): boolean {
 
 const CORE = "packages/core/package.json";
 const REACT = "packages/react/package.json";
+const LANGUAGES = "packages/languages/package.json";
 
 interface Manifest {
   name: string;
@@ -46,7 +47,7 @@ interface Manifest {
 }
 
 describe("RD-12-AC-01: lockstep release group", () => {
-  it("uses one fixed Changesets group for both packages", () => {
+  it("uses one fixed Changesets group for all three packages", () => {
     const config = json<{
       fixed?: string[][];
       access?: string;
@@ -55,14 +56,17 @@ describe("RD-12-AC-01: lockstep release group", () => {
     const group = config.fixed?.find((entry) => entry.includes("@blendsdk/year-planner-core"));
     expect(group).toBeDefined();
     expect(group).toContain("@blendsdk/react-year-planner");
+    expect(group).toContain("@blendsdk/year-planner-languages");
     expect(config.access).toBe("public");
     expect(config.baseBranch).toBe("main");
   });
 
-  it("publishes both packages at the same 0.x version", () => {
+  it("publishes all three packages at the same 0.x version", () => {
     const core = json<Manifest>(CORE);
     const react = json<Manifest>(REACT);
+    const languages = json<Manifest>(LANGUAGES);
     expect(core.version).toBe(react.version);
+    expect(core.version).toBe(languages.version);
     expect(core.version).toMatch(/^0\.\d+\.\d+$/);
   });
 });
@@ -71,7 +75,11 @@ describe("RD-12-AC-14: licence and palette notices", () => {
   it("RD-12-AC-14: keeps licence, notices and release metadata consistent", () => {
     const rootLicence = read("LICENSE");
     expect(rootLicence).toContain("Year Planner Internal Use License 1.0");
-    for (const path of ["packages/core/LICENSE", "packages/react/LICENSE"]) {
+    for (const path of [
+      "packages/core/LICENSE",
+      "packages/react/LICENSE",
+      "packages/languages/LICENSE",
+    ]) {
       expect(read(path), path).toBe(rootLicence);
     }
     expect(read("README.md")).toMatch(/source-available/i);
@@ -80,8 +88,7 @@ describe("RD-12-AC-14: licence and palette notices", () => {
     expect(notices).toContain("Material 2014");
     expect(notices).toContain("Fluent UI v9");
     expect(read("CONTRIBUTING.md")).toContain("contribution licence grant");
-    const changeset = read(".changeset/internal-use-license.md");
-    expect(changeset).toContain("Internal Use License");
+    expect(read("packages/react/CHANGELOG.md")).toContain("Year Planner Internal Use License 1.0");
     for (const document of ["README.md", "SUPPORT.md", "docs/licensing.md"]) {
       const text = read(document);
       expect(text, `${document} still claims MIT`).not.toMatch(/\bMIT licensed\b/i);
@@ -91,17 +98,21 @@ describe("RD-12-AC-14: licence and palette notices", () => {
 
 describe("RD-12-AC-11: package metadata and changelogs", () => {
   it("generates a changelog heading for the current version", () => {
-    for (const path of ["packages/core/CHANGELOG.md", "packages/react/CHANGELOG.md"]) {
+    for (const [path, manifestPath] of [
+      ["packages/core/CHANGELOG.md", CORE],
+      ["packages/react/CHANGELOG.md", REACT],
+      ["packages/languages/CHANGELOG.md", LANGUAGES],
+    ] as const) {
       expect(exists(path), path).toBe(true);
       const changelog = read(path);
-      const version = json<Manifest>(path.includes("core") ? CORE : REACT).version;
+      const version = json<Manifest>(manifestPath).version;
       expect(changelog, `${path} has no ${version} heading`).toContain(`## ${version}`);
       expect(changelog.length).toBeGreaterThan(100);
     }
   });
 
   it("declares the repository, homepage, bugs and public access metadata", () => {
-    for (const path of [CORE, REACT]) {
+    for (const path of [CORE, REACT, LANGUAGES]) {
       const manifest = json<Manifest>(path);
       expect(manifest.license, path).toBe("SEE LICENSE IN LICENSE");
       expect(manifest.repository?.url, path).toContain("github.com/blendsdk/year-planner");
@@ -113,7 +124,7 @@ describe("RD-12-AC-11: package metadata and changelogs", () => {
   });
 
   it("allowlists dist, README, LICENSE and CHANGELOG", () => {
-    for (const path of [CORE, REACT]) {
+    for (const path of [CORE, REACT, LANGUAGES]) {
       const manifest = json<Manifest>(path);
       for (const required of ["dist", "README.md", "LICENSE", "CHANGELOG.md"]) {
         expect(manifest.files, `${path} files`).toContain(required);
@@ -136,6 +147,18 @@ describe("RD-12-AC-11: package metadata and changelogs", () => {
     expect(react.sideEffects).toEqual(["**/*.css"]);
     expect(react.peerDependencies?.react).toBe("^19.0.0");
     expect(react.dependencies?.["@blendsdk/year-planner-core"]).toBe("workspace:*");
+  });
+
+  it("keeps the languages subpath exports and React peer dependency", () => {
+    const languages = json<Manifest>(LANGUAGES);
+    const exports = Object.keys(languages.exports ?? {});
+    expect(exports).toContain(".");
+    expect(exports).toContain("./de");
+    expect(exports).toContain("./hy");
+    expect(exports).toContain("./zh-TW");
+    expect(exports.length).toBeGreaterThan(40);
+    expect(languages.sideEffects).toBe(false);
+    expect(languages.peerDependencies?.["@blendsdk/react-year-planner"]).toBe("^0.3.0");
   });
 
   it("ships palette attribution with the React package", () => {

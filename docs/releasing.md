@@ -5,8 +5,8 @@
 
 ## Pre-release checklist
 
-- [ ] Root and package `LICENSE` files match; both package manifests declare
-      `SEE LICENSE IN LICENSE`. Review the [licensing guide](licensing.md),
+- [ ] Root and package `LICENSE` files match; all three package manifests
+      declare `SEE LICENSE IN LICENSE`. Review the [licensing guide](licensing.md),
       earlier licence grants, contribution rights and asset provenance before
       publishing the licence change. The visual-design rights question was
       confirmed resolved by the owner on 2026-11-13.
@@ -37,7 +37,10 @@
 
 1. Create `release/<version>` from `main`.
 2. Run `pnpm version-packages`.
-3. Review both `CHANGELOG.md` files and the lockstep version.
+3. Review all three `CHANGELOG.md` files and the lockstep version.
+   `pnpm version-packages` runs Changesets and then Lockstep, which aligns the
+   root, demo, Storybook and spike workspaces to the same version. Run
+   `pnpm test:versions` to verify the invariant.
 4. Commit with `git commit -s` so the commit carries
    `Signed-off-by: <name> <email>`, then open a pull request. Every CI job,
    including the sign-off (`dco`) check, runs because the PR is human-authored.
@@ -63,8 +66,8 @@ npm login   # MFA; no token is written to the repository
 pnpm release:publish --bootstrap --skip-github-release
 ```
 
-This publishes `0.3.0` core then React without provenance and without a GitHub
-release. Then, on npmjs.com for **each** package:
+This publishes `0.3.0` core, React and languages without provenance and without
+a GitHub release. Then, on npmjs.com for **each** package:
 
 1. Open **Settings → Trusted Publisher → GitHub Actions**.
 2. Repository: `blendsdk/year-planner`.
@@ -93,8 +96,8 @@ Run these steps once, after the license and asset review above:
    Storybook at `/year-planner/storybook/` and TypeDoc at `/year-planner/api/`.
 5. Create the `npm-production` environment with required reviewers and a
    `main` deployment-branch policy (Settings → Environments).
-6. Configure the npm trusted publisher for both packages (see the bootstrap
-   section).
+6. Configure the npm trusted publisher for all three packages (see the
+   bootstrap section).
 7. Add a second reviewer or collaborator, then apply branch protection:
    `node scripts/apply-branch-protection.mjs --apply`.
 
@@ -110,11 +113,11 @@ describe these restricted releases as open source or re-label earlier releases.
 1. Dispatch **Release** on `main` with `publish=true` (and `deploy-docs=true`).
 2. Approve the `npm-production` environment.
 3. The workflow re-runs `pnpm verify:full`, builds and packs in a
-   credential-free job, publishes core then React with
+   credential-free job, publishes core, React and languages with
    `npm publish --provenance`, creates the `v<version>` GitHub release, runs
    the registry smoke and dispatches the Pages deployment.
-4. Verify the provenance badge on both npm package pages.
-5. Verify the GitHub release links both packages and the documentation site.
+4. Verify the provenance badge on all three npm package pages.
+5. Verify the GitHub release links all three packages and the documentation site.
 
 ## Post-release
 

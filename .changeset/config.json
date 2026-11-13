@@ -5,7 +5,8 @@
   "fixed": [
     [
       "@blendsdk/year-planner-core",
-      "@blendsdk/react-year-planner"
+      "@blendsdk/react-year-planner",
+      "@blendsdk/year-planner-languages"
     ]
   ],
   "linked": [],

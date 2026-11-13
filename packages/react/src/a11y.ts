@@ -7,6 +7,12 @@ import {
   type PlannerSelection,
   type SelectionDateRange,
 } from "@blendsdk/year-planner-core";
+import {
+  defaultPlannerMessages,
+  formatPlannerMessage,
+  formatPluralMessage,
+  type PlannerMessages,
+} from "./messages.js";
 import type { DateMeta } from "./types.js";
 
 /**
@@ -25,6 +31,8 @@ export interface DateCellNameInput {
   meta?: DateMeta | undefined;
   /** Whether the date belongs to the current date selection. */
   selected: boolean;
+  /** Locale used for plural forms; defaults to `en-US`. */
+  locale?: string;
 }
 
 /**
@@ -43,10 +51,6 @@ export interface ItemNameInput {
   selected: boolean;
   /** Whether the fragment is clipped at either edge. */
   clipped: boolean;
-}
-
-function plural(count: number, singular: string, pluralForm: string): string {
-  return `${count} ${count === 1 ? singular : pluralForm}`;
 }
 
 function hexChannels(value: string): [number, number, number] | undefined {
@@ -150,15 +154,21 @@ export function readableTextColor(background: string, candidates: readonly strin
  * // "Jan 4, 2027, 2 items"
  * ```
  */
-export function dateCellAccessibleName(input: DateCellNameInput): string {
+export function dateCellAccessibleName(
+  input: DateCellNameInput,
+  messages: PlannerMessages = defaultPlannerMessages,
+): string {
   if (input.meta?.ariaLabel) return input.meta.ariaLabel;
+  const locale = input.locale ?? "en-US";
   const parts = [input.formattedDate];
-  if (input.weekNumber !== undefined) parts.push(`ISO week ${input.weekNumber}`);
+  if (input.weekNumber !== undefined) {
+    parts.push(formatPlannerMessage(messages.isoWeek, { week: input.weekNumber }));
+  }
   if (input.meta?.label) parts.push(input.meta.label);
-  parts.push(plural(input.itemCount, "item", "items"));
-  if (input.meta?.holiday) parts.push("holiday");
-  if (input.selected) parts.push("selected");
-  if (input.meta?.disabled) parts.push("unavailable");
+  parts.push(formatPluralMessage(messages.itemCount, input.itemCount, locale));
+  if (input.meta?.holiday) parts.push(messages.holiday);
+  if (input.selected) parts.push(messages.selected);
+  if (input.meta?.disabled) parts.push(messages.unavailable);
   return parts.join(", ");
 }
 
@@ -184,18 +194,42 @@ export function dateCellAccessibleName(input: DateCellNameInput): string {
  * });
  * ```
  */
-export function itemAccessibleName(input: ItemNameInput): string {
+export function itemAccessibleName(
+  input: ItemNameInput,
+  messages: PlannerMessages = defaultPlannerMessages,
+): string {
   const parts: string[] = [input.visibleLabel];
   if (input.item.title && input.item.title !== input.visibleLabel) parts.push(input.item.title);
   parts.push(input.periodLabel);
-  parts.push(`layer ${input.layer.label ?? input.layer.name}`);
+  parts.push(
+    formatPlannerMessage(messages.layerName, { name: input.layer.label ?? input.layer.name }),
+  );
   if (input.layer.pattern && input.layer.pattern !== "solid") {
-    parts.push(`${input.layer.pattern} pattern`);
+    const pattern = patternMessage(input.layer.pattern, messages);
+    parts.push(formatPlannerMessage(messages.patternName, { pattern }));
   }
-  if (input.item.status) parts.push(`status ${input.item.status}`);
-  parts.push(input.selected ? "selected" : "not selected");
-  if (input.clipped) parts.push("partially visible");
+  if (input.item.status) {
+    parts.push(formatPlannerMessage(messages.itemStatus, { status: input.item.status }));
+  }
+  parts.push(input.selected ? messages.selected : messages.notSelected);
+  if (input.clipped) parts.push(messages.partiallyVisible);
   return parts.join(", ");
+}
+
+/**
+ * Returns the translated display name for a layer pattern.
+ *
+ * @param pattern - Layer pattern value.
+ * @param messages - Active message catalogue.
+ * @returns The translated pattern name.
+ */
+export function patternMessage(
+  pattern: "solid" | "hatch" | "dots",
+  messages: PlannerMessages = defaultPlannerMessages,
+): string {
+  if (pattern === "hatch") return messages.patternHatch;
+  if (pattern === "dots") return messages.patternDots;
+  return messages.patternSolid;
 }
 
 /**
@@ -228,12 +262,19 @@ export function selectedDateSet(ranges: readonly SelectionDateRange[]): Readonly
  * @param selection - Current planner selection.
  * @returns A short announcement, or `Selection cleared`.
  */
-export function selectionSummary(selection: PlannerSelection): string {
+export function selectionSummary(
+  selection: PlannerSelection,
+  messages: PlannerMessages = defaultPlannerMessages,
+  locale = "en-US",
+): string {
   const days = selection.dates.reduce(
     (total, range) => total + Math.max(0, diffDays(range.startDate, range.endDateExclusive)),
     0,
   );
   const items = selection.items.length;
-  if (items === 0 && days === 0) return "Selection cleared";
-  return `Selection: ${plural(items, "item", "items")}, ${plural(days, "day", "days")}`;
+  if (items === 0 && days === 0) return messages.selectionCleared;
+  return formatPlannerMessage(messages.selectionSummary, {
+    items: formatPluralMessage(messages.itemCount, items, locale),
+    days: formatPluralMessage(messages.dayCount, days, locale),
+  });
 }

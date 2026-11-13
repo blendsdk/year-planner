@@ -3,6 +3,7 @@ export interface ReleaseManifest {
   name: string;
   version: string;
   dependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>;
 }
 
 /** Input for `buildReleaseNotes`. */
@@ -11,6 +12,7 @@ export interface ReleaseNotesInput {
   date: string;
   coreChangelog: string;
   reactChangelog: string;
+  languagesChangelog: string;
   docsUrl: string;
 }
 
@@ -49,19 +51,21 @@ export declare function validatePublishedIntegrity(
   label: string,
 ): string[];
 
-/** Reads both package manifests from a repository root. */
+/** Reads all three package manifests from a repository root. */
 export declare function readPackageManifests(root: string): {
   core: ReleaseManifest;
   react: ReleaseManifest;
+  languages: ReleaseManifest;
 };
 
 /** Lists pending changeset markdown files. */
 export declare function pendingChangesets(root: string): string[];
 
-/** Validates that both packages share one version. */
+/** Validates that all public packages share one version. */
 export declare function validateVersions(manifests: {
   core: ReleaseManifest;
   react: ReleaseManifest;
+  languages: ReleaseManifest;
 }): string[];
 
 /** Reads the paths and manifest from a packed tarball. */

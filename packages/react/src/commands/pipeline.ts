@@ -415,7 +415,7 @@ export function useCommandPipeline(input: CommandPipelineInput): CommandPipeline
           if (confirm) {
             approved = await confirm(command);
           } else if (typeof window !== "undefined" && typeof window.confirm === "function") {
-            approved = window.confirm("Delete this item?");
+            approved = window.confirm(input.confirmDeleteMessage ?? "Delete this item?");
           } else {
             const result = failure(
               command,

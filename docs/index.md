@@ -90,4 +90,5 @@ export function Plan() {
 | [Examples](./examples/index.md) | Live demos, themes, print and design-system adapters |
 | [Story index](./stories.md) | Every story in the built Storybook |
 | [Storybook](https://blendsdk.github.io/year-planner/storybook/) | The full interactive component catalogue |
-| [API reference](https://blendsdk.github.io/year-planner/api/) | Generated TypeDoc for both packages |
+| [API reference](https://blendsdk.github.io/year-planner/api/) | Generated TypeDoc for all three packages |
+| [Localization](https://blendsdk.github.io/year-planner/localization.html) | 45 locale catalogues and message overrides |

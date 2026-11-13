@@ -70,6 +70,8 @@ export interface CommandPipelineInput {
   contextKey?: string;
   /** Confirmation hook for destructive commands. */
   confirmChange?: (command: PlannerCommand) => boolean | Promise<boolean>;
+  /** Prompt used by the built-in `window.confirm` fallback. */
+  confirmDeleteMessage?: string;
   /** Host validation for a proposed command. */
   validateChange?: (
     command: PlannerCommand,

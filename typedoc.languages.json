@@ -1,0 +1,19 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "@blendsdk/year-planner-languages",
+  "entryPoints": [
+    "packages/languages/src/index.ts"
+  ],
+  "tsconfig": "packages/languages/tsconfig.json",
+  "out": "docs/api/languages",
+  "readme": "none",
+  "githubPages": false,
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "categorizeByGroup": true,
+  "validation": {
+    "notDocumented": true,
+    "invalidLink": true
+  },
+  "treatValidationWarningsAsErrors": true
+}

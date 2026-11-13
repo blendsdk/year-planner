@@ -182,11 +182,12 @@ The component reads no browser globals during render, uses explicit `en-US` and
 `UTC` defaults, and attaches observers only after mount. The package entry
 declares `"use client"`, so React Server Component bundlers place it in a client
 boundary. Server-render it with `renderToString` and hydrate with the same
-explicit `display.locale`.
+explicit `display.locale` and `messages` catalogue. See
+[Localization](./localization.md).
 
 ## Storybook
 
-Storybook is the component catalogue: **183 stories across 16 files** covering
+Storybook is the component catalogue: **186 stories across 16 files** covering
 themes, windows, ribbons, overflow, visibility, interaction, inspector states,
 slots, print modes and design-system adapters.
 

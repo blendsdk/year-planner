@@ -1,5 +1,11 @@
 import { YearPlanner } from "@blendsdk/react-year-planner";
+import {
+  getPlannerLanguage,
+  getPlannerMessages,
+  plannerLanguages,
+} from "@blendsdk/year-planner-languages";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
 import { describeStories } from "./describe";
 
 const layers = [
@@ -65,6 +71,62 @@ export const FluentMarigold2017: Story = {
   },
 };
 
+/** Switches the complete UI between every bundled language at runtime. */
+function LanguageSelectorDemo() {
+  const [languageId, setLanguageId] = useState("en");
+  const language = getPlannerLanguage(languageId) ?? getPlannerLanguage("en");
+  const locale = language?.locale ?? "en-US";
+  return (
+    <div style={{ display: "grid", gap: 12 }}>
+      <label style={{ font: "14px system-ui", display: "flex", gap: 8, alignItems: "center" }}>
+        Language
+        <select
+          data-testid="storybook-language"
+          value={languageId}
+          onChange={(event) => setLanguageId(event.target.value)}
+        >
+          {plannerLanguages.map((entry) => (
+            <option key={entry.id} value={entry.id}>
+              {entry.nativeName} ({entry.locale})
+            </option>
+          ))}
+        </select>
+      </label>
+      <YearPlanner
+        year={2016}
+        layers={layers}
+        defaultItems={items}
+        display={{ theme: "material-teal", showISOWeekNumbers: true, locale }}
+        messages={getPlannerMessages(locale)}
+      />
+    </div>
+  );
+}
+
+export const LanguageSelector: Story = {
+  render: () => <LanguageSelectorDemo />,
+};
+
+export const GermanLocale: Story = {
+  args: {
+    year: 2016,
+    layers,
+    defaultItems: items,
+    display: { theme: "material-teal", showISOWeekNumbers: true, locale: "de-DE" },
+    messages: getPlannerMessages("de-DE"),
+  },
+};
+
+export const ArmenianLocale: Story = {
+  args: {
+    year: 2016,
+    layers,
+    defaultItems: items,
+    display: { theme: "material-teal", showISOWeekNumbers: true, locale: "hy-AM" },
+    messages: getPlannerMessages("hy-AM"),
+  },
+};
+
 export const TwelveMonths: Story = {
   args: {
     year: 2027,
@@ -112,6 +174,9 @@ export const HighContrast: Story = {
 describeStories({
   MaterialTeal2016,
   FluentMarigold2017,
+  LanguageSelector,
+  GermanLocale,
+  ArmenianLocale,
   TwelveMonths,
   ThirtySixMonths,
   ItemsAndInspector,

@@ -22,6 +22,7 @@ import type {
 } from "@blendsdk/year-planner-core";
 import type { ComponentType, CSSProperties, ReactNode } from "react";
 import type { PlannerContextMenuRequest } from "./context-menu.js";
+import type { PlannerMessagesOverride } from "./messages.js";
 import type { YearPlannerTheme, YearPlannerThemeName } from "./theme.js";
 
 export type { PlannerContextMenuRequest, PlannerContextTarget } from "./context-menu.js";
@@ -353,6 +354,12 @@ export interface YearPlannerHandle {
 export interface YearPlannerProps {
   /** Display year; required unless `range` is supplied. */
   year?: number;
+  /**
+   * UI message overrides. Missing messages fall back to English, so a host can
+   * translate only the strings it needs or pass a complete language catalogue
+   * from `@blendsdk/year-planner-languages`.
+   */
+  messages?: PlannerMessagesOverride;
   /** Context months before/after; defaults to 1/1. */
   contextMonths?: {
     /** Context months before the year; defaults to 1. */

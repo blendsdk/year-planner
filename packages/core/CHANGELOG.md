@@ -9,6 +9,11 @@
   the Demos Storybook group, the event-log playground and story-level
   descriptions for the whole catalogue. The supported data size is 2,000 items;
   the 0.3.0 bootstrap is the first published version.
+- Change the licence for newly offered copies to Year Planner Internal Use
+  License 1.0. The licence allows free internal business use and modification,
+  including internal browser and cloud deployments, and restricts redistribution
+  and customer-facing services. Earlier MIT grants remain valid for the material
+  they cover.
 
 ## 0.2.0
 

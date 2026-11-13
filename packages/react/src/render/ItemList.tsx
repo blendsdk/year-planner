@@ -8,6 +8,7 @@ import {
 } from "@blendsdk/year-planner-core";
 import { type ReactNode, type RefObject, useState } from "react";
 import type { PlannerFormatters } from "../locale.js";
+import { formatPlannerMessage, formatPluralMessage } from "../messages.js";
 
 /**
  * Props for the planner-owned item list.
@@ -104,6 +105,7 @@ export function ItemList({
     });
   const headingId = `${listId}-heading`;
   const collapsed = visible.length > COLLAPSE_THRESHOLD && !showAll;
+  const messages = formatters.messages;
 
   return (
     <section
@@ -114,9 +116,11 @@ export function ItemList({
       data-yp-part="item-list"
       aria-labelledby={headingId}
     >
-      <h3 id={headingId}>All visible items ({visible.length})</h3>
+      <h3 id={headingId}>
+        {formatPlannerMessage(messages.itemListHeading, { count: visible.length })}
+      </h3>
       {visible.length === 0 ? (
-        <p className="yp-inspector-note">No visible items</p>
+        <p className="yp-inspector-note">{messages.itemListEmpty}</p>
       ) : collapsed ? (
         <button
           type="button"
@@ -124,7 +128,7 @@ export function ItemList({
           data-yp-part="item-list-show-all"
           onClick={() => setShowAll(true)}
         >
-          Show all {visible.length} items
+          {formatPluralMessage(messages.itemListShowAll, visible.length, formatters.locale)}
         </button>
       ) : (
         <ul className="yp-item-list-entries">
@@ -134,7 +138,9 @@ export function ItemList({
             const periodLabel = formatters.formatPeriod(item.period, displayTimeZone);
             const overflow = overflowItemIds.has(item.id);
             const title = titleOf(item);
-            const label = `${title}, ${periodLabel}, ${layerName}${overflow ? ", hidden on this month" : ""}`;
+            const label = `${title}, ${periodLabel}, ${layerName}${
+              overflow ? `, ${messages.itemListOverflow}` : ""
+            }`;
             return (
               <li key={item.id}>
                 <button
@@ -154,7 +160,7 @@ export function ItemList({
                   {overflow && (
                     <>
                       {" "}
-                      <em className="yp-item-list-overflow">hidden on this month</em>
+                      <em className="yp-item-list-overflow">{messages.itemListOverflow}</em>
                     </>
                   )}
                 </button>

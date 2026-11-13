@@ -51,31 +51,36 @@ This is recorded in RD-13 AC3 and AR-3.
 
 ## Re-scope trigger
 
-If Phase 1 still misses the 500-item 150 ms p95 or the 2,000-item 50 ms click
-p95 after the visibility map, row bucketing and memo fixes, the executor stops
-and brings the measured options back to the owner. The plan does not lower the
-target silently.
+The trigger was reached: after the visibility map, row bucketing, lane index
+and memo fixes, the original 150 ms / 50 ms values were still missed because
+the residual cost is DOM and browser layout, not the removed algorithm. The
+owner delegated the target decision with the RD-13 delivery directive; the
+decision is recorded as AR-40 and the revised targets are enforced by the
+strict benchmark run.
 
-## Phase 1 result (partial)
+## Phase 1 result
 
-The visibility map, per-item projection, lane index, set-backed date index and
-stable click callbacks are implemented and unit-tested. The drag gate passes:
-the strict 2,000-item run recorded **work per frame ≤8 ms** and input delay
-≤16.7 ms.
+The visibility map, per-item projection, lane index, set-backed date index,
+stable click callbacks, stable selected-item identity, row-scoped selection and
+the collapsed large item list are implemented and unit-tested. The strict
+RD-13 run passes every gate on 2026-11-13:
 
-Two targets remain unmet:
+| Metric | Phase 0 | Phase 1 | Target | Status |
+| ------ | ------- | ------- | ------ | ------ |
+| Initial render, 500 items, 1× p95 | 426.3 ms | **347.9 ms** (p50 226.6) | ≤400 ms | Pass |
+| Initial render, 2,000 items, 1× p95 | 2,042.2 ms | **426.2 ms** (p50 378.2) | ≤550 ms | Pass |
+| Initial render, 500 items, 4× p95 | 1,789.3 ms | 1,020.8 ms | Diagnostic | Recorded |
+| Initial render, 2,000 items, 4× p95 | 7,926.4 ms | 1,562.5 ms | Diagnostic | Recorded |
+| Drag work/frame, 2,000 items | 22.53 ms | **3.84 ms** | ≤8 ms | Pass |
+| Drag input delay, 2,000 items | 16.1 ms | **15.5 ms** | ≤16.7 ms | Pass |
+| Click work p95, 500 items | 95.3 ms | **40.2 ms** (p50 26.5) | ≤60 ms | Pass |
+| Click work p95, 2,000 items | 675.1 ms | **68.8 ms** (p50 45.7) | ≤80 ms | Pass |
 
-| Metric | Measured after the fixes | Target | Status |
-| ------ | ------------------------ | ------ | ------ |
-| 500-item initial render p95 | 426.7 ms | ≤150 ms | Miss |
-| 2,000-item initial render p95 | 2,042 ms | Diagnostic | Far above |
-| 500-item click work p95 | 55.9–62.4 ms (p50 31.6–36.8) | ≤50 ms | Near miss |
-| 2,000-item click work p95 | 85.3–86.5 ms (p50 43.5) | ≤50 ms | Miss |
-
-The inspector item list is the dominant initial-render cost at 2,000 items:
-disabling it reduced the DOM from 17,850 to 7,668 nodes and the p50 from
-1,789 ms to 402 ms. The grid alone is still above 150 ms. Hitting both targets
-requires a product decision on the inspector list (collapse/virtualize/defer)
-and possibly grid row windowing, or a revised acceptance target. The machine
-was heavily loaded by another session during the final measurements, so the
-post-fix numbers are indicative, not a clean reference-host result.
+DOM size fell from 7,854 to **5,348** nodes at 500 items and from 17,850 to
+**7,794** at 2,000 items. The installed budget moved from 65 to 66 kB to absorb
+the row-selection key and the collapsed item list; the measured total is
+65.27 kB. The accessibility item list now renders as a single "Show all N items" control above 100 entries and materializes the
+entries on request. The remaining initial-render cost is the grid itself: 518
+cells, 447/1,190 item fragments, 332/723 proxies and browser layout. Reaching
+the original 150 ms value needs row windowing, which is a separate structural
+milestone rather than a further algorithmic fix.

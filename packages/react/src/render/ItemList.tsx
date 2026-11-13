@@ -6,7 +6,7 @@ import {
   resolveItemVisibility,
   type VisibilityState,
 } from "@blendsdk/year-planner-core";
-import type { ReactNode, RefObject } from "react";
+import { type ReactNode, type RefObject, useState } from "react";
 import type { PlannerFormatters } from "../locale.js";
 
 /**
@@ -38,6 +38,12 @@ export interface ItemListProps {
   /** Focuses an item’s first visible proxy, or falls back to a date. */
   onFocusItem: (itemId: string) => void;
 }
+
+/**
+ * Entry count above which the list starts collapsed. Large planners would
+ * otherwise mount thousands of buttons in the inspector before first paint.
+ */
+const COLLAPSE_THRESHOLD = 100;
 
 function periodStart(item: PlannerItem): string {
   return item.period.kind === "all-day" ? item.period.startDate : item.period.start.slice(0, 10);
@@ -84,6 +90,7 @@ export function ItemList({
   onSelectItem,
   onFocusItem,
 }: ItemListProps): ReactNode {
+  const [showAll, setShowAll] = useState(false);
   const selected = new Set(selection.items);
   const layerById = new Map(model.layers.map((layer) => [layer.id, layer]));
   const visibilityById = resolveItemVisibility({ model, visibility, filter });
@@ -96,6 +103,7 @@ export function ItemList({
       return byTitle !== 0 ? byTitle : left.id.localeCompare(right.id);
     });
   const headingId = `${listId}-heading`;
+  const collapsed = visible.length > COLLAPSE_THRESHOLD && !showAll;
 
   return (
     <section
@@ -109,6 +117,15 @@ export function ItemList({
       <h3 id={headingId}>All visible items ({visible.length})</h3>
       {visible.length === 0 ? (
         <p className="yp-inspector-note">No visible items</p>
+      ) : collapsed ? (
+        <button
+          type="button"
+          className="yp-item-list-show-all"
+          data-yp-part="item-list-show-all"
+          onClick={() => setShowAll(true)}
+        >
+          Show all {visible.length} items
+        </button>
       ) : (
         <ul className="yp-item-list-entries">
           {visible.map((item) => {

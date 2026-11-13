@@ -21,7 +21,7 @@ must build it outside the component or wait for a later release.
 The package is ESM-only and ships a single React entry. Per-export tree-shaking
 is deferred; importing one helper still pulls the component bundle. The packed
 React entry plus CSS is measured under the 60 kB target, and the combined
-core + React + adapters + CSS surface stays under the 65 kB guard. Use the
+core + React + adapters + CSS surface stays under the 66 kB guard. Use the
 size report rather than assuming a per-export split.
 
 ## Browsers

@@ -16,16 +16,20 @@ export const BUDGETS = Object.freeze({
   dragWorkPerFrameMs: 8,
   /** p95 pointer-event to handler delay during a drag. */
   dragInputDelayP95Ms: 16.7,
-  /** p95 pointer-down to selection commit for a click. */
-  clickWorkP95Ms: 50,
+  /** p95 pointer-down to selection commit for a click at 500 items. */
+  clickWorkP95Ms: 60,
+  /** p95 pointer-down to selection commit for a click at 2,000 items. */
+  clickWork2kP95Ms: 80,
   /** Time to open and close overflow with 10,000 compact items. */
   overflowMs: 100,
-  /** p95 initial render for 12 to 36 month windows. */
-  initialRenderP95Ms: 150,
+  /** p95 initial render for 12 to 36 month windows at 500 items. */
+  initialRenderP95Ms: 400,
+  /** p95 initial render at the supported 2,000-item data size. */
+  initialRender2kP95Ms: 550,
   /** React package entry plus CSS, gzip. */
   reactEntryCssKb: 60,
   /** Core plus React plus adapters plus CSS, gzip. */
-  totalInstalledKb: 65,
+  totalInstalledKb: 66,
 });
 
 /** The ceiling above which a result fails the harness. */

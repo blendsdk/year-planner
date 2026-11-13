@@ -1010,6 +1010,23 @@
     list-style: none;
   }
 
+  .yp-item-list-show-all {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--yp-border);
+    border-radius: var(--yp-radius-sm, 4px);
+    background: var(--yp-surface);
+    color: var(--yp-text-primary);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .yp-item-list-show-all:hover,
+  .yp-item-list-show-all:focus-visible {
+    background: var(--yp-surface-hover, var(--yp-surface));
+  }
+
   .yp-item-list-entry {
     display: flex;
     flex-direction: column;

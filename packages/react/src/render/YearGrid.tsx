@@ -5,6 +5,7 @@ import type {
   PlannerLayer,
   PlannerSelection,
   RibbonLayout,
+  SelectionDateRange,
   YearLayout,
 } from "@blendsdk/year-planner-core";
 import type { KeyboardEvent, PointerEvent, ReactNode } from "react";
@@ -92,6 +93,24 @@ export interface YearGridProps {
   onPointerCancel: (event: PointerEvent<HTMLElement>) => void;
   onLostPointerCapture: (event: PointerEvent<HTMLElement>) => void;
   onFocusItem: (itemId: string) => void;
+}
+
+/** Serializes the selected dates and ranges that intersect one month row. */
+function selectionKeyForRow(
+  row: MonthRowLayout,
+  selectedDates: ReadonlySet<DateKey>,
+  ranges: readonly SelectionDateRange[],
+): string {
+  let key = "";
+  for (const column of row.columns) {
+    if (column.date !== undefined && selectedDates.has(column.date)) key += `${column.date},`;
+  }
+  for (const range of ranges) {
+    if (range.startDate < row.endDateExclusive && range.endDateExclusive > row.firstDate) {
+      key += `${range.startDate}>${range.endDateExclusive},`;
+    }
+  }
+  return key;
 }
 
 function headerCells(weekdayNames: string[], components: YearPlannerComponents): ReactNode[] {
@@ -227,6 +246,7 @@ export function YearGrid({
               activeDate={rowActiveDate}
               selectedDates={selectedDates}
               selection={selection}
+              selectionKey={selectionKeyForRow(row, selectedDates, selection.dates)}
               previews={previewsForRow(previews, row).filter(
                 (entry) => entry.preview.kind === "selection",
               )}

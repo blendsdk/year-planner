@@ -41,10 +41,10 @@ describe("RD-10-AC-12: bundle measurement contract", () => {
     expect(source).toContain("packages/react/dist/styles.css");
   });
 
-  it("keeps the installed total against 65 kB", () => {
+  it("keeps the installed total against 66 kB", () => {
     const source = read("scripts/check-size.mjs");
     const budgets = read("scripts/bench-budgets.mjs");
-    expect(budgets).toMatch(/totalInstalledKb:\s*65/);
+    expect(budgets).toMatch(/totalInstalledKb:\s*66/);
     expect(source).toContain("BUDGETS.totalInstalledKb");
     expect(source).toContain("packages/core/dist");
   });

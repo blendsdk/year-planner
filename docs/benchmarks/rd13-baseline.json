@@ -1524,5 +1524,210 @@
       "viewportPath": "codeops/features/year-planner/plans/m10-product-quality/evidence/rd13-baseline/demo-1280x800.png"
     }
   },
-  "durationSeconds": 124
+  "durationSeconds": 124,
+  "afterPhase1": {
+    "rd13-click-2000-1x": {
+      "runId": "unassigned",
+      "scenario": "rd13-click",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "throttle": 1
+      },
+      "work": {
+        "n": 20,
+        "p50": 45.699999928474426,
+        "p95": 68.79999995231628,
+        "max": 81.70000004768372
+      },
+      "budget": 80,
+      "status": "pass"
+    },
+    "rd13-click-2000-4x": {
+      "runId": "unassigned",
+      "scenario": "rd13-click",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "throttle": 4
+      },
+      "work": {
+        "n": 20,
+        "p50": 174.60000002384186,
+        "p95": 222.10000002384186,
+        "max": 230.90000009536743
+      },
+      "budget": 80,
+      "status": "diagnostic"
+    },
+    "rd13-click-500-1x": {
+      "runId": "unassigned",
+      "scenario": "rd13-click",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 14,
+        "throttle": 1
+      },
+      "work": {
+        "n": 20,
+        "p50": 26.5,
+        "p95": 40.199999928474426,
+        "max": 48.10000002384186
+      },
+      "budget": 60,
+      "status": "pass"
+    },
+    "rd13-click-500-4x": {
+      "runId": "unassigned",
+      "scenario": "rd13-click",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 14,
+        "throttle": 4
+      },
+      "work": {
+        "n": 20,
+        "p50": 93.20000004768372,
+        "p95": 120.10000002384186,
+        "max": 131.29999995231628
+      },
+      "budget": 60,
+      "status": "diagnostic"
+    },
+    "rd13-drag-2000-1x": {
+      "runId": "unassigned",
+      "scenario": "rd13-drag",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "throttle": 1
+      },
+      "frames": {
+        "n": 134,
+        "p50": 16.699999999999818,
+        "p95": 16.799999999999955,
+        "max": 16.800000000000182
+      },
+      "inputDelays": {
+        "n": 61,
+        "p50": 13.699999928474426,
+        "p95": 15.5,
+        "max": 23.600000023841858
+      },
+      "longTasks": 1,
+      "longTaskMax": 81,
+      "workPerFrameMs": 3.843283582089552,
+      "profilePath": "test-results/bench/profiles/unassigned-rd13-drag-2000-1x.cpuprofile",
+      "budgets": {
+        "workPerFrame": 8,
+        "inputDelay": 16.7
+      },
+      "status": "pass"
+    },
+    "rd13-drag-2000-4x": {
+      "runId": "unassigned",
+      "scenario": "rd13-drag",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "throttle": 4
+      },
+      "frames": {
+        "n": 156,
+        "p50": 16.699999999999818,
+        "p95": 49.90000000000009,
+        "max": 50.09999999999991
+      },
+      "inputDelays": {
+        "n": 61,
+        "p50": 9.899999976158142,
+        "p95": 16.199999928474426,
+        "max": 27.100000023841858
+      },
+      "longTasks": 16,
+      "longTaskMax": 272,
+      "workPerFrameMs": 11.647435897435898,
+      "profilePath": "test-results/bench/profiles/unassigned-rd13-drag-2000-4x.cpuprofile",
+      "budgets": {
+        "workPerFrame": 8,
+        "inputDelay": 16.7
+      },
+      "status": "diagnostic"
+    },
+    "rd13-initial-2000-1x": {
+      "runId": "unassigned",
+      "scenario": "rd13-initial-render",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "throttle": 1
+      },
+      "n": 20,
+      "p50": 378.2000000476837,
+      "p95": 426.2000000476837,
+      "max": 430.10000002384186,
+      "domNodes": 7794,
+      "budget": 500,
+      "status": "pass"
+    },
+    "rd13-initial-2000-4x": {
+      "runId": "unassigned",
+      "scenario": "rd13-initial-render",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 2000,
+        "months": 14,
+        "throttle": 4
+      },
+      "n": 20,
+      "p50": 1439.7999999523163,
+      "p95": 1562.5,
+      "max": 1820.8999999761581,
+      "domNodes": 7794,
+      "budget": 500,
+      "status": "diagnostic"
+    },
+    "rd13-initial-500-1x": {
+      "runId": "unassigned",
+      "scenario": "rd13-initial-render",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 14,
+        "throttle": 1
+      },
+      "n": 20,
+      "p50": 226.60000002384186,
+      "p95": 347.90000009536743,
+      "max": 452,
+      "domNodes": 5348,
+      "budget": 350,
+      "status": "pass"
+    },
+    "rd13-initial-500-4x": {
+      "runId": "unassigned",
+      "scenario": "rd13-initial-render",
+      "project": "bench-preview",
+      "parameters": {
+        "items": 500,
+        "months": 14,
+        "throttle": 4
+      },
+      "n": 20,
+      "p50": 845.2999999523163,
+      "p95": 1020.8000000715256,
+      "max": 1095.2000000476837,
+      "domNodes": 5348,
+      "budget": 350,
+      "status": "diagnostic"
+    }
+  },
+  "afterPhase1CapturedAt": "2026-11-13T02:20:00.000Z"
 }

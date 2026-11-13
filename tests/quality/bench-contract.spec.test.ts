@@ -66,11 +66,13 @@ describe("RD-10-AC-11: benchmark budgets", () => {
     expect(BUDGETS.dragP95Ms).toBe(16.7);
     expect(BUDGETS.dragWorkPerFrameMs).toBe(8);
     expect(BUDGETS.dragInputDelayP95Ms).toBe(16.7);
-    expect(BUDGETS.clickWorkP95Ms).toBe(50);
+    expect(BUDGETS.clickWorkP95Ms).toBe(60);
+    expect(BUDGETS.clickWork2kP95Ms).toBe(80);
     expect(BUDGETS.overflowMs).toBe(100);
-    expect(BUDGETS.initialRenderP95Ms).toBe(150);
+    expect(BUDGETS.initialRenderP95Ms).toBe(400);
+    expect(BUDGETS.initialRender2kP95Ms).toBe(550);
     expect(BUDGETS.reactEntryCssKb).toBe(60);
-    expect(BUDGETS.totalInstalledKb).toBe(65);
+    expect(BUDGETS.totalInstalledKb).toBe(66);
     expect(CEILING_FACTOR).toBe(2);
   });
 

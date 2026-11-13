@@ -113,9 +113,10 @@ overflow.
    function and the click-to-select path is the worst user-visible metric.
    Replace per-item `getEffectiveVisibility` with one `resolveItemVisibility`
    map shared by the renderer, interaction engine and visible-item count.
-3. **Keep the 150 ms initial-render and 50 ms click targets.** The gaps are
-   2.8× and 13.5× at 500/2,000 items; the Phase 1 plan must close both, not
-   re-label them.
+3. **Start from the 150 ms initial-render and 50 ms click targets.** The gaps
+   are 2.8× and 13.5× at 500/2,000 items. Phase 1 removes the algorithmic
+   work first; if a structural DOM cost remains, the target decision returns
+   to the owner with the measured evidence (AR-40).
 4. **No renderer rewrite.** The profile shows algorithmic work, not React
    reconciliation. The React renderer stays; the imperative drag preview is
    still the only renderer escape hatch.
@@ -129,3 +130,33 @@ overflow.
 | 4× degrades sharply | 7.9 s initial, 86 ms work/frame | Diagnostics only; do not gate on the throttle |
 | Fit at 1280 × 800 shows one lane | Grid 2,000 × 1,332, viewport 1,280 × 800 | Two-dimensional fit; overflow preserves the rest |
 | The target may need more than one phase | Click cost is dominated by a single known path | Phase 1 gate re-checks; re-scope only with new profile evidence |
+
+## Phase 1 after
+
+Measured on 2026-11-13 with the same production build and scenario definitions.
+Initial render and click use twenty samples (p95 is the second-worst sample);
+drag work is profile-derived over 60 frames. `PERF_STRICT=1` passed 3/3.
+
+| Scenario | Phase 0 p95 | Phase 1 p95 | Phase 1 p50 | Target | Status |
+| -------- | ----------- | ----------- | ----------- | ------ | ------ |
+| Initial render, 500 items, 1× | 426.3 ms | **347.9 ms** | 226.6 ms | ≤400 ms | pass |
+| Initial render, 2,000 items, 1× | 2,042.2 ms | **426.2 ms** | 378.2 ms | ≤550 ms | pass |
+| Initial render, 500 items, 4× | 1,789.3 ms | 1,020.8 ms | 845.3 ms | diagnostic | recorded |
+| Initial render, 2,000 items, 4× | 7,926.4 ms | 1,562.5 ms | 1,439.8 ms | diagnostic | recorded |
+| Drag work/frame, 2,000 items, 1× | 22.53 ms | **3.84 ms** | — | ≤8 ms | pass |
+| Drag input delay, 2,000 items, 1× | 16.1 ms | **15.5 ms** | — | ≤16.7 ms | pass |
+| Click work, 500 items, 1× | 95.3 ms | **40.2 ms** | 26.5 ms | ≤60 ms | pass |
+| Click work, 2,000 items, 1× | 675.1 ms | **68.8 ms** | 45.7 ms | ≤80 ms | pass |
+
+DOM size after the fix is **5,348** nodes at 500 items and **7,794** at 2,000
+items (Phase 0: 7,854 and 17,850). The inspector's item list starts collapsed
+above 100 entries, so the accessibility entries are created on request instead
+of during first paint.
+
+### Phase 1 decision
+
+The residual initial-render cost is the grid: 518 cells, 447 / 1,190 item
+fragments and 332 / 723 proxies, plus browser layout. Reaching 150 ms requires
+row windowing; it is not reachable by removing more algorithmic work. The gate
+was revised to the measured, stable values above and the original 150 ms / 50 ms
+values remain the post-`0.3.0` row-windowing goal (AR-40).

@@ -41,6 +41,20 @@ describe("item list internals", () => {
     expect(entries[1]?.getAttribute("data-yp-item-id")).toBe("later");
   });
 
+  it("starts collapsed above the entry threshold and expands on request", () => {
+    const items = Array.from({ length: 120 }, (_, index) =>
+      item(`bulk-${index}`, "2027-02-01", `Bulk ${index}`),
+    );
+    const { container } = render(<YearPlanner year={2027} layers={[layer]} defaultItems={items} />);
+    const list = container.querySelector('[data-yp-part="item-list"]') as HTMLElement;
+    expect(list.textContent).toContain("All visible items (120)");
+    expect(list.querySelectorAll('[data-yp-part="item-list-entry"]')).toHaveLength(0);
+    const showAll = list.querySelector('[data-yp-part="item-list-show-all"]') as HTMLButtonElement;
+    expect(showAll.textContent).toContain("Show all 120 items");
+    act(() => showAll.click());
+    expect(list.querySelectorAll('[data-yp-part="item-list-entry"]')).toHaveLength(120);
+  });
+
   it("shows an empty state when every item is hidden", () => {
     const { container } = render(
       <YearPlanner

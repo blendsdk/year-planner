@@ -71,7 +71,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | Storybook | **PASS** — static build succeeds; **174 stories across 12 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
-| Bundle size | **React entry + CSS 41.67 kB gzip / 60 kB**; **total 64.47 kB gzip / 65 kB** (core, React, adapters and CSS) |
+| Bundle size | **React entry + CSS 41.67 kB gzip / 60 kB**; **total 65.27 kB gzip / 66 kB** (core, React, adapters and CSS) |
 | Module format | **ESM-only** — `"type": "module"`, import-only exports, ES build |
 | CI | `verify`, `browsers`, `security`, `performance` and `dco` jobs configured; browser evidence and benchmark artifacts uploaded |
 | Browser versions | Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright 1.65.0) |

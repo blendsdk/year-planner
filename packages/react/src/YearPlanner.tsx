@@ -311,6 +311,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       () => new Set(proxyFragments.map((fragment) => fragment.itemId)),
       [proxyFragments],
     );
+    // A date click reuses the empty item array, so this set keeps its identity
+    // and the item overlay does not re-render just because a date was selected.
     const selectedItemIds = useMemo(
       () =>
         state.selection.items.length === 0 ? EMPTY_SELECTED_ITEMS : new Set(state.selection.items),

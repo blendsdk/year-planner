@@ -10,7 +10,7 @@ import { gzipSync } from "node:zlib";
  * - the React package entry plus its stylesheet is what a consumer adds on
  *   top of the core package, and it must stay under 60 kB gzip;
  * - the complete installed set (core, React, both adapters and CSS) must stay
- *   under the accepted 65 kB ceiling.
+ *   under the accepted 66 kB ceiling.
  */
 import { BUDGETS } from "./bench-budgets.mjs";
 

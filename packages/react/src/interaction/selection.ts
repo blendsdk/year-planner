@@ -147,18 +147,21 @@ export function applyDateClick(
       ...(selection.focusItemId ? { focusItemId: selection.focusItemId } : {}),
     };
   }
+  // Reuse the existing empty item list so a date click does not invalidate
+  // item props that depend on the array identity.
+  const items = selection.items.length === 0 ? selection.items : [];
   if (modifiers.shift) {
     const anchor = selection.anchorDate ?? selection.focusDate ?? date;
     return {
       dates: rangeBetween(anchor, date, isDisabled),
-      items: [],
+      items,
       anchorDate: anchor,
       focusDate: date,
     };
   }
   return {
     dates: [oneDay(date)],
-    items: [],
+    items,
     anchorDate: date,
     focusDate: date,
   };

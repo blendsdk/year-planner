@@ -31,6 +31,8 @@ export interface MonthRowProps {
   activeDate: DateKey | undefined;
   selectedDates: ReadonlySet<DateKey>;
   selection: PlannerSelection;
+  /** Serialized selection content that intersects this row. */
+  selectionKey: string;
   previews: readonly PreviewLayer[];
   showISOWeekNumbers: boolean;
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
@@ -60,8 +62,7 @@ function monthRowPropsEqual(previous: MonthRowProps, next: MonthRowProps): boole
     previous.totalDayWidth !== next.totalDayWidth ||
     previous.itemsByDate !== next.itemsByDate ||
     previous.activeDate !== next.activeDate ||
-    previous.selectedDates !== next.selectedDates ||
-    previous.selection !== next.selection ||
+    previous.selectionKey !== next.selectionKey ||
     previous.showISOWeekNumbers !== next.showISOWeekNumbers ||
     previous.getDateMeta !== next.getDateMeta ||
     previous.renderCell !== next.renderCell ||
@@ -91,6 +92,7 @@ export const MonthRow = memo(function MonthRow({
   activeDate,
   selectedDates,
   selection,
+  selectionKey: _selectionKey,
   previews,
   showISOWeekNumbers,
   getDateMeta,

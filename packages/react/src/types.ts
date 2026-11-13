@@ -21,7 +21,10 @@ import type {
   VisibilityState,
 } from "@blendsdk/year-planner-core";
 import type { ComponentType, CSSProperties, ReactNode } from "react";
+import type { PlannerContextMenuRequest } from "./context-menu.js";
 import type { YearPlannerTheme, YearPlannerThemeName } from "./theme.js";
+
+export type { PlannerContextMenuRequest, PlannerContextTarget } from "./context-menu.js";
 
 /**
  * Configuration for interaction features. Gesture behavior is supplied by the interaction layer.
@@ -417,6 +420,12 @@ export interface YearPlannerProps {
   display?: DisplayConfig;
   /** Print configuration. */
   print?: PrintConfig;
+  /**
+   * Raises a host-owned context-menu request for a date, item or annotation.
+   * The component never renders a menu; without a handler the native browser
+   * menu is preserved.
+   */
+  onContextMenuRequest?: (request: PlannerContextMenuRequest) => void;
   /** Host validation for a proposed command. */
   validateChange?: (
     command: PlannerCommand,

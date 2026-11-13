@@ -9,11 +9,15 @@
   },
   "dependencies": {
     "@blendsdk/react-year-planner": "workspace:*",
+    "@blendsdk/year-planner-core": "workspace:*",
     "react": "19.3.1",
-    "react-dom": "19.3.1",
-    "@blendsdk/year-planner-core": "workspace:*"
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fluentui/react-components": "^9.75.1",
+    "@mui/material": "^9.5.0",
     "@storybook/addon-a11y": "10.6.6",
     "@storybook/addon-docs": "10.6.6",
     "@storybook/addon-themes": "10.6.6",

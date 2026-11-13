@@ -17,7 +17,8 @@ import {
 } from "@blendsdk/year-planner-core";
 import {
   forwardRef,
-  type MouseEvent,
+  type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
   useCallback,
   useEffect,
   useId,
@@ -28,7 +29,13 @@ import {
 } from "react";
 import { readableTextColor, selectedDateSet } from "./a11y.js";
 import { useCommandPipeline } from "./commands.js";
+import {
+  type PlannerContextMenuRequest,
+  type ResolvedContextElement,
+  resolveContextElement,
+} from "./context-menu.js";
 import { computeFit, type FitGeometry } from "./fit.js";
+import { pointToDate, viewFromViewport } from "./geometry.js";
 import { useInteraction } from "./interaction/useInteraction.js";
 import { createFormatters } from "./locale.js";
 import { resolveDisplayOptions } from "./options.js";
@@ -123,6 +130,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       [theme, props.cssVars],
     );
     const rootRef = useRef<HTMLDivElement>(null);
+    const keyboardContext = useRef(false);
     const baseUnits = useMemo(
       () => ({
         monthBand: Number(theme.monthBandWidth),
@@ -694,7 +702,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       setFocusInspector(true);
     }, [props.showInspector]);
 
-    const skipToItemList = useCallback((event: MouseEvent<HTMLAnchorElement>) => {
+    const skipToItemList = useCallback((event: ReactMouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
       setInspectorOpen(true);
       setFocusItemList(true);
@@ -770,6 +778,115 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       ],
     );
     const interaction = useInteraction(interactionInput);
+
+    const raiseContextMenu = useCallback(
+      (
+        resolved: ResolvedContextElement,
+        source: "pointer" | "keyboard",
+        clientX: number,
+        clientY: number,
+      ) => {
+        const handler = props.onContextMenuRequest;
+        if (!handler) return;
+        const item =
+          resolved.itemId === undefined
+            ? undefined
+            : state.items.find((entry) => entry.id === resolved.itemId);
+        const pointerDate =
+          layout && ribbons && viewportRef.current
+            ? pointToDate(
+                layout,
+                { clientX, clientY },
+                viewFromViewport(viewportRef.current, layout, zoomX, zoomY),
+                ribbons,
+              )
+            : undefined;
+        const fallbackDate =
+          item === undefined
+            ? undefined
+            : item.period.kind === "all-day"
+              ? item.period.startDate
+              : item.period.start.slice(0, 10);
+        const date = resolved.kind === "date" ? resolved.date : (pointerDate ?? fallbackDate);
+        if (date === undefined) return;
+        const target: PlannerContextMenuRequest["target"] =
+          resolved.kind === "date"
+            ? { kind: "date", date }
+            : resolved.kind === "item"
+              ? { kind: "item", itemId: resolved.itemId ?? "", date }
+              : { kind: "annotation", annotationId: resolved.itemId ?? "", date };
+        if (
+          item !== undefined &&
+          !state.selection.items.includes(item.id) &&
+          state.selection.items.length >= 0
+        ) {
+          interaction.selectItem(item.id, {});
+        }
+        handler({
+          target,
+          clientX,
+          clientY,
+          anchorRect: resolved.element.getBoundingClientRect(),
+          source,
+          restoreFocus: () => resolved.element.focus({ preventScroll: true }),
+        });
+      },
+      [
+        interaction,
+        layout,
+        props.onContextMenuRequest,
+        ribbons,
+        state.items,
+        state.selection.items,
+        zoomX,
+        zoomY,
+      ],
+    );
+
+    const onContextMenu = useCallback(
+      (event: ReactMouseEvent<HTMLDivElement>) => {
+        if (!props.onContextMenuRequest) return;
+        if (keyboardContext.current) {
+          keyboardContext.current = false;
+          event.preventDefault();
+          return;
+        }
+        const native = event.nativeEvent as MouseEvent & {
+          pointerType?: string;
+          sourceCapabilities?: { firesTouchEvents?: boolean };
+        };
+        if (
+          native.pointerType === "touch" ||
+          native.sourceCapabilities?.firesTouchEvents === true
+        ) {
+          return;
+        }
+        const resolved = resolveContextElement(event.target);
+        if (!resolved) return;
+        event.preventDefault();
+        raiseContextMenu(resolved, "pointer", event.clientX, event.clientY);
+      },
+      [props.onContextMenuRequest, raiseContextMenu],
+    );
+
+    const onRootKeyDown = useCallback(
+      (event: KeyboardEvent<HTMLDivElement>) => {
+        if (!props.onContextMenuRequest) return;
+        if (!(event.key === "ContextMenu" || (event.key === "F10" && event.shiftKey))) return;
+        const resolved = resolveContextElement(document.activeElement);
+        if (!resolved) return;
+        event.preventDefault();
+        event.stopPropagation();
+        if (keyboardContext.current) return;
+        keyboardContext.current = true;
+        window.setTimeout(() => {
+          keyboardContext.current = false;
+        }, 400);
+        const rect = resolved.element.getBoundingClientRect();
+        raiseContextMenu(resolved, "keyboard", rect.left, rect.bottom);
+      },
+      [props.onContextMenuRequest, raiseContextMenu],
+    );
 
     const selectInspectorItem = useCallback(
       (itemId: string) => interaction.selectItem(itemId, {}),
@@ -1096,6 +1213,8 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       <div
         ref={rootRef}
         className={className}
+        onContextMenu={onContextMenu}
+        onKeyDown={onRootKeyDown}
         data-yp-part="root"
         data-yp-theme={resolvedTheme.themeName}
         data-yp-density={resolvedDisplay.options.density}

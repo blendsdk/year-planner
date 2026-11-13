@@ -68,7 +68,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
-| Storybook | **PASS** — static build succeeds; **174 stories across 12 files** |
+| Storybook | **PASS** — static build succeeds; **176 stories across 13 files** |
 | API Extractor | **PASS** — reports checked in |
 | TypeDoc | **PASS** — `docs/api/core` and `docs/api/react` generated |
 | Bundle size | **React entry + CSS 43.63 kB gzip / 60 kB**; **total 66.86 kB gzip / 68 kB** (core, React, adapters and CSS) |
@@ -385,7 +385,7 @@ React 19-only is the support policy (requirements AR #80). Vitest 4.1.12 removes
 | `pnpm verify` | PASS — 220 core, 508 React, 138 quality tests |
 | `pnpm api-report:ci` | PASS — both reports checked in, no warnings |
 | `pnpm docs:build` | PASS — TypeDoc core and React, 0 warnings with fatal validation |
-| `pnpm storybook:build` | PASS — 174 stories across 12 files |
+| `pnpm storybook:build` | PASS — 176 stories across 13 files |
 | `pnpm docs:site` | PASS — 241 files; Storybook at `/`, TypeDoc at `/api` |
 | `pnpm docs:site -- --check-only` | PASS — the built artifact resolves every relative asset and landing link |
 | `pnpm verify:full` | PASS — 143 E2E passed / 40 skipped; timezone suite 220 × 3; perf 7 passed / 1 skipped; bench 8 passed / 8 skipped; clean consumer PASS |

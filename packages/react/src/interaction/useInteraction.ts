@@ -7,7 +7,7 @@ import {
 } from "@blendsdk/year-planner-core";
 import type { KeyboardEvent, PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { pointToDate, pointToDesign, type ViewGeometry } from "../geometry.js";
+import { pointToDate, pointToDesign, type ViewGeometry, viewFromViewport } from "../geometry.js";
 import { commitGesture } from "./commit.js";
 import {
   autoScrollDelta,
@@ -75,21 +75,7 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
   const readView = useCallback((): ViewGeometry | undefined => {
     const viewport = input.viewportRef.current;
     if (!viewport) return undefined;
-    const rect = viewport.getBoundingClientRect();
-    return {
-      zoom: input.zoom,
-      zoomY: input.zoomY ?? input.zoom,
-      monthBandWidth: input.layout.monthBandWidth,
-      scrollLeft: viewport.scrollLeft,
-      scrollTop: viewport.scrollTop,
-      viewportRect: {
-        left: rect.left,
-        top: rect.top,
-        width: rect.width,
-        height: rect.height,
-      },
-      headerHeight: input.layout.headerHeight,
-    };
+    return viewFromViewport(viewport, input.layout, input.zoom, input.zoomY ?? input.zoom);
   }, [input.layout, input.viewportRef, input.zoom, input.zoomY]);
 
   const isDisabled = useCallback(

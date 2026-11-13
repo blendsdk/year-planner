@@ -310,11 +310,13 @@
       "sources": [
         "packages/react/src/interaction/**",
         "packages/react/src/state.ts",
-        "packages/react/src/YearPlanner.tsx"
+        "packages/react/src/YearPlanner.tsx",
+        "packages/react/src/context-menu.ts"
       ],
       "tests": [
         "tests/e2e/interaction.spec.ts",
-        "tests/e2e/interaction-touch.spec.ts"
+        "tests/e2e/interaction-touch.spec.ts",
+        "tests/e2e/context-menu.spec.ts"
       ],
       "run": {
         "command": [

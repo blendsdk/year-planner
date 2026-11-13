@@ -49,6 +49,38 @@ export interface ViewGeometry {
 }
 
 /**
+ * Reads the scroll viewport into the geometry used for pointer mapping.
+ *
+ * @param viewport - The scrollable planner viewport.
+ * @param layout - Current layout, for the band width and header height.
+ * @param zoom - Horizontal scale.
+ * @param zoomY - Vertical scale; defaults to `zoom`.
+ * @returns Current view geometry.
+ */
+export function viewFromViewport(
+  viewport: HTMLElement,
+  layout: { monthBandWidth: number; headerHeight: number },
+  zoom: number,
+  zoomY = zoom,
+): ViewGeometry {
+  const rect = viewport.getBoundingClientRect();
+  return {
+    zoom,
+    zoomY,
+    monthBandWidth: layout.monthBandWidth,
+    scrollLeft: viewport.scrollLeft,
+    scrollTop: viewport.scrollTop,
+    viewportRect: {
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+    },
+    headerHeight: layout.headerHeight,
+  };
+}
+
+/**
  * Clamps a host zoom value to the supported range.
  */
 export function clampZoom(value: number | undefined): number {

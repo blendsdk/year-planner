@@ -168,6 +168,7 @@ export function App() {
   const benchMode = new URLSearchParams(search).get("bench") === "1";
   const fitMode = new URLSearchParams(search).get("fit") === "1";
   const fitNone = new URLSearchParams(search).get("fit") === "none";
+  const contextMode = new URLSearchParams(search).get("context") === "1";
   const [theme, setTheme] = useState<YearPlannerThemeName>(
     prt01Mode ? "classic-yellow" : "classic-blue",
   );
@@ -179,6 +180,14 @@ export function App() {
   );
   const [density, setDensity] = useState<"compact" | "expanded">("compact");
   const [zoom, setZoom] = useState(1);
+  const [contextLog, setContextLog] = useState<
+    Array<{
+      target: { kind: string; date: string; itemId?: string; annotationId?: string };
+      source: string;
+      clientX: number;
+      clientY: number;
+    }>
+  >([]);
   const items = prt01Mode
     ? prt01Items
     : [...baseItems, ...overflowItems, ...(securityMode ? [securityItem, securityHiddenItem] : [])];
@@ -228,6 +237,26 @@ export function App() {
         : {})}
       defaultSelection={{ dates: [], items: year === 2027 ? ["booking"] : [] }}
       {...(fitMode ? { showInspector: false } : {})}
+      {...(contextMode
+        ? {
+            onContextMenuRequest: (request: {
+              target: { kind: string; date: string; itemId?: string; annotationId?: string };
+              source: "pointer" | "keyboard";
+              clientX: number;
+              clientY: number;
+            }) => {
+              setContextLog((previous) => [
+                ...previous.slice(-9),
+                {
+                  target: request.target,
+                  source: request.source,
+                  clientX: Math.round(request.clientX),
+                  clientY: Math.round(request.clientY),
+                },
+              ]);
+            },
+          }
+        : {})}
       display={{
         ...(fitNone ? { fit: "none" as const } : {}),
         theme,
@@ -383,6 +412,14 @@ export function App() {
             The planner fills the region and fits columns horizontally. Scroll inside the grid when
             the 24 px floor is reached.
           </p>
+          {contextMode && (
+            <pre
+              data-testid="context-log"
+              style={{ marginTop: 12, fontSize: 11, whiteSpace: "pre-wrap" }}
+            >
+              {JSON.stringify(contextLog)}
+            </pre>
+          )}
         </aside>
         <section
           data-testid="planner-region"

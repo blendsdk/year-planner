@@ -130,6 +130,41 @@ The full controlled-command contract — request IDs, `baseRevision`, validation
 severity, versions, accepted-not-applied detection, rollback and retry — is in
 [commands.md](commands.md).
 
+## Context menu
+
+The component does not render a menu. A host that wants one passes
+`onContextMenuRequest`; the component then calls `preventDefault` and reports
+what was right-clicked:
+
+```tsx
+<YearPlanner
+  year={2027}
+  items={items}
+  layers={layers}
+  onContextMenuRequest={(request) => {
+    setMenu({ ...request });
+    // Render a Fluent Menu or MUI Menu in your own portal.
+    // On close: request.restoreFocus();
+  }}
+/>
+```
+
+The request targets a date, an item or an annotation. For an item or annotation
+the `date` is the day under the pointer, not the fragment start. Right-clicking
+an unselected item selects it first and never starts a move, resize, paint or
+marquee gesture. Without a handler the native browser menu is preserved.
+
+`Shift+F10` and the `ContextMenu` key raise the same request with
+`source: "keyboard"` from the focused cell or item; the browser-generated
+`contextmenu` event that follows is suppressed so the host receives exactly one
+request. Touch long-press keeps the browser's native behavior and does not raise
+a request. Hidden items are absent from the DOM and cannot be targets. The
+request carries only identifiers, a date, coordinates and a rect; it does not
+include item content.
+
+The component does not move focus. Call `request.restoreFocus()` when your menu
+closes so focus returns to the originating cell or item.
+
 ## Known limits
 
 - Batch multi-move, bulk commands, alt+drag subtraction and drag between layers

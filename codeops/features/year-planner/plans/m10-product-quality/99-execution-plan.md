@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-13 03:00
-> **Progress**: 39/77 tasks (51%)
+> **Last Updated**: 2026-11-13 03:20
+> **Progress**: 53/77 tasks (69%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -189,35 +189,35 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 **Reference**: [03-03](03-03-context-menu.md) §Public types, §Pointer flow, §Keyboard flow · ST-16–ST-25 · AR-13–AR-17, AR-34, AR-35
 **Objective**: Encode target resolution, native fallback, selection, keyboard and touch behavior.
 
-- [ ] 3.1.1 [spec-author] Write the pointer, annotation, pointer-day, keyboard, native-fallback, touch and payload cases — `packages/react/src/context-menu.spec.test.tsx`
-- [ ] 3.1.2 Run the new tests and record the red result — React unit suite
+- [x] 3.1.1 [spec-author] Write the pointer, annotation, pointer-day, keyboard, native-fallback, touch and payload cases — `packages/react/src/context-menu.spec.test.tsx` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.1.2 Run the new tests and record the red result — React unit suite ✅ (completed: 2026-11-13 03:20)
 
 ### Step 3.2: Implementation
 
 **Reference**: [03-03](03-03-context-menu.md) §Implementation Details · AR-13–AR-17, AR-34, AR-35
 **Objective**: Route right-click and keyboard requests without starting a gesture.
 
-- [ ] 3.2.1 Add the request types, `restoreFocus` and the `onContextMenuRequest` prop — `packages/react/src/types.ts`
-- [ ] 3.2.2 Resolve annotation, item and date targets from the component root — `packages/react/src/YearPlanner.tsx`, `render/YearGrid.tsx`
-- [ ] 3.2.3 Select an unselected item before the request and prove no gesture starts — `packages/react/src/interaction/useInteraction.ts`
-- [ ] 3.2.4 Add one deduped Shift+F10/ContextMenu handler for cells and items — `packages/react/src/interaction/useInteraction.ts`, `render/YearGrid.tsx`, `render/ItemOverlay.tsx`
-- [ ] 3.2.5 Ignore touch-originated context menus and document long-press behavior — `packages/react/src/YearPlanner.tsx`
-- [ ] 3.2.6 Add Fluent UI and MUI as dev-only Storybook dependencies — `apps/storybook/package.json`, `pnpm-lock.yaml`
-- [ ] 3.2.7 Add the Fluent and MUI context-menu stories — `apps/storybook/stories/ContextMenu.stories.tsx`
-- [ ] 3.2.8 Document the host contract and focus return — `docs/interaction.md`, `docs/getting-started.md`
-- [ ] 3.2.9 Add the `?context=1` demo log and update the API report — `apps/demo/src/App.tsx`, `packages/react/etc/react-year-planner.api.md`
+- [x] 3.2.1 Add the request types, `restoreFocus` and the `onContextMenuRequest` prop — `packages/react/src/types.ts` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.2.2 Resolve annotation, item and date targets from the component root — `packages/react/src/YearPlanner.tsx`, `render/YearGrid.tsx` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.2.3 Select an unselected item before the request and prove no gesture starts — `packages/react/src/interaction/useInteraction.ts` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.2.4 Add one deduped Shift+F10/ContextMenu handler for cells and items — `packages/react/src/interaction/useInteraction.ts`, `render/YearGrid.tsx`, `render/ItemOverlay.tsx` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.2.5 Ignore touch-originated context menus and document long-press behavior — `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.2.6 Add Fluent UI and MUI as dev-only Storybook dependencies — `apps/storybook/package.json`, `pnpm-lock.yaml` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.2.7 Add the Fluent and MUI context-menu stories — `apps/storybook/stories/ContextMenu.stories.tsx` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.2.8 Document the host contract and focus return — `docs/interaction.md`, `docs/getting-started.md` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.2.9 Add the `?context=1` demo log and update the API report — `apps/demo/src/App.tsx`, `packages/react/etc/react-year-planner.api.md` ✅ (completed: 2026-11-13 03:20)
 
 ### Step 3.3: Green, implementation tests and verify
 
-- [ ] 3.3.1 Prove ST-16–ST-25 green — React unit suite
-- [ ] 3.3.2 Add implementation edge cases (handler error, chrome, annotation, focus retention) — `packages/react/src/context-menu.impl.test.tsx`
-- [ ] 3.3.3 Verify the phase — `pnpm verify` plus `pnpm exec playwright test tests/e2e/interaction.spec.ts tests/e2e/security.spec.ts`
+- [x] 3.3.1 Prove ST-16–ST-25 green — React unit suite ✅ (completed: 2026-11-13 03:20)
+- [x] 3.3.2 Add implementation edge cases (handler error, chrome, annotation, focus retention) — `packages/react/src/context-menu.impl.test.tsx` ✅ (completed: 2026-11-13 03:20)
+- [x] 3.3.3 Verify the phase — `pnpm verify` plus `pnpm exec playwright test tests/e2e/interaction.spec.ts tests/e2e/security.spec.ts` ✅ (completed: 2026-11-13 03:20)
 
 **Deliverables**:
-- [ ] Host-owned context-menu contract for date, item and annotation targets
-- [ ] Pointer-day dates, deduped keyboard path and native/touch fallback
-- [ ] Fluent and MUI examples with dev-only dependencies
-- [ ] All phase verification passing
+- [x] Host-owned context-menu contract for date, item and annotation targets
+- [x] Pointer-day dates, deduped keyboard path and native/touch fallback
+- [x] Fluent and MUI examples with dev-only dependencies
+- [x] All phase verification passing
 
 **Test slices**: `react.unit` (task); `e2e.interaction`, `e2e.security` (release)
 **Task verify**: `pnpm verify` + `pnpm exec playwright test tests/e2e/interaction.spec.ts`

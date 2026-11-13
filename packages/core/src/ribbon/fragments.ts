@@ -1,4 +1,4 @@
-import { addDays, type DateKey, diffDays } from "../date.js";
+import { addDays, diffDays } from "../date.js";
 import { dateToColumn, type MonthRowLayout, type YearLayout } from "../layout/classic-year.js";
 import type { PlannerItem, PlannerLayer } from "../model/types.js";
 import { serializeVisibility, type VisibilityContext, visibleItems } from "../model/visibility.js";
@@ -268,11 +268,10 @@ function buildRowFragments(
     const { item, period: projected } = entry;
     const layer = layerById.get(item.layerId);
     if (!layer) continue;
-    const start = projected.startDate > row.firstDate ? projected.startDate : row.firstDate;
-    const end =
-      projected.endDateExclusive < row.endDateExclusive
-        ? projected.endDateExclusive
-        : row.endDateExclusive;
+    let start = projected.startDate;
+    if (start < row.firstDate) start = row.firstDate;
+    let end = projected.endDateExclusive;
+    if (end > row.endDateExclusive) end = row.endDateExclusive;
     if (start >= end) continue;
     const startColumn = dateToColumn(row, start);
     const endColumnExclusive = dateToColumn(row, addDays(end, -1)) + 1;

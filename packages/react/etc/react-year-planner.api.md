@@ -135,6 +135,30 @@ export interface OverflowRenderContext {
     row: MonthRowLayout;
 }
 
+// @public
+export interface PlannerContextMenuRequest {
+    anchorRect: DOMRect;
+    clientX: number;
+    clientY: number;
+    restoreFocus: () => void;
+    source: "pointer" | "keyboard";
+    target: PlannerContextTarget;
+}
+
+// @public
+export type PlannerContextTarget = {
+    kind: "date";
+    date: DateKey;
+} | {
+    kind: "item";
+    itemId: string;
+    date: DateKey;
+} | {
+    kind: "annotation";
+    annotationId: string;
+    date: DateKey;
+};
+
 export { PlannerPeriod }
 
 // @public
@@ -253,6 +277,7 @@ export interface YearPlannerProps {
     onChangeCommitted?: (outcome: CommandOutcome) => void;
     onChangeRejected?: (outcome: CommandOutcome) => void;
     onChangeRequest?: (command: PlannerCommand, context: CommandContext, signal?: AbortSignal) => CommandOutcome | Promise<CommandOutcome>;
+    onContextMenuRequest?: (request: PlannerContextMenuRequest) => void;
     onDiagnostic?: (diagnostic: Diagnostic) => void;
     onFilterChange?: (next: PlannerFilter) => void;
     onItemsChange?: (items: PlannerItem[]) => void;

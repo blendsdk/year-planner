@@ -157,6 +157,13 @@ vertical geometry is fit-driven. `density: "expanded"` is a non-fit preference:
 in fit mode the lane budget wins and extra items go to the existing overflow
 popover.
 
+## Context menu
+
+`onContextMenuRequest` hands right-click, `Shift+F10` and the `ContextMenu` key
+to the host. The component never renders a menu; see
+[interaction.md](interaction.md#context-menu) for the request shape and focus
+return.
+
 ## Print
 
 Call `window.print()` when the planner is on the page. The component renders a
@@ -178,7 +185,7 @@ explicit `display.locale`.
 
 ## Storybook
 
-Storybook is the component catalogue: **174 stories across 12 files** covering
+Storybook is the component catalogue: **176 stories across 13 files** covering
 themes, windows, ribbons, overflow, visibility, interaction, inspector states,
 slots, print modes and design-system adapters.
 

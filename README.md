@@ -142,15 +142,11 @@ pnpm docs:site       # combined VitePress + Storybook + TypeDoc artifact
 The site is designed for GitHub Pages at
 `https://blendsdk.github.io/year-planner/`; there is no custom domain.
 
-## Status and limits
+## Status
 
-The renderer, command pipeline, accessibility semantics and print matrix are
-covered by automated tests. The manual NVDA/VoiceOver audit remains parked, so
-the project makes no WCAG conformance claim. The 10,000-item case is a
-documented stress case, not the supported target. See
-[Limitations](docs/limitations.md), [Accessibility](docs/accessibility.md),
-[Performance](docs/performance.md), [Security](docs/security.md) and the
-[Test report](docs/test-report.md).
+Pre-release: `0.3.0` is prepared but not yet on npm. The manual screen-reader
+audit is pending, so there is no WCAG conformance claim. See
+[Limitations](docs/limitations.md) for supported sizes and known gaps.
 
 ## Contributing
 

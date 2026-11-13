@@ -44,8 +44,8 @@
 4. Commit with `git commit -s` so the commit carries
    `Signed-off-by: <name> <email>`, then open a pull request. Every CI job,
    including the sign-off (`dco`) check, runs because the PR is human-authored.
-5. Merge after review and a green gate. The first published version is
-   `0.3.0`; this procedure starts at `0.3.0`.
+5. Merge after review and a green gate. `0.3.0` was the unprovenanced
+   bootstrap; `0.3.1` is the first provenance-signed release.
 
 The origin certification and contribution grant are defined in
 [CONTRIBUTING.md](https://github.com/blendsdk/year-planner/blob/main/CONTRIBUTING.md).
@@ -56,28 +56,30 @@ Do not use the Changesets GitHub action. This repository cannot create or approv
 with the default workflow token on its current plan, and a token-created PR
 would not trigger CI.
 
-## Bootstrap the first packages (0.3.0 only)
+## Bootstrap the first packages (0.3.0 only, completed)
 
 npm cannot configure a trusted publisher for a package that does not exist.
-The first publication is a one-time manual step:
+The first publication was a one-time manual step, completed on 2026-11-13:
 
 ```bash
 npm login   # MFA; no token is written to the repository
 pnpm release:publish --bootstrap --skip-github-release
 ```
 
-This publishes `0.3.0` core, React and languages without provenance and without
-a GitHub release. Then, on npmjs.com for **each** package:
+This published `0.3.0` core, React and languages without provenance and without
+a GitHub release. Trusted publishing was then configured from the CLI for
+**each** package:
 
-1. Open **Settings → Trusted Publisher → GitHub Actions**.
-2. Repository: `blendsdk/year-planner`.
-3. Workflow filename: `release.yml`.
-4. Environment: `npm-production`.
-5. Allowed action: `npm publish`.
+```bash
+npm trust github <package> \
+  --file release.yml \
+  --repo blendsdk/year-planner \
+  --env npm-production \
+  --allow-publish
+```
 
-A new trusted publisher expires if it is not validated within two days. Create
-a `0.3.1` patch changeset immediately, merge its release PR and run the
-release workflow within that window. `0.3.1` is the first announced,
+A new trusted publisher expires if it is not validated within two days, so the
+`0.3.1` release follows immediately. `0.3.1` is the first announced,
 provenance-signed release; `0.3.0` is the bootstrap. `0.2.0` is never
 published.
 
@@ -139,20 +141,22 @@ describe these restricted releases as open source or re-label earlier releases.
 
 ## Current owner-action state (2026-11-13)
 
-The implementation environment has no npm credentials. The repository is
-public; these are the states to re-check at release time:
+The maintainer account `blendjs` is authenticated for local bootstrap
+publishing. CI publishes with OIDC trusted publishing and stores no npm token.
 
 | Item | Current state |
 | ---- | ------------- |
 | Repository visibility | public |
 | Branch protection | unavailable (HTTP 403 on the current plan) |
-| `npm-production` environment | not created |
+| `npm-production` environment | created; reviewer `blendsdk`; `main` branch policy |
 | Private vulnerability reporting | not enabled |
 | Dependabot security alerts | disabled |
-| npm authentication | not authenticated |
+| npm authentication | `blendjs` (local bootstrap) |
+| npm packages | `0.3.0` published (bootstrap, no provenance) |
+| Trusted publishers | configured for all three packages via `release.yml` and `npm-production` |
 
-Run the setup steps above as the maintainer; do not treat the plan's dry-run
-evidence as a live publication.
+Re-check the remaining owner actions before the next release; do not treat the
+bootstrap publication as provenance evidence.
 
 ## Branch protection
 

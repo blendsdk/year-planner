@@ -1,28 +1,26 @@
 # Getting Started
 
-> **Status**: R1 pre-release. The packages are not on a public registry yet.
+> **Status**: `0.3.1` is published to npm with provenance.
 
 This guide renders a classic 14-month planner from static data, wires controlled
 selection and visibility, and prints an A3 page.
 
 ## Install
 
-The packages are not published yet. Until the release milestone publishes them,
-build the workspace and install the packed tarballs:
-
 ```bash
-pnpm install --frozen-lockfile
-pnpm build
-pnpm --filter @blendsdk/year-planner-core pack --pack-destination ./packs
-pnpm --filter @blendsdk/react-year-planner pack --pack-destination ./packs
+pnpm add @blendsdk/react-year-planner
 ```
 
-Install the two `.tgz` files from `./packs` together with React 19 and React DOM 19. The React
-package depends on `@blendsdk/year-planner-core@0.1.0`, which is not on a
-registry yet, so add a pnpm `overrides` entry that maps
-`@blendsdk/year-planner-core` to the core tarball (the same pattern as
-`scripts/clean-consumer.sh`). Do not use a registry install instruction before
-the packages are published.
+This installs `@blendsdk/year-planner-core` as a dependency. Add
+`@blendsdk/year-planner-languages` when you need a localised UI. React 19 and
+React DOM 19 are peer dependencies; install them if your app does not already
+have them.
+
+Import the stylesheet once in your application entry:
+
+```tsx
+import "@blendsdk/react-year-planner/styles.css";
+```
 
 ## Render a 14-month view
 

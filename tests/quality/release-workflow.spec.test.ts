@@ -148,7 +148,7 @@ describe("RD-12-AC-02: bootstrap", () => {
       "npm login",
       "--bootstrap",
       "--skip-github-release",
-      "Trusted Publisher",
+      "npm trust github",
       "release.yml",
       "npm-production",
       "0.3.1",

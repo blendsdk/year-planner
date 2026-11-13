@@ -1,5 +1,13 @@
 # @blendsdk/year-planner-core
 
+## 0.3.1
+
+### Patch Changes
+
+- Publish the first provenance-signed release from GitHub Actions. No runtime
+  behaviour changes; this release validates trusted publishing for all three
+  packages.
+
 ## 0.3.0
 
 ### Minor Changes

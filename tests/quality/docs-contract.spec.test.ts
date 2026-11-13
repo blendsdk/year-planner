@@ -231,7 +231,7 @@ describe("RD-11-AC-07: README quickstart", () => {
       expect(body, `quickstart is missing ${token}`).toContain(token);
     }
     expect(body).toMatch(/year=\{?20\d\d\}?|year:\s*20\d\d/);
-    expect(readme.toLowerCase()).toMatch(/not (yet )?published|packed tarball|packed install/);
+    expect(readme.toLowerCase()).toMatch(/published( with provenance)?|current npm release/);
   });
 });
 

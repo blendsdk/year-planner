@@ -77,6 +77,7 @@ either side. Run `pnpm storybook` in another terminal.
 
 ## Package status
 
-The packages are not published to a public registry yet. Use the packed-tarball
-consumer path in [getting-started.md](getting-started.md) until the release
-milestone publishes them.
+The packages are published to npm at `0.3.1` with provenance. `0.3.0` was the
+unprovenanced bootstrap that created the package names. Install the component
+with `pnpm add @blendsdk/react-year-planner`; see
+[getting-started.md](getting-started.md).

@@ -3,6 +3,7 @@ import type {
   DateMeta,
   DateMetaContext,
   Diagnostic,
+  EffectiveVisibility,
   KeyboardEvent,
   PlannerState,
   PointerEvent,
@@ -15,6 +16,7 @@ export type {
   DateMeta,
   DateMetaContext,
   Diagnostic,
+  EffectiveVisibility,
   KeyboardEvent,
   PlannerState,
   PointerEvent,
@@ -55,6 +57,7 @@ export interface UseInteractionInput {
   interaction?: import("../types.js").InteractionConfig | undefined;
   getDateMeta?: ((date: DateKey, context: DateMetaContext) => DateMeta | undefined) | undefined;
   itemsByDate: ReadonlyMap<DateKey, readonly string[]>;
+  visibilityById: ReadonlyMap<string, EffectiveVisibility>;
   showAnnotations: boolean;
   focusedItemId?: string | undefined;
   onFocusItem: (itemId: string) => void;

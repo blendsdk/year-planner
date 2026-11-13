@@ -61,7 +61,13 @@
       "packages/react/tsconfig.json",
       "packages/react/tsconfig.build.json",
       "packages/react/vite.config.ts",
-      "packages/react/vitest.config.ts"
+      "packages/react/vitest.config.ts",
+      "packages/core/README.md",
+      "packages/core/LICENSE",
+      "packages/core/CHANGELOG.md",
+      "packages/react/README.md",
+      "packages/react/LICENSE",
+      "packages/react/CHANGELOG.md"
     ],
     "ignorePaths": [
       {
@@ -119,6 +125,14 @@
       {
         "glob": "codeops/**",
         "reason": "Requirements, plans, map and evidence; no product code."
+      },
+      {
+        "glob": "DEFERRED.md",
+        "reason": "Deferred-capabilities documentation."
+      },
+      {
+        "glob": "SUPPORT.md",
+        "reason": "Support policy documentation."
       }
     ],
     "caseSensitive": true,
@@ -410,7 +424,8 @@
       "sources": [
         "packages/react/src/YearPlanner.tsx",
         "packages/react/src/render/**",
-        "packages/react/src/interaction/**"
+        "packages/react/src/interaction/**",
+        "packages/core/src/ribbon/**"
       ],
       "tests": [
         "tests/perf/bench.spec.ts"

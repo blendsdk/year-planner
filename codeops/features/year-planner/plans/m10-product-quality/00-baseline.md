@@ -55,3 +55,27 @@ If Phase 1 still misses the 500-item 150 ms p95 or the 2,000-item 50 ms click
 p95 after the visibility map, row bucketing and memo fixes, the executor stops
 and brings the measured options back to the owner. The plan does not lower the
 target silently.
+
+## Phase 1 result (partial)
+
+The visibility map, per-item projection, lane index, set-backed date index and
+stable click callbacks are implemented and unit-tested. The drag gate passes:
+the strict 2,000-item run recorded **work per frame ≤8 ms** and input delay
+≤16.7 ms.
+
+Two targets remain unmet:
+
+| Metric | Measured after the fixes | Target | Status |
+| ------ | ------------------------ | ------ | ------ |
+| 500-item initial render p95 | 426.7 ms | ≤150 ms | Miss |
+| 2,000-item initial render p95 | 2,042 ms | Diagnostic | Far above |
+| 500-item click work p95 | 55.9–62.4 ms (p50 31.6–36.8) | ≤50 ms | Near miss |
+| 2,000-item click work p95 | 85.3–86.5 ms (p50 43.5) | ≤50 ms | Miss |
+
+The inspector item list is the dominant initial-render cost at 2,000 items:
+disabling it reduced the DOM from 17,850 to 7,668 nodes and the p50 from
+1,789 ms to 402 ms. The grid alone is still above 150 ms. Hitting both targets
+requires a product decision on the inspector list (collapse/virtualize/defer)
+and possibly grid row windowing, or a revised acceptance target. The machine
+was heavily loaded by another session during the final measurements, so the
+post-fix numbers are indicative, not a clean reference-host result.

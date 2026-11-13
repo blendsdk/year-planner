@@ -12,6 +12,12 @@ export const BUDGETS = Object.freeze({
   layoutP95Ms: 250,
   /** p95 pointer frame time for a production drag. */
   dragP95Ms: 16.7,
+  /** Mean non-idle main-thread work per drag frame at 2,000 items. */
+  dragWorkPerFrameMs: 8,
+  /** p95 pointer-event to handler delay during a drag. */
+  dragInputDelayP95Ms: 16.7,
+  /** p95 pointer-down to selection commit for a click. */
+  clickWorkP95Ms: 50,
   /** Time to open and close overflow with 10,000 compact items. */
   overflowMs: 100,
   /** p95 initial render for 12 to 36 month windows. */

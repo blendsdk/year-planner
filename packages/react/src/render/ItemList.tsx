@@ -1,12 +1,12 @@
 import {
-  getEffectiveVisibility,
   type PlannerFilter,
   type PlannerItem,
   type PlannerModel,
   type PlannerSelection,
+  resolveItemVisibility,
   type VisibilityState,
 } from "@blendsdk/year-planner-core";
-import { memo, type ReactNode, type RefObject } from "react";
+import type { ReactNode, RefObject } from "react";
 import type { PlannerFormatters } from "../locale.js";
 
 /**
@@ -70,7 +70,7 @@ function titleOf(item: PlannerItem): string {
  * />
  * ```
  */
-export const ItemList = memo(function ItemList({
+export function ItemList({
   model,
   visibility,
   filter,
@@ -86,12 +86,9 @@ export const ItemList = memo(function ItemList({
 }: ItemListProps): ReactNode {
   const selected = new Set(selection.items);
   const layerById = new Map(model.layers.map((layer) => [layer.id, layer]));
+  const visibilityById = resolveItemVisibility({ model, visibility, filter });
   const visible = model.items
-    .filter(
-      (item) =>
-        renderedItemIds.has(item.id) &&
-        getEffectiveVisibility(item.id, { model, visibility, filter }).visible,
-    )
+    .filter((item) => renderedItemIds.has(item.id) && visibilityById.get(item.id)?.visible === true)
     .sort((left, right) => {
       const byStart = periodStart(left).localeCompare(periodStart(right));
       if (byStart !== 0) return byStart;
@@ -151,4 +148,4 @@ export const ItemList = memo(function ItemList({
       )}
     </section>
   );
-});
+}

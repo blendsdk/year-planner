@@ -3,6 +3,9 @@ export const BUDGETS: Readonly<{
   layout10kP95Ms: number;
   layoutP95Ms: number;
   dragP95Ms: number;
+  dragWorkPerFrameMs: number;
+  dragInputDelayP95Ms: number;
+  clickWorkP95Ms: number;
   overflowMs: number;
   initialRenderP95Ms: number;
   reactEntryCssKb: number;

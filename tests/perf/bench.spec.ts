@@ -55,21 +55,27 @@ async function waitForBench(page: Page): Promise<NonNullable<Window["__YP_BENCH_
 /** Measures five fresh loads of one benchmark route. */
 async function measureInitialRender(
   page: Page,
-  options: { items: number; months: number },
+  options: { items: number; months: number; throttle?: number },
 ): Promise<ReturnType<typeof stats> & { domNodes: number }> {
   const samples: number[] = [];
   let domNodes = 0;
-  for (let index = 0; index < 5; index += 1) {
-    // Releasing the previous document keeps a 10k-item run inside the
-    // reference host's memory while still recording five fresh loads.
-    if (index > 0) await page.goto("about:blank");
-    await page.goto(`/?bench=1&items=${options.items}&months=${options.months}`);
-    const ready = await waitForBench(page);
-    expect(ready.itemCount, "requested item count rendered").toBe(options.items);
-    expect(ready.months, "requested window rendered").toBe(options.months);
-    expect(ready.domNodes, "rendered DOM size").toBeGreaterThan(options.items);
-    samples.push(ready.readyMs);
-    domNodes = ready.domNodes;
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("Emulation.setCPUThrottlingRate", { rate: options.throttle ?? 1 });
+  try {
+    for (let index = 0; index < 5; index += 1) {
+      // Releasing the previous document keeps a 10k-item run inside the
+      // reference host's memory while still recording five fresh loads.
+      if (index > 0) await page.goto("about:blank");
+      await page.goto(`/?bench=1&items=${options.items}&months=${options.months}`);
+      const ready = await waitForBench(page);
+      expect(ready.itemCount, "requested item count rendered").toBe(options.items);
+      expect(ready.months, "requested window rendered").toBe(options.months);
+      expect(ready.domNodes, "rendered DOM size").toBeGreaterThan(options.items);
+      samples.push(ready.readyMs);
+      domNodes = ready.domNodes;
+    }
+  } finally {
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
   }
   return { ...stats(samples), domNodes };
 }
@@ -184,6 +190,28 @@ async function dragDates(
   return { start: dragStart, end: dragEnd };
 }
 
+/** Minimal CPU-profile shape used for the work-per-frame metric. */
+interface CpuProfileNode {
+  hitCount?: number;
+  callFrame?: { functionName?: string };
+}
+
+/** Minimal Chrome CPU profile shape. */
+interface CpuProfile {
+  nodes?: CpuProfileNode[];
+}
+
+/** Returns the mean non-idle sampled time per drag frame. */
+function profileWorkPerFrame(profile: CpuProfile, frames: number): number {
+  const nodes = profile.nodes ?? [];
+  const total = nodes.reduce((sum, node) => sum + (node.hitCount ?? 0), 0);
+  const idle = nodes.reduce(
+    (sum, node) => sum + (node.callFrame?.functionName === "(idle)" ? (node.hitCount ?? 0) : 0),
+    0,
+  );
+  return frames > 0 ? (total - idle) / frames : 0;
+}
+
 /** Measures one drag and records its frame, input-delay and long-task data. */
 async function measureDrag(
   page: Page,
@@ -191,48 +219,53 @@ async function measureDrag(
   profileLabel?: string,
   steps = 60,
   minSamples = Math.ceil(steps / 2),
+  throttle = 1,
 ): Promise<{
   frames: ReturnType<typeof stats>;
   inputDelays: ReturnType<typeof stats>;
   longTasks: number;
   longTaskMax: number;
+  workPerFrameMs?: number;
   profilePath?: string;
 }> {
-  await page.goto(`/?bench=1&${query}`);
-  await waitForBench(page);
-  await startCollectors(page);
-  let profilePath: string | undefined;
-  let profile: unknown;
-  if (profileLabel) {
-    const cdp = await page.context().newCDPSession(page);
-    await cdp.send("Profiler.enable");
-    await cdp.send("Profiler.start");
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("Emulation.setCPUThrottlingRate", { rate: throttle });
+  try {
+    await page.goto(`/?bench=1&${query}`);
+    await waitForBench(page);
+    await startCollectors(page);
+    let profile: CpuProfile | undefined;
+    let profilePath: string | undefined;
+    if (profileLabel) {
+      await cdp.send("Profiler.enable");
+      await cdp.send("Profiler.start");
+    }
     const window = await dragDates(page, "2027-01-28", "2027-02-16", steps);
-    const stopped = await cdp.send("Profiler.stop");
-    profile = stopped.profile;
-    profilePath = `${PROFILE_DIR}/${RUN_ID}-${profileLabel}.cpuprofile`;
-    mkdirSync(PROFILE_DIR, { recursive: true });
-    writeFileSync(profilePath, JSON.stringify(profile));
+    if (profileLabel) {
+      const stopped = await cdp.send("Profiler.stop");
+      profile = stopped.profile as CpuProfile;
+      profilePath = `${PROFILE_DIR}/${RUN_ID}-${profileLabel}.cpuprofile`;
+      mkdirSync(PROFILE_DIR, { recursive: true });
+      writeFileSync(profilePath, JSON.stringify(profile));
+    }
     const samples = await stopCollectors(page, window);
     expect(samples.deltas.length, "frame samples").toBeGreaterThanOrEqual(minSamples);
+    if (!profileLabel) {
+      expect(samples.inputDelays.length, "pointer samples").toBeGreaterThanOrEqual(minSamples);
+    }
+    const workPerFrameMs =
+      profile === undefined ? undefined : profileWorkPerFrame(profile, samples.deltas.length);
     return {
       frames: stats(samples.deltas),
       inputDelays: stats(samples.inputDelays),
       longTasks: samples.longTasks.length,
       longTaskMax: samples.longTasks.reduce((max, entry) => Math.max(max, entry.duration), 0),
-      profilePath,
+      ...(workPerFrameMs === undefined ? {} : { workPerFrameMs }),
+      ...(profilePath === undefined ? {} : { profilePath }),
     };
+  } finally {
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
   }
-  const window = await dragDates(page, "2027-01-28", "2027-02-16", steps);
-  const samples = await stopCollectors(page, window);
-  expect(samples.deltas.length, "frame samples").toBeGreaterThanOrEqual(minSamples);
-  expect(samples.inputDelays.length, "pointer samples").toBeGreaterThanOrEqual(minSamples);
-  return {
-    frames: stats(samples.deltas),
-    inputDelays: stats(samples.inputDelays),
-    longTasks: samples.longTasks.length,
-    longTaskMax: samples.longTasks.reduce((max, entry) => Math.max(max, entry.duration), 0),
-  };
 }
 
 /** Stops the collectors and filters long tasks to the drag window. */
@@ -322,6 +355,81 @@ function baselineIssue3():
   } catch {
     return undefined;
   }
+}
+
+/** Measures pointer-down to the selection-commit time for one click per date. */
+async function measureClick(
+  page: Page,
+  query: string,
+  samples = 5,
+  throttle = 1,
+): Promise<ReturnType<typeof stats>> {
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("Emulation.setCPUThrottlingRate", { rate: throttle });
+  try {
+    await page.goto(`/?bench=1&${query}`);
+    await waitForBench(page);
+    const work: number[] = [];
+    for (let index = 0; index < samples; index += 1) {
+      const date = `2027-02-0${index + 1}`;
+      const result = await page.evaluate(async (dateKey) => {
+        const cell = document.querySelector(`[role="gridcell"][data-date="${dateKey}"]`);
+        if (!(cell instanceof HTMLElement)) throw new Error(`cell ${dateKey} missing`);
+        const selectedBefore = cell.getAttribute("aria-selected");
+        const rect = cell.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        const down = performance.now();
+        const pointerInit = {
+          bubbles: true,
+          cancelable: true,
+          button: 0,
+          clientX: x,
+          clientY: y,
+          pointerId: 1,
+          pointerType: "mouse",
+          isPrimary: true,
+        };
+        cell.dispatchEvent(new PointerEvent("pointerdown", pointerInit));
+        cell.dispatchEvent(new PointerEvent("pointerup", pointerInit));
+        cell.dispatchEvent(
+          new MouseEvent("click", {
+            bubbles: true,
+            cancelable: true,
+            button: 0,
+            clientX: x,
+            clientY: y,
+            view: window,
+          }),
+        );
+        return new Promise<number>((resolve) => {
+          const deadline = performance.now() + 2_000;
+          const check = (): void => {
+            if (cell.getAttribute("aria-selected") !== selectedBefore) {
+              resolve(performance.now() - down);
+            } else if (performance.now() > deadline) {
+              resolve(-1);
+            } else {
+              requestAnimationFrame(check);
+            }
+          };
+          requestAnimationFrame(check);
+        });
+      }, date);
+      if (result >= 0) work.push(result);
+    }
+    return stats(work);
+  } finally {
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
+  }
+}
+
+/** Enforces an absolute target only in strict mode. */
+function expectTarget(value: number, target: number, label: string, jitter = false): void {
+  if (process.env.PERF_STRICT !== "1") return;
+  expect(value, `${label} above ${target} ms`).toBeLessThanOrEqual(
+    target + (jitter ? target * 0.05 : 0),
+  );
 }
 
 test.describe("RD-10-AC-11: production budgets", () => {
@@ -515,6 +623,90 @@ test.describe("RD-10-AC-11: production budgets", () => {
       status: statusFor(result.frames.p95, BUDGETS.dragP95Ms, true),
     });
     expectWithinCeiling(result.frames.p95, BUDGETS.dragP95Ms, "36-month drag", true);
+  });
+});
+
+test.describe("RD-13-AC-03: product-quality performance", () => {
+  test("initial render 500/2k unthrottled and 4x", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === "bench-dev", "production scenario");
+    test.setTimeout(900_000);
+    for (const items of [500, 2000]) {
+      for (const throttle of [1, 4]) {
+        const result = await measureInitialRender(page, { items, months: 14, throttle });
+        writeResult(`rd13-initial-${items}-${throttle}x`, {
+          scenario: "rd13-initial-render",
+          project: testInfo.project.name,
+          parameters: { items, months: 14, throttle },
+          ...result,
+          budget: BUDGETS.initialRenderP95Ms,
+          status: statusFor(result.p95, BUDGETS.initialRenderP95Ms),
+        });
+        if (items === 500 && throttle === 1) {
+          expectTarget(result.p95, BUDGETS.initialRenderP95Ms, "500-item initial render");
+        }
+      }
+    }
+  });
+
+  test("drag 2k work per frame and input delay", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === "bench-dev", "production scenario");
+    test.setTimeout(900_000);
+    for (const throttle of [1, 4]) {
+      const result = await measureDrag(
+        page,
+        "items=2000&months=14",
+        `rd13-drag-2000-${throttle}x`,
+        60,
+        30,
+        throttle,
+      );
+      writeResult(`rd13-drag-2000-${throttle}x`, {
+        scenario: "rd13-drag",
+        project: testInfo.project.name,
+        parameters: { items: 2000, months: 14, throttle },
+        ...result,
+        budgets: {
+          workPerFrame: BUDGETS.dragWorkPerFrameMs,
+          inputDelay: BUDGETS.dragInputDelayP95Ms,
+        },
+        status: statusFor(result.workPerFrameMs ?? Infinity, BUDGETS.dragWorkPerFrameMs),
+      });
+      if (throttle === 1) {
+        expect(result.workPerFrameMs, "drag profile").toBeDefined();
+        expectTarget(
+          result.workPerFrameMs ?? Infinity,
+          BUDGETS.dragWorkPerFrameMs,
+          "2,000-item drag work per frame",
+        );
+        expectTarget(
+          result.inputDelays.p95,
+          BUDGETS.dragInputDelayP95Ms,
+          "2,000-item drag input delay",
+          true,
+        );
+      }
+    }
+  });
+
+  test("click-to-select 500/2k", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === "bench-dev", "production scenario");
+    test.setTimeout(900_000);
+    for (const items of [500, 2000]) {
+      for (const throttle of [1, 4]) {
+        const result = await measureClick(page, `items=${items}&months=14`, 5, throttle);
+        writeResult(`rd13-click-${items}-${throttle}x`, {
+          scenario: "rd13-click",
+          project: testInfo.project.name,
+          parameters: { items, months: 14, throttle },
+          work: result,
+          budget: BUDGETS.clickWorkP95Ms,
+          status: statusFor(result.p95, BUDGETS.clickWorkP95Ms),
+        });
+        if (throttle === 1) {
+          expectTarget(result.p95, BUDGETS.clickWorkP95Ms, `${items}-item click-to-select`);
+        }
+      }
+    }
   });
 });
 

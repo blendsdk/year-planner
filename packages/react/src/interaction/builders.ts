@@ -1,11 +1,11 @@
 import {
   type DateKey,
-  getEffectiveVisibility,
   type PaintDefaults,
   type PlannerCommand,
   type PlannerFilter,
   type PlannerItem,
   type PlannerModel,
+  resolveItemVisibility,
   type VisibilityState,
 } from "@blendsdk/year-planner-core";
 import type { InteractionConfig } from "../types.js";
@@ -40,6 +40,7 @@ export function buildPaintCommand(input: BuildPaintInput): PlannerCommand | unde
     visibility: input.visibility,
     filter: input.filter,
   };
+  const visibilityById = resolveItemVisibility(context);
   const expectedVersions: Record<string, number> = {};
   for (const item of input.model.items) {
     if (
@@ -54,7 +55,7 @@ export function buildPaintCommand(input: BuildPaintInput): PlannerCommand | unde
     if (
       item.period.startDate < input.endDateExclusive &&
       input.startDate < item.period.endDateExclusive &&
-      getEffectiveVisibility(item.id, context).visible
+      visibilityById.get(item.id)?.visible === true
     ) {
       expectedVersions[item.id] = item.version;
     }

@@ -2,7 +2,6 @@ import {
   addDays,
   type DateKey,
   diagnostic,
-  getEffectiveVisibility,
   getItemEditability,
   type PlannerSelection,
 } from "@blendsdk/year-planner-core";
@@ -130,19 +129,18 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     ],
   );
 
-  const visibleItemIds = useMemo(() => {
-    const context = {
-      model: input.state.model,
-      visibility: input.state.visibility,
-      filter: input.state.filter,
-    };
-    return new Set(
-      input.state.items
-        .filter((entry) => getEffectiveVisibility(entry.id, context).visible)
-        .map((entry) => entry.id),
-    );
-  }, [input.state.filter, input.state.items, input.state.model, input.state.visibility]);
+  const visibleItemIds = useMemo(
+    () =>
+      new Set(
+        input.state.items
+          .filter((entry) => input.visibilityById.get(entry.id)?.visible === true)
+          .map((entry) => entry.id),
+      ),
+    [input.state.items, input.visibilityById],
+  );
 
+  const inputRef = useRef(input);
+  inputRef.current = input;
   const stateRef = useRef(input.state);
   stateRef.current = input.state;
   const visibleRef = useRef(visibleItemIds);
@@ -214,11 +212,11 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
 
   const emitSelection = useCallback(
     (next: PlannerSelection, focusItem?: string, focusDate?: DateKey) => {
-      input.state.setSelection(next);
-      if (focusItem) input.onFocusItem(focusItem);
-      else if (focusDate) input.onFocusDate(focusDate);
+      inputRef.current.state.setSelection(next);
+      if (focusItem) inputRef.current.onFocusItem(focusItem);
+      else if (focusDate) inputRef.current.onFocusDate(focusDate);
     },
-    [input],
+    [],
   );
 
   const handleCompletion = useCallback(
@@ -443,14 +441,14 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     ) => {
       if (shouldIgnoreClick(event)) return;
       const next = applyDateClick(
-        input.state.selection,
+        stateRef.current.selection,
         date,
         { shift: event.shiftKey === true, mod: isMod(event) },
         isDisabled,
       );
       emitSelection(next, undefined, date);
     },
-    [emitSelection, input.state.selection, isDisabled, shouldIgnoreClick],
+    [emitSelection, isDisabled, shouldIgnoreClick],
   );
 
   const selectItem = useCallback(
@@ -465,14 +463,14 @@ export function useInteraction(input: UseInteractionInput): InteractionControlle
     ) => {
       if (shouldIgnoreClick(event)) return;
       const next = applyItemClick(
-        input.state.selection,
+        stateRef.current.selection,
         itemId,
         { shift: event.shiftKey === true, mod: isMod(event) },
         visualOrder,
       );
       emitSelection(next, itemId);
     },
-    [emitSelection, input.state.selection, shouldIgnoreClick, visualOrder],
+    [emitSelection, shouldIgnoreClick, visualOrder],
   );
 
   const doubleClickItem = useCallback(

@@ -1,4 +1,4 @@
-import { addDays, diffDays } from "../date.js";
+import { addDays, type DateKey, diffDays } from "../date.js";
 import { dateToColumn, type MonthRowLayout, type YearLayout } from "../layout/classic-year.js";
 import type { PlannerItem, PlannerLayer } from "../model/types.js";
 import { serializeVisibility, type VisibilityContext, visibleItems } from "../model/visibility.js";
@@ -104,6 +104,11 @@ function sourceDays(period: AllDayPeriod): number {
   return diffDays(period.startDate, period.endDateExclusive);
 }
 
+interface ProjectedItem {
+  item: PlannerItem;
+  period: AllDayPeriod;
+}
+
 /**
  * Projects every effectively visible item into clipped month-row fragments,
  * assigns deterministic lanes and computes compact overflow.
@@ -149,20 +154,31 @@ export function buildRibbonLayout(
   const layerById = new Map(context.model.layers.map((entry) => [entry.id, entry]));
   const itemsById = new Map(context.model.items.map((entry) => [entry.id, entry]));
   const items = visibleItems(context);
+  const projectedItems: ProjectedItem[] = [];
+  for (const item of items) {
+    const period = projectPeriod(item.period, displayTimeZone);
+    if (period) projectedItems.push({ item, period });
+  }
+  const projectedById = new Map(projectedItems.map((entry) => [entry.item.id, entry.period]));
   const rows: RibbonRow[] = [];
   const allFragments: RibbonFragment[] = [];
   let top = 0;
   let previousLanes: ReadonlyMap<string, number> = new Map();
 
   for (const row of layout.rows) {
-    const rowFragments = buildRowFragments(row, items, layerById, displayTimeZone);
+    const entries = projectedItems.filter(
+      (entry) =>
+        entry.period.endDateExclusive > row.firstDate &&
+        entry.period.startDate < row.endDateExclusive,
+    );
+    const rowFragments = buildRowFragments(row, entries, layerById);
     const candidates: LaneCandidate[] = [];
     for (const fragment of rowFragments) {
       if (fragment.channel !== "ribbon") continue;
       const item = itemsById.get(fragment.itemId);
       const layer = layerById.get(item?.layerId ?? "");
       if (!item || !layer) continue;
-      const projected = projectPeriod(item.period, displayTimeZone);
+      const projected = projectedById.get(item.id);
       if (!projected) continue;
       candidates.push({
         fragment,
@@ -244,16 +260,14 @@ export function buildRibbonLayout(
 
 function buildRowFragments(
   row: MonthRowLayout,
-  items: PlannerItem[],
+  entries: readonly ProjectedItem[],
   layerById: ReadonlyMap<string, PlannerLayer>,
-  displayTimeZone: string,
 ): RibbonFragment[] {
   const fragments: RibbonFragment[] = [];
-  for (const item of items) {
+  for (const entry of entries) {
+    const { item, period: projected } = entry;
     const layer = layerById.get(item.layerId);
     if (!layer) continue;
-    const projected = projectPeriod(item.period, displayTimeZone);
-    if (!projected) continue;
     const start = projected.startDate > row.firstDate ? projected.startDate : row.firstDate;
     const end =
       projected.endDateExclusive < row.endDateExclusive

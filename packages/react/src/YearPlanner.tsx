@@ -12,6 +12,7 @@ import {
   planRibbonPrint,
   type RibbonLayout,
   getEffectiveVisibility as resolveEffectiveVisibility,
+  resolveItemVisibility,
   type YearLayout,
 } from "@blendsdk/year-planner-core";
 import {
@@ -38,6 +39,10 @@ import { YearGrid } from "./render/YearGrid.js";
 import { usePlannerState } from "./state.js";
 import { resolveTheme, themeToCssVars } from "./theme.js";
 import type { YearPlannerComponents, YearPlannerHandle, YearPlannerProps } from "./types.js";
+
+const EMPTY_SELECTED_ITEMS: ReadonlySet<string> = new Set();
+const EMPTY_SELECTED_DATES: ReadonlySet<string> = new Set();
+
 import { useAnnouncements } from "./useAnnouncements.js";
 
 const EMPTY_LAYOUT: YearLayout = {
@@ -260,17 +265,33 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     const itemsByDate = useMemo(() => {
       const map = new Map<string, string[]>();
       if (!ribbons) return map;
+      const seenByDate = new Map<string, Set<string>>();
       for (const fragment of ribbons.fragments) {
         const days = diffDays(fragment.clippedStart, fragment.clippedEndExclusive);
         for (let offset = 0; offset < days; offset += 1) {
           const date = addDays(fragment.clippedStart, offset);
-          const list = map.get(date) ?? [];
-          if (!list.includes(fragment.itemId)) list.push(fragment.itemId);
-          map.set(date, list);
+          let seen = seenByDate.get(date);
+          if (!seen) {
+            seen = new Set<string>();
+            seenByDate.set(date, seen);
+            map.set(date, []);
+          }
+          if (seen.has(fragment.itemId)) continue;
+          seen.add(fragment.itemId);
+          map.get(date)?.push(fragment.itemId);
         }
       }
       return map;
     }, [ribbons]);
+    const visibilityById = useMemo(
+      () =>
+        resolveItemVisibility({
+          model: state.model,
+          visibility: state.visibility,
+          filter: state.filter,
+        }),
+      [state.model, state.visibility, state.filter],
+    );
     const proxyFragments = useMemo(
       () =>
         (ribbons?.fragments ?? []).filter((fragment) => {
@@ -290,26 +311,25 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       () => new Set(proxyFragments.map((fragment) => fragment.itemId)),
       [proxyFragments],
     );
-    const selectedItemIds = useMemo(() => new Set(state.selection.items), [state.selection.items]);
+    const selectedItemIds = useMemo(
+      () =>
+        state.selection.items.length === 0 ? EMPTY_SELECTED_ITEMS : new Set(state.selection.items),
+      [state.selection.items],
+    );
     const renderedItemIds = useMemo(
       () => new Set((ribbons?.fragments ?? []).map((fragment) => fragment.itemId)),
       [ribbons],
     );
     const selectedDates = useMemo(
-      () => selectedDateSet(state.selection.dates),
+      () =>
+        state.selection.dates.length === 0
+          ? EMPTY_SELECTED_DATES
+          : selectedDateSet(state.selection.dates),
       [state.selection.dates],
     );
     const visibleItemCount = useMemo(
-      () =>
-        state.items.filter(
-          (item) =>
-            resolveEffectiveVisibility(item.id, {
-              model: state.model,
-              visibility: state.visibility,
-              filter: state.filter,
-            }).visible,
-        ).length,
-      [state.filter, state.items, state.model, state.visibility],
+      () => state.items.filter((item) => visibilityById.get(item.id)?.visible === true).length,
+      [state.items, visibilityById],
     );
     const announcements = useAnnouncements({
       pending: pipeline.pendingItemIds.size > 0,
@@ -640,6 +660,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         interaction: props.interaction,
         getDateMeta: props.getDateMeta,
         itemsByDate,
+        visibilityById,
         showAnnotations: resolvedDisplay.options.showAnnotations,
         focusedItemId: activeItemId,
         onFocusItem: focusItem,
@@ -658,6 +679,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
         props.interaction,
         props.getDateMeta,
         itemsByDate,
+        visibilityById,
         resolvedDisplay.options.showAnnotations,
         activeItemId,
         focusItem,
@@ -685,14 +707,7 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
     useEffect(() => {
       const visible = new Set(
         state.items
-          .filter(
-            (entry) =>
-              resolveEffectiveVisibility(entry.id, {
-                model: state.model,
-                visibility: state.visibility,
-                filter: state.filter,
-              }).visible,
-          )
+          .filter((entry) => visibilityById.get(entry.id)?.visible === true)
           .map((entry) => entry.id),
       );
       const items = state.selection.items.filter((id) => visible.has(id));
@@ -716,24 +731,17 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       announceFocus,
       focusDate,
       nearestEnabledDate,
-      state.filter,
       state.items,
-      state.model,
       state.selection,
       state.setSelection,
-      state.visibility,
+      visibilityById,
     ]);
 
     useEffect(() => {
       if (!activeItemId) return;
       const item = state.items.find((entry) => entry.id === activeItemId);
       const visible = item
-        ? proxyItemIds.has(item.id) &&
-          resolveEffectiveVisibility(item.id, {
-            model: state.model,
-            visibility: state.visibility,
-            filter: state.filter,
-          }).visible
+        ? proxyItemIds.has(item.id) && visibilityById.get(item.id)?.visible === true
         : false;
       if (item && visible) return;
       const start =
@@ -754,11 +762,9 @@ export const YearPlanner = forwardRef<YearPlannerHandle, YearPlannerProps>(
       focusDate,
       nearestEnabledDate,
       proxyItemIds,
-      state.filter,
       state.items,
-      state.model,
       state.selection.focusDate,
-      state.visibility,
+      visibilityById,
     ]);
 
     useEffect(() => {

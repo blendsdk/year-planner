@@ -46,9 +46,16 @@ describe("RD-10-AC-11: benchmark command contract", () => {
       "issue-3 production drag",
       "36-month 500-item drag",
       "500-item dev drag",
+      "RD-13-AC-03: product-quality performance",
+      "initial render 500/2k unthrottled and 4x",
+      "drag 2k work per frame and input delay",
+      "click-to-select 500/2k",
     ]) {
       expect(spec, scenario).toContain(scenario);
     }
+    expect(spec).toContain("expectTarget");
+    expect(spec).toContain("workPerFrameMs");
+    expect(spec).toContain("measureClick");
   });
 });
 
@@ -57,6 +64,9 @@ describe("RD-10-AC-11: benchmark budgets", () => {
     expect(BUDGETS.layout10kP95Ms).toBe(250);
     expect(BUDGETS.layoutP95Ms).toBe(250);
     expect(BUDGETS.dragP95Ms).toBe(16.7);
+    expect(BUDGETS.dragWorkPerFrameMs).toBe(8);
+    expect(BUDGETS.dragInputDelayP95Ms).toBe(16.7);
+    expect(BUDGETS.clickWorkP95Ms).toBe(50);
     expect(BUDGETS.overflowMs).toBe(100);
     expect(BUDGETS.initialRenderP95Ms).toBe(150);
     expect(BUDGETS.reactEntryCssKb).toBe(60);

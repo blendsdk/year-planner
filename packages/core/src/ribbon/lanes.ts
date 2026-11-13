@@ -1,16 +1,5 @@
 import type { LaneCandidate } from "./types.js";
 
-interface LaneInterval {
-  start: number;
-  end: number;
-}
-
-function isFree(lanes: LaneInterval[][], lane: number, start: number, end: number): boolean {
-  const intervals = lanes[lane];
-  if (!intervals) return true;
-  return intervals.every((interval) => interval.end <= start || interval.start >= end);
-}
-
 function durationCompare(left: LaneCandidate, right: LaneCandidate): number {
   if (left.sourceDays !== right.sourceDays) return right.sourceDays - left.sourceDays;
   if (left.sortOrder !== right.sortOrder) return left.sortOrder - right.sortOrder;
@@ -44,22 +33,22 @@ export function assignLanes(
   previousLanes: ReadonlyMap<string, number>,
 ): ReadonlyMap<string, number> {
   const sorted = [...candidates].sort(compareCandidates);
-  const lanes: LaneInterval[][] = [];
+  // Intervals in one lane never overlap, so the maximum end in the lane is the
+  // only value needed to decide whether the lane is free at a new start.
+  const laneMaxEnd: number[] = [];
   const assignment = new Map<string, number>();
   for (const candidate of sorted) {
     const start = candidate.fragment.startColumn;
     const end = candidate.fragment.endColumnExclusive;
     const preferred = previousLanes.get(candidate.fragment.itemId);
     let lane: number | undefined;
-    if (preferred !== undefined && isFree(lanes, preferred, start, end)) {
+    if (preferred !== undefined && (laneMaxEnd[preferred] ?? Number.NEGATIVE_INFINITY) <= start) {
       lane = preferred;
     } else {
       lane = 0;
-      while (!isFree(lanes, lane, start, end)) lane += 1;
+      while ((laneMaxEnd[lane] ?? Number.NEGATIVE_INFINITY) > start) lane += 1;
     }
-    const intervals = lanes[lane] ?? [];
-    intervals.push({ start, end });
-    lanes[lane] = intervals;
+    laneMaxEnd[lane] = Math.max(laneMaxEnd[lane] ?? Number.NEGATIVE_INFINITY, end);
     assignment.set(candidate.fragment.fragmentId, lane);
   }
   return assignment;

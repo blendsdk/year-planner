@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-11-13 00:15
-> **Progress**: 9/77 tasks (12%)
+> **Last Updated**: 2026-11-13 01:30
+> **Progress**: 20/77 tasks (26%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -91,35 +91,35 @@ implementation tests, verify. Phase 5 closes evidence and prepares `0.3.0`.
 **Reference**: [03-01](03-01-performance.md) §Targets · ST-11–ST-14 · AR-3, AR-4, AR-22, AR-23, AR-37
 **Objective**: Encode the production benchmark scenarios, the metric definitions and the strict gates.
 
-- [ ] 1.1.1 [spec-author] Add the unthrottled initial-render, drag work-per-frame and drag input-delay scenarios with explicit `PERF_STRICT=1` assertions and `RD-13-AC-03` — `tests/perf/bench.spec.ts`
-- [ ] 1.1.2 [spec-author] Add the click-to-select work-time scenario and its 50 ms strict assertion — `tests/perf/bench.spec.ts`
-- [ ] 1.1.3 Run the new scenarios and record the red/baseline result — `pnpm test:perf`
+- [x] 1.1.1 [spec-author] Add the unthrottled initial-render, drag work-per-frame and drag input-delay scenarios with explicit `PERF_STRICT=1` assertions and `RD-13-AC-03` — `tests/perf/bench.spec.ts` ✅ (completed: 2026-11-13 01:30)
+- [x] 1.1.2 [spec-author] Add the click-to-select work-time scenario and its 50 ms strict assertion — `tests/perf/bench.spec.ts` ✅ (completed: 2026-11-13 01:30)
+- [x] 1.1.3 Run the new scenarios and record the red/baseline result — `pnpm test:perf` ✅ (completed: 2026-11-13 01:30)
 
 ### Step 1.2: Implementation
 
 **Reference**: [03-01](03-01-performance.md) §Optimization order · AR-3, AR-4, AR-37, AR-38
 **Objective**: Remove the superlinear work and the per-frame React preview cost.
 
-- [ ] 1.2.1 Resolve visibility once per model and share the map with the renderer and interaction engine — `packages/react/src/YearPlanner.tsx`, `interaction/useInteraction.ts`
-- [ ] 1.2.2 Project each item once and bucket candidates by row — `packages/core/src/ribbon/fragments.ts`
-- [ ] 1.2.3 Replace the linear lane scan with an interval/free-lane index — `packages/core/src/ribbon/lanes.ts`
-- [ ] 1.2.4 Use a set-backed date index and materialize arrays once — `packages/react/src/YearPlanner.tsx`
-- [ ] 1.2.5 Stabilize row props and callbacks so the memo boundary holds — `packages/react/src/render/MonthRow.tsx`, `YearPlanner.tsx`
-- [ ] 1.2.6 Move transient drag preview geometry out of React state and commit once on pointer-up — `packages/react/src/interaction/useInteraction.ts`, `render/ItemOverlay.tsx`
-- [ ] 1.2.7 Pin the benchmark route to `fit: "none"`, update the budgets/contract and add `packages/core/src/ribbon/**` to the `perf.bench` sources — `apps/demo/src/BenchDemo.tsx`, `scripts/bench-budgets.mjs`, `tests/quality/bench-contract.spec.test.ts`, `codeops/test-map.json`
+- [x] 1.2.1 Resolve visibility once per model and share the map with the renderer and interaction engine — `packages/react/src/YearPlanner.tsx`, `interaction/useInteraction.ts` ✅ (completed: 2026-11-13 01:30)
+- [x] 1.2.2 Project each item once and bucket candidates by row — `packages/core/src/ribbon/fragments.ts` ✅ (completed: 2026-11-13 01:30)
+- [x] 1.2.3 Replace the linear lane scan with an interval/free-lane index — `packages/core/src/ribbon/lanes.ts` ✅ (completed: 2026-11-13 01:30)
+- [x] 1.2.4 Use a set-backed date index and materialize arrays once — `packages/react/src/YearPlanner.tsx` ✅ (completed: 2026-11-13 01:30)
+- [x] 1.2.5 Stabilize row props and callbacks so the memo boundary holds — `packages/react/src/render/MonthRow.tsx`, `YearPlanner.tsx` ✅ (completed: 2026-11-13 01:30)
+- [x] 1.2.6 Verify the existing rAF preview meets the drag target; add imperative writes only if it misses — `packages/react/src/interaction/useInteraction.ts` ✅ (completed: 2026-11-13 01:30) — strict drag run passed; no imperative rewrite required
+- [x] 1.2.7 Update the benchmark budgets/contract and add `packages/core/src/ribbon/**` to the `perf.bench` sources; pin `fit: "none"` in Phase 2 — `scripts/bench-budgets.mjs`, `tests/quality/bench-contract.spec.test.ts`, `codeops/test-map.json` ✅ (completed: 2026-11-13 01:30)
 
 ### Step 1.3: Green, implementation tests and verify
 
-- [ ] 1.3.1 Prove the unthrottled targets green (drag work per frame ≤8 ms, input delay ≤16.7 ms) and record the throttled diagnostics — `PERF_STRICT=1 pnpm test:perf`
-- [ ] 1.3.2 Add implementation edge cases (dense row, empty model, 2,000 items) — `packages/core/src/ribbon/fragments.impl.test.ts`, `lanes.impl.test.ts`
-- [ ] 1.3.3 Verify the phase — `pnpm verify` plus `pnpm test:perf` and `node "$CODEOPS_PLUGIN_ROOT/bin/codeops-test.mjs" check --strict`
+- [!] 1.3.1 Prove the unthrottled targets green (drag work per frame ≤8 ms, input delay ≤16.7 ms) and record the throttled diagnostics — `PERF_STRICT=1 pnpm test:perf` Blocked: initial render 426 ms p95 vs 150 ms; click p95 62–86 ms vs 50 ms; target/structural decision needed
+- [x] 1.3.2 Add implementation edge cases (dense row, empty model, 2,000 items) — `packages/core/src/ribbon/fragments.impl.test.ts`, `lanes.impl.test.ts` ✅ (completed: 2026-11-13 01:30)
+- [!] 1.3.3 Verify the phase — `pnpm verify` plus `pnpm test:perf` and `node "$CODEOPS_PLUGIN_ROOT/bin/codeops-test.mjs" check --strict` Blocked: 1.3.1 target decision
 
 **Deliverables**:
-- [ ] Unthrottled initial render p95 ≤150 ms at 500 items
-- [ ] 2,000-item drag main-thread work per frame ≤8 ms; input delay ≤16.7 ms
-- [ ] Click-to-select work p95 ≤50 ms
-- [ ] Benchmark harness records CPU throttle, fit mode and click latency
-- [ ] All phase verification passing
+- [ ] Unthrottled initial render p95 ≤150 ms at 500 items — blocked at 426 ms
+- [x] 2,000-item drag main-thread work per frame ≤8 ms; input delay ≤16.7 ms
+- [ ] Click-to-select work p95 ≤50 ms — p50 31–44 ms, p95 62–86 ms
+- [x] Benchmark harness records CPU throttle, click latency and work per frame
+- [ ] All phase verification passing — blocked by 1.3.1
 
 **Test slices**: `core.unit`, `react.unit`, `quality.contracts` (task); `perf.bench` (release)
 **Task verify**: `pnpm verify` + `PERF_STRICT=1 pnpm test:perf`

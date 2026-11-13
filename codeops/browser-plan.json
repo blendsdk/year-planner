@@ -6,7 +6,8 @@
     "e2e.grid": {
       "projects": ["chromium", "firefox", "webkit"],
       "durationSec": 90,
-      "workersByProject": { "chromium": 1 }
+      "workersByProject": { "chromium": 1 },
+      "popplerByProject": { "chromium": true }
     },
     "e2e.visual": {
       "projects": ["chromium", "firefox", "webkit"],

@@ -66,7 +66,7 @@ performance budget run, the benchmark orchestrator and the clean-consumer instal
 | A3 print (RD-06 24 months) | **2 pages**, 1191.12 × 842.88 pt |
 | A3 print (RD-06 36 months) | **3 pages**, 1191.12 × 842.88 pt |
 | A3 print boundaries | **15/28/29 months** print 2/2/3 pages; 12/14/18/24/36 verified |
-| Quality tests | **254 passed** (traceability, public API, coverage, size, CSS minifier, CI, package, license, audit, environment and release contracts) |
+| Quality tests | **255 passed** (traceability, public API, coverage, size, CSS minifier, CI, package, license, audit, environment and release contracts) |
 | Dependency audit | **PASS** — no high or critical advisories; two moderate dev-only (`glob`, `minimatch`) accepted |
 | Licenses | **PASS** — `THIRD_PARTY_NOTICES.md` current, including palette attribution |
 | Clean consumer | **PASS** — packed types (`tsc --noEmit`), CSS import and production build; registry mode added for post-release |
@@ -677,7 +677,7 @@ unchanged. See [Browser tests](browser-tests.md).
 | `pnpm test:e2e:affected --paths packages/react/src/locale.ts` | PASS — 6/6 units, Chromium, Firefox and WebKit |
 | repeat `test:e2e:affected` | PASS — 6 cached, 0 executed |
 | `node scripts/browser-shards.mjs run --shard chromium-2 --ci` | PASS — static artifacts served by `playwright.ci.config.ts` |
-| `pnpm test:quality` | PASS — 254 contracts, including 33 browser-plan checks |
+| `pnpm test:quality` | PASS — 255 contracts, including 33 browser-plan checks |
 
 ### Shard verification
 

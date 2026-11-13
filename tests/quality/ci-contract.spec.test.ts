@@ -34,6 +34,23 @@ describe("RD-10-AC-01: release gate evidence", () => {
     expect(workflow).toContain("apps/demo/dist");
   });
 
+  it("installs poppler for every group whose specs read a PDF", () => {
+    const map = JSON.parse(read("codeops/test-map.json")) as {
+      groups: Array<{ id: string; tests?: string[] }>;
+    };
+    const plan = JSON.parse(read("codeops/browser-plan.json")) as {
+      groups: Record<string, { poppler?: boolean; popplerByProject?: Record<string, boolean> }>;
+    };
+    for (const group of map.groups) {
+      const entry = plan.groups[group.id];
+      if (!entry) continue;
+      const usesPdf = (group.tests ?? []).some((spec) => read(spec).includes('from "./pdf.js"'));
+      if (!usesPdf) continue;
+      const covered = entry.poppler === true || entry.popplerByProject?.chromium === true;
+      expect(covered, `${group.id} reads PDFs but does not request poppler`).toBe(true);
+    }
+  });
+
   it("isolates shard ports so local runs cannot collide", () => {
     const shardConfig = read("playwright.ci.config.ts");
     for (const name of [
@@ -99,7 +116,7 @@ describe("RD-10-AC-01: release gate evidence", () => {
       "benchmarks/rd10-baseline",
       "A3 print",
       "226 core tests pass",
-      "Quality tests | **254 passed**",
+      "Quality tests | **255 passed**",
       "46.35 kB",
       "69.59 kB",
       "PASS** for RD-01 through RD-12",

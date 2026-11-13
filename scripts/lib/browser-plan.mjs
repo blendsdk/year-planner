@@ -64,6 +64,7 @@ export function browserGroups(map, config) {
         workers: entry.workers === undefined ? null : Math.max(1, Math.trunc(entry.workers)),
         workersByProject: entry.workersByProject ?? {},
         poppler: entry.poppler === true,
+        popplerByProject: entry.popplerByProject ?? {},
       };
     });
 }
@@ -200,7 +201,7 @@ export function buildUnits({ map, config, groupIds, discovery = null }) {
         spec: pair.spec,
         project: pair.project,
         seconds: totalWeight === 0 ? 0 : (entry.durationSec * pair.weight) / totalWeight,
-        poppler: entry.poppler,
+        poppler: entry.popplerByProject[pair.project] ?? entry.poppler,
         workers: entry.workersByProject[pair.project] ?? entry.workers ?? null,
       });
     }

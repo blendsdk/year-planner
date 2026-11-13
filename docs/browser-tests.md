@@ -97,6 +97,10 @@ produced these results:
 The whole matrix therefore takes about **2.5 minutes of wall-clock time in
 parallel**, against about **16 minutes** for the single serial job.
 
+Groups whose specs read generated PDFs request `poppler-utils` on Chromium.
+`e2e.grid` and `e2e.print` both import the PDF helper, so their Chromium units
+carry `poppler: true` and the shard installs it.
+
 Groups that generate PDFs pin one worker on the browser that generates them.
 Chromium's PDF pipeline is not safe when two print tests write at the same time,
 so `e2e.grid` declares `"workersByProject": { "chromium": 1 }` and `e2e.print`

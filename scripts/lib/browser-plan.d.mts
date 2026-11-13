@@ -35,6 +35,7 @@ export interface BrowserGroupEntry {
   workers: number | null;
   workersByProject: Record<string, number>;
   poppler: boolean;
+  popplerByProject: Record<string, boolean>;
 }
 
 /** Test count keyed by `spec\u0000project`. */

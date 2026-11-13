@@ -139,12 +139,12 @@ describe these restricted releases as open source or re-label earlier releases.
 
 ## Current owner-action state (2026-11-13)
 
-The implementation environment has no npm credentials and the repository is
-private. These are the verified states to re-check at release time:
+The implementation environment has no npm credentials. The repository is
+public; these are the states to re-check at release time:
 
 | Item | Current state |
 | ---- | ------------- |
-| Repository visibility | private |
+| Repository visibility | public |
 | Branch protection | unavailable (HTTP 403 on the current plan) |
 | `npm-production` environment | not created |
 | Private vulnerability reporting | not enabled |
@@ -160,7 +160,7 @@ evidence as a live publication.
 `--record` prints the state and exits zero, so an unavailable protection can be
 recorded without failing a phase. `--apply` requires:
 
-- a public repository (the current private plan returns HTTP 403);
+- a public repository;
 - a second eligible reviewer (the sole code owner cannot approve their own PR);
 - the `verify`, `browsers`, `docs-site`, `dco` and `security` checks.
 

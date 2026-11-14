@@ -52,6 +52,24 @@ toolchain check → package and tools typecheck → lint → unit/component cove
 `verify:full` adds Playwright, the three-timezone suite, the dependency audit, the
 performance budget run, the benchmark orchestrator and the clean-consumer install.
 
+## Browser locale fallback regression (2026-11-14)
+
+The published `0.3.1` Armenian story translated planner messages but showed English
+calendar dates in Chromium. Its native `Intl.DateTimeFormat` omitted Armenian,
+Georgian and Icelandic, while the Node test environment supported them. The old
+browser smoke test checked the message switch without asserting month/day labels.
+
+- Before implementation: 16 targeted React locale assertions and all 4 Chromium
+  language tests failed on the English fallback.
+- After review corrections: all 54 targeted React tests and all 5 Chromium
+  language tests pass. The browser tests include printed month and weekday
+  labels and Arabic digits in the built Armenian Storybook component.
+- Regression coverage includes calendar names, accessible dates, inspector
+  periods, runtime switching, exclusive all-day ends, year/timezone/DST
+  boundaries, numeric/clock extensions and invalid locale input.
+- React typecheck and build pass. Full release-gate and deployment evidence is
+  recorded in the browser-locale-fallback execution task.
+
 ## Results
 
 | Check | Result |

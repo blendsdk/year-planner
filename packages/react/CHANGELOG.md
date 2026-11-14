@@ -1,5 +1,16 @@
 # @blendsdk/react-year-planner
 
+## 0.3.2
+
+### Patch Changes
+
+- Keep Armenian, Georgian and Icelandic calendar labels localized in browsers that
+  lack native date locale data. The bounded fallback covers month and weekday names,
+  date labels, all-day and timed periods, and print output while preserving timezone
+  rules, numbering systems and clock preferences. No additional dependency or public
+  API change is required.
+- @blendsdk/year-planner-core@0.3.2
+
 ## 0.3.1
 
 ### Patch Changes

@@ -67,8 +67,22 @@ browser smoke test checked the message switch without asserting month/day labels
 - Regression coverage includes calendar names, accessible dates, inspector
   periods, runtime switching, exclusive all-day ends, year/timezone/DST
   boundaries, numeric/clock extensions and invalid locale input.
-- React typecheck and build pass. Full release-gate and deployment evidence is
-  recorded in the browser-locale-fallback execution task.
+- Full local release verification passed on an isolated snapshot of the exact
+  release inputs. This preserved the unrelated marketing PDF, which the docs
+  binary-asset contract rejects in the working copy.
+
+| Release evidence | Result |
+|---|---|
+| Package and quality tests | 226 core, 568 React, 10 language and 255 quality tests passed |
+| Browser matrix | 187 passed, 74 intentional platform/feature skips |
+| Timezones / packed consumer | Three 226-test timezone runs and packed consumer passed |
+| Performance | Production suite passed; report-mode initial-render misses remain recorded |
+| Independent review | All three user-approved findings fixed; 18/18 browser/native comparisons passed |
+| [PR #15](https://github.com/blendsdk/year-planner/pull/15) | All active CI checks passed; merged as `55a6154` |
+| [Release 43591487674](https://github.com/blendsdk/year-planner/actions/runs/43591487674) | Full verify, build, publish and registry smoke passed |
+| npm | All three packages at `0.3.2` / `latest`; SLSA provenance references `55a6154` and `release.yml` |
+| [Pages 43592773688](https://github.com/blendsdk/year-planner/actions/runs/43592773688) | Deployment passed |
+| Live Chromium | Armenian `շբթ`, `հնվ`, `4 հնվ, 2016 թ.`; Georgian and Icelandic calendar/print labels; Arabic digits `٤ հնվ, ٢٠١٦ թ.`; no page errors |
 
 ## Results
 

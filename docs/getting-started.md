@@ -1,6 +1,6 @@
 # Getting Started
 
-> **Status**: `0.3.1` is published to npm with provenance.
+> **Status**: `0.3.2` is published to npm with provenance.
 
 This guide renders a classic 14-month planner from static data, wires controlled
 selection and visibility, and prints an A3 page.

@@ -77,7 +77,7 @@ either side. Run `pnpm storybook` in another terminal.
 
 ## Package status
 
-The packages are published to npm at `0.3.1` with provenance. `0.3.0` was the
+The packages are published to npm at `0.3.2` with provenance. `0.3.0` was the
 unprovenanced bootstrap that created the package names. Install the component
 with `pnpm add @blendsdk/react-year-planner`; see
 [getting-started.md](getting-started.md).

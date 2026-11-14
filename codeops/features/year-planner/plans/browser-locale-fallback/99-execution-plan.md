@@ -1,7 +1,7 @@
 # Task T-01: Preserve localized dates in browsers with limited locale data
 
 > **Type**: Task (lightweight) · **Feature**: year-planner · **CodeOps Artifact Schema**: 1
-> **Progress**: 3/4 tasks (75%)
+> **Progress**: 4/4 tasks (100%)
 > **Reasoning**: high — locale correctness across browser, server and print output
 > **Scope mode**: strict
 > **Phase baseline tree**: 59b0837e00f4285c6699f075af051ce8dd50698d
@@ -45,7 +45,7 @@ instruction. Publish through the existing protected Release workflow.
 - [x] T-01.1 Add specification regressions for missing browser locale data, calendar headers, full dates, periods, timezone boundaries, runtime language switching and print; confirm red. Verified 2026-11-14: 16 expected unit failures and 4 Chromium failures.
 - [x] T-01.2 Implement the bounded fallback and verify targeted React and browser regressions green. Verified 2026-11-14: 52 React tests, React typecheck/build and 4 Chromium tests passed.
 - [x] T-01.3 Update localization/release notes, prepare the lockstep patch version, pass the full release gate and independent quality review. Verified 2026-11-14: full gate passes on the isolated release snapshot; independent re-review passed (18/18 browser/native comparisons).
-- [ ] T-01.4 Commit and push, merge after passing CI, publish through the existing release workflow, deploy docs and verify npm plus live Armenian rendering.
+- [x] T-01.4 Commit and push, merge after passing CI, publish through the existing release workflow, deploy docs and verify npm plus live Armenian rendering. Verified 2026-11-14: Release 43591487674 and Pages 43592773688 succeeded; all three npm packages at 0.3.2 with provenance; registry smoke and live three-language calendar/print checks passed.
 
 **Specification files:** `packages/react/src/locale-fallback.spec.test.tsx`,
 `tests/e2e/i18n.spec.ts`.
@@ -105,3 +105,23 @@ derived roadmap status changed after snapshot creation.
 | Audit | Passed high-severity threshold; 2 moderate advisories reported |
 | Release artifacts | API reports, bundle size, docs, packs and release check passed |
 | Packed consumer | Types, CSS import and production build passed |
+
+### Shipping
+
+- Signed-off commit `b89f1fa` pushed; PR [#15](https://github.com/blendsdk/year-planner/pull/15)
+  passed all active CI checks, including five browser shards and performance.
+- PR merged as `55a615405fe5790579d47c85b8369c8d5b9036f8`.
+- Release run [43591487674](https://github.com/blendsdk/year-planner/actions/runs/43591487674)
+  dispatched on `main` with `publish=true` and `deploy-docs=true`.
+- The existing `npm-production` gate was approved under the user's ship authority
+  after full verify and build succeeded. Publish and registry smoke passed.
+- All three npm packages report `0.3.2` at `latest`. Their SLSA provenance
+  statements reference the merged commit and `release.yml`.
+- GitHub release [v0.3.2](https://github.com/blendsdk/year-planner/releases/tag/v0.3.2)
+  links all three packages and documentation.
+- Pages run [43592773688](https://github.com/blendsdk/year-planner/actions/runs/43592773688)
+  deployed successfully. Live Chromium verified the dedicated Armenian story,
+  Armenian/Georgian/Icelandic language switching and print labels, and Arabic-digit
+  Armenian dates. All checks passed with zero page errors.
+- Post-release status documentation verified with 37 affected quality contracts,
+  the complete docs-site build and `docs:site -- --check-only`.

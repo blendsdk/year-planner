@@ -74,7 +74,7 @@ export function Plan() {
 ```
 
 <div class="hero-note">
-  <strong>Status:</strong> 0.3.1 is published to npm with provenance. Install it
+  <strong>Status:</strong> 0.3.2 is published to npm with provenance. Install it
   with <code>pnpm add @blendsdk/react-year-planner</code>.
 </div>
 

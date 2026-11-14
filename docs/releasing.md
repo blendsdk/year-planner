@@ -152,12 +152,20 @@ publishing. CI publishes with OIDC trusted publishing and stores no npm token.
 | Private vulnerability reporting | not enabled |
 | Dependabot security alerts | disabled |
 | npm authentication | `blendjs` (local bootstrap) |
-| npm packages | `0.3.1` published with provenance; `0.3.0` was the bootstrap |
+| npm packages | `0.3.2` published with provenance; `0.3.0` was the bootstrap |
 | Trusted publishers | configured and validated by the `0.3.1` release |
 
 Re-check the remaining owner actions before the next release. The `0.3.1`
 publish validated the trusted-publisher configuration and produced SLSA
 provenance attestations for all three packages.
+
+The `0.3.2` browser-locale patch is published through
+[Release run 43591487674](https://github.com/blendsdk/year-planner/actions/runs/43591487674).
+All three packages resolve to `0.3.2` at `latest`, and their SLSA provenance
+references the release workflow and commit `55a6154`. Registry smoke passed.
+The [Pages deployment](https://github.com/blendsdk/year-planner/actions/runs/43592773688)
+passed; live Chromium checks confirm Armenian, Georgian and Icelandic calendar
+and print labels, plus Armenian Arabic-digit preferences.
 
 ## Branch protection
 

@@ -1,4 +1,5 @@
 import { addDays, type DateKey, type PlannerPeriod } from "@blendsdk/year-planner-core";
+import { createDateLocaleFallback, hasDateLocaleFallback } from "./locale-fallback.js";
 import { defaultPlannerMessages, type PlannerMessages } from "./messages.js";
 
 /**
@@ -32,7 +33,10 @@ function dateParts(date: DateKey): Date {
 /**
  * Builds locale formatters with an explicit Gregorian calendar.
  *
- * @param locale - Host locale; invalid values fall back to `en-US`.
+ * Uses bundled calendar words when a browser lacks Armenian, Georgian or
+ * Icelandic date data. Other supported locales keep native Intl formatting.
+ *
+ * @param locale - Host locale; invalid or unsupported values fall back to `en-US`.
  * @param messages - Active UI messages; defaults to English.
  * @returns Formatters plus the effective locale and messages.
  */
@@ -41,6 +45,7 @@ export function createFormatters(
   messages: PlannerMessages = defaultPlannerMessages,
 ): PlannerFormatters {
   const requested = locale ?? FALLBACK_LOCALE;
+  const fallback = hasNativeDateLocale(requested) ? undefined : createDateLocaleFallback(requested);
   const monthFormat = safeIntl(
     () =>
       new Intl.DateTimeFormat(requested, {
@@ -83,24 +88,41 @@ export function createFormatters(
       year: "numeric",
       timeZone: "UTC",
     });
-  const numberFormat = safeIntl(() => new Intl.NumberFormat(effective)) ?? new Intl.NumberFormat();
+  // Preserve an explicit digit preference even when NumberFormat falls back to
+  // another locale because this browser omits the requested locale's data.
+  const numberingSystem = safeIntl(() => new Intl.Locale(effective).numberingSystem);
+  const numberFormat =
+    safeIntl(
+      () => new Intl.NumberFormat(effective, numberingSystem ? { numberingSystem } : undefined),
+    ) ?? new Intl.NumberFormat();
+  const formatDate = (date: Date) => fallback?.formatDate(date) ?? finalDate.format(date);
 
   return {
     locale: effective,
     messages,
-    monthName: (monthIndex) => finalMonth.format(new Date(Date.UTC(2024, monthIndex, 1))),
+    monthName: (monthIndex) =>
+      fallback?.monthName(monthIndex) ?? finalMonth.format(new Date(Date.UTC(2024, monthIndex, 1))),
     weekdayNames: () =>
+      fallback?.weekdayNames() ??
       Array.from({ length: 7 }, (_, index) =>
         finalWeekday.format(dateParts(addDays(SATURDAY, index))),
       ),
     formatNumber: (value) => numberFormat.format(value),
-    formatDate: (date) => finalDate.format(dateParts(date)),
+    formatDate: (date) => formatDate(dateParts(date)),
     formatPeriod: (period, displayTimeZone) => {
       if (period.kind === "all-day") {
         const last = addDays(period.endDateExclusive, -1);
         return period.startDate === last
-          ? finalDate.format(dateParts(period.startDate))
-          : `${finalDate.format(dateParts(period.startDate))} - ${finalDate.format(dateParts(last))}`;
+          ? formatDate(dateParts(period.startDate))
+          : `${formatDate(dateParts(period.startDate))} - ${formatDate(dateParts(last))}`;
+      }
+      if (fallback) {
+        return (
+          safeIntl(
+            () =>
+              `${fallback.formatTimed(new Date(period.start), displayTimeZone)} - ${fallback.formatTimed(new Date(period.endExclusive), displayTimeZone)}`,
+          ) ?? `${period.start} - ${period.endExclusive}`
+        );
       }
       const formatter = safeIntl(
         () =>
@@ -121,9 +143,15 @@ export function createFormatters(
 }
 
 /**
- * Returns whether a locale can construct an Intl formatter.
+ * Returns whether dates can be localized using native Intl or bundled words.
+ * Syntactically valid locales without either source retain the English fallback.
  */
 export function isValidLocale(locale: string): boolean {
+  return hasNativeDateLocale(locale) || hasDateLocaleFallback(locale);
+}
+
+/** Tests actual date-locale availability; Intl constructors silently fall back. */
+function hasNativeDateLocale(locale: string): boolean {
   try {
     return Intl.DateTimeFormat.supportedLocalesOf([locale]).length > 0;
   } catch {

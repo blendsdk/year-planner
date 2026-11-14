@@ -13,7 +13,7 @@
 
 | Feature | Roadmap | Stage Summary | Progress | Status | Last Updated |
 |---------|---------|---------------|----------|--------|--------------|
-| year-planner | [→](features/year-planner/00-roadmap.md) | 13 RDs implementation-complete; localization, lockstep versioning and first npm release (0.3.1 provenance) delivered; licence and palette refresh verified | 13/13 RDs | 🔄 | 2026-11-14 |
+| year-planner | [→](features/year-planner/00-roadmap.md) | 13 RDs implementation-complete; 0.3.1 provenance release delivered; browser locale fallback patch 0.3.2 verified and ready to ship | 13/13 RDs; T-01 3/4 tasks | 🔄 | 2026-11-14 |
 
 ## Archived
 

@@ -47,7 +47,19 @@ import { hy } from "@blendsdk/year-planner-languages/hy";
 ```
 
 Use the same locale for `display.locale` and the catalogue. Dates, numbers and
-plural forms use `Intl` with that locale; the catalogue supplies the words.
+plural forms use `Intl` with that locale; the catalogue supplies the UI words.
+
+### Browser date-locale support
+
+Some browsers include fewer date locales than Node.js. From `0.3.2`, the component
+includes a small Gregorian date fallback for Armenian, Georgian and Icelandic.
+When the browser lacks one of these locales, month and weekday headers, date
+labels, inspector periods and print output still use the selected language.
+Native `Intl` continues to handle timezone conversion and numeric formatting.
+Browsers with native support keep their normal locale formatting.
+
+No polyfill or extra setup is needed. Invalid or other unsupported locales still
+fall back to English and report `INVALID_LOCALE`.
 
 ## Resolve a locale
 

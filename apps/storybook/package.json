@@ -17,13 +17,13 @@
   "devDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@fluentui/react-components": "^9.75.1",
+    "@fluentui/react-components": "^9.75.2",
     "@mui/material": "^9.5.0",
-    "@storybook/addon-a11y": "10.6.6",
-    "@storybook/addon-docs": "10.6.6",
-    "@storybook/addon-themes": "10.6.6",
-    "@storybook/react-vite": "10.6.6",
-    "storybook": "10.6.6",
+    "@storybook/addon-a11y": "10.6.7",
+    "@storybook/addon-docs": "10.6.7",
+    "@storybook/addon-themes": "10.6.7",
+    "@storybook/react-vite": "10.6.7",
+    "storybook": "10.6.7",
     "typescript": "6.0.3",
     "vite": "7.3.8"
   }
